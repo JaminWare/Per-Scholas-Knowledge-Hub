@@ -6,33 +6,62 @@ import ArticleRenderer from '../components/ArticleRenderer';
 import type { Article } from '../types/database';
 import contentMap from '../data/contentMap';
 import {
-  Shield, Network, Cpu, Lock, Cloud, Wrench, Users, AlertTriangle,
+  Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, FileText, Sparkles, Layout, Laptop, Monitor, Database,
-  Heart, BookOpen, Home,
+  Heart, BookOpen, Home, Link2, Check,
 } from 'lucide-react';
 
 const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ className?: string }>; track?: string }> = {
-  // top nav
-  'study-tips':           { title: 'Study Tips', icon: Lightbulb },
-  'diagrams':             { title: 'Diagrams', icon: Layout },
-  'quick-references':     { title: 'Quick References', icon: FileText },
-  'azari-prompt-playbook':{ title: 'Prompt Playbook', icon: Sparkles },
-  // core 1
-  'core1-mobile':         { title: 'Domain 1.0 — Mobile Devices', icon: Laptop, track: 'CompTIA A+ Core 1 (220-1201)' },
-  'core1-networking':     { title: 'Domain 2.0 — Networking', icon: Network, track: 'CompTIA A+ Core 1 (220-1201)' },
-  'core1-hardware':       { title: 'Domain 3.0 — Hardware', icon: Cpu, track: 'CompTIA A+ Core 1 (220-1201)' },
-  'core1-cloud':          { title: 'Domain 4.0 — Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1 (220-1201)' },
-  'core1-troubleshooting':{ title: 'Domain 5.0 — Hardware & Network Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 1 (220-1201)' },
-  // core 2
-  'core2-os':             { title: 'Domain 1.0 — Operating Systems', icon: Monitor, track: 'CompTIA A+ Core 2 (220-1202)' },
-  'core2-security':       { title: 'Domain 2.0 — Security', icon: Shield, track: 'CompTIA A+ Core 2 (220-1202)' },
-  'core2-software':       { title: 'Domain 3.0 — Software Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 2 (220-1202)' },
-  'core2-operations':     { title: 'Domain 4.0 — Operational Procedures', icon: Users, track: 'CompTIA A+ Core 2 (220-1202)' },
-  // healthcare
-  'healthcare-ehr':       { title: 'EHR Architecture', icon: Database, track: 'Advanced Healthcare IT' },
-  'healthcare-hipaa':     { title: 'HIPAA Data Security', icon: Lock, track: 'Advanced Healthcare IT' },
-  'healthcare-clinical':  { title: 'Clinical IT Operations', icon: Heart, track: 'Advanced Healthcare IT' },
+  'study-tips':            { title: 'Study Tips', icon: Lightbulb },
+  'diagrams':              { title: 'Diagrams', icon: Layout },
+  'quick-references':      { title: 'Quick References', icon: FileText },
+  'azari-prompt-playbook': { title: 'Prompt Playbook', icon: Sparkles },
+  'core1-mobile':          { title: 'Domain 1.0 — Mobile Devices', icon: Laptop, track: 'CompTIA A+ Core 1 (220-1201)' },
+  'core1-networking':      { title: 'Domain 2.0 — Networking', icon: Network, track: 'CompTIA A+ Core 1 (220-1201)' },
+  'core1-hardware':        { title: 'Domain 3.0 — Hardware', icon: Cpu, track: 'CompTIA A+ Core 1 (220-1201)' },
+  'core1-cloud':           { title: 'Domain 4.0 — Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1 (220-1201)' },
+  'core1-troubleshooting': { title: 'Domain 5.0 — HW & Network Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 1 (220-1201)' },
+  'core2-os':              { title: 'Domain 1.0 — Operating Systems', icon: Monitor, track: 'CompTIA A+ Core 2 (220-1202)' },
+  'core2-security':        { title: 'Domain 2.0 — Security', icon: Shield, track: 'CompTIA A+ Core 2 (220-1202)' },
+  'core2-software':        { title: 'Domain 3.0 — Software Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 2 (220-1202)' },
+  'core2-operations':      { title: 'Domain 4.0 — Operational Procedures', icon: Users, track: 'CompTIA A+ Core 2 (220-1202)' },
+  'healthcare-ehr':        { title: 'EHR Architecture', icon: Database, track: 'Advanced Healthcare IT' },
+  'healthcare-hipaa':      { title: 'HIPAA Data Security', icon: Lock, track: 'Advanced Healthcare IT' },
+  'healthcare-clinical':   { title: 'Clinical Workflows', icon: Heart, track: 'Advanced Healthcare IT' },
 };
+
+const contributorBadgeColors: Record<string, string> = {
+  'Core 1 Expert':       'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400',
+  'Core 2 Expert':       'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400',
+  'HealthIT Specialist': 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400',
+};
+
+function CopyLinkButton({ slug }: { slug: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    const url = `${window.location.origin}${window.location.pathname}#/${slug}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
+  return (
+    <button
+      onClick={handleCopy}
+      className={`inline-flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all ${
+        copied
+          ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400'
+          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 hover:text-emerald-600 dark:hover:text-emerald-400'
+      }`}
+      title="Copy link to this article"
+    >
+      {copied ? <Check className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
+      {copied ? 'Copied!' : 'Copy Link'}
+    </button>
+  );
+}
 
 export default function SectionPage() {
   const location = useLocation();
@@ -77,14 +106,17 @@ export default function SectionPage() {
     fetchArticles();
   }, [slug]);
 
-  // ── Polished wiki article view when local content exists ──
+  // ── Rich local wiki article view ────────────────────────
   if (localContent) {
+    const roleColor = contributorBadgeColors[localContent.contributorRole ?? ''] ??
+      'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400';
+
     return (
       <div className="max-w-4xl mx-auto">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6 flex-wrap">
           <Link to="/" className="hover:text-emerald-600 dark:hover:text-emerald-400 flex items-center gap-1">
-            <Home className="w-3.5 h-3.5" />Home
+            <Home className="w-3.5 h-3.5" /> Home
           </Link>
           {localContent.trackLabel.split('—').map((part, i, arr) => (
             <span key={i} className="flex items-center gap-2">
@@ -96,7 +128,7 @@ export default function SectionPage() {
           ))}
         </nav>
 
-        {/* Article header */}
+        {/* Article hero header */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 p-8 mb-8">
           <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
           <div className="relative">
@@ -108,16 +140,23 @@ export default function SectionPage() {
                 {localContent.trackLabel}
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-white mb-3">
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-4">
               {localContent.title}
             </h1>
-            <div className="flex flex-wrap items-center gap-3 mt-4">
+
+            {/* Contributor + tags row */}
+            <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
-                  <BookOpen className="w-3.5 h-3.5 text-white" />
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-xs font-bold">
+                  {localContent.contributor.charAt(0)}
                 </div>
                 <span className="text-sm text-slate-300">{localContent.contributor}</span>
               </div>
+              {localContent.contributorRole && (
+                <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${roleColor}`}>
+                  [{localContent.contributorRole}]
+                </span>
+              )}
               <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                 {localContent.cohort}
               </span>
@@ -126,6 +165,10 @@ export default function SectionPage() {
                   {tag}
                 </span>
               ))}
+              {/* Copy Link button */}
+              <div className="ml-auto">
+                <CopyLinkButton slug={slug} />
+              </div>
             </div>
           </div>
         </div>
@@ -148,27 +191,23 @@ export default function SectionPage() {
     );
   }
 
-  // ── Fallback: DB articles grid ────────────────────────────
+  // ── Fallback: DB articles grid ───────────────────────────
   const displayTitle = meta?.title ?? (slug?.replace(/[-/]/g, ' ') ?? 'Articles');
 
   return (
     <div className="space-y-8 max-w-5xl">
       <div className="flex items-center gap-4 pb-6 border-b border-slate-200 dark:border-slate-800">
-        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 flex-shrink-0">
           <Icon className="w-7 h-7 text-white" />
         </div>
-        <div>
+        <div className="flex-1 min-w-0">
           {meta?.track && (
             <p className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">
               {meta.track}
             </p>
           )}
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white capitalize">
-            {displayTitle}
-          </h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">
-            {dbArticles.length} articles in this section
-          </p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">{displayTitle}</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">{dbArticles.length} articles in this section</p>
         </div>
       </div>
 
@@ -188,7 +227,7 @@ export default function SectionPage() {
       ) : (
         <div className="card p-12 text-center">
           <Icon className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-          <p className="text-slate-500 dark:text-slate-400">No articles in this section yet. Check back soon!</p>
+          <p className="text-slate-500 dark:text-slate-400">No articles in this section yet.</p>
         </div>
       )}
     </div>
