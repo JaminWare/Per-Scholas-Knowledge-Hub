@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { ArrowLeft, Clock, Tag, Share2, Bookmark } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
@@ -7,7 +7,8 @@ import ContributorCard from '../components/ContributorCard';
 import type { Article, Contributor } from '../types/database';
 
 export default function ArticlePage() {
-  const { slug } = useParams<{ slug: string }>();
+  const location = useLocation();
+  const slug = location.hash.replace('#/', '').replace(/\/$/, '');
   const [article, setArticle] = useState<Article | null>(null);
   const [contributor, setContributor] = useState<Contributor | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
