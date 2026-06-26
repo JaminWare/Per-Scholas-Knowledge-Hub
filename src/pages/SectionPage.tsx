@@ -62,8 +62,8 @@ function CopyLinkButton({ slug }: { slug: string }) {
       onClick={handleCopy}
       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
         copied
-          ? 'bg-emerald-500/10 text-emerald-400'
-          : 'bg-zinc-800 text-zinc-400 hover:bg-emerald-500/10 hover:text-emerald-400'
+          ? 'bg-sky-500/10 text-sky-500 dark:text-sky-400'
+          : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-sky-100 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400'
       }`}
     >
       {copied ? <Check className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
@@ -110,24 +110,24 @@ export default function SectionPage() {
     const roleColor = roleColors[localContent.contributorRole ?? ''] ?? 'bg-zinc-800 text-zinc-400';
     return (
       <div className="max-w-4xl mx-auto">
-        {/* Back to Dashboard */}
+        {/* Back button */}
         <button
-          onClick={() => navigate('/')}
-          className="text-zinc-400 hover:text-emerald-400 transition-colors duration-200 flex items-center gap-2 mb-6 cursor-pointer text-sm font-medium"
+          onClick={() => navigate(-1)}
+          className="text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200 flex items-center gap-2 mb-6 cursor-pointer text-sm font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Dashboard
+          Back to Previous Page
         </button>
 
         {/* Article hero header */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-emerald-950 border border-zinc-700 p-8 mb-8">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-sky-950 dark:from-zinc-900 dark:via-zinc-800 dark:to-sky-950 border border-zinc-300 dark:border-zinc-700 p-8 mb-8">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
           <div className="relative">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2.5 rounded-xl bg-emerald-500/20 border border-emerald-500/30">
-                <Icon className="w-6 h-6 text-emerald-400" />
+              <div className="p-2.5 rounded-xl bg-sky-500/20 border border-sky-500/30">
+                <Icon className="w-6 h-6 text-sky-400" />
               </div>
-              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-sky-400 uppercase tracking-wider">
                 {localContent.trackLabel}
               </span>
             </div>
@@ -136,7 +136,7 @@ export default function SectionPage() {
             </h1>
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white text-xs font-bold">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center text-white text-xs font-bold">
                   {localContent.contributor.charAt(0)}
                 </div>
                 <span className="text-sm text-zinc-300">{localContent.contributor}</span>
@@ -146,7 +146,7 @@ export default function SectionPage() {
                   [{localContent.contributorRole}]
                 </span>
               )}
-              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-sky-500/10 text-sky-400 border border-sky-500/20">
                 {localContent.cohort}
               </span>
               {localContent.tags.slice(0, 3).map((tag) => (
@@ -160,13 +160,13 @@ export default function SectionPage() {
         </div>
 
         {/* Article body */}
-        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 md:p-8">
+        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 md:p-8">
           <ArticleRenderer blocks={localContent.content} />
         </div>
 
         {!isLoading && dbArticles.length > 0 && (
           <div className="mt-10">
-            <h2 className="text-lg font-bold text-zinc-100 mb-4">More in this section</h2>
+            <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-4">More in this section</h2>
             <div className="grid md:grid-cols-2 gap-4">
               {dbArticles.map((a) => <ArticleCard key={a.id} article={a} />)}
             </div>
@@ -183,24 +183,24 @@ export default function SectionPage() {
       {/* Back to Dashboard — only on sub-pages */}
       {isSubPage && (
         <button
-          onClick={() => navigate('/')}
-          className="text-zinc-400 hover:text-emerald-400 transition-colors duration-200 flex items-center gap-2 cursor-pointer text-sm font-medium"
+          onClick={() => navigate(-1)}
+          className="text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200 flex items-center gap-2 cursor-pointer text-sm font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Dashboard
+          Back to Previous Page
         </button>
       )}
 
       <div className="flex items-center gap-4 pb-6 border-b border-zinc-800">
-        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 flex-shrink-0">
+        <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
           <Icon className="w-7 h-7 text-white" />
         </div>
         <div className="flex-1 min-w-0">
           {meta?.track && (
-            <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1">{meta.track}</p>
+            <p className="text-xs font-semibold text-sky-500 dark:text-sky-400 uppercase tracking-wider mb-1">{meta.track}</p>
           )}
-          <h1 className="text-2xl font-bold text-zinc-100">{displayTitle}</h1>
-          <p className="text-zinc-500 text-sm">{dbArticles.length} articles</p>
+          <h1 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">{displayTitle}</h1>
+          <p className="text-zinc-500 dark:text-zinc-500 text-sm">{dbArticles.length} articles</p>
         </div>
       </div>
 

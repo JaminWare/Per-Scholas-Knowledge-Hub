@@ -4,7 +4,6 @@ import { supabase } from '../lib/supabase';
 
 const LS_KEY = 'lkb_submissions';
 
-// ── Master categories with auto-badge mapping ─────────────
 const MASTER_CATEGORIES = [
   { label: 'Study Tips',       badge: 'Core 1 Expert',     sub: [
     'CompTIA A+ Core 1 — Domain 1.0 (Mobile Devices)',
@@ -73,13 +72,13 @@ interface Props {
 }
 
 export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted }: Props) {
-  const [masterCat, setMasterCat]     = useState('');
-  const [subTrack, setSubTrack]       = useState('');
-  const [fullName, setFullName]       = useState('');
-  const [title, setTitle]             = useState('');
-  const [mediaLink, setMediaLink]     = useState('');
-  const [content, setContent]         = useState('');
-  const [errors, setErrors]           = useState<Record<string, string>>({});
+  const [masterCat, setMasterCat]       = useState('');
+  const [subTrack, setSubTrack]         = useState('');
+  const [fullName, setFullName]         = useState('');
+  const [title, setTitle]               = useState('');
+  const [mediaLink, setMediaLink]       = useState('');
+  const [content, setContent]           = useState('');
+  const [errors, setErrors]             = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const firstInputRef = useRef<HTMLInputElement>(null);
 
@@ -100,7 +99,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  // Reset sub-track when master category changes
   useEffect(() => { setSubTrack(''); }, [masterCat]);
 
   const validate = () => {
@@ -123,7 +121,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     if (!validate()) return;
     setIsSubmitting(true);
     const badge = getBadge(masterCat);
-
     try {
       const { data, error } = await supabase
         .from('submissions')
@@ -135,7 +132,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       onSubmitted(sub);
       reset(); onClose();
     } catch {
-      // Fallback: local-only persist
       const local: NewSubmission = {
         id: `local-${Date.now()}`, full_name: fullName.trim(), track: trackValue, badge,
         title: title.trim(), content: content.trim(),
@@ -152,34 +148,31 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   if (!isOpen) return null;
 
   const inputCls = (field: string) =>
-    `w-full px-4 py-2.5 rounded-xl bg-zinc-800 border text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm transition-all ${
-      errors[field] ? 'border-red-500/60' : 'border-zinc-700'
+    `w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm transition-all ${
+      errors[field] ? 'border-red-400 dark:border-red-500/60' : 'border-zinc-300 dark:border-zinc-700'
     }`;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-700 overflow-hidden">
+      <div className="absolute inset-0 bg-black/60 dark:bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative w-full max-w-lg bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
 
-        {/* Header */}
-        <div className="px-6 pt-6 pb-4 border-b border-zinc-800">
+        <div className="px-6 pt-6 pb-4 border-b border-zinc-100 dark:border-zinc-800">
           <div className="flex items-start justify-between">
             <div>
-              <h2 className="text-xl font-bold text-zinc-100">Submit Your Contribution</h2>
+              <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Submit Your Contribution</h2>
               <p className="text-sm text-zinc-500 mt-1">Share a tip, diagram, reference, or prompt to claim your badge.</p>
             </div>
-            <button onClick={onClose} className="p-2 rounded-xl hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 transition-colors">
+            <button onClick={onClose} className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4 max-h-[70vh] overflow-y-auto">
 
-          {/* Full Name */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
               Full Name / Discord Handle <span className="text-red-400">*</span>
             </label>
             <input
@@ -190,12 +183,11 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               placeholder="e.g. Jane Smith or @jsmith_rtt23"
               className={inputCls('fullName')}
             />
-            {errors.fullName && <p className="mt-1 text-xs text-red-400">{errors.fullName}</p>}
+            {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
           </div>
 
-          {/* Master Category */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
               Master Category <span className="text-red-400">*</span>
             </label>
             <div className="relative">
@@ -209,16 +201,15 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   <option key={c.label} value={c.label}>{c.label}</option>
                 ))}
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
             </div>
-            {errors.masterCat && <p className="mt-1 text-xs text-red-400">{errors.masterCat}</p>}
-            {/* Live badge preview */}
+            {errors.masterCat && <p className="mt-1 text-xs text-red-500">{errors.masterCat}</p>}
             {autoBadge && (
               <div className="mt-2 flex items-center gap-2">
-                <Tag className="w-3.5 h-3.5 text-emerald-500" />
+                <Tag className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
                 <span className="text-xs text-zinc-500">
                   You will earn:{' '}
-                  <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400">
+                  <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-100 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400">
                     [{autoBadge}]
                   </span>
                 </span>
@@ -226,29 +217,27 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             )}
           </div>
 
-          {/* Sub-track — shown when master category has options */}
           {selectedCat && selectedCat.sub.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1.5">
-                Specific Domain / Sub-track <span className="text-zinc-500 font-normal">(optional)</span>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                Specific Domain / Sub-track <span className="text-zinc-400 font-normal">(optional)</span>
               </label>
               <div className="relative">
                 <select
                   value={subTrack}
                   onChange={(e) => setSubTrack(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm appearance-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm appearance-none"
                 >
                   <option value="">All {selectedCat.label} (general)</option>
                   {selectedCat.sub.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
               </div>
             </div>
           )}
 
-          {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
               Contribution / Article Title <span className="text-red-400">*</span>
             </label>
             <input
@@ -258,16 +247,15 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               placeholder="e.g. Fix Boot Camp Audio Driver on Windows 11"
               className={inputCls('title')}
             />
-            {errors.title && <p className="mt-1 text-xs text-red-400">{errors.title}</p>}
+            {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
           </div>
 
-          {/* Media / Embed Link */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
               <span className="flex items-center gap-1.5">
                 <Image className="w-3.5 h-3.5 text-zinc-400" />
                 Media / Diagram Embed Link
-                <span className="text-zinc-500 font-normal">(optional)</span>
+                <span className="text-zinc-400 font-normal">(optional)</span>
               </span>
             </label>
             <input
@@ -275,42 +263,40 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               value={mediaLink}
               onChange={(e) => setMediaLink(e.target.value)}
               placeholder="https://… (image URL, Mermaid diagram link, Canvas pin, etc.)"
-              className="w-full px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-zinc-100 placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+              className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
             />
-            <p className="text-xs text-zinc-600 mt-1">Supports image URLs, Mermaid diagram links, or direct asset embed URLs.</p>
+            <p className="text-xs text-zinc-400 mt-1">Supports image URLs, Mermaid diagram links, or direct asset embed URLs.</p>
           </div>
 
-          {/* Content */}
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
               Contribution Content <span className="text-red-400">*</span>
             </label>
             <textarea
               rows={6}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Describe your tip, troubleshooting steps, prompt syntax, diagram description, or reference notes. Supports plain text, code snippets, or structured notes."
+              placeholder="Describe your tip, troubleshooting steps, prompt syntax, diagram description, or reference notes."
               className={`${inputCls('content')} resize-none font-mono`}
             />
             <div className="flex items-center justify-between mt-1">
               {errors.content
-                ? <p className="text-xs text-red-400">{errors.content}</p>
+                ? <p className="text-xs text-red-500">{errors.content}</p>
                 : <span />}
-              <span className="text-xs text-zinc-600">{content.length} chars</span>
+              <span className="text-xs text-zinc-400">{content.length} chars</span>
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex items-center gap-3 pt-1">
             <button
               type="button" onClick={onClose}
-              className="flex-1 px-4 py-2.5 rounded-xl border border-zinc-700 text-zinc-400 hover:bg-zinc-800 text-sm font-medium transition-colors"
+              className="flex-1 px-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm font-medium transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit" disabled={isSubmitting}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-medium text-sm transition-colors disabled:opacity-60 shadow-lg shadow-emerald-500/20"
+              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-medium text-sm transition-colors disabled:opacity-60 shadow-lg shadow-sky-500/20"
             >
               {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               {isSubmitting ? 'Submitting…' : 'Claim My Badge'}

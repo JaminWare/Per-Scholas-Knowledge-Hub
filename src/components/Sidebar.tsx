@@ -25,11 +25,10 @@ interface TrackSection {
   id: string;
   label: string;
   sublabel: string;
-  color: 'emerald' | 'teal' | 'cyan';
+  color: 'sky' | 'teal' | 'cyan';
   domains: NavGroup[];
 }
 
-// Top-level accordion groups
 const topAccordions: NavGroup[] = [
   {
     title: 'Study Tips',
@@ -89,7 +88,7 @@ const tracks: TrackSection[] = [
     id: 'core1',
     label: 'CompTIA A+ Core 1',
     sublabel: '220-1201',
-    color: 'emerald',
+    color: 'sky',
     domains: [
       { title: 'Domain 1.0 — Mobile Devices', slug: 'core1-mobile', icon: Laptop,
         children: [
@@ -173,28 +172,34 @@ const tracks: TrackSection[] = [
 
 // ─── Color maps ───────────────────────────────────────────
 
-const trackBorder = { emerald: 'border-emerald-500/30', teal: 'border-teal-500/30', cyan: 'border-cyan-500/30' };
-const trackBadge  = {
-  emerald: 'bg-emerald-500/10 text-emerald-400',
-  teal:    'bg-teal-500/10 text-teal-400',
-  cyan:    'bg-cyan-500/10 text-cyan-400',
+const trackBorder = {
+  sky:  'border-sky-500/30 dark:border-sky-500/30',
+  teal: 'border-teal-500/30 dark:border-teal-500/30',
+  cyan: 'border-cyan-500/30 dark:border-cyan-500/30',
 };
-const trackText = { emerald: 'text-emerald-400', teal: 'text-teal-400', cyan: 'text-cyan-400' };
+const trackBadge = {
+  sky:  'bg-sky-500/10 text-sky-500 dark:text-sky-400',
+  teal: 'bg-teal-500/10 text-teal-600 dark:text-teal-400',
+  cyan: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
+};
+const trackText = {
+  sky:  'text-sky-500 dark:text-sky-400',
+  teal: 'text-teal-600 dark:text-teal-400',
+  cyan: 'text-cyan-600 dark:text-cyan-400',
+};
 
 // ─── Leaf link ────────────────────────────────────────────
 
-function Leaf({ title, slug, depth = 0, onClick }: { title: string; slug: string; depth?: number; onClick?: () => void }) {
+function Leaf({ title, slug }: { title: string; slug: string }) {
   const location = useLocation();
   const isActive = location.hash === `#/${slug}`;
   return (
     <Link
       to={`/${slug}`}
-      onClick={onClick}
-      style={{ paddingLeft: `${16 + depth * 12}px` }}
-      className={`flex items-center gap-2 py-1.5 pr-3 rounded-lg text-[12px] font-medium transition-all ${
+      className={`flex items-center gap-2 py-1.5 pl-4 pr-3 rounded-lg text-[12px] font-medium transition-all ${
         isActive
-          ? 'text-emerald-400 bg-emerald-500/10'
-          : 'text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/60'
+          ? 'text-sky-500 dark:text-sky-400 bg-sky-500/10'
+          : 'text-zinc-500 dark:text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-200/60 dark:hover:bg-zinc-800/60'
       }`}
     >
       <span className="w-1 h-1 rounded-full bg-current flex-shrink-0 opacity-60" />
@@ -226,14 +231,14 @@ function DomainRow({ domain }: { domain: NavGroup }) {
         {domain.children && (
           <button
             onClick={() => setOpen((v) => !v)}
-            className="p-1.5 text-zinc-600 hover:text-zinc-300 transition-colors flex-shrink-0"
+            className="p-1.5 text-zinc-500 dark:text-zinc-600 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors flex-shrink-0"
           >
             {open || isChildActive ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
           </button>
         )}
       </div>
       {(open || isChildActive) && domain.children && (
-        <div className="ml-4 pl-2 border-l border-zinc-800 space-y-0.5 mt-0.5 mb-1">
+        <div className="ml-4 pl-2 border-l border-zinc-300 dark:border-zinc-800 space-y-0.5 mt-0.5 mb-1">
           {domain.children.map((c) => (
             <Leaf key={c.slug} title={c.title} slug={c.slug} />
           ))}
@@ -249,8 +254,7 @@ function TopAccordion({ group }: { group: NavGroup }) {
   const location = useLocation();
   const [open, setOpen] = useState(false);
   const Icon = group.icon;
-  const isActive = location.hash === `#/${group.slug}` ||
-    (group.slug === '' && (location.hash === '' || location.hash === '#/'));
+  const isActive = location.hash === `#/${group.slug}`;
   const isChildActive = group.children?.some((c) => location.hash === `#/${c.slug}`);
   const expanded = open || !!isChildActive;
 
@@ -262,10 +266,12 @@ function TopAccordion({ group }: { group: NavGroup }) {
       >
         <Icon className="w-4 h-4 flex-shrink-0" />
         <span className="flex-1 text-left truncate text-[13px]">{group.title}</span>
-        {expanded ? <ChevronDown className="w-3.5 h-3.5 flex-shrink-0" /> : <ChevronRight className="w-3.5 h-3.5 flex-shrink-0" />}
+        {expanded
+          ? <ChevronDown className="w-3.5 h-3.5 flex-shrink-0 opacity-60" />
+          : <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 opacity-60" />}
       </button>
       {expanded && group.children && (
-        <div className="ml-4 pl-2 border-l border-zinc-800 space-y-0.5 mt-0.5 mb-1">
+        <div className="ml-4 pl-2 border-l border-zinc-300 dark:border-zinc-800 space-y-0.5 mt-0.5 mb-1">
           {group.children.map((c) => (
             <Leaf key={c.slug} title={c.title} slug={c.slug} />
           ))}
@@ -287,24 +293,23 @@ export default function Sidebar({ onToggle }: SidebarProps) {
   });
 
   return (
-    <div className="flex flex-col h-full bg-zinc-900 border-r border-zinc-800">
-      {/* Header — matches image_ad2a84.png */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 flex-shrink-0">
+    <div className="flex flex-col h-full bg-white dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-200 dark:border-zinc-800 flex-shrink-0">
         <Link to="/" className="flex items-center gap-2.5 flex-1 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 flex-shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
             <BookOpen className="w-[18px] h-[18px] text-white" />
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-zinc-100 text-[13px] leading-tight truncate">
+            <p className="font-bold text-zinc-100 dark:text-zinc-100 text-[13px] leading-tight truncate">
               Learners Knowledge Base
             </p>
-            <p className="text-[11px] text-zinc-500">2026-RTT-23</p>
+            <p className="text-[11px] text-zinc-500 dark:text-zinc-500">2026-RTT-23</p>
           </div>
         </Link>
-        {/* Chevron collapse button wired to toggle */}
         <button
           onClick={onToggle}
-          className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-colors flex-shrink-0"
+          className="p-1.5 rounded-lg text-zinc-500 dark:text-zinc-500 hover:text-zinc-200 dark:hover:text-zinc-200 hover:bg-zinc-800 dark:hover:bg-zinc-800 transition-colors flex-shrink-0"
           title="Collapse sidebar"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -313,29 +318,26 @@ export default function Sidebar({ onToggle }: SidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
-        {/* Home — direct link */}
         <Link
           to="/"
           className={`sidebar-item ${location.hash === '' || location.hash === '#/' ? 'active' : ''}`}
         >
           <Home className="w-4 h-4 flex-shrink-0" />
-          <span className="text-[13px]">Home</span>
+          <span className="truncate text-[13px]">Home</span>
         </Link>
 
-        {/* Accordion top-level groups */}
         {topAccordions.map((group) => (
           <TopAccordion key={group.slug} group={group} />
         ))}
 
-        {/* Track-based domain sections */}
         {tracks.map((track) => (
           <div key={track.id} className="pt-3">
             <button
               onClick={() => setOpenTracks((p) => ({ ...p, [track.id]: !p[track.id] }))}
-              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border ${trackBorder[track.color]} hover:bg-zinc-800/50 transition-colors mb-1`}
+              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border ${trackBorder[track.color]} hover:bg-zinc-800/50 dark:hover:bg-zinc-800/50 hover:bg-zinc-200/50 transition-colors mb-1`}
             >
               <div className="flex-1 text-left min-w-0">
-                <p className="text-[11px] font-bold text-zinc-200 uppercase tracking-wider truncate">
+                <p className="text-[11px] font-bold text-zinc-700 dark:text-zinc-200 uppercase tracking-wider truncate">
                   {track.label}
                 </p>
                 <p className={`text-[10px] font-medium mt-0.5 ${trackText[track.color]}`}>

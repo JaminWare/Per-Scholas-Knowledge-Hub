@@ -5,7 +5,7 @@
 @layer base {
   * {
     scrollbar-width: thin;
-    scrollbar-color: theme('colors.emerald.500') transparent;
+    scrollbar-color: theme('colors.sky.500') transparent;
   }
 
   *::-webkit-scrollbar {
@@ -18,29 +18,47 @@
   }
 
   *::-webkit-scrollbar-thumb {
-    background-color: theme('colors.emerald.500');
+    background-color: theme('colors.sky.500');
     border-radius: 3px;
   }
 
-  body {
+  html.dark body {
     @apply bg-zinc-950 text-zinc-100;
+  }
+
+  html:not(.dark) body {
+    @apply bg-zinc-100 text-zinc-800;
   }
 }
 
 @layer components {
-  .sidebar-item {
+  /* ── Sidebar items — dark mode ── */
+  html.dark .sidebar-item {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200;
-    @apply text-zinc-400;
-    @apply hover:bg-emerald-500/10 hover:text-emerald-400;
+    @apply text-zinc-400 hover:bg-sky-500/10 hover:text-sky-400;
   }
 
-  .sidebar-item.active {
-    @apply bg-emerald-500/15 text-emerald-400;
+  html.dark .sidebar-item.active {
+    @apply bg-sky-500/15 text-sky-400;
   }
 
-  .card {
-    @apply bg-zinc-900 rounded-xl border border-zinc-800;
-    @apply shadow-sm hover:shadow-md hover:border-zinc-700 transition-all duration-200;
+  /* ── Sidebar items — light mode ── */
+  html:not(.dark) .sidebar-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200;
+    @apply text-zinc-600 hover:bg-sky-100 hover:text-sky-600;
+  }
+
+  html:not(.dark) .sidebar-item.active {
+    @apply bg-sky-100 text-sky-600;
+  }
+
+  /* ── Cards ── */
+  html.dark .card {
+    @apply bg-zinc-900 rounded-xl border border-zinc-800 shadow-sm hover:shadow-md hover:border-zinc-700 transition-all duration-200;
+  }
+
+  html:not(.dark) .card {
+    @apply bg-white rounded-xl border border-zinc-200 shadow-sm hover:shadow-md hover:border-sky-300 transition-all duration-200;
   }
 
   .glow {
@@ -49,12 +67,12 @@
 
   .glow::before {
     content: '';
-    @apply absolute -inset-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg blur opacity-20;
+    @apply absolute -inset-1 bg-gradient-to-r from-sky-500 to-sky-400 rounded-lg blur opacity-20;
   }
 }
 
 @layer utilities {
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-emerald-500 to-teal-500;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-sky-400;
   }
 }
