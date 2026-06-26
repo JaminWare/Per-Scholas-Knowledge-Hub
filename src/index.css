@@ -23,25 +23,24 @@
   }
 
   body {
-    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+    @apply bg-zinc-950 text-zinc-100;
   }
 }
 
 @layer components {
   .sidebar-item {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200;
-    @apply text-slate-600 dark:text-slate-400;
-    @apply hover:bg-emerald-50 hover:text-emerald-700;
-    @apply dark:hover:bg-slate-800 dark:hover:text-emerald-400;
+    @apply text-zinc-400;
+    @apply hover:bg-emerald-500/10 hover:text-emerald-400;
   }
 
   .sidebar-item.active {
-    @apply bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400;
+    @apply bg-emerald-500/15 text-emerald-400;
   }
 
   .card {
-    @apply bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800;
-    @apply shadow-sm hover:shadow-md transition-shadow duration-200;
+    @apply bg-zinc-900 rounded-xl border border-zinc-800;
+    @apply shadow-sm hover:shadow-md hover:border-zinc-700 transition-all duration-200;
   }
 
   .glow {

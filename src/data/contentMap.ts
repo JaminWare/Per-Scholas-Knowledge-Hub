@@ -875,19 +875,6 @@ ORDER BY a.access_timestamp DESC;`,
     ],
   },
 
-  'core2-os/windows-bootcamp': {
-    title: 'Windows Installation & macOS Boot Camp Failures',
-    trackLabel: 'CompTIA A+ Core 2 — Domain 1.0 Operating Systems',
-    contributor: 'SysAdmin Pro',
-    contributorRole: 'Core 2 Expert',
-    cohort: '2026-RTT-23',
-    tags: ['windows', 'macOS', 'boot-camp', 'installation'],
-    content: [
-      { type: 'intro', text: 'Hands-on guide to Windows installations and Boot Camp troubleshooting for Intel Macs.' },
-      { type: 'warning', text: 'Apple Silicon Macs (M1/M2/M3/M4) do NOT support Boot Camp. Use Parallels Desktop 18+ or UTM.' },
-    ],
-  },
-
   'healthcare-ehr/integration': {
     title: 'HL7 Messaging Schemas & EHR Integration Blueprints',
     trackLabel: 'Advanced Healthcare IT — EHR Architecture',
@@ -909,6 +896,598 @@ ORDER BY a.access_timestamp DESC;`,
     tags: ['CPOE', 'clinical', 'order-sets'],
     content: [
       { type: 'intro', text: 'CPOE order set optimization and interface error handling for clinical IT teams.' },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // STUDY TIPS — Overview pages
+  // ─────────────────────────────────────────────────────────
+
+  'study-tips/core1-overview': {
+    title: 'CompTIA A+ Core 1 (220-1201) — Complete Study Guide Overview',
+    trackLabel: 'Study Tips — CompTIA A+ Core 1',
+    contributor: 'Cohort Lead',
+    contributorRole: 'Core 1 Expert',
+    cohort: '2026-RTT-23',
+    tags: ['study-tips', 'core1', 'overview', 'CompTIA'],
+    content: [
+      { type: 'intro', text: 'Your master index for CompTIA A+ Core 1 (220-1201). This overview maps every domain to its highest-yield study resources and PBQ simulation guides in this knowledge base.' },
+      { type: 'heading', text: 'Domain Weight Distribution' },
+      { type: 'table', headers: ['Domain', 'Topic', 'Exam Weight'], rows: [
+        ['1.0', 'Mobile Devices', '15%'],
+        ['2.0', 'Networking', '20%'],
+        ['3.0', 'Hardware', '25%'],
+        ['4.0', 'Virtualization & Cloud', '11%'],
+        ['5.0', 'Hardware & Network Troubleshooting', '29%'],
+      ]},
+      { type: 'tip', text: 'Domain 5.0 is the highest-weighted domain at 29%. Prioritize motherboard troubleshooting PBQs and the 8-step diagnostic methodology. Domain 3.0 Hardware at 25% is second — focus on DDR generations, PCIe lanes, and form factors.' },
+      { type: 'heading', text: 'Critical Study Priorities' },
+      { type: 'steps', items: [
+        'Domain 5.0: Master POST beep codes (AMI, Award, Phoenix) — they appear in every PBQ simulation.',
+        'Domain 2.0: Memorize port numbers cold — 20/21 FTP, 22 SSH, 53 DNS, 80/443 HTTP/HTTPS, 3389 RDP.',
+        'Domain 3.0: Know every DDR generation (3/4/5) voltage, speed, and notch position.',
+        'Domain 1.0: Understand MDM enrollment types (DEP/ADE vs. User Enrollment) and remote wipe vs. selective wipe.',
+        'Domain 4.0: Type 1 vs. Type 2 hypervisors; IaaS/PaaS/SaaS service model distinctions.',
+      ]},
+      { type: 'warning', text: 'The 220-1201 exam contains PBQ (Performance-Based Questions) that are drag-and-drop simulations, not multiple choice. You cannot skip them — they are scored at the beginning of the exam. Practice PBQs weekly.' },
+    ],
+  },
+
+  'study-tips/core2-overview': {
+    title: 'CompTIA A+ Core 2 (220-1202) — Complete Study Guide Overview',
+    trackLabel: 'Study Tips — CompTIA A+ Core 2',
+    contributor: 'SysAdmin Pro',
+    contributorRole: 'Core 2 Expert',
+    cohort: '2026-RTT-23',
+    tags: ['study-tips', 'core2', 'overview', 'CompTIA'],
+    content: [
+      { type: 'intro', text: 'Your master index for CompTIA A+ Core 2 (220-1202). This overview maps every domain to its highest-yield study resources in this knowledge base.' },
+      { type: 'heading', text: 'Domain Weight Distribution' },
+      { type: 'table', headers: ['Domain', 'Topic', 'Exam Weight'], rows: [
+        ['1.0', 'Operating Systems', '27%'],
+        ['2.0', 'Security', '24%'],
+        ['3.0', 'Software Troubleshooting', '26%'],
+        ['4.0', 'Operational Procedures', '23%'],
+      ]},
+      { type: 'tip', text: 'Core 2 is the most balanced exam — all domains are within 4% of each other. No single domain dominates, so breadth of study matters more than depth in any one area.' },
+      { type: 'heading', text: 'Non-Negotiable Study Items' },
+      { type: 'steps', items: [
+        'Security: Memorize the 8-step malware removal process in exact order — it appears verbatim on the exam.',
+        'OS: Know Windows 11 TPM 2.0 requirement; know upgrade path rules (32-bit cannot in-place upgrade to 64-bit).',
+        'Troubleshooting: SFC must run AFTER DISM — never before. This is a guaranteed exam question.',
+        'Operations: Know change management phases: Request → Assessment → Approval → Implementation → Verification → Documentation.',
+        'Security: Social engineering types — phishing, spear phishing, vishing, smishing, tailgating, pretexting.',
+      ]},
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // DIAGRAMS
+  // ─────────────────────────────────────────────────────────
+
+  'diagrams/motherboard': {
+    title: 'Interactive Motherboard Blueprint',
+    trackLabel: 'Diagrams — Hardware Architecture',
+    contributor: 'Tech Specialist',
+    contributorRole: 'Core 1 Expert',
+    cohort: '2026-RTT-23',
+    tags: ['diagrams', 'motherboard', 'hardware', 'blueprint'],
+    content: [
+      { type: 'intro', text: 'A comprehensive annotated motherboard blueprint covering every connector, slot, and component location tested on the 220-1201 exam.' },
+      { type: 'heading', text: 'ATX Motherboard Component Map' },
+      { type: 'code', lang: 'text', code: `┌─────────────────────────────────────────────────────────┐
+│  ATX MOTHERBOARD — ANNOTATED COMPONENT LAYOUT           │
+├─────────────────────────────────────────────────────────┤
+│ [24-pin ATX Power]  [CPU Socket]  [EPS 8-pin CPU Power] │
+│                     [AM5 / LGA1700]                     │
+│ [DIMM A1]─────────────────────────── [DIMM B1]          │
+│ [DIMM A2]─────────────────────────── [DIMM B2]          │
+│   ↑ Populate A2+B2 first for dual-channel               │
+│                                                         │
+│ [PCIe 5.0 x16  — Primary GPU Slot]                      │
+│ [PCIe 3.0 x1   — Expansion Card]                        │
+│ [PCIe 4.0 x16  — Secondary GPU/NVMe AIC]                │
+│                                                         │
+│ [M.2 NVMe Slot 0] ← Gen 4 x4 (CPU lanes)               │
+│ [M.2 NVMe Slot 1] ← Gen 3 x4 (Chipset lanes)           │
+│                                                         │
+│ [SATA 0─5] ← 6x SATA III ports (6 Gb/s)                │
+│                                                         │
+│ [USB 3.2 Gen 2 Header]  [USB 3.2 Gen 1 Header]          │
+│ [USB 2.0 Header x2]     [Front Panel Header]            │
+│                                                         │
+│ [CLR_CMOS Jumper] [BIOS Flashback Button] [CR2032]      │
+└─────────────────────────────────────────────────────────┘` },
+      { type: 'heading', text: 'Front Panel Header Pin Map' },
+      { type: 'table', headers: ['Pins', 'Label', 'Function'], rows: [
+        ['1-2', 'PWR_SW', 'Power button (momentary contact)'],
+        ['3-4', 'PWR_LED+/-', 'Power LED indicator'],
+        ['5-6', 'RST_SW', 'Reset button'],
+        ['7-8', 'HDD_LED', 'Storage activity LED'],
+        ['9-10', 'SPEAK', '4-pin internal speaker for POST beeps'],
+      ]},
+      { type: 'warning', text: 'The SPEAKER header (pins 9-10) is separate from the audio header. Without it connected, you will NOT hear POST beep codes during troubleshooting. Always verify it is connected before diagnosing POST failures.' },
+      { type: 'heading', text: 'PCIe Lane Budget (Intel 13th/14th Gen Example)' },
+      { type: 'table', headers: ['Source', 'Total Lanes', 'Allocation'], rows: [
+        ['CPU (direct)', '20 lanes', 'PCIe 5.0 x16 (GPU) + PCIe 4.0 x4 (M.2 slot 0)'],
+        ['Chipset (Z790)', '28 lanes', 'PCIe 3.0/4.0 for remaining M.2, SATA, USB'],
+        ['Combined total', '48 effective', 'Shared via DMI 4.0 x8 between CPU and chipset'],
+      ]},
+    ],
+  },
+
+  'diagrams/network-topology': {
+    title: 'Network Topology Mapping Tool',
+    trackLabel: 'Diagrams — Network Architecture',
+    contributor: 'NetSec Expert',
+    contributorRole: 'Core 1 Expert',
+    cohort: '2026-RTT-23',
+    tags: ['diagrams', 'networking', 'topology', 'LAN', 'WAN'],
+    content: [
+      { type: 'intro', text: 'Visual topology reference for all major network architectures — from physical cabling topologies to logical segmentation used in healthcare IT environments.' },
+      { type: 'heading', text: 'Physical Topology Comparison' },
+      { type: 'code', lang: 'text', code: `STAR TOPOLOGY (Most Common in Enterprise)
+     [Workstation 1]
+          |
+     [Workstation 2]──── [Central Switch] ────[Server]
+          |
+     [Workstation 3]
+  ✅ Pros: Single point of failure only at switch
+  ❌ Cons: If switch fails, entire segment down
+
+──────────────────────────────────────────────────
+MESH TOPOLOGY (Healthcare Critical Systems)
+  [EHR Server]─────[Backup Server]
+       │   ╲       ╱    │
+       │    ╲     ╱     │
+  [Lab System]──[Pharmacy]
+  ✅ Pros: Redundant paths, no single point of failure
+  ❌ Cons: Expensive, complex to manage
+
+──────────────────────────────────────────────────
+BUS TOPOLOGY (Legacy — avoid in new installs)
+  [PC1]──[PC2]──[PC3]──[PC4]──[Terminator]
+  ❌ Deprecated: Entire network fails on cable break` },
+      { type: 'heading', text: 'Network Segmentation: VLAN Architecture' },
+      { type: 'table', headers: ['VLAN ID', 'Segment Name', 'Devices', 'Access Level'], rows: [
+        ['VLAN 10', 'Clinical Workstations', 'EHR terminals, nurse stations', 'EHR + Internet'],
+        ['VLAN 20', 'Medical Devices', 'IV pumps, monitors, imaging', 'LAN only (air-gapped preferred)'],
+        ['VLAN 30', 'Staff Wi-Fi', 'Personal laptops, phones (BYOD)', 'Internet only'],
+        ['VLAN 40', 'Guest Wi-Fi', 'Patient/visitor devices', 'Internet only (isolated)'],
+        ['VLAN 99', 'Management', 'Switches, routers, APs', 'Admin only (jump host required)'],
+      ]},
+      { type: 'tip', text: 'In healthcare networks, medical devices (VLAN 20) should NEVER be on the same VLAN as general workstations. A compromised workstation must not be able to reach infusion pumps or imaging equipment.' },
+    ],
+  },
+
+  'diagrams/ehr-dataflow': {
+    title: 'EHR Architecture Data Flow Diagram',
+    trackLabel: 'Diagrams — Healthcare IT Architecture',
+    contributor: 'HealthIT Architect',
+    contributorRole: 'HealthIT Specialist',
+    cohort: '2026-RTT-23',
+    tags: ['diagrams', 'EHR', 'data-flow', 'architecture', 'HL7'],
+    content: [
+      { type: 'intro', text: 'A complete data flow blueprint for how clinical data moves between EHR systems, ancillary systems, and external partners in a modern hospital environment.' },
+      { type: 'heading', text: 'Clinical Data Flow Architecture' },
+      { type: 'code', lang: 'text', code: `┌──────────────────────────────────────────────────────────┐
+│           CLINICAL DATA FLOW — HIGH LEVEL                │
+├──────────────────────────────────────────────────────────┤
+│                                                          │
+│  [Registration Desk]──ADT A01/A08──→[EHR Core Engine]   │
+│                                           │              │
+│  [CPOE (Physician)]──Order HL7 ORM──→[Order Mgmt]       │
+│                                           │              │
+│  [Laboratory (LIS)]←──Order──────────────┤              │
+│       │                                  │              │
+│       └──Result ORU R01──────────────→[EHR Results]     │
+│                                           │              │
+│  [Pharmacy (PIS)]←──MedOrder Rx──────────┤              │
+│       │                                  │              │
+│       └──eMAR Update──────────────────→[Nursing]        │
+│                                           │              │
+│  [Radiology (RIS)]←──Order──────────────┤              │
+│       │                                  │              │
+│       └──DICOM Images──→[PACS]           │              │
+│       └──Report ORU R01──────────────→[EHR]             │
+│                                           │              │
+│  [Billing/RCM]←──Charges DFT P03─────────┘              │
+└──────────────────────────────────────────────────────────┘` },
+      { type: 'heading', text: 'Message Type Reference' },
+      { type: 'table', headers: ['HL7 Message', 'Trigger Event', 'Direction'], rows: [
+        ['ADT^A01', 'Patient admitted', 'Registration → EHR, Pharmacy, Lab'],
+        ['ADT^A03', 'Patient discharged', 'EHR → Billing, Ancillary systems'],
+        ['ORM^O01', 'New order placed (lab, rad)', 'CPOE → LIS/RIS'],
+        ['ORU^R01', 'Result available', 'LIS/RIS → EHR'],
+        ['RDE^O11', 'Pharmacy dispense event', 'Pharmacy → eMAR'],
+        ['DFT^P03', 'Charge capture', 'EHR → Billing/RCM'],
+      ]},
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // QUICK REFERENCES
+  // ─────────────────────────────────────────────────────────
+
+  'quick-references/ports': {
+    title: 'Ultimate Port Number Cheatsheet',
+    trackLabel: 'Quick References — Network Ports & Protocols',
+    contributor: 'NetSec Expert',
+    contributorRole: 'Core 1 Expert',
+    cohort: '2026-RTT-23',
+    tags: ['ports', 'protocols', 'networking', 'cheatsheet', 'CompTIA'],
+    content: [
+      { type: 'intro', text: 'The complete port number reference for both A+ exams. Every port listed here has appeared on real CompTIA exam questions. Know these cold before test day.' },
+      { type: 'heading', text: 'Core Exam Ports — Guaranteed to Appear' },
+      { type: 'table', headers: ['Port', 'Protocol', 'Service', 'Secure Version'], rows: [
+        ['20', 'TCP', 'FTP Data Transfer', '—'],
+        ['21', 'TCP', 'FTP Control', 'FTPS (990)'],
+        ['22', 'TCP', 'SSH / SFTP', 'N/A (is secure)'],
+        ['23', 'TCP', 'Telnet (INSECURE)', 'SSH port 22'],
+        ['25', 'TCP', 'SMTP (email send)', 'SMTPS (465) / STARTTLS (587)'],
+        ['53', 'TCP/UDP', 'DNS', 'DNS over HTTPS (443)'],
+        ['67', 'UDP', 'DHCP Server', '—'],
+        ['68', 'UDP', 'DHCP Client', '—'],
+        ['80', 'TCP', 'HTTP', 'HTTPS (443)'],
+        ['110', 'TCP', 'POP3', 'POP3S (995)'],
+        ['143', 'TCP', 'IMAP', 'IMAPS (993)'],
+        ['389', 'TCP/UDP', 'LDAP (directory)', 'LDAPS (636)'],
+        ['443', 'TCP', 'HTTPS (TLS)', 'N/A (is secure)'],
+        ['445', 'TCP', 'SMB / Windows File Sharing', 'SMB over QUIC (443)'],
+        ['3389', 'TCP', 'RDP (Remote Desktop)', 'Use VPN tunnel'],
+        ['137-139', 'TCP/UDP', 'NetBIOS', 'Replaced by SMB 445'],
+        ['161/162', 'UDP', 'SNMP (network mgmt)', 'SNMPv3 (encryption)'],
+        ['514', 'UDP', 'Syslog', 'Syslog over TLS (6514)'],
+        ['3306', 'TCP', 'MySQL Database', '—'],
+        ['5060/5061', 'TCP/UDP', 'SIP (VoIP signaling)', 'SIPS (5061)'],
+      ]},
+      { type: 'heading', text: 'Memory Tricks for Port Groups' },
+      { type: 'code', lang: 'text', code: `PORTS YOU MUST KNOW BY HEART:
+  "20/21 FTP, 22 SSH, 23 Telnet, 25 SMTP"
+  "53 DNS, 80 HTTP, 443 HTTPS, 445 SMB"
+  "67/68 DHCP, 110 POP3, 143 IMAP"
+  "3389 = Remote Desktop (3389 → 'RD' initials)"
+
+SECURE PORT UPGRADE PATTERN:
+  110 POP3  →  995 POP3S   (+885)
+  143 IMAP  →  993 IMAPS   (+850)
+   21 FTP   →  990 FTPS    (+969)
+   80 HTTP  →  443 HTTPS   (different scheme entirely)
+
+HEALTHCARE-SPECIFIC PORTS:
+  2575 = HL7 MLLP (lab/EHR interface)
+  2761/2762 = DICOM (medical imaging)
+  8080/8443 = EHR application servers (common)` },
+      { type: 'warning', text: 'On the exam, if a port uses UDP, that is often the answer to questions about speed vs. reliability. DNS uses BOTH TCP and UDP (UDP for queries, TCP for zone transfers). This distinction is tested.' },
+    ],
+  },
+
+  'quick-references/acronyms': {
+    title: 'CompTIA Acronym Speed-Study Guide',
+    trackLabel: 'Quick References — CompTIA Acronyms',
+    contributor: 'Cohort Lead',
+    contributorRole: 'Core 1 Expert',
+    cohort: '2026-RTT-23',
+    tags: ['acronyms', 'CompTIA', 'study-tips', 'memorization'],
+    content: [
+      { type: 'intro', text: 'CompTIA exams test acronym knowledge directly. This speed-study guide covers the 80+ most commonly tested acronyms across both A+ Core 1 and Core 2 exams, organized by domain.' },
+      { type: 'heading', text: 'Hardware & Storage Acronyms (Core 1 Domain 3.0)' },
+      { type: 'table', headers: ['Acronym', 'Expansion', 'Context'], rows: [
+        ['DDR', 'Double Data Rate', 'RAM technology — DDR3/4/5'],
+        ['NVMe', 'Non-Volatile Memory Express', 'Fast SSD interface over PCIe'],
+        ['SATA', 'Serial Advanced Technology Attachment', 'Disk interface — 6 Gb/s max'],
+        ['PCIe', 'Peripheral Component Interconnect Express', 'High-speed expansion bus'],
+        ['DIMM', 'Dual Inline Memory Module', 'Desktop RAM form factor'],
+        ['SO-DIMM', 'Small Outline DIMM', 'Laptop RAM form factor'],
+        ['POST', 'Power-On Self Test', 'BIOS startup hardware check'],
+        ['TPM', 'Trusted Platform Module', 'Security chip — required for Win 11'],
+        ['EFI/UEFI', 'Unified Extensible Firmware Interface', 'Modern replacement for BIOS'],
+        ['TDP', 'Thermal Design Power', 'CPU/GPU heat output in watts'],
+      ]},
+      { type: 'heading', text: 'Networking Acronyms (Core 1 Domain 2.0)' },
+      { type: 'table', headers: ['Acronym', 'Expansion', 'Context'], rows: [
+        ['DHCP', 'Dynamic Host Configuration Protocol', 'Auto IP address assignment'],
+        ['DNS', 'Domain Name System', 'Resolves hostnames to IPs'],
+        ['NAT', 'Network Address Translation', 'Maps private IPs to public IP'],
+        ['VLAN', 'Virtual Local Area Network', 'Logical network segmentation'],
+        ['QoS', 'Quality of Service', 'Bandwidth prioritization'],
+        ['SSID', 'Service Set Identifier', 'Wi-Fi network name'],
+        ['WPA3', 'Wi-Fi Protected Access 3', 'Current Wi-Fi security standard'],
+        ['PoE', 'Power over Ethernet', 'Power delivery via Ethernet cable'],
+        ['CIDR', 'Classless Inter-Domain Routing', 'Modern IP addressing notation'],
+        ['APIPA', 'Automatic Private IP Addressing', '169.254.x.x — no DHCP response'],
+      ]},
+      { type: 'heading', text: 'Security Acronyms (Core 2 Domain 2.0)' },
+      { type: 'table', headers: ['Acronym', 'Expansion', 'Context'], rows: [
+        ['MFA', 'Multi-Factor Authentication', 'Something you know + have + are'],
+        ['VPN', 'Virtual Private Network', 'Encrypted tunnel over internet'],
+        ['IDS/IPS', 'Intrusion Detection/Prevention System', 'Network threat monitoring'],
+        ['DLP', 'Data Loss Prevention', 'Prevents data exfiltration'],
+        ['PKI', 'Public Key Infrastructure', 'Certificate authority system'],
+        ['AES', 'Advanced Encryption Standard', '128/256-bit symmetric encryption'],
+        ['RSA', 'Rivest–Shamir–Adleman', 'Asymmetric encryption algorithm'],
+        ['RBAC', 'Role-Based Access Control', 'Permissions by job role'],
+        ['ACL', 'Access Control List', 'Firewall/router rule set'],
+        ['EDR', 'Endpoint Detection & Response', 'Advanced antimalware platform'],
+      ]},
+    ],
+  },
+
+  'quick-references/cli-runbook': {
+    title: 'Command Line Interface (CLI) Runbook',
+    trackLabel: 'Quick References — CLI Commands',
+    contributor: 'Support Tier 2',
+    contributorRole: 'Core 2 Expert',
+    cohort: '2026-RTT-23',
+    tags: ['CLI', 'PowerShell', 'CMD', 'Linux', 'commands', 'runbook'],
+    content: [
+      { type: 'intro', text: 'The essential CLI command reference for A+ exam scenarios and real-world Tier 1/2 IT support. Covers Windows CMD, PowerShell, and Linux commands tested on both Core 1 and Core 2.' },
+      { type: 'heading', text: 'Windows Network Diagnostics' },
+      { type: 'code', lang: 'cmd', code: `:: === NETWORK DIAGNOSTICS RUNBOOK ===
+ipconfig /all              :: Full IP configuration + MAC address
+ipconfig /release          :: Release current DHCP lease
+ipconfig /renew            :: Request new DHCP lease
+ipconfig /flushdns         :: Clear DNS resolver cache
+
+ping 127.0.0.1             :: Test TCP/IP stack (loopback)
+ping <gateway>             :: Test local network connectivity
+ping 8.8.8.8               :: Test internet (Google DNS, no DNS needed)
+ping google.com            :: Test DNS resolution + internet
+
+tracert 8.8.8.8            :: Trace route to internet (show hops)
+pathping 8.8.8.8           :: Combined ping + tracert with packet loss %
+
+nslookup google.com        :: DNS lookup (interactive mode: just type nslookup)
+nslookup -type=MX gmail.com :: Query specific record type
+
+netstat -an                :: All active connections + listening ports
+netstat -b                 :: Show which process owns each connection
+arp -a                     :: View ARP cache (IP-to-MAC mappings)` },
+      { type: 'heading', text: 'Windows System Repair Commands' },
+      { type: 'code', lang: 'cmd', code: `:: === SYSTEM REPAIR (run as Administrator) ===
+
+:: Step 1 — ALWAYS run DISM before SFC
+DISM /Online /Cleanup-Image /RestoreHealth
+
+:: Step 2 — System File Checker
+sfc /scannow
+
+:: Step 3 — Disk check (schedules on next reboot for system drive)
+chkdsk C: /f /r /x
+
+:: === STARTUP REPAIR ===
+bootrec /fixmbr             :: Repair Master Boot Record
+bootrec /fixboot            :: Repair boot sector
+bootrec /rebuildbcd         :: Rebuild Boot Configuration Data
+bcdedit                     :: View/edit boot entries` },
+      { type: 'heading', text: 'Linux / macOS Quick Reference' },
+      { type: 'code', lang: 'bash', code: `# === LINUX/macOS CLI COMMANDS ===
+
+# File System
+ls -la                    # List all files (long format, hidden)
+pwd                       # Print working directory
+cp -r src/ dest/          # Copy directory recursively
+chmod 755 file.sh         # Set permissions: rwxr-xr-x
+chown user:group file     # Change file owner
+
+# Networking
+ifconfig                  # Interface config (legacy — prefer ip addr)
+ip addr show              # Modern IP address display
+ping -c 4 8.8.8.8         # Ping 4 times then stop
+netstat -tulpn            # Listening ports with process names
+ss -tulpn                 # Modern alternative to netstat
+curl -I https://example.com  # Check HTTP response headers
+
+# System
+top                       # Real-time process monitor
+ps aux                    # All running processes
+df -h                     # Disk usage (human-readable)
+du -sh /var/*             # Directory sizes
+sudo systemctl status nginx  # Check service status` },
+      { type: 'tip', text: 'On the exam: ipconfig = Windows, ifconfig = Linux/macOS (legacy). The exam expects you to know which command works on which OS. "ipconfig /flushdns" is Windows-only — Linux equivalent is "sudo systemd-resolve --flush-caches".' },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // PROMPT PLAYBOOK
+  // ─────────────────────────────────────────────────────────
+
+  'azari-prompt-playbook/pbq-prompts': {
+    title: 'Core 1 PBQ Simulation Prompts for Canvas Class AI',
+    trackLabel: 'Prompt Playbook — CompTIA A+ Core 1 PBQ Simulations',
+    contributor: 'Cohort Lead',
+    contributorRole: 'AI Prompt Engineer',
+    cohort: '2026-RTT-23',
+    tags: ['prompts', 'PBQ', 'AI', 'core1', 'simulation', 'Canvas'],
+    content: [
+      { type: 'intro', text: 'Ready-to-use prompt frameworks engineered for Canvas Class AI to generate realistic Performance-Based Question (PBQ) simulations for CompTIA A+ Core 1. Copy these prompts directly into the AI interface.' },
+      { type: 'heading', text: 'Motherboard Troubleshooting PBQ Simulator' },
+      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI — Motherboard Troubleshooting PBQ
+
+You are a CompTIA A+ 220-1201 exam simulator. Generate a realistic
+Performance-Based Question in the following format:
+
+SCENARIO: A technician powers on a desktop PC. The system fails to
+POST. The CPU fan spins for 3 seconds then stops. No beep codes are
+heard. The front panel LED shows power for 1 second then turns off.
+
+TASK: Drag the correct diagnostic steps from the left column to the
+"Correct Order" box on the right, in the exact sequence a certified
+technician should follow:
+
+Available Steps:
+[ ] Check PSU output voltages with multimeter
+[ ] Reseat RAM in slots A2/B2 for dual-channel
+[ ] Clear CMOS via jumper or battery removal
+[ ] Test with known-good PSU
+[ ] Verify CPU cooler contact and thermal paste
+[ ] Check 24-pin and EPS 8-pin power connections
+[ ] Inspect for bent CPU socket pins
+
+After the user arranges the steps, provide:
+1. The correct order with explanation
+2. Which step most technicians miss and why
+3. What the symptom most likely indicates` },
+      { type: 'heading', text: 'Network Configuration PBQ Prompt' },
+      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI — Network Subnetting PBQ
+
+Generate a subnetting Performance-Based Question:
+
+SCENARIO: You are configuring a new office network at a medical clinic.
+The clinic has been assigned the 192.168.10.0/26 network.
+
+TASKS:
+1. Calculate and fill in the subnet table:
+   - Network Address: ___
+   - First Usable Host: ___
+   - Last Usable Host: ___
+   - Broadcast Address: ___
+   - Total Usable Hosts: ___
+   - Subnet Mask: ___
+
+2. Identify which of these IPs are VALID hosts in this subnet:
+   [ ] 192.168.10.0    [ ] 192.168.10.45
+   [ ] 192.168.10.63   [ ] 192.168.10.60
+   [ ] 192.168.10.64
+
+After user submits, show full solution with the "magic number" method
+and explain why each answer is correct or incorrect.` },
+      { type: 'tip', text: 'Canvas Class AI works best with explicit output format instructions. Always specify: the scenario, the task format, and what the AI should do AFTER the user responds. This creates a genuine interactive drill experience.' },
+    ],
+  },
+
+  'azari-prompt-playbook/medical-prompts': {
+    title: 'Medical Case Study Breakdown Prompts for Canvas Class AI',
+    trackLabel: 'Prompt Playbook — Healthcare IT Case Studies',
+    contributor: 'HealthIT Architect',
+    contributorRole: 'AI Prompt Engineer',
+    cohort: '2026-RTT-23',
+    tags: ['prompts', 'healthcare', 'AI', 'case-study', 'EHR', 'Canvas'],
+    content: [
+      { type: 'intro', text: 'Prompt templates designed to turn Canvas Class AI into an interactive healthcare IT case study tutor — simulating real EHR outages, HIPAA scenarios, and clinical workflow disruptions.' },
+      { type: 'heading', text: 'EHR Downtime Scenario Prompt' },
+      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI — EHR Downtime Incident Response
+
+You are a Healthcare IT simulation trainer. Present this scenario
+and quiz me on my response decisions:
+
+SCENARIO: It is 2:14 AM on a Tuesday. The hospital EHR (Epic) becomes
+completely unavailable. You receive a page as the on-call IT analyst.
+Initial symptoms: All clinical workstations show "Unable to connect to
+EHR server." The pharmacy system is also offline. Lab results are not
+flowing. ICU nurses are reporting they cannot access patient charts.
+
+Ask me these questions one at a time (wait for my answer before next):
+
+Q1: What is your FIRST action in the next 5 minutes?
+Q2: Which department do you notify FIRST and how?
+Q3: What paper backup process should already be in place?
+Q4: At what point do you escalate to the on-call CMIO?
+Q5: How do you handle medication orders for ICU patients during downtime?
+
+After each answer: Score my response 1-5, explain what I got right,
+what I missed, and what the Joint Commission would expect.` },
+      { type: 'heading', text: 'HIPAA Breach Assessment Prompt' },
+      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI — HIPAA Breach Triage Simulation
+
+Act as a HIPAA Compliance Officer trainer. Present this scenario:
+
+SCENARIO: A hospital employee reports that they accidentally emailed
+a spreadsheet containing 847 patient names, DOBs, and diagnoses to
+an external vendor who was not a Business Associate. The email was
+sent 12 days ago. The vendor has confirmed receipt and states they
+have not shared the data further.
+
+Quiz me step by step:
+
+Q1: Does this qualify as a HIPAA breach? Justify your answer.
+Q2: What is the notification timeline for affected patients?
+Q3: Does the number 847 trigger any special reporting requirements?
+Q4: What documentation must be completed within 60 days?
+Q5: Draft a 3-sentence patient notification letter.
+
+Grade each response. Reference the actual HIPAA Breach Notification
+Rule (45 CFR §164.400-414) in your explanations.` },
+    ],
+  },
+
+  'azari-prompt-playbook/ehr-prompts': {
+    title: 'EHR Troubleshooting Frameworks for Canvas Class AI',
+    trackLabel: 'Prompt Playbook — EHR Troubleshooting',
+    contributor: 'Clinical Analyst',
+    contributorRole: 'AI Prompt Engineer',
+    cohort: '2026-RTT-23',
+    tags: ['prompts', 'EHR', 'troubleshooting', 'AI', 'frameworks', 'Canvas'],
+    content: [
+      { type: 'intro', text: 'Structured prompt frameworks to simulate EHR interface failures, HL7 error diagnosis, and clinical IT troubleshooting scenarios using Canvas Class AI.' },
+      { type: 'heading', text: 'HL7 Interface Error Diagnosis Prompt' },
+      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI — HL7 Interface Troubleshooting
+
+You are an integration engine expert. I will describe interface errors
+and you will guide me through diagnosis step by step.
+
+SCENARIO: Lab results from the LIS (Laboratory Information System)
+stopped flowing to the EHR at 08:45 AM. Orders are still going FROM
+the EHR TO the lab, but results are not coming back. The lab supervisor
+says results ARE printing locally in the lab.
+
+Guide me through the diagnostic tree:
+1. First ask me what the interface engine log shows
+2. Based on my answer, ask about MLLP port connectivity
+3. Ask me to check the ACK/NACK response messages
+4. Ask if there's a transformation error in the mapping layer
+5. Ask about any recent software updates in the last 24 hours
+
+For each step: explain WHY you're checking that item, what the
+finding would mean, and what the fix would be.
+
+Teach me the systematic approach, don't just give me the answer.` },
+      { type: 'heading', text: 'FHIR API Troubleshooting Prompt' },
+      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI — FHIR API Integration Debug
+
+Act as a senior FHIR integration developer. A mobile patient portal
+app is failing to retrieve patient data. Help me debug it.
+
+ERROR: HTTP 401 Unauthorized on GET /Patient/12345
+
+Walk me through:
+1. OAuth 2.0 token validation (is the token expired? wrong scope?)
+2. SMART on FHIR launch context (standalone vs. EHR launch?)
+3. Patient compartment access rules
+4. Checking the FHIR server audit log for the denied request
+5. Testing with a raw curl command
+
+After each step I describe what I find, you tell me:
+- What that finding means
+- What to check next
+- Whether we've found the root cause
+
+Reference the SMART on FHIR specification in your explanations.` },
+      { type: 'tip', text: 'For best results with Canvas Class AI: start every prompt with a role assignment ("You are a..."), then specify the scenario, then list your exact questions. Ending with "Teach me the systematic approach" prevents the AI from just giving answers without explanation.' },
+    ],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // Fix Boot Camp reference — Core 2 OS page stays clean
+  // ─────────────────────────────────────────────────────────
+
+  'core2-os/windows-bootcamp': {
+    title: 'Cross-Platform OS Installation Guidelines & Upgrade Path Matrix',
+    trackLabel: 'CompTIA A+ Core 2 (220-1202) — Domain 1.0 Operating Systems',
+    contributor: 'SysAdmin Pro',
+    contributorRole: 'Core 2 Expert',
+    cohort: '2026-RTT-23',
+    tags: ['windows', 'macOS', 'Linux', 'installation', 'upgrade'],
+    content: [
+      { type: 'intro', text: 'Complete cross-platform OS installation guide covering Windows 11 clean installs, in-place upgrade paths, and macOS/Linux essentials for the 220-1202 exam.' },
+      { type: 'heading', text: 'Windows 11 Upgrade Path Matrix' },
+      { type: 'table', headers: ['Source OS', 'Target OS', 'Method', 'Data Preserved?'], rows: [
+        ['Windows 10 Home', 'Windows 11 Home', 'In-place via Windows Update', 'Yes (if compatible hardware)'],
+        ['Windows 10 Pro', 'Windows 11 Pro', 'In-place via Windows Update', 'Yes (if compatible hardware)'],
+        ['Windows 7/8.1', 'Windows 11', 'Clean install only (no direct path)', 'Must migrate manually'],
+        ['Windows 10 32-bit', 'Windows 11 64-bit', 'Clean install only', 'No (architecture change)'],
+      ]},
+      { type: 'warning', text: 'Windows 11 requires TPM 2.0 and Secure Boot. Without both, the upgrade wizard blocks entirely. Enable TPM via BIOS: Intel = PTT, AMD = fTPM. Secure Boot requires UEFI mode (Legacy/CSM must be disabled).' },
     ],
   },
 };

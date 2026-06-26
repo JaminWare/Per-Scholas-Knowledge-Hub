@@ -59,7 +59,7 @@ export default function HomePage() {
   return (
     <div className="space-y-10">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900 p-8 md:p-12">
+      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-950 via-zinc-900 to-emerald-950 border border-zinc-800 p-8 md:p-12">
         <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-500/10 rounded-full blur-2xl pointer-events-none" />
         <div className="relative">
@@ -71,7 +71,7 @@ export default function HomePage() {
             Per Scholas — Learners Knowledge Base
             <span className="block text-gradient mt-1">AI-Enabled Healthcare IT</span>
           </h1>
-          <p className="text-lg text-slate-300 max-w-2xl">
+          <p className="text-lg text-zinc-300 max-w-2xl">
             Welcome to the collaborative resource hub for the{' '}
             <strong className="text-emerald-400">2026-RTT-23 cohort</strong> of AI-Enabled Healthcare IT students.
             Find CompTIA A+ guides, EHR integration blueprints, and community hacks — all in one place.
@@ -87,14 +87,14 @@ export default function HomePage() {
             <div key={stat.label} className="card p-5">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">{stat.label}</p>
-                  <p className="text-2xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
+                  <p className="text-sm text-zinc-500 mb-1">{stat.label}</p>
+                  <p className="text-2xl font-bold text-zinc-100">{stat.value}</p>
                   {stat.subtext && (
-                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{stat.subtext}</p>
+                    <p className="text-xs text-zinc-500 mt-1">{stat.subtext}</p>
                   )}
                 </div>
-                <div className="p-2.5 rounded-xl bg-emerald-100 dark:bg-emerald-900/30">
-                  <Icon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                <div className="p-2.5 rounded-xl bg-emerald-500/10">
+                  <Icon className="w-5 h-5 text-emerald-400" />
                 </div>
               </div>
             </div>
@@ -105,7 +105,7 @@ export default function HomePage() {
       {/* Featured Articles */}
       {featuredArticles.length > 0 && (
         <section>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Featured Articles</h2>
+          <h2 className="text-xl font-bold text-zinc-100 mb-6">Featured Articles</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredArticles.map((article) => (
               <ArticleCard key={article.id} article={article} featured />
@@ -120,14 +120,14 @@ export default function HomePage() {
       {/* Recent Articles */}
       <section>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-white">Recent Articles</h2>
+          <h2 className="text-xl font-bold text-zinc-100">Recent Articles</h2>
         </div>
         {isLoading ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="card p-5 animate-pulse">
-                <div className="h-5 bg-slate-200 dark:bg-slate-700 rounded w-3/4" />
-                <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-full mt-3" />
+                <div className="h-5 bg-zinc-800 rounded w-3/4" />
+                <div className="h-4 bg-zinc-800 rounded w-full mt-3" />
               </div>
             ))}
           </div>
@@ -139,8 +139,8 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="card p-12 text-center">
-            <BookOpen className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-            <p className="text-slate-500 dark:text-slate-400">No articles yet. Check back soon!</p>
+            <BookOpen className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
+            <p className="text-zinc-500">No articles yet. Check back soon!</p>
           </div>
         )}
       </section>
