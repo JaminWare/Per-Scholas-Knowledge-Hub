@@ -59,7 +59,7 @@ function categoryLabel(s: NewSubmission): string {
 
 const CATEGORY_ICON: Record<string, React.ReactNode> = {
   'Authored Articles': <BookOpen className="w-3.5 h-3.5" />,
-  'Resource Links':    <Link2 className="w-3.5 h-3.5" />,
+  'Resource Links':    <Zap className="w-3.5 h-3.5" />,
   'Support Tickets':   <Ticket className="w-3.5 h-3.5" />,
   'Diagrams':          <Zap className="w-3.5 h-3.5" />,
   'Quick References':  <Zap className="w-3.5 h-3.5" />,
