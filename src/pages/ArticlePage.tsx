@@ -275,7 +275,7 @@ function makeLocalArticle(slug: string, title?: string): Article {
 export default function ArticlePage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const slug = location.pathname.split('/').filter(Boolean).pop() ?? '';
+  const slug = location.pathname.replace(/^\/article\//, '').replace(/\/$/, '');
   const [article, setArticle] = useState<Article | null>(null);
   const [contributor, setContributor] = useState<Contributor | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
