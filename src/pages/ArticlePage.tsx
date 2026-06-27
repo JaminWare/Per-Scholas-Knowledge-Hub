@@ -40,6 +40,7 @@ const FOUNDER_SLUGS = new Set([
   'ai-prompt-engineering-healthcare',
   'diagrams/network-topology-architecture', 'diagrams/osi-pdu-flow',
   'quick-references/osi-model',
+  'core1-networking/sample-protocols',
 ]);
 
 const roleBadgeStyles: Record<string, string> = {
@@ -124,6 +125,34 @@ function NetworkTopologyArticleDiagrams() {
         <p>The three-tier network topology model divides enterprise switching infrastructure into three distinct functional layers. The <strong className="text-zinc-800 dark:text-zinc-200">Core Layer</strong> provides high-speed backbone connectivity between distribution switches with sub-millisecond failover. The <strong className="text-zinc-800 dark:text-zinc-200">Distribution Layer</strong> enforces routing policy, VLAN segmentation, and inter-subnet ACLs. The <strong className="text-zinc-800 dark:text-zinc-200">Access Layer</strong> connects end-user devices with port security, 802.1X authentication, and Power over Ethernet (PoE).</p>
         <p>The firewall segmentation diagram above illustrates how the DMZ acts as a controlled buffer zone. Public-facing services (web servers, DNS resolvers) sit in the DMZ — reachable from the internet but fully isolated from the private LAN. Stateful Packet Inspection (SPI) tracks each TCP/UDP session in a state table, allowing return traffic for established connections while silently dropping unsolicited inbound probes.</p>
       </div>
+
+      {/* Citations */}
+      <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
+          <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+          <h2 className="text-base font-bold text-amber-700 dark:text-amber-400">References &amp; Citations</h2>
+        </div>
+        <ul className="px-5 py-4 space-y-2.5">
+          <li className="flex gap-2.5 items-start text-sm">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
+            <span className="text-zinc-600 dark:text-zinc-400">
+              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Cisco Press:</strong>{' '}
+              <a href="https://www.ciscopress.com/articles/article.asp?p=2202410" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+                Campus Network Architecture and Hierarchical Design Models (Core, Distribution, Access)
+              </a>
+            </span>
+          </li>
+          <li className="flex gap-2.5 items-start text-sm">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
+            <span className="text-zinc-600 dark:text-zinc-400">
+              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">IEEE Standards:</strong>{' '}
+              <a href="https://www.ieee802.org/3/" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+                IEEE 802.3 Ethernet Working Group LAN/MAN Infrastructure Standards
+              </a>
+            </span>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }
@@ -141,6 +170,34 @@ function OSIPDUArticleDiagrams() {
         <p><strong className="text-zinc-800 dark:text-zinc-200">Layer 3 (Network):</strong> IP header adds source and destination IP addresses. The PDU becomes a <code className="px-1 bg-zinc-200 dark:bg-zinc-800 rounded font-mono text-sky-700 dark:text-sky-400">Packet</code>. Routers operate at this layer.</p>
         <p><strong className="text-zinc-800 dark:text-zinc-200">Layer 2 (Data Link):</strong> Ethernet header adds MAC addresses; a trailer adds a Frame Check Sequence (FCS) CRC. PDU = <code className="px-1 bg-zinc-200 dark:bg-zinc-800 rounded font-mono text-sky-700 dark:text-sky-400">Frame</code>. Switches operate here.</p>
         <p><strong className="text-zinc-800 dark:text-zinc-200">Layer 1 (Physical):</strong> Frames are serialized into electrical voltages, light pulses, or radio waves. PDU = <code className="px-1 bg-zinc-200 dark:bg-zinc-800 rounded font-mono text-sky-700 dark:text-sky-400">Bits</code>.</p>
+      </div>
+
+      {/* Citations */}
+      <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
+          <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+          <h2 className="text-base font-bold text-amber-700 dark:text-amber-400">References &amp; Citations</h2>
+        </div>
+        <ul className="px-5 py-4 space-y-2.5">
+          <li className="flex gap-2.5 items-start text-sm">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
+            <span className="text-zinc-600 dark:text-zinc-400">
+              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">ISO Standard:</strong>{' '}
+              <a href="https://www.iso.org/standard/20269.html" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+                ISO/IEC 7498-1: Open Systems Interconnection Basic Reference Model
+              </a>
+            </span>
+          </li>
+          <li className="flex gap-2.5 items-start text-sm">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
+            <span className="text-zinc-600 dark:text-zinc-400">
+              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Cisco Press:</strong>{' '}
+              <a href="https://www.ciscopress.com/store/interconnecting-cisco-network-devices-part-1-icnd1-9780132877435" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+                Interconnecting Cisco Network Devices — Data Encapsulation and Segment-to-Bit Flowcharts
+              </a>
+            </span>
+          </li>
+        </ul>
       </div>
     </div>
   );
@@ -243,6 +300,168 @@ function OSIQuickRefArticleDiagrams() {
               <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Cisco Press:</strong>{' '}
               <a href="https://www.ciscopress.com/store/interconnecting-cisco-network-devices-part-1-icnd1-9780132877435" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
                 Interconnecting Cisco Network Devices — Data Encapsulation and Segment-to-Bit Flowcharts
+              </a>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function TCPIPArticleContent() {
+  return (
+    <div className="space-y-8">
+      <div className="space-y-5 text-zinc-700 dark:text-zinc-300 text-sm leading-relaxed">
+        <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-800 pb-2">TCP/IP Protocol Suite — Four-Layer Model</h2>
+
+        <p>The <strong className="font-semibold text-zinc-900 dark:text-zinc-100">TCP/IP model</strong> is the practical implementation framework for internet communication, developed by DARPA in the 1970s and formally standardized through IETF RFCs. Unlike the theoretical 7-layer OSI model, TCP/IP collapses communication into four functional layers, each of which maps to one or more OSI layers.</p>
+
+        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700 my-4">
+          <table className="min-w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-zinc-200/60 dark:bg-zinc-800/60">
+                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">TCP/IP Layer</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">OSI Equivalent</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">Key Protocols</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">PDU</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { layer: 'Application',   osi: 'Layers 5, 6, 7',  protocols: 'HTTP, HTTPS, FTP, DNS, SMTP, SSH',     pdu: 'Data'    },
+                { layer: 'Transport',     osi: 'Layer 4',          protocols: 'TCP (RFC 793), UDP',                   pdu: 'Segment' },
+                { layer: 'Internet',      osi: 'Layer 3',          protocols: 'IP (RFC 791), ICMP, OSPF, BGP',        pdu: 'Packet'  },
+                { layer: 'Network Access',osi: 'Layers 1, 2',      protocols: 'Ethernet 802.3, Wi-Fi 802.11, ARP',   pdu: 'Frame / Bits' },
+              ].map((row, i) => (
+                <tr key={row.layer} className={`border-b border-zinc-100 dark:border-zinc-800 last:border-0 ${i % 2 === 0 ? '' : 'bg-zinc-50/50 dark:bg-zinc-800/20'}`}>
+                  <td className="px-4 py-2.5 font-bold text-zinc-900 dark:text-zinc-100">{row.layer}</td>
+                  <td className="px-4 py-2.5 font-medium text-zinc-600 dark:text-zinc-400 text-[12px]">{row.osi}</td>
+                  <td className="px-4 py-2.5 text-zinc-600 dark:text-zinc-400 text-[12px]">{row.protocols}</td>
+                  <td className="px-4 py-2.5 font-mono text-[11px] text-sky-700 dark:text-sky-400">{row.pdu}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mt-6">IPv4 vs. IPv6 Header Architecture</h3>
+        <p>The shift from IPv4 to IPv6 was driven by IPv4 address exhaustion (32-bit address space = ~4.3 billion unique addresses) and the need for a simpler, more scalable packet format. IPv6 uses 128-bit addresses, providing 3.4 × 10³⁸ unique addresses.</p>
+
+        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700 my-4">
+          <table className="min-w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-zinc-200/60 dark:bg-zinc-800/60">
+                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">Field</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">IPv4 (RFC 791)</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">IPv6</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { field: 'Header Size',      v4: '20–60 bytes (variable)',      v6: '40 bytes (fixed)'                  },
+                { field: 'Address Length',   v4: '32 bits (4 octets)',           v6: '128 bits (16 octets)'              },
+                { field: 'Address Format',   v4: 'Dotted-decimal (192.168.1.1)', v6: 'Colon-hex (2001:db8::1)'          },
+                { field: 'Checksum',         v4: 'Included in header',           v6: 'Removed (handled by transport)'   },
+                { field: 'Fragmentation',    v4: 'Routers can fragment',         v6: 'Only source host fragments'        },
+                { field: 'NAT Required',     v4: 'Yes (address scarcity)',       v6: 'No (vast address space)'          },
+                { field: 'Auto-config',      v4: 'DHCP required',               v6: 'SLAAC built-in (RFC 4862)'        },
+              ].map((row, i) => (
+                <tr key={row.field} className={`border-b border-zinc-100 dark:border-zinc-800 last:border-0 ${i % 2 === 0 ? '' : 'bg-zinc-50/50 dark:bg-zinc-800/20'}`}>
+                  <td className="px-4 py-2.5 font-semibold text-zinc-800 dark:text-zinc-200">{row.field}</td>
+                  <td className="px-4 py-2.5 text-zinc-600 dark:text-zinc-400 text-[12px]">{row.v4}</td>
+                  <td className="px-4 py-2.5 text-zinc-600 dark:text-zinc-400 text-[12px]">{row.v6}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mt-6">Stateful vs. Stateless Packet Transmission</h3>
+        <p>The two primary Transport layer protocols — TCP and UDP — represent the fundamental trade-off between reliability and performance in packet delivery.</p>
+
+        <div className="grid md:grid-cols-2 gap-4 my-4">
+          <div className="rounded-lg border border-sky-200 dark:border-sky-500/30 bg-sky-50/60 dark:bg-sky-500/5 p-4">
+            <h4 className="font-bold text-sky-800 dark:text-sky-300 text-sm mb-2">TCP — Stateful / Connection-Oriented</h4>
+            <ul className="space-y-1.5 text-[12px] text-zinc-600 dark:text-zinc-400">
+              {[
+                'Three-way handshake (SYN → SYN-ACK → ACK) before data transfer',
+                'Sequence numbers track every byte — out-of-order segments are reordered',
+                'Acknowledgements confirm receipt; unacknowledged segments are retransmitted',
+                'Flow control via sliding window prevents receiver buffer overflow',
+                'Used by: HTTP/S, FTP, SMTP, SSH — any protocol requiring guaranteed delivery',
+              ].map((item, i) => (
+                <li key={i} className="flex gap-2 items-start">
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-sky-500" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-lg border border-teal-200 dark:border-teal-500/30 bg-teal-50/60 dark:bg-teal-500/5 p-4">
+            <h4 className="font-bold text-teal-800 dark:text-teal-300 text-sm mb-2">UDP — Stateless / Connectionless</h4>
+            <ul className="space-y-1.5 text-[12px] text-zinc-600 dark:text-zinc-400">
+              {[
+                'No handshake — datagrams sent immediately without session establishment',
+                'No sequence numbers, no acknowledgements, no retransmission',
+                'Receiver gets data in arrival order, not transmission order',
+                'Minimal header overhead (8 bytes vs. TCP\'s 20+ bytes)',
+                'Used by: DNS lookups, DHCP, VoIP, video streaming, online gaming',
+              ].map((item, i) => (
+                <li key={i} className="flex gap-2 items-start">
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-teal-500" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mt-6">CompTIA A+ Core 1 Exam Focus Areas</h3>
+        <p>CompTIA A+ Core 1 (220-1201) Section 2.1 — Protocol Suites tests your ability to:</p>
+        <ul className="space-y-1.5 pl-0 list-none">
+          {[
+            'Distinguish between the 4-layer TCP/IP model and the 7-layer OSI model and map protocols to their correct layers',
+            'Identify when TCP vs. UDP is used for a given application scenario (e.g., DNS uses UDP port 53 for queries, TCP port 53 for zone transfers)',
+            'Explain the TCP three-way handshake and its role in establishing a reliable session',
+            'Understand the difference between IPv4 and IPv6 addressing, including CIDR notation and SLAAC auto-configuration',
+            'Know that NAT (Network Address Translation) is required with IPv4 but not with IPv6 due to its enormous address space',
+          ].map((item, i) => (
+            <li key={i} className="flex gap-2.5 items-start">
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 dark:bg-sky-400" />
+              <span className="text-zinc-600 dark:text-zinc-400">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Citations */}
+      <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
+          <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+          <h2 className="text-base font-bold text-amber-700 dark:text-amber-400">References &amp; Citations</h2>
+        </div>
+        <ul className="px-5 py-4 space-y-2.5">
+          <li className="flex gap-2.5 items-start text-sm">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
+            <span className="text-zinc-600 dark:text-zinc-400">
+              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">IETF Standards:</strong>{' '}
+              <a href="https://www.rfc-editor.org/rfc/rfc791" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+                RFC 791 (Internet Protocol)
+              </a>
+              {' & '}
+              <a href="https://www.rfc-editor.org/rfc/rfc793" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+                RFC 793 (Transmission Control Protocol)
+              </a>
+              {' — Core standard documentations.'}
+            </span>
+          </li>
+          <li className="flex gap-2.5 items-start text-sm">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
+            <span className="text-zinc-600 dark:text-zinc-400">
+              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">CompTIA Official:</strong>{' '}
+              <a href="https://www.comptia.org/certifications/a" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+                CompTIA A+ Core 1 (220-1201) Exam Blueprint — Section 2.1 Protocol Suites
               </a>
             </span>
           </li>
@@ -369,8 +588,9 @@ export default function ArticlePage() {
 
   // Full-page diagram panel routing
   const isNetworkTopologyArticle = article.slug === 'diagrams/network-topology-architecture';
-  const isOSIPDUArticle = article.slug === 'diagrams/osi-pdu-flow';
-  const isOSIQuickRefArticle = article.slug === 'quick-references/osi-model';
+  const isOSIPDUArticle          = article.slug === 'diagrams/osi-pdu-flow';
+  const isOSIQuickRefArticle     = article.slug === 'quick-references/osi-model';
+  const isTCPIPArticle           = article.slug === 'core1-networking/sample-protocols';
 
   function handleBack() {
     if (article?.section?.slug) {
@@ -486,6 +706,8 @@ export default function ArticlePage() {
           <OSIPDUArticleDiagrams />
         ) : isOSIQuickRefArticle ? (
           <OSIQuickRefArticleDiagrams />
+        ) : isTCPIPArticle ? (
+          <TCPIPArticleContent />
         ) : effectiveIsSample ? (
           <div className="space-y-6">
             {/* Inline diagram above the blueprint for visual sample slugs */}
@@ -495,14 +717,14 @@ export default function ArticlePage() {
               </div>
             )}
             {/* Call-out block */}
-            <div className="rounded-lg border border-sky-300 dark:border-sky-500/40 bg-sky-50/80 dark:bg-sky-500/8 p-4">
+            <div className="rounded-lg border border-sky-300 dark:border-sky-500/40 bg-sky-50/80 dark:bg-sky-500/10 p-4">
               <div className="flex items-start gap-3 mb-3">
-                <div className="p-1.5 rounded-lg bg-sky-100/70 dark:bg-sky-500/20 flex-shrink-0 mt-0.5">
-                  <Lightbulb className="w-4 h-4 text-sky-700 dark:text-sky-400" />
+                <div className="p-1.5 rounded-lg bg-sky-100/70 dark:bg-sky-500/25 flex-shrink-0 mt-0.5">
+                  <Lightbulb className="w-4 h-4 text-sky-700 dark:text-sky-300" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-sky-700 dark:text-sky-400 uppercase tracking-widest mb-1">Context Blueprint — Active Template Slot</p>
-                  <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                  <p className="text-xs font-bold text-sky-700 dark:text-sky-300 uppercase tracking-widest mb-1">Context Blueprint — Active Template Slot</p>
+                  <p className="text-sm text-zinc-700 dark:text-zinc-200 leading-relaxed">
                     This is an open slot in the Cohort Knowledge Base awaiting a peer contribution. Research the topic, follow the structural outline below, then use the submission panel to claim this applet.
                   </p>
                 </div>
@@ -537,7 +759,7 @@ export default function ArticlePage() {
       )}
 
       {/* References & Citations — only for live non-founder-diagram articles */}
-      {!effectiveIsSample && !isNetworkTopologyArticle && !isOSIPDUArticle && !isOSIQuickRefArticle && (
+      {!effectiveIsSample && !isNetworkTopologyArticle && !isOSIPDUArticle && !isOSIQuickRefArticle && !isTCPIPArticle && (
         <div className="mt-8 rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
           <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
             <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />

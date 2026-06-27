@@ -10,21 +10,22 @@ import { loadLocalSubmissions, type NewSubmission } from '../components/Contribu
 // ── Static Founder data ───────────────────────────────────
 
 interface ArticleEntry  { title: string; slug: string }
-interface ResourceEntry { title: string; href: string }
+interface ResourceEntry { title: string; to: string }
 
 const JAMIN_ARTICLES: ArticleEntry[] = [
-  { title: 'Introduction to Healthcare IT Security',              slug: 'intro-healthcare-it-security' },
-  { title: 'Cloud Computing in Healthcare',                       slug: 'cloud-computing-healthcare' },
-  { title: 'AI Prompt Engineering for Healthcare',                slug: 'ai-prompt-engineering-healthcare' },
-  { title: 'The Role of Firewalls in Modern Network Security',    slug: 'firewall-basics' },
-  { title: 'Command-Line Interface (CLI) Research',               slug: 'command-documentation' },
-  { title: 'Microsoft Management Console (MMC) Snap-ins',         slug: 'snap-in' },
-  { title: 'Enterprise Three-Tier Network Topology Architecture', slug: 'diagrams/network-topology-architecture' },
-  { title: 'OSI Model Data Encapsulation & PDU Flow',             slug: 'diagrams/osi-pdu-flow' },
+  { title: 'Introduction to Healthcare IT Security',                                slug: 'intro-healthcare-it-security' },
+  { title: 'Cloud Computing in Healthcare',                                         slug: 'cloud-computing-healthcare' },
+  { title: 'AI Prompt Engineering for Healthcare',                                  slug: 'ai-prompt-engineering-healthcare' },
+  { title: 'The Role of Firewalls in Modern Network Security',                      slug: 'firewall-basics' },
+  { title: 'Command-Line Interface (CLI) Research',                                 slug: 'command-documentation' },
+  { title: 'Microsoft Management Console (MMC) Snap-ins',                           slug: 'snap-in' },
+  { title: 'Enterprise Three-Tier Network Topology Architecture',                   slug: 'diagrams/network-topology-architecture' },
+  { title: 'OSI Model Data Encapsulation & PDU Flow',                               slug: 'diagrams/osi-pdu-flow' },
+  { title: 'TCP/IP Protocol Suite — Four-Layer Model, IPv4 vs. IPv6 & Packet Transmission', slug: 'core1-networking/sample-protocols' },
 ];
 
 const JAMIN_RESOURCES: ResourceEntry[] = [
-  { title: 'Essential Port Numbers & Protocols — Quick References', href: '#/quick-references' },
+  { title: 'Essential Port Numbers & Protocols — Quick References', to: '/article/quick-references/essential-ports' },
 ];
 
 // ── Badge colour map ──────────────────────────────────────
@@ -201,7 +202,7 @@ function FounderCard() {
             </span>
           </div>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-            8 Authored Articles • 1 Resource Link
+            9 Authored Articles • 1 Resource Link
           </p>
         </div>
       </div>
@@ -244,16 +245,14 @@ function FounderCard() {
           <ul className="space-y-2">
             {JAMIN_RESOURCES.map((r) => (
               <li key={r.title}>
-                <a
-                  href={r.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  to={r.to}
                   className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400 hover:underline underline-offset-2 group"
                 >
                   <span className="w-1 h-1 rounded-full bg-amber-400 flex-shrink-0" />
                   <span className="truncate">{r.title}</span>
                   <ChevronRight className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100" />
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

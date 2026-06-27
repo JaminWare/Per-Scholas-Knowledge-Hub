@@ -76,15 +76,16 @@ function buildStatLine(contributions: ContributionItem[]): string {
 }
 
 const JAMIN_CONTRIBUTIONS: ContributionItem[] = [
-  { id: 'jw-5', title: 'Introduction to Healthcare IT Security',              track: 'Advanced Healthcare IT',      badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-6', title: 'Cloud Computing in Healthcare',                       track: 'Advanced Healthcare IT',      badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-7', title: 'AI Prompt Engineering for Healthcare',                track: 'AI Prompt Playbook',          badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-2', title: 'The Role of Firewalls in Modern Network Security',    track: 'Networking & Security',       badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-3', title: 'Command-Line Interface (CLI) Research',               track: 'Systems Administration',      badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-4', title: 'Microsoft Management Console (MMC) Snap-ins',         track: 'Systems Administration',      badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-8', title: 'Enterprise Three-Tier Network Topology Architecture', track: 'Diagrams',                    badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-9', title: 'OSI Model Data Encapsulation & PDU Flow',             track: 'Diagrams',                    badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-1', title: 'Essential Port Numbers & Protocols — Quick References', track: 'Quick References — Port Numbers & Protocols', badge: 'Founder', submission_type: 'Resource Link' },
+  { id: 'jw-5',  title: 'Introduction to Healthcare IT Security',              track: 'Advanced Healthcare IT',      badge: 'Founder', submission_type: 'Article' },
+  { id: 'jw-6',  title: 'Cloud Computing in Healthcare',                       track: 'Advanced Healthcare IT',      badge: 'Founder', submission_type: 'Article' },
+  { id: 'jw-7',  title: 'AI Prompt Engineering for Healthcare',                track: 'AI Prompt Playbook',          badge: 'Founder', submission_type: 'Article' },
+  { id: 'jw-2',  title: 'The Role of Firewalls in Modern Network Security',    track: 'Networking & Security',       badge: 'Founder', submission_type: 'Article' },
+  { id: 'jw-3',  title: 'Command-Line Interface (CLI) Research',               track: 'Systems Administration',      badge: 'Founder', submission_type: 'Article' },
+  { id: 'jw-4',  title: 'Microsoft Management Console (MMC) Snap-ins',         track: 'Systems Administration',      badge: 'Founder', submission_type: 'Article' },
+  { id: 'jw-8',  title: 'Enterprise Three-Tier Network Topology Architecture', track: 'Diagrams',                    badge: 'Founder', submission_type: 'Article' },
+  { id: 'jw-9',  title: 'OSI Model Data Encapsulation & PDU Flow',             track: 'Diagrams',                    badge: 'Founder', submission_type: 'Article' },
+  { id: 'jw-10', title: 'TCP/IP Protocol Suite — Four-Layer Model, IPv4 vs. IPv6 & Packet Transmission', track: 'CompTIA A+ Core 1 — Networking', badge: 'Founder', submission_type: 'Article' },
+  { id: 'jw-1',  title: 'Essential Port Numbers & Protocols — Quick References', track: 'Quick References — Port Numbers & Protocols', badge: 'Founder', submission_type: 'Resource Link' },
 ];
 
 const JAMIN_WARE: ContributorGroup = {

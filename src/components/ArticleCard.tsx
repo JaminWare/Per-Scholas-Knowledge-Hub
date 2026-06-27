@@ -66,8 +66,8 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
         </div>
         {article.tags.length > 0 && (
           <div className="flex items-center gap-1">
-            <Tag className="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-600" />
-            <span className="text-xs text-zinc-400 dark:text-zinc-500">{article.tags[0]}</span>
+            <Tag className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
+            <span className="text-xs text-zinc-500 dark:text-zinc-400">{article.tags[0]}</span>
           </div>
         )}
       </div>
