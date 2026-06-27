@@ -9,6 +9,7 @@ interface Props {
 }
 
 const badgeColors: Record<string, string> = {
+  'Founder':             'bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400',
   'Core 1 Expert':       'bg-sky-500/10 text-sky-600 dark:text-sky-400',
   'Core 2 Expert':       'bg-teal-500/10 text-teal-600 dark:text-teal-400',
   'HealthIT Specialist': 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
@@ -70,35 +71,56 @@ const ICON_BY_LABEL: Record<string, React.ReactNode> = {
 
 const JAMIN_WARE: ContributorGroup = {
   name: 'Jamin Ware',
-  topBadge: 'Reference Author',
+  topBadge: 'Founder',
   isPinned: true,
   contributions: [
     {
       id: 'jw-1',
       title: 'Essential Port Numbers & Protocols',
       track: 'Quick References — Port Numbers & Protocols',
-      badge: 'Reference Author',
+      badge: 'Founder',
       submission_type: 'Resource Link',
     },
     {
       id: 'jw-2',
       title: 'The Role of Firewalls in Modern Network Security',
       track: 'Networking & Security',
-      badge: 'Reference Author',
+      badge: 'Founder',
       submission_type: 'Article',
     },
     {
       id: 'jw-3',
       title: 'Command-Line Interface (CLI) Research',
       track: 'Systems Administration',
-      badge: 'Reference Author',
+      badge: 'Founder',
       submission_type: 'Article',
     },
     {
       id: 'jw-4',
       title: 'Microsoft Management Console (MMC) Snap-ins',
       track: 'Systems Administration',
-      badge: 'Reference Author',
+      badge: 'Founder',
+      submission_type: 'Article',
+    },
+    {
+      id: 'jw-5',
+      title: 'Introduction to Healthcare IT Security',
+      track: 'Advanced Healthcare IT',
+      badge: 'Founder',
+      submission_type: 'Article',
+    },
+    {
+      id: 'jw-6',
+      title: 'Cloud Computing in Healthcare',
+      track: 'Advanced Healthcare IT',
+      badge: 'Founder',
+      submission_type: 'Article',
+    },
+    {
+      id: 'jw-7',
+      title: 'AI Prompt Engineering for Healthcare',
+      track: 'AI Prompt Playbook',
+      badge: 'Founder',
       submission_type: 'Article',
     },
   ],

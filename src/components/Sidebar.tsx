@@ -79,6 +79,7 @@ const topAccordions: NavGroup[] = [
       { title: 'Core 1 PBQ Simulation Prompts', slug: 'azari-prompt-playbook/pbq-prompts' },
       { title: 'Medical Case Study Prompts', slug: 'azari-prompt-playbook/medical-prompts' },
       { title: 'EHR Troubleshooting Frameworks', slug: 'azari-prompt-playbook/ehr-prompts' },
+      { title: 'AI Prompt Engineering for Healthcare', slug: 'article/ai-prompt-engineering-healthcare' },
     ],
   },
 ];
@@ -158,11 +159,13 @@ const tracks: TrackSection[] = [
         children: [
           { title: 'HL7 & FHIR Integration', slug: 'healthcare-ehr/integration' },
           { title: 'Epic/Cerner Blueprints', slug: 'healthcare-ehr/hl7-fhir' },
+          { title: 'Cloud Computing in Healthcare', slug: 'article/cloud-computing-healthcare' },
         ]},
       { title: 'HIPAA Data Security', slug: 'healthcare-hipaa', icon: Lock,
         children: [
           { title: 'PHI Encryption & Access Control', slug: 'healthcare-hipaa/encryption' },
           { title: 'Audit Log Requirements', slug: 'healthcare-hipaa/security-rule' },
+          { title: 'Introduction to Healthcare IT Security', slug: 'article/intro-healthcare-it-security' },
         ]},
       { title: 'Clinical Workflows', slug: 'healthcare-clinical', icon: Heart,
         children: [

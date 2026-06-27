@@ -1,17 +1,63 @@
 import { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, Tag, Share2, Bookmark, FileCode } from 'lucide-react';
+import { ArrowLeft, Share2, Bookmark, BookOpen } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
-import ContributorCard from '../components/ContributorCard';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import { articleContentMap } from '../data/articles';
 import type { Article, Contributor } from '../types/database';
 
+// Section titles used in banner track labels
+const sectionTrackLabels: Record<string, string> = {
+  'core1-networking':      'COMPTIA A+ CORE 1 — NETWORKING',
+  'core1-troubleshooting': 'COMPTIA A+ CORE 1 — TROUBLESHOOTING',
+  'core1-mobile':          'COMPTIA A+ CORE 1 — MOBILE DEVICES',
+  'core1-hardware':        'COMPTIA A+ CORE 1 — HARDWARE',
+  'core1-cloud':           'COMPTIA A+ CORE 1 — CLOUD',
+  'core2-os':              'COMPTIA A+ CORE 2 — OPERATING SYSTEMS',
+  'core2-security':        'COMPTIA A+ CORE 2 — SECURITY',
+  'core2-software':        'COMPTIA A+ CORE 2 — SOFTWARE TROUBLESHOOTING',
+  'core2-operations':      'COMPTIA A+ CORE 2 — OPERATIONS',
+  'healthcare-hipaa':      'ADVANCED HEALTHCARE IT — HIPAA SECURITY',
+  'healthcare-ehr':        'ADVANCED HEALTHCARE IT — EHR ARCHITECTURE',
+  'healthcare-clinical':   'ADVANCED HEALTHCARE IT — CLINICAL WORKFLOWS',
+  'azari-prompt-playbook': 'AI PROMPT PLAYBOOK',
+  'study-tips':            'STUDY TIPS',
+  'quick-references':      'QUICK REFERENCES',
+  'diagrams':              'DIAGRAMS',
+};
+
+// Role badge styles
+const roleBadgeStyles: Record<string, string> = {
+  'Founder':             'bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20',
+  'HealthIT Specialist': 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
+  'Reference Author':    'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+  'Core 1 Expert':       'bg-sky-500/10 text-sky-600 dark:text-sky-400',
+  'Core 2 Expert':       'bg-teal-500/10 text-teal-600 dark:text-teal-400',
+  'Playbook Engineer':   'bg-violet-500/10 text-violet-600 dark:text-violet-400',
+};
+
+function deriveTrackLabel(article: Article): string {
+  if (article.section) {
+    const key = article.section.slug;
+    return sectionTrackLabels[key] ?? article.section.title.toUpperCase();
+  }
+  // Derive from slug prefix when section join is unavailable
+  const prefix = article.slug.split('/')[0];
+  return sectionTrackLabels[prefix] ?? 'LEARNERS KNOWLEDGE BASE';
+}
+
+function deriveAuthorName(contributor: Contributor | null, article: Article): string {
+  if (contributor?.name) return contributor.name;
+  // Featured research articles default to Jamin Ware
+  const featuredSlugs = ['firewall-basics', 'command-documentation', 'snap-in', 'intro-healthcare-it-security', 'cloud-computing-healthcare', 'ai-prompt-engineering-healthcare'];
+  if (featuredSlugs.includes(article.slug)) return 'Jamin Ware';
+  return 'Knowledge Base';
+}
+
 export default function ArticlePage() {
   const location = useLocation();
   const navigate = useNavigate();
-  // HashRouter puts the path in location.pathname (e.g. /article/firewall-basics).
   const slug = location.pathname.split('/').filter(Boolean).pop() ?? '';
   const [article, setArticle] = useState<Article | null>(null);
   const [contributor, setContributor] = useState<Contributor | null>(null);
@@ -24,7 +70,7 @@ export default function ArticlePage() {
       try {
         const { data, error } = await supabase
           .from('articles')
-          .select('*, contributor:contributors(*)')
+          .select('*, contributor:contributors(*), section:sections(*)')
           .eq('slug', slug)
           .maybeSingle();
         if (error) throw error;
@@ -41,7 +87,6 @@ export default function ArticlePage() {
             if (related) setRelatedArticles(related);
           }
         } else if (articleContentMap[slug]) {
-          // Supabase record missing but local markdown exists — synthesize an Article.
           setArticle({
             id: slug,
             slug,
@@ -59,7 +104,6 @@ export default function ArticlePage() {
         }
       } catch (error) {
         console.error('Error fetching article:', error);
-        // If DB fails but local content exists, fall back gracefully.
         if (articleContentMap[slug]) {
           setArticle({
             id: slug,
@@ -87,8 +131,7 @@ export default function ArticlePage() {
     return (
       <div className="max-w-4xl mx-auto animate-pulse">
         <div className="h-8 bg-zinc-200 dark:bg-zinc-800 rounded w-1/3 mb-6" />
-        <div className="h-12 bg-zinc-200 dark:bg-zinc-800 rounded w-3/4 mb-4" />
-        <div className="h-6 bg-zinc-200 dark:bg-zinc-800 rounded w-1/2 mb-8" />
+        <div className="h-48 bg-zinc-200 dark:bg-zinc-800 rounded-2xl mb-6" />
         <div className="space-y-4">
           <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full" />
           <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-5/6" />
@@ -101,9 +144,7 @@ export default function ArticlePage() {
   if (!article) {
     return (
       <div className="max-w-4xl mx-auto text-center py-20">
-        <h1 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100 mb-4">
-          Article Not Found
-        </h1>
+        <h1 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100 mb-4">Article Not Found</h1>
         <p className="text-zinc-500 dark:text-zinc-400 mb-6">
           The article you're looking for doesn't exist or has been moved.
         </p>
@@ -118,27 +159,25 @@ export default function ArticlePage() {
     );
   }
 
-  const formattedDate = new Date(article.created_at).toLocaleDateString('en-US', {
-    month: 'long', day: 'numeric', year: 'numeric',
-  });
-
-  // Static content map takes priority; falls back to Supabase content field.
   const markdownContent = articleContentMap[article.slug] ?? article.content;
+  const authorName = deriveAuthorName(contributor, article);
+  const trackLabel = deriveTrackLabel(article);
+  const authorInitial = authorName.charAt(0).toUpperCase();
 
   return (
     <div className="max-w-4xl mx-auto">
+      {/* Back button */}
       <button
         onClick={() => navigate(-1)}
-        className="inline-flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-sm font-medium mb-6"
+        className="inline-flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-sm font-medium mb-5"
       >
         <ArrowLeft className="w-4 h-4" />
         Back to Previous Page
       </button>
 
-      <nav className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 mb-6">
-        <Link to="/" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
-          Home
-        </Link>
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 mb-5">
+        <Link to="/" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors">Home</Link>
         <span>/</span>
         {article.section && (
           <>
@@ -151,78 +190,95 @@ export default function ArticlePage() {
             <span>/</span>
           </>
         )}
-        <span className="text-zinc-800 dark:text-zinc-100">{article.title}</span>
+        <span className="text-zinc-800 dark:text-zinc-100 truncate max-w-xs">{article.title}</span>
       </nav>
 
-      <article>
-        <header className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
+      {/* ── Hero Banner ──────────────────────────────────────── */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-sky-950 border border-zinc-700/50 p-8 mb-8">
+        {/* Decorative orbs */}
+        <div className="absolute top-0 right-0 w-72 h-72 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-sky-400/5 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative">
+          {/* Track label row */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2 rounded-xl bg-sky-500/20 border border-sky-500/30">
+              <BookOpen className="w-5 h-5 text-sky-400" />
+            </div>
+            <span className="text-xs font-bold text-sky-400 uppercase tracking-widest">
+              {trackLabel}
+            </span>
+          </div>
+
+          {/* Article title */}
+          <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-5 leading-tight">
             {article.title}
           </h1>
-          <div className="flex flex-wrap items-center gap-4 text-zinc-500 dark:text-zinc-400">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              <span>{formattedDate}</span>
+
+          {/* Contributor row */}
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-md shadow-sky-500/20">
+                {authorInitial}
+              </div>
+              <span className="text-sm font-medium text-zinc-200">{authorName}</span>
             </div>
-            {article.source_file && (
-              <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs text-zinc-500 dark:text-zinc-400">
-                <FileCode className="w-3.5 h-3.5" />
-                <span>{article.source_file}</span>
-              </div>
+
+            {/* Role badge */}
+            {authorName === 'Jamin Ware' && (
+              <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${roleBadgeStyles['Founder']}`}>
+                [Founder]
+              </span>
             )}
-            {article.tags.length > 0 && (
-              <div className="flex items-center gap-2">
-                <Tag className="w-4 h-4" />
-                <div className="flex gap-2">
-                  {article.tags.slice(0, 3).map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2 py-0.5 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-full text-xs"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
+            {contributor?.name && contributor.name !== 'Jamin Ware' && (
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400">
+                [Contributor]
+              </span>
             )}
-            <div className="ml-auto flex items-center gap-2">
-              <button className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 transition-colors">
+
+            {/* Tags */}
+            {article.tags.slice(0, 3).map((tag) => (
+              <span
+                key={tag}
+                className="px-2.5 py-0.5 rounded-full text-xs bg-zinc-700/60 text-zinc-300 border border-zinc-600/40"
+              >
+                {tag}
+              </span>
+            ))}
+
+            {/* Actions */}
+            <div className="ml-auto flex items-center gap-1">
+              <button className="p-2 rounded-lg hover:bg-zinc-700/50 text-zinc-400 hover:text-zinc-200 transition-colors">
                 <Bookmark className="w-4 h-4" />
               </button>
-              <button className="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400 transition-colors">
+              <button className="p-2 rounded-lg hover:bg-zinc-700/50 text-zinc-400 hover:text-zinc-200 transition-colors">
                 <Share2 className="w-4 h-4" />
               </button>
             </div>
           </div>
-        </header>
-
-        <div className="mt-2">
-          <MarkdownRenderer content={markdownContent} />
         </div>
+      </div>
 
-        {article.tags.length > 3 && (
-          <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
-            <div className="flex flex-wrap gap-2">
-              {article.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-full text-sm"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-      </article>
+      {/* ── Article body ─────────────────────────────────────── */}
+      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 md:p-8">
+        <MarkdownRenderer content={markdownContent} />
+      </div>
 
-      {contributor && (
-        <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4">Written by</h2>
-          <ContributorCard contributor={contributor} />
+      {/* All tags */}
+      {article.tags.length > 0 && (
+        <div className="mt-6 flex flex-wrap gap-2">
+          {article.tags.map((tag) => (
+            <span
+              key={tag}
+              className="px-3 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-full text-sm"
+            >
+              {tag}
+            </span>
+          ))}
         </div>
       )}
 
+      {/* Related articles */}
       {relatedArticles.length > 0 && (
         <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
           <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">Related Articles</h2>
