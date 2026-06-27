@@ -13,12 +13,14 @@ interface ArticleEntry  { title: string; slug: string }
 interface ResourceEntry { title: string; href: string }
 
 const JAMIN_ARTICLES: ArticleEntry[] = [
-  { title: 'Introduction to Healthcare IT Security',            slug: 'intro-healthcare-it-security' },
-  { title: 'Cloud Computing in Healthcare',                     slug: 'cloud-computing-healthcare' },
-  { title: 'AI Prompt Engineering for Healthcare',              slug: 'ai-prompt-engineering-healthcare' },
-  { title: 'The Role of Firewalls in Modern Network Security',  slug: 'firewall-basics' },
-  { title: 'Command-Line Interface (CLI) Research',             slug: 'command-documentation' },
-  { title: 'Microsoft Management Console (MMC) Snap-ins',       slug: 'snap-in' },
+  { title: 'Introduction to Healthcare IT Security',              slug: 'intro-healthcare-it-security' },
+  { title: 'Cloud Computing in Healthcare',                       slug: 'cloud-computing-healthcare' },
+  { title: 'AI Prompt Engineering for Healthcare',                slug: 'ai-prompt-engineering-healthcare' },
+  { title: 'The Role of Firewalls in Modern Network Security',    slug: 'firewall-basics' },
+  { title: 'Command-Line Interface (CLI) Research',               slug: 'command-documentation' },
+  { title: 'Microsoft Management Console (MMC) Snap-ins',         slug: 'snap-in' },
+  { title: 'Enterprise Three-Tier Network Topology Architecture', slug: 'diagrams/network-topology-architecture' },
+  { title: 'OSI Model Data Encapsulation & PDU Flow',             slug: 'diagrams/osi-pdu-flow' },
 ];
 
 const JAMIN_RESOURCES: ResourceEntry[] = [
@@ -199,7 +201,7 @@ function FounderCard() {
             </span>
           </div>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-            6 Authored Articles • 1 Resource Link
+            8 Authored Articles • 1 Resource Link
           </p>
         </div>
       </div>

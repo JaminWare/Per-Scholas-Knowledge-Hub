@@ -121,7 +121,7 @@ function DomainRow({ domain }: { domain: NavItem }) {
       style={{ paddingLeft: '12px' }}
     >
       <Icon className="w-4 h-4 flex-shrink-0" />
-      <span className="flex-1 truncate text-[12px]">{domain.title}</span>
+      <span className="flex-1 truncate text-[12px] font-medium text-zinc-800 dark:text-zinc-200">{domain.title}</span>
       <ChevronRight className="w-3 h-3 text-zinc-400 dark:text-zinc-600 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
     </Link>
   );
@@ -180,10 +180,10 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           <div key={track.id} className="pt-3">
             <button
               onClick={() => setOpenTracks((p) => ({ ...p, [track.id]: !p[track.id] }))}
-              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border ${trackBorder[track.color]} hover:bg-zinc-400/40 dark:hover:bg-zinc-700/50 transition-colors mb-1`}
+              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border ${trackBorder[track.color]} bg-zinc-400/20 dark:bg-zinc-700/50 hover:bg-zinc-400/40 dark:hover:bg-zinc-700/70 transition-colors mb-1`}
             >
               <div className="flex-1 text-left min-w-0">
-                <p className="text-[11px] font-bold text-zinc-700 dark:text-zinc-200 uppercase tracking-wider truncate">
+                <p className="text-[11px] font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider truncate">
                   {track.label}
                 </p>
                 <p className={`text-[10px] font-medium mt-0.5 ${trackText[track.color]}`}>

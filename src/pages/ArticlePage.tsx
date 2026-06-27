@@ -33,6 +33,15 @@ const sectionTrackLabels: Record<string, string> = {
   'diagrams':              'DIAGRAMS',
 };
 
+// Slugs that must never fall through to "Article Not Found"
+const FOUNDER_SLUGS = new Set([
+  'firewall-basics', 'command-documentation', 'snap-in',
+  'intro-healthcare-it-security', 'cloud-computing-healthcare',
+  'ai-prompt-engineering-healthcare',
+  'diagrams/network-topology-architecture', 'diagrams/osi-pdu-flow',
+  'quick-references/osi-model',
+]);
+
 const roleBadgeStyles: Record<string, string> = {
   'Founder':             'bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20',
   'HealthIT Specialist': 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
@@ -58,7 +67,7 @@ const SAMPLE_KEYWORDS = [
   'comptia', 'core1', 'core2', 'mobile', 'networking', 'hardware',
   'virtualization', 'troubleshooting', 'os', 'security', 'software',
   'operations', 'hipaa', 'ehr', 'clinical', 'healthcare', 'sample',
-  'mnemonic', 'commands', 'shortcuts',
+  'mnemonic', 'commands', 'shortcuts', 'quick-references', 'diagrams',
 ];
 
 function isKnownSampleSlug(slug: string): boolean {
@@ -85,6 +94,7 @@ function deriveTrackLabel(article: Article): string {
 
 function deriveAuthorName(contributor: Contributor | null, article: Article): string {
   if (contributor?.name) return contributor.name;
+  if (FOUNDER_SLUGS.has(article.slug)) return 'Jamin Ware';
   const featuredSlugs = ['firewall-basics', 'command-documentation', 'snap-in', 'intro-healthcare-it-security', 'cloud-computing-healthcare', 'ai-prompt-engineering-healthcare'];
   if (featuredSlugs.includes(article.slug)) return 'Jamin Ware';
   return 'Knowledge Base';
@@ -136,7 +146,114 @@ function OSIPDUArticleDiagrams() {
   );
 }
 
+function OSIQuickRefArticleDiagrams() {
+  return (
+    <div className="space-y-8">
+      <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700">
+        <OSIModelStackDiagram />
+      </div>
+
+      <div className="space-y-5 text-zinc-700 dark:text-zinc-300 text-sm leading-relaxed">
+        <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-800 pb-2">OSI Model — Layer-by-Layer Technical Breakdown</h2>
+
+        <p>The Open Systems Interconnection (OSI) model is a conceptual framework standardized by the ISO (ISO/IEC 7498-1) that divides network communication into 7 distinct functional layers. Each layer communicates with its adjacent layers through defined service interfaces, and with its peer layer on the remote host through shared protocols. For the CompTIA A+ Core 1 exam (Domain 2.0), understanding how data moves through these layers — and what Protocol Data Unit (PDU) each layer produces — is a foundational requirement.</p>
+
+        <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mt-6">Data Encapsulation Flow</h3>
+        <p>When an application sends data, that payload descends through the sender's OSI stack, gaining a new header (and sometimes a trailer) at each layer. This process is called <strong className="font-semibold text-zinc-900 dark:text-zinc-100">encapsulation</strong>. On the receiving end, each layer strips its corresponding header and passes the payload up — called <strong className="font-semibold text-zinc-900 dark:text-zinc-100">de-encapsulation</strong>.</p>
+
+        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700 my-4">
+          <table className="min-w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-zinc-200/60 dark:bg-zinc-800/60">
+                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">Layer</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">Name</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">PDU</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">Key Protocols</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">Device / Function</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { layer: 7, name: 'Application', pdu: 'Data', protocols: 'HTTP, HTTPS, FTP, DNS, SMTP', device: 'End-user application' },
+                { layer: 6, name: 'Presentation', pdu: 'Data', protocols: 'TLS/SSL, JPEG, ASCII', device: 'Translator / Encryptor' },
+                { layer: 5, name: 'Session', pdu: 'Data', protocols: 'NetBIOS, PPTP, SIP', device: 'Session manager' },
+                { layer: 4, name: 'Transport', pdu: 'Segment', protocols: 'TCP, UDP', device: 'End-to-end delivery' },
+                { layer: 3, name: 'Network', pdu: 'Packet', protocols: 'IP, ICMP, OSPF, BGP', device: 'Router' },
+                { layer: 2, name: 'Data Link', pdu: 'Frame', protocols: 'Ethernet, 802.11 Wi-Fi, ARP', device: 'Switch / Bridge' },
+                { layer: 1, name: 'Physical', pdu: 'Bits', protocols: 'CAT6, Fiber, DSL, Radio', device: 'Hub / NIC / Cable' },
+              ].map((row, i) => (
+                <tr key={row.layer} className={`border-b border-zinc-100 dark:border-zinc-800 last:border-0 ${i % 2 === 0 ? '' : 'bg-zinc-50/50 dark:bg-zinc-800/20'}`}>
+                  <td className="px-4 py-2.5 font-bold text-zinc-900 dark:text-zinc-100">{row.layer}</td>
+                  <td className="px-4 py-2.5 font-medium text-zinc-800 dark:text-zinc-200">{row.name}</td>
+                  <td className="px-4 py-2.5 font-mono text-[11px] text-sky-700 dark:text-sky-400">{row.pdu}</td>
+                  <td className="px-4 py-2.5 text-zinc-600 dark:text-zinc-400 text-[12px]">{row.protocols}</td>
+                  <td className="px-4 py-2.5 text-zinc-600 dark:text-zinc-400 text-[12px]">{row.device}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mt-6">CompTIA A+ Exam Focus Areas</h3>
+        <p>CompTIA A+ Core 1 (220-1201) Domain 2.0 — Networking, tests your ability to:</p>
+        <ul className="space-y-1.5 pl-0 list-none">
+          {[
+            'Identify which OSI layer a given device or protocol operates at',
+            'Explain the difference between TCP (connection-oriented, reliable) and UDP (connectionless, low-latency)',
+            'Understand why ARP resolves MAC addresses and lives at Layer 2 / Layer 3 boundary',
+            'Know that switches operate at Layer 2 (MAC addressing) while routers operate at Layer 3 (IP addressing)',
+            'Distinguish between a collision domain (Layer 1/2) and a broadcast domain (Layer 3)',
+          ].map((item, i) => (
+            <li key={i} className="flex gap-2.5 items-start">
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 dark:bg-sky-400" />
+              <span className="text-zinc-600 dark:text-zinc-400">{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Citations */}
+      <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
+          <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+          <h2 className="text-base font-bold text-amber-700 dark:text-amber-400">References &amp; Citations</h2>
+        </div>
+        <ul className="px-5 py-4 space-y-2.5">
+          <li className="flex gap-2.5 items-start text-sm">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
+            <span className="text-zinc-600 dark:text-zinc-400">
+              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">ISO Standard:</strong>{' '}
+              <a href="https://www.iso.org/standard/20269.html" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+                ISO/IEC 7498-1: Open Systems Interconnection Basic Reference Model
+              </a>
+            </span>
+          </li>
+          <li className="flex gap-2.5 items-start text-sm">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
+            <span className="text-zinc-600 dark:text-zinc-400">
+              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">CompTIA Official:</strong>{' '}
+              <a href="https://www.comptia.org/certifications/a" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+                CompTIA A+ Core 1 Certification Exam Objectives (220-1201) — Domain 2.0
+              </a>
+            </span>
+          </li>
+          <li className="flex gap-2.5 items-start text-sm">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
+            <span className="text-zinc-600 dark:text-zinc-400">
+              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Cisco Press:</strong>{' '}
+              <a href="https://www.ciscopress.com/store/interconnecting-cisco-network-devices-part-1-icnd1-9780132877435" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+                Interconnecting Cisco Network Devices — Data Encapsulation and Segment-to-Bit Flowcharts
+              </a>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 function makeLocalArticle(slug: string, title?: string): Article {
+  const isFounder = FOUNDER_SLUGS.has(slug);
   return {
     id: slug,
     slug,
@@ -146,8 +263,8 @@ function makeLocalArticle(slug: string, title?: string): Article {
     section_id: null,
     contributor_id: null,
     tags: [],
-    is_featured: false,
-    is_sample: title !== undefined,
+    is_featured: isFounder,
+    is_sample: !isFounder && title !== undefined,
     study_category: null,
     source_file: null,
     created_at: new Date().toISOString(),
@@ -188,12 +305,15 @@ export default function ArticlePage() {
           }
         } else if (articleContentMap[slug]) {
           setArticle(makeLocalArticle(slug));
+        } else if (FOUNDER_SLUGS.has(slug)) {
+          setArticle(makeLocalArticle(slug));
         } else if (isKnownSampleSlug(slug)) {
           setArticle(makeLocalArticle(slug, slugToSampleTitle(slug)));
         }
       } catch (error) {
         console.error('Error fetching article:', error);
         if (articleContentMap[slug]) setArticle(makeLocalArticle(slug));
+        else if (FOUNDER_SLUGS.has(slug)) setArticle(makeLocalArticle(slug));
         else if (isKnownSampleSlug(slug)) setArticle(makeLocalArticle(slug, slugToSampleTitle(slug)));
       } finally {
         setIsLoading(false);
@@ -243,9 +363,14 @@ export default function ArticlePage() {
   // Slug-specific diagram component for sample articles
   const SampleDiagram = SAMPLE_SLUG_DIAGRAMS[article.slug] ?? null;
 
-  // Full-page diagram panel for founder Diagrams articles
+  // Founder bypass: never render sample blueprint for known founder slugs
+  const isFounderSlug = FOUNDER_SLUGS.has(article.slug) || authorName === 'Jamin Ware';
+  const effectiveIsSample = isSample && !isFounderSlug;
+
+  // Full-page diagram panel routing
   const isNetworkTopologyArticle = article.slug === 'diagrams/network-topology-architecture';
   const isOSIPDUArticle = article.slug === 'diagrams/osi-pdu-flow';
+  const isOSIQuickRefArticle = article.slug === 'quick-references/osi-model';
 
   function handleBack() {
     if (article?.section?.slug) {
@@ -359,7 +484,9 @@ export default function ArticlePage() {
           <NetworkTopologyArticleDiagrams />
         ) : isOSIPDUArticle ? (
           <OSIPDUArticleDiagrams />
-        ) : isSample ? (
+        ) : isOSIQuickRefArticle ? (
+          <OSIQuickRefArticleDiagrams />
+        ) : effectiveIsSample ? (
           <div className="space-y-6">
             {/* Inline diagram above the blueprint for visual sample slugs */}
             {SampleDiagram && (
@@ -409,8 +536,8 @@ export default function ArticlePage() {
         </div>
       )}
 
-      {/* References & Citations — only for live articles */}
-      {!isSample && (
+      {/* References & Citations — only for live non-founder-diagram articles */}
+      {!effectiveIsSample && !isNetworkTopologyArticle && !isOSIPDUArticle && !isOSIQuickRefArticle && (
         <div className="mt-8 rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
           <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
             <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />

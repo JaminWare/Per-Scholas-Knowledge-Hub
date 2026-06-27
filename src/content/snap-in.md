@@ -52,6 +52,6 @@ Provides a graphical view of the hardware installed on the computer. Admins use 
 A storage administration tool utilized to initialize brand new hard drives, extend existing volume partitions (like a full C: drive), format drives, and change drive letter assignments.
 
 ## References & Citations
-* **Microsoft Learn:** [Windows Defender Firewall with Advanced Security Design Guide](https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/windows-firewall-with-advanced-security-design-guide) — *Official administrative console architecture definitions.*
-* **Microsoft Learn:** [Understanding Firewall Rules and Network Profiles](https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/firewall-rules-and-profiles) — *Windows environment controls.*
-* **The Last Tech:** *What is Windows Defender Firewall and How Does it Protect Your System?* — *Management console utility reference manual.*
+* **Microsoft Learn:** [Microsoft Management Console Overview](https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management-components/what-is-microsoft-management-console) — *Official console hosting architecture definitions.*
+* **Microsoft Learn:** [Task Scheduler Administrative Schema & Scripting Rules](https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-start-page) — *Automation workflows.*
+* **Microsoft Learn:** [Local Group Policy Editor Operational Guide](https://learn.microsoft.com/en-us/windows/client-management/group-policy-overview) — *Securing Windows workspace configurations.*

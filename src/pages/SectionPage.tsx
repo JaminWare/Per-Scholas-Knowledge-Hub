@@ -152,16 +152,19 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
     : null;
 
   return (
-    <div className={`group flex flex-col rounded-xl border overflow-hidden transition-all duration-200 ${
+    <div className={`group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
       isSample
-        ? 'bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20 hover:border-amber-400/70 dark:hover:border-amber-400/50 hover:shadow-[0_0_0_1.5px_rgba(251,191,36,0.35)] hover:shadow-amber-500/5'
-        : 'bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.3)] hover:shadow-sky-500/5'
+        ? 'bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20 hover:border-amber-400/70 dark:hover:border-amber-400/50 hover:shadow-[0_0_0_1.5px_rgba(251,191,36,0.5),0_4px_16px_rgba(251,191,36,0.08)]'
+        : 'bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
     }`}>
 
       {/* ── Terminal Header Strip ── */}
-      <div className={`flex items-center justify-between px-3 py-1.5 ${
-        isSample ? 'bg-zinc-800 dark:bg-zinc-900/80' : 'bg-zinc-800 dark:bg-zinc-900'
-      }`}>
+      <div
+        className={`flex items-center justify-between px-3 py-1.5 ${
+          isSample ? 'bg-zinc-800 dark:bg-zinc-900/80' : 'bg-zinc-800 dark:bg-zinc-900'
+        }`}
+        style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
+      >
         <div className="flex items-center gap-2">
           {isSample ? (
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
