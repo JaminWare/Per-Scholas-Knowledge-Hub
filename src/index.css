@@ -45,11 +45,11 @@
   /* ── Sidebar items — light mode ── */
   html:not(.dark) .sidebar-item {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200;
-    @apply text-zinc-600 hover:bg-sky-100 hover:text-sky-600;
+    @apply text-zinc-700 hover:bg-zinc-300 hover:text-sky-700;
   }
 
   html:not(.dark) .sidebar-item.active {
-    @apply bg-sky-100 text-sky-600;
+    @apply bg-sky-100 text-sky-700;
   }
 
   /* ── Cards ── */
