@@ -1,4 +1,4 @@
-import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import { useState } from 'react';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import Sidebar from './components/Sidebar';
@@ -6,6 +6,7 @@ import SearchBar from './components/SearchBar';
 import HomePage from './pages/HomePage';
 import ArticlePage from './pages/ArticlePage';
 import SectionPage from './pages/SectionPage';
+import ComingSoonPage from './pages/ComingSoonPage';
 import { PanelLeftOpen, PanelLeftClose, Sun, Moon } from 'lucide-react';
 
 function AppContent() {
@@ -58,7 +59,10 @@ function AppContent() {
         <main className="flex-1 overflow-y-auto p-6 md:p-8">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/:slug/*" element={<RouteHandler />} />
+            <Route path="/article/:slug" element={<ArticlePage />} />
+            <Route path="/article/:slug/*" element={<ArticlePage />} />
+            <Route path="/:slug/*" element={<SectionPage />} />
+            <Route path="*" element={<ComingSoonPage />} />
           </Routes>
         </main>
 
@@ -72,13 +76,6 @@ function AppContent() {
       </div>
     </div>
   );
-}
-
-function RouteHandler() {
-  const location = useLocation();
-  const segments = location.pathname.split('/').filter(Boolean);
-  if (segments.length > 1) return <ArticlePage />;
-  return <SectionPage />;
 }
 
 function App() {

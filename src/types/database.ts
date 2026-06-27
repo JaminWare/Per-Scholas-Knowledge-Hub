@@ -28,6 +28,8 @@ export interface Article {
   contributor_id: string | null;
   tags: string[];
   is_featured: boolean;
+  is_sample: boolean;
+  study_category: string | null;
   source_file: string | null;
   created_at: string;
   updated_at: string;

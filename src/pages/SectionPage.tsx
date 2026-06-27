@@ -8,6 +8,7 @@ import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, FileText, Sparkles, Layout, Laptop, Monitor, Database,
   Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight, User,
+  Construction,
 } from 'lucide-react';
 
 const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ className?: string }>; track?: string }> = {
@@ -47,7 +48,6 @@ const roleColors: Record<string, string> = {
   'AI Prompt Engineer':  'bg-purple-500/10 text-purple-400',
 };
 
-// Known authors for research articles that may not have a linked contributor yet.
 const KNOWN_AUTHORS: Record<string, string> = {
   'firewall-basics':               'Jamin Ware',
   'command-documentation':         'Jamin Ware',
@@ -55,6 +55,21 @@ const KNOWN_AUTHORS: Record<string, string> = {
   'intro-healthcare-it-security':  'Jamin Ware',
   'cloud-computing-healthcare':    'Jamin Ware',
   'ai-prompt-engineering-healthcare': 'Jamin Ware',
+};
+
+// Study Tips categorical rows
+const STUDY_CATEGORIES = [
+  { key: 'Core 1 Topics',      icon: Laptop,   color: 'sky' },
+  { key: 'Core 2 Topics',      icon: Monitor,  color: 'teal' },
+  { key: 'Testing Strategies', icon: FileText, color: 'amber' },
+  { key: 'Active Recalls',     icon: Sparkles, color: 'violet' },
+] as const;
+
+const STUDY_CAT_COLORS = {
+  sky:    { header: 'text-sky-600 dark:text-sky-400',    icon: 'bg-sky-500/10 text-sky-500' },
+  teal:   { header: 'text-teal-600 dark:text-teal-400',  icon: 'bg-teal-500/10 text-teal-500' },
+  amber:  { header: 'text-amber-600 dark:text-amber-400', icon: 'bg-amber-500/10 text-amber-500' },
+  violet: { header: 'text-violet-600 dark:text-violet-400', icon: 'bg-violet-500/10 text-violet-500' },
 };
 
 function CopyLinkButton({ slug }: { slug: string }) {
@@ -81,22 +96,84 @@ function CopyLinkButton({ slug }: { slug: string }) {
   );
 }
 
+// ── Coming Soon inline panel ──────────────────────────────
+function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
+  const navigate = useNavigate();
+  if (minimal) {
+    return (
+      <div className="col-span-full flex flex-col items-center justify-center gap-3 p-8 bg-zinc-50 dark:bg-zinc-900/50 border border-dashed border-zinc-300 dark:border-zinc-700 rounded-xl text-center">
+        <Construction className="w-7 h-7 text-amber-400" />
+        <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+          This module is currently being built or undergoing moderation review by our Cohort Leaders. Check back shortly!
+        </p>
+      </div>
+    );
+  }
+  return (
+    <div className="flex flex-col items-center justify-center gap-6 py-16 text-center">
+      <div className="relative">
+        <div className="w-18 h-18 w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-400/20 flex items-center justify-center">
+          <Construction className="w-8 h-8 text-amber-500 dark:text-amber-400" />
+        </div>
+      </div>
+      <div className="space-y-2">
+        <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Coming Soon</h2>
+        <p className="text-zinc-500 dark:text-zinc-400 max-w-md leading-relaxed">
+          This module is currently being built or undergoing moderation review by our Cohort Leaders. Check back shortly!
+        </p>
+      </div>
+      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-xs font-medium text-amber-700 dark:text-amber-400">
+        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+        Under active development — 2026-RTT-23
+      </div>
+      <button
+        onClick={() => navigate(-1)}
+        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 text-sm font-medium transition-all"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Go Back
+      </button>
+    </div>
+  );
+}
+
 // ── Applet Card ───────────────────────────────────────────
-function AppletCard({ article }: { article: Article & { contributor?: { name: string } | null } }) {
+type ArticleWithContributor = Article & { contributor?: { name: string } | null };
+
+function AppletCard({ article }: { article: ArticleWithContributor }) {
   const authorName = (article.contributor as { name: string } | null)?.name
     ?? KNOWN_AUTHORS[article.slug]
     ?? 'Knowledge Base';
   const authorInitial = authorName.charAt(0).toUpperCase();
+  const isSample = article.is_sample;
 
   return (
-    <div className="group bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 flex flex-col gap-4 hover:border-sky-400/40 dark:hover:border-sky-500/40 hover:shadow-lg hover:shadow-sky-500/5 transition-all duration-200">
+    <div className={`group flex flex-col gap-4 rounded-xl p-5 border transition-all duration-200 ${
+      isSample
+        ? 'bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20 hover:border-amber-400/60 dark:hover:border-amber-400/40'
+        : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:border-sky-400/40 dark:hover:border-sky-500/40 hover:shadow-lg hover:shadow-sky-500/5'
+    }`}>
+      {/* Sample badge */}
+      {isSample && (
+        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-amber-500/15 border border-amber-200 dark:border-amber-500/20 self-start">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+          <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wide">Sample Slot</span>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center flex-shrink-0 shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${
+          isSample ? 'bg-gradient-to-br from-amber-400 to-amber-500 shadow-amber-500/20' : 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20'
+        }`}>
           <BookOpen className="w-5 h-5 text-white" />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-semibold text-zinc-800 dark:text-zinc-100 text-sm leading-snug line-clamp-2 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
+          <h3 className={`font-semibold text-sm leading-snug line-clamp-2 transition-colors ${
+            isSample
+              ? 'text-amber-800 dark:text-amber-300 group-hover:text-amber-600 dark:group-hover:text-amber-300'
+              : 'text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400'
+          }`}>
             {article.title}
           </h3>
           <div className="flex items-center gap-1.5 mt-1.5">
@@ -110,9 +187,7 @@ function AppletCard({ article }: { article: Article & { contributor?: { name: st
 
       {/* Excerpt */}
       {article.excerpt && (
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-3 flex-1">
-          {article.excerpt}
-        </p>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-3 flex-1">{article.excerpt}</p>
       )}
 
       {/* Tags */}
@@ -126,10 +201,21 @@ function AppletCard({ article }: { article: Article & { contributor?: { name: st
         </div>
       )}
 
-      {/* Read button */}
+      {/* Sample incentive caption */}
+      {isSample && (
+        <p className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-100/60 dark:bg-amber-500/10 rounded-lg px-3 py-2 border border-amber-200/60 dark:border-amber-500/15">
+          This slot is open! Submit your research via the portal below to claim this applet.
+        </p>
+      )}
+
+      {/* CTA button */}
       <Link
         to={`/article/${article.slug}`}
-        className="mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-sky-500/10 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white text-sm font-semibold transition-all duration-200 border border-sky-500/20 hover:border-sky-500 hover:shadow-md hover:shadow-sky-500/20"
+        className={`mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border ${
+          isSample
+            ? 'bg-amber-500/10 hover:bg-amber-500 text-amber-700 dark:text-amber-400 hover:text-white border-amber-500/20 hover:border-amber-500'
+            : 'bg-sky-500/10 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 hover:shadow-md hover:shadow-sky-500/20'
+        }`}
       >
         Read Article
         <ArrowRight className="w-3.5 h-3.5" />
@@ -138,7 +224,7 @@ function AppletCard({ article }: { article: Article & { contributor?: { name: st
   );
 }
 
-// ── Applet skeleton card ──────────────────────────────────
+// ── Skeleton ──────────────────────────────────────────────
 function AppletSkeleton() {
   return (
     <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 animate-pulse">
@@ -152,19 +238,77 @@ function AppletSkeleton() {
       <div className="space-y-2 mb-4">
         <div className="h-3 bg-zinc-200 dark:bg-zinc-800 rounded w-full" />
         <div className="h-3 bg-zinc-200 dark:bg-zinc-800 rounded w-5/6" />
-        <div className="h-3 bg-zinc-200 dark:bg-zinc-800 rounded w-4/6" />
       </div>
       <div className="h-9 bg-zinc-200 dark:bg-zinc-800 rounded-lg" />
     </div>
   );
 }
 
+// ── Study Tips grouped view ───────────────────────────────
+function StudyTipsDashboard({ articles, isLoading }: { articles: ArticleWithContributor[]; isLoading: boolean }) {
+  return (
+    <div className="space-y-10">
+      {STUDY_CATEGORIES.map(({ key, icon: CatIcon, color }) => {
+        const catArticles = articles.filter((a) => a.study_category === key);
+        const colors = STUDY_CAT_COLORS[color];
+        return (
+          <section key={key}>
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${colors.icon}`}>
+                <CatIcon className="w-4 h-4" />
+              </div>
+              <h2 className={`text-base font-bold uppercase tracking-wide ${colors.header}`}>{key}</h2>
+              {!isLoading && (
+                <span className="ml-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400">
+                  {catArticles.length}
+                </span>
+              )}
+            </div>
+            {isLoading ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <AppletSkeleton />
+                <AppletSkeleton />
+              </div>
+            ) : catArticles.length > 0 ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {catArticles.map((a) => <AppletCard key={a.id} article={a} />)}
+              </div>
+            ) : (
+              <ComingSoonPanel minimal />
+            )}
+          </section>
+        );
+      })}
+
+      {/* Uncategorized articles */}
+      {(() => {
+        const uncategorized = articles.filter((a) => !a.study_category);
+        if (isLoading || uncategorized.length === 0) return null;
+        return (
+          <section>
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">
+                <Lightbulb className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
+              </div>
+              <h2 className="text-base font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">General</h2>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {uncategorized.map((a) => <AppletCard key={a.id} article={a} />)}
+            </div>
+          </section>
+        );
+      })()}
+    </div>
+  );
+}
+
+// ── Main SectionPage ──────────────────────────────────────
 export default function SectionPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const slug = location.pathname.replace(/^\//, '').replace(/\/$/, '');
 
-  const [dbArticles, setDbArticles] = useState<Article[]>([]);
+  const [dbArticles, setDbArticles] = useState<ArticleWithContributor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const meta = sectionMeta[slug];
@@ -185,7 +329,7 @@ export default function SectionPage() {
         if (section?.id) query = query.eq('section_id', section.id);
         else query = query.ilike('slug', `${slug}/%`);
         const { data } = await query;
-        setDbArticles(data || []);
+        setDbArticles((data as ArticleWithContributor[]) || []);
       } catch (e) {
         console.error(e);
       } finally {
@@ -219,9 +363,7 @@ export default function SectionPage() {
                 {localContent.trackLabel}
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-4">
-              {localContent.title}
-            </h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-4">{localContent.title}</h1>
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center text-white text-xs font-bold">
@@ -295,8 +437,10 @@ export default function SectionPage() {
         </div>
       </div>
 
-      {/* Applet grid */}
-      {isLoading ? (
+      {/* Study Tips uses grouped category rows */}
+      {slug === 'study-tips' ? (
+        <StudyTipsDashboard articles={dbArticles} isLoading={isLoading} />
+      ) : isLoading ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {[...Array(4)].map((_, i) => <AppletSkeleton key={i} />)}
         </div>
@@ -305,13 +449,7 @@ export default function SectionPage() {
           {dbArticles.map((a) => <AppletCard key={a.id} article={a} />)}
         </div>
       ) : (
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-12 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-4">
-            <Icon className="w-8 h-8 text-zinc-400 dark:text-zinc-600" />
-          </div>
-          <p className="text-zinc-500 dark:text-zinc-500 font-medium">No articles in this section yet.</p>
-          <p className="text-zinc-400 dark:text-zinc-600 text-sm mt-1">Check back soon or submit a contribution.</p>
-        </div>
+        <ComingSoonPanel />
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import { Fragment } from 'react';
+import { ExternalLink } from 'lucide-react';
 
 type InlineToken =
   | { type: 'text'; value: string }
@@ -13,7 +14,8 @@ type Block =
   | { type: 'blockquote'; content: string }
   | { type: 'list'; items: string[] }
   | { type: 'table'; headers: string[]; rows: string[][] }
-  | { type: 'paragraph'; content: string };
+  | { type: 'paragraph'; content: string }
+  | { type: 'citations'; items: string[] };
 
 function parseInline(text: string): InlineToken[] {
   const tokens: InlineToken[] = [];
@@ -101,8 +103,23 @@ function parseBlocks(content: string): Block[] {
     }
 
     if (trimmed.startsWith('## ')) {
-      blocks.push({ type: 'h2', content: trimmed.slice(3) });
-      i++;
+      const heading = trimmed.slice(3).trim();
+      if (heading === 'References & Citations') {
+        // Consume all following list/paragraph lines until next H2
+        i++;
+        const citationItems: string[] = [];
+        while (i < lines.length && !lines[i].trim().startsWith('## ')) {
+          const t = lines[i].trim();
+          if (t.startsWith('* ') || t.startsWith('- ')) {
+            citationItems.push(t.slice(2));
+          }
+          i++;
+        }
+        blocks.push({ type: 'citations', items: citationItems });
+      } else {
+        blocks.push({ type: 'h2', content: heading });
+        i++;
+      }
     } else if (trimmed.startsWith('### ')) {
       blocks.push({ type: 'h3', content: trimmed.slice(4) });
       i++;
@@ -162,6 +179,27 @@ export default function MarkdownRenderer({ content }: Props) {
               <h2 key={idx} className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mt-8 mb-3 pb-2 border-b border-zinc-200 dark:border-zinc-800 first:mt-0">
                 {renderInline(block.content)}
               </h2>
+            );
+          case 'citations':
+            return (
+              <div key={idx} className="mt-10 rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
+                <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
+                  <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+                  <h2 className="text-base font-bold text-amber-700 dark:text-amber-400">
+                    References & Citations
+                  </h2>
+                </div>
+                {block.items.length > 0 && (
+                  <ul className="px-5 py-4 space-y-2.5">
+                    {block.items.map((item, j) => (
+                      <li key={j} className="flex gap-2.5 items-start text-sm text-zinc-600 dark:text-zinc-400">
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
+                        <span>{renderInline(item)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             );
           case 'h3':
             return (
