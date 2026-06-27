@@ -89,7 +89,10 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
   }, []);
 
   const handleSelect = (result: SearchResult) => {
-    navigate(`/${result.slug}`);
+    const path = result.type === 'article'
+      ? `/article/${result.slug}`
+      : `/${result.slug}`;
+    navigate(path);
     setIsOpen(false);
     setQuery('');
   };
@@ -152,7 +155,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
                         <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-1 mt-0.5">{result.excerpt}</p>
                       )}
                     </div>
-                    <span className="text-xs text-zinc-400 dark:text-zinc-500 capitalize">{result.type}</span>
+                    <span className="text-xs text-zinc-400 dark:text-zinc-500">{result.type === 'article' ? 'Article' : 'Domain'}</span>
                   </button>
                 </li>
               ))}
@@ -160,7 +163,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
           ) : (
             <div className="flex flex-col items-center justify-center py-8 text-zinc-400 dark:text-zinc-500">
               <Search className="w-8 h-8 mb-2 opacity-50" />
-              <p>No results found for "{query}"</p>
+              <p>No results for "{query}"</p>
             </div>
           )}
         </div>
