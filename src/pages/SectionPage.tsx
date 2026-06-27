@@ -316,6 +316,8 @@ export default function SectionPage() {
   const Icon = meta?.icon ?? BookOpen;
   const localContent = contentMap[slug];
   const isSubPage = slug.includes('/') || (meta?.track !== undefined);
+  // Domain sections (e.g. core1-mobile) always use the applet grid — never the legacy article view
+  const isDomainSection = meta?.track !== undefined && !slug.includes('/');
 
   useEffect(() => {
     async function fetchArticles() {
@@ -341,7 +343,7 @@ export default function SectionPage() {
   }, [slug]);
 
   // ── Rich local wiki article ──────────────────────────────
-  if (localContent) {
+  if (localContent && !isDomainSection) {
     const roleColor = roleColors[localContent.contributorRole ?? ''] ?? 'bg-zinc-800 text-zinc-400';
     return (
       <div className="max-w-4xl mx-auto">

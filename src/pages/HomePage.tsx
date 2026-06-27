@@ -9,8 +9,12 @@ import SuccessToast from '../components/SuccessToast';
 import type { Article } from '../types/database';
 import {
   BookOpen, Eye, Users, Target, TrendingUp, ArrowRight,
-  Shield, Terminal, Monitor, ChevronRight, Award,
+  Shield, Terminal, Monitor, ChevronRight, Award, Send, Loader2, CheckCircle,
 } from 'lucide-react';
+
+const LS_KEY = 'lkb_submissions';
+
+type QuickType = 'Article' | 'Resource Link' | 'Support Ticket';
 
 const researchArticles = [
   {
@@ -55,6 +59,14 @@ export default function HomePage() {
   const [toastVisible,     setToastVisible]      = useState(false);
   const [toastMessage,     setToastMessage]      = useState('');
 
+  // Quick Submission Portal form state
+  const [quickName,        setQuickName]         = useState('');
+  const [quickType,        setQuickType]         = useState<QuickType>('Article');
+  const [quickTitle,       setQuickTitle]        = useState('');
+  const [quickExcerpt,     setQuickExcerpt]      = useState('');
+  const [isQuickSubmitting, setIsQuickSubmitting] = useState(false);
+  const [quickSubmitDone,  setQuickSubmitDone]   = useState(false);
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -77,6 +89,55 @@ export default function HomePage() {
     setLatestSubmission(submission);
     setToastMessage(`${submission.full_name} — "${submission.title}" added to the wall!`);
     setToastVisible(true);
+  };
+
+  const handleQuickSubmit = async () => {
+    if (!quickName.trim() || !quickTitle.trim() || isQuickSubmitting) return;
+    setIsQuickSubmitting(true);
+    try {
+      const badge = quickType === 'Resource Link' ? 'Reference Author' : 'Cohort Contributor';
+      const { data, error } = await supabase
+        .from('submissions')
+        .insert({
+          full_name: quickName.trim(),
+          title: quickTitle.trim(),
+          content: quickExcerpt.trim(),
+          track: 'General',
+          badge,
+          submission_type: quickType,
+        })
+        .select()
+        .single();
+
+      if (!error && data) {
+        const submission: NewSubmission = {
+          id: data.id,
+          full_name: data.full_name,
+          track: data.track,
+          badge: data.badge,
+          title: data.title,
+          content: data.content,
+          submission_type: data.submission_type,
+          created_at: data.created_at,
+        };
+        // Persist to localStorage so RecognitionPage can read it
+        try {
+          const existing: NewSubmission[] = JSON.parse(localStorage.getItem(LS_KEY) ?? '[]');
+          localStorage.setItem(LS_KEY, JSON.stringify([submission, ...existing]));
+        } catch { /* ignore */ }
+        handleSubmitted(submission);
+        setQuickSubmitDone(true);
+        setQuickName('');
+        setQuickType('Article');
+        setQuickTitle('');
+        setQuickExcerpt('');
+        setTimeout(() => setQuickSubmitDone(false), 3000);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setIsQuickSubmitting(false);
+    }
   };
 
   return (
@@ -216,8 +277,10 @@ export default function HomePage() {
 
         </div>{/* end main column */}
 
-        {/* ── Right sidebar — Recognition Wall widget ────────── */}
+        {/* ── Right sidebar control console ─────────────────── */}
         <aside className="lg:col-span-1 lg:sticky lg:top-6 space-y-3">
+
+          {/* Widget 1 — Cohort Recognition Wall roster */}
           <CohortRecognitionWall
             newSubmission={latestSubmission}
             onClaimBadge={() => setModalOpen(true)}
@@ -238,6 +301,85 @@ export default function HomePage() {
             </div>
             <ChevronRight className="w-4 h-4 text-zinc-400 dark:text-zinc-600 group-hover:text-amber-500 transition-colors flex-shrink-0" />
           </Link>
+
+          {/* Widget 2 — Quick Submission Portal */}
+          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-3">
+
+            {/* Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 rounded-lg bg-sky-100 dark:bg-sky-500/10 flex-shrink-0">
+                  <Send className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                </div>
+                <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-100">Quick Submission Portal</h3>
+              </div>
+              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-500 flex-shrink-0">
+                2026-RTT-23
+              </span>
+            </div>
+
+            <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              Contribute research, links, or feedback directly to the cohort hub.
+            </p>
+
+            {/* Full Name */}
+            <input
+              type="text"
+              placeholder="Your Full Name"
+              value={quickName}
+              onChange={(e) => setQuickName(e.target.value)}
+              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+            />
+
+            {/* Submission Type */}
+            <select
+              value={quickType}
+              onChange={(e) => setQuickType(e.target.value as QuickType)}
+              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all cursor-pointer"
+            >
+              <option value="Article">Article</option>
+              <option value="Resource Link">Resource Link</option>
+              <option value="Support Ticket">Support Ticket</option>
+            </select>
+
+            {/* Title */}
+            <input
+              type="text"
+              placeholder="Title of your contribution"
+              value={quickTitle}
+              onChange={(e) => setQuickTitle(e.target.value)}
+              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+            />
+
+            {/* Excerpt */}
+            <textarea
+              rows={3}
+              placeholder="Brief description or excerpt…"
+              value={quickExcerpt}
+              onChange={(e) => setQuickExcerpt(e.target.value)}
+              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all resize-none"
+            />
+
+            {/* Submit button */}
+            <button
+              onClick={handleQuickSubmit}
+              disabled={isQuickSubmitting || !quickName.trim() || !quickTitle.trim()}
+              className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
+                quickSubmitDone
+                  ? 'bg-emerald-500 text-white'
+                  : 'bg-sky-500 hover:bg-sky-600 text-white disabled:opacity-50 disabled:cursor-not-allowed'
+              }`}
+            >
+              {isQuickSubmitting ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Submitting…</>
+              ) : quickSubmitDone ? (
+                <><CheckCircle className="w-4 h-4" /> Submitted!</>
+              ) : (
+                <><Send className="w-4 h-4" /> Submit Contribution</>
+              )}
+            </button>
+          </div>
+
         </aside>
 
       </div>{/* end grid */}

@@ -25,7 +25,7 @@ interface TrackSection {
 
 // Flat top-level links — no children, no dropdowns
 const topLinks: NavItem[] = [
-  { title: 'Wall of Fame',    slug: 'recognition',           icon: Award      },
+  { title: 'Cohort Recognition', slug: 'recognition',           icon: Award      },
   { title: 'Study Tips',      slug: 'study-tips',            icon: Lightbulb  },
   { title: 'Diagrams',        slug: 'diagrams',              icon: Layout     },
   { title: 'Quick References',slug: 'quick-references',      icon: FileText   },
