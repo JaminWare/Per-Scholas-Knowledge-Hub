@@ -2,15 +2,14 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
-  Link2, Zap, Star, Ticket, Home,
+  Zap, Star, Ticket, Home,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { loadLocalSubmissions, type NewSubmission } from '../components/ContributorSubmissionModal';
 
 // ── Static Founder data ───────────────────────────────────
 
-interface ArticleEntry  { title: string; slug: string }
-interface ResourceEntry { title: string; to: string }
+interface ArticleEntry { title: string; slug: string }
 
 const JAMIN_ARTICLES: ArticleEntry[] = [
   { title: 'Introduction to Healthcare IT Security',                                slug: 'intro-healthcare-it-security' },
@@ -22,10 +21,6 @@ const JAMIN_ARTICLES: ArticleEntry[] = [
   { title: 'Enterprise Three-Tier Network Topology Architecture',                   slug: 'diagrams/network-topology-architecture' },
   { title: 'OSI Model Data Encapsulation & PDU Flow',                               slug: 'diagrams/osi-pdu-flow' },
   { title: 'TCP/IP Protocol Suite — Four-Layer Model, IPv4 vs. IPv6 & Packet Transmission', slug: 'core1-networking/sample-protocols' },
-];
-
-const JAMIN_RESOURCES: ResourceEntry[] = [
-  { title: 'Essential Port Numbers & Protocols — Quick References', to: '/article/quick-references/essential-ports' },
 ];
 
 // ── Badge colour map ──────────────────────────────────────
@@ -202,13 +197,13 @@ function FounderCard() {
             </span>
           </div>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-            9 Authored Articles • 1 Resource Link
+            9 Authored Articles
           </p>
         </div>
       </div>
 
       {/* Authored Articles */}
-      <div className="px-5 py-4 space-y-4">
+      <div className="px-5 py-4">
         <div>
           <div className="flex items-center gap-2 mb-3">
             <BookOpen className="w-3.5 h-3.5 text-amber-500" />
@@ -226,31 +221,6 @@ function FounderCard() {
                 >
                   <span className="w-1 h-1 rounded-full bg-sky-400 flex-shrink-0" />
                   <span className="truncate group-hover:text-sky-500">{a.title}</span>
-                  <ChevronRight className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Resource Links */}
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <Link2 className="w-3.5 h-3.5 text-amber-500" />
-            <h4 className="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wide">Resource Links</h4>
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400">
-              {JAMIN_RESOURCES.length}
-            </span>
-          </div>
-          <ul className="space-y-2">
-            {JAMIN_RESOURCES.map((r) => (
-              <li key={r.title}>
-                <Link
-                  to={r.to}
-                  className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400 hover:underline underline-offset-2 group"
-                >
-                  <span className="w-1 h-1 rounded-full bg-amber-400 flex-shrink-0" />
-                  <span className="truncate">{r.title}</span>
                   <ChevronRight className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100" />
                 </Link>
               </li>
@@ -345,7 +315,7 @@ export default function RecognitionPage() {
           </p>
           <div className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/20 text-xs font-semibold text-amber-400">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-            {totalContributors} contributor{totalContributors !== 1 ? 's' : ''} recognised
+            {totalContributors} contributor{totalContributors !== 1 ? 's' : ''} recognized
           </div>
         </div>
       </div>

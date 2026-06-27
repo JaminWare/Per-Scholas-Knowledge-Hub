@@ -139,9 +139,9 @@ export default function Sidebar({ onToggle }: SidebarProps) {
   });
 
   return (
-    <div className="flex flex-col h-full bg-zinc-300 dark:bg-zinc-800 border-r border-zinc-400 dark:border-zinc-700">
+    <div className="flex flex-col h-full bg-sky-50 dark:bg-zinc-800 border-r border-sky-100 dark:border-zinc-700">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-400 dark:border-zinc-700 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-sky-100 dark:border-zinc-700 flex-shrink-0">
         <Link to="/" className="flex items-center gap-2.5 flex-1 min-w-0">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
             <BookOpen className="w-[18px] h-[18px] text-white" />
@@ -180,7 +180,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           <div key={track.id} className="pt-3">
             <button
               onClick={() => setOpenTracks((p) => ({ ...p, [track.id]: !p[track.id] }))}
-              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border ${trackBorder[track.color]} bg-zinc-400/20 dark:bg-zinc-700/50 hover:bg-zinc-400/40 dark:hover:bg-zinc-700/70 transition-colors mb-1`}
+              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border ${trackBorder[track.color]} bg-sky-100/50 dark:bg-zinc-700/50 hover:bg-sky-100 dark:hover:bg-zinc-700/70 transition-colors mb-1`}
             >
               <div className="flex-1 text-left min-w-0">
                 <p className="text-[11px] font-semibold text-zinc-900 dark:text-zinc-100 uppercase tracking-wider truncate">
