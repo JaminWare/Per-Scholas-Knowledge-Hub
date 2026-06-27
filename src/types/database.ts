@@ -28,6 +28,7 @@ export interface Article {
   contributor_id: string | null;
   tags: string[];
   is_featured: boolean;
+  source_file: string | null;
   created_at: string;
   updated_at: string;
   contributor?: Contributor;

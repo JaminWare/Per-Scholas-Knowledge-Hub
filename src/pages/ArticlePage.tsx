@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Clock, Tag, Share2, Bookmark } from 'lucide-react';
+import { ArrowLeft, Clock, Tag, Share2, Bookmark, FileCode } from 'lucide-react';
+import { marked } from 'marked';
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
 import ContributorCard from '../components/ContributorCard';
@@ -86,6 +87,11 @@ export default function ArticlePage() {
     month: 'long', day: 'numeric', year: 'numeric',
   });
 
+  const renderedContent = useMemo(() => {
+    marked.setOptions({ gfm: true, breaks: true });
+    return marked.parse(article.content) as string;
+  }, [article.content]);
+
   return (
     <div className="max-w-4xl mx-auto">
       {/* Universal Back Button */}
@@ -118,8 +124,8 @@ export default function ArticlePage() {
       </nav>
 
       {/* Article Header */}
-      <article className="prose prose-sky dark:prose-invert max-w-none">
-        <header className="mb-8 not-prose">
+      <article>
+        <header className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
             {article.title}
           </h1>
@@ -128,6 +134,12 @@ export default function ArticlePage() {
               <Clock className="w-4 h-4" />
               <span>{formattedDate}</span>
             </div>
+            {article.source_file && (
+              <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-xs text-zinc-500 dark:text-zinc-400">
+                <FileCode className="w-3.5 h-3.5" />
+                <span>{article.source_file}</span>
+              </div>
+            )}
             {article.tags.length > 0 && (
               <div className="flex items-center gap-2">
                 <Tag className="w-4 h-4" />
@@ -155,8 +167,8 @@ export default function ArticlePage() {
         </header>
 
         <div
-          className="text-zinc-600 dark:text-zinc-300 leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: article.content.replace(/\n/g, '<br/>') }}
+          className="prose prose-sky dark:prose-invert max-w-none prose-table:text-sm prose-td:align-top"
+          dangerouslySetInnerHTML={{ __html: renderedContent }}
         />
 
         {article.tags.length > 3 && (
