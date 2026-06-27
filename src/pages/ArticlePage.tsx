@@ -47,6 +47,26 @@ const BLUEPRINT_OUTLINE = `### 1. Architectural Overview
 ### 4. References & Peer Citations
 *List official documentation links (e.g., Microsoft Learn, AWS Architecture Whitepapers, or HHS/NIST guidelines).*`;
 
+const SAMPLE_KEYWORDS = [
+  'comptia', 'core1', 'core2', 'mobile', 'networking', 'hardware',
+  'virtualization', 'troubleshooting', 'os', 'security', 'software',
+  'operations', 'hipaa', 'ehr', 'clinical', 'healthcare', 'sample',
+  'mnemonic', 'commands', 'shortcuts',
+];
+
+function isKnownSampleSlug(slug: string): boolean {
+  const lower = slug.toLowerCase();
+  return SAMPLE_KEYWORDS.some((kw) => lower.includes(kw));
+}
+
+function slugToSampleTitle(slug: string): string {
+  const stripped = slug
+    .replace(/^(core1|core2|healthcare)-/, '')
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return `[Sample] ${stripped}`;
+}
+
 function deriveTrackLabel(article: Article): string {
   if (article.section) {
     const key = article.section.slug;
@@ -63,18 +83,18 @@ function deriveAuthorName(contributor: Contributor | null, article: Article): st
   return 'Knowledge Base';
 }
 
-function makeLocalArticle(slug: string): Article {
+function makeLocalArticle(slug: string, title?: string): Article {
   return {
     id: slug,
     slug,
-    title: slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-    content: articleContentMap[slug],
+    title: title ?? slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+    content: articleContentMap[slug] ?? '',
     excerpt: null,
     section_id: null,
     contributor_id: null,
     tags: [],
     is_featured: false,
-    is_sample: false,
+    is_sample: title !== undefined,
     study_category: null,
     source_file: null,
     created_at: new Date().toISOString(),
@@ -141,6 +161,10 @@ export default function ArticlePage() {
   }
 
   if (!article) {
+    if (slug && isKnownSampleSlug(slug)) {
+      setArticle(makeLocalArticle(slug, slugToSampleTitle(slug)));
+      return null;
+    }
     return (
       <div className="max-w-4xl mx-auto text-center py-20">
         <h1 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100 mb-4">Article Not Found</h1>
