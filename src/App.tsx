@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import ArticlePage from './pages/ArticlePage';
 import SectionPage from './pages/SectionPage';
 import ComingSoonPage from './pages/ComingSoonPage';
+import RecognitionPage from './pages/RecognitionPage';
 import { PanelLeftOpen, PanelLeftClose, Sun, Moon } from 'lucide-react';
 
 function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | null> }) {
@@ -70,6 +71,7 @@ function AppContent() {
           <ScrollToTop scrollRef={mainRef} />
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/recognition" element={<RecognitionPage />} />
             <Route path="/article/:slug" element={<ArticlePage />} />
             <Route path="/article/:slug/*" element={<ArticlePage />} />
             <Route path="/:slug/*" element={<SectionPage />} />

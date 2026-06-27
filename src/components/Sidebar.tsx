@@ -4,7 +4,7 @@ import {
   Home, ChevronDown, ChevronRight, ChevronLeft,
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   BookOpen, Lightbulb, FileText, Sparkles, Layout,
-  Laptop, Monitor, Heart, Database,
+  Laptop, Monitor, Heart, Database, Award,
 } from 'lucide-react';
 
 // ─── Navigation data ──────────────────────────────────────
@@ -25,6 +25,7 @@ interface TrackSection {
 
 // Flat top-level links — no children, no dropdowns
 const topLinks: NavItem[] = [
+  { title: 'Wall of Fame',    slug: 'recognition',           icon: Award      },
   { title: 'Study Tips',      slug: 'study-tips',            icon: Lightbulb  },
   { title: 'Diagrams',        slug: 'diagrams',              icon: Layout     },
   { title: 'Quick References',slug: 'quick-references',      icon: FileText   },
@@ -41,7 +42,7 @@ const tracks: TrackSection[] = [
       { title: 'Domain 1.0 — Mobile Devices',              slug: 'core1-mobile',         icon: Laptop   },
       { title: 'Domain 2.0 — Networking',                  slug: 'core1-networking',     icon: Network  },
       { title: 'Domain 3.0 — Hardware',                    slug: 'core1-hardware',       icon: Cpu      },
-      { title: 'Domain 4.0 — Virtualization & Cloud',      slug: 'core1-cloud',          icon: Cloud    },
+      { title: 'Domain 4.0 — Virtualization & Cloud',      slug: 'core1-virtualization', icon: Cloud    },
       { title: 'Domain 5.0 — HW & Network Troubleshooting',slug: 'core1-troubleshooting',icon: Wrench   },
     ],
   },

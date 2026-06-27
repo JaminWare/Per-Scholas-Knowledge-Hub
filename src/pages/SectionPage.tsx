@@ -31,6 +31,7 @@ const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ c
   'core1-networking':      { title: 'Domain 2.0 — Networking', icon: Network, track: 'CompTIA A+ Core 1' },
   'core1-hardware':        { title: 'Domain 3.0 — Hardware', icon: Cpu, track: 'CompTIA A+ Core 1' },
   'core1-cloud':           { title: 'Domain 4.0 — Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
+  'core1-virtualization':  { title: 'Domain 4.0 — Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
   'core1-troubleshooting': { title: 'Domain 5.0 — HW & Network Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 1' },
   'core2-os':              { title: 'Domain 1.0 — Operating Systems', icon: Monitor, track: 'CompTIA A+ Core 2' },
   'core2-security':        { title: 'Domain 2.0 — Security', icon: Shield, track: 'CompTIA A+ Core 2' },
@@ -204,7 +205,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
       {/* Sample incentive caption */}
       {isSample && (
         <p className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-100/60 dark:bg-amber-500/10 rounded-lg px-3 py-2 border border-amber-200/60 dark:border-amber-500/15">
-          This slot is open! Submit your research via the portal below to claim this applet.
+          💡 This slot is open! Submit your research via the portal below to claim this applet.
         </p>
       )}
 

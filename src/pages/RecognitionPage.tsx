@@ -1,0 +1,404 @@
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
+  Link2, Zap, Star, Ticket, Home,
+} from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import { loadLocalSubmissions, type NewSubmission } from '../components/ContributorSubmissionModal';
+
+// ── Static Founder data ───────────────────────────────────
+
+interface ArticleEntry  { title: string; slug: string }
+interface ResourceEntry { title: string; href: string }
+
+const JAMIN_ARTICLES: ArticleEntry[] = [
+  { title: 'Introduction to Healthcare IT Security',            slug: 'intro-healthcare-it-security' },
+  { title: 'Cloud Computing in Healthcare',                     slug: 'cloud-computing-healthcare' },
+  { title: 'AI Prompt Engineering for Healthcare',              slug: 'ai-prompt-engineering-healthcare' },
+  { title: 'The Role of Firewalls in Modern Network Security',  slug: 'firewall-basics' },
+  { title: 'Command-Line Interface (CLI) Research',             slug: 'command-documentation' },
+  { title: 'Microsoft Management Console (MMC) Snap-ins',       slug: 'snap-in' },
+];
+
+const JAMIN_RESOURCES: ResourceEntry[] = [
+  { title: 'Essential Port Numbers & Protocols — Quick References', href: '#/quick-references' },
+];
+
+// ── Badge colour map ──────────────────────────────────────
+
+const badgeColors: Record<string, string> = {
+  'Founder':             'bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20',
+  'Core 1 Expert':       'bg-sky-500/10 text-sky-600 dark:text-sky-400',
+  'Core 2 Expert':       'bg-teal-500/10 text-teal-600 dark:text-teal-400',
+  'HealthIT Specialist': 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
+  'Diagram Architect':   'bg-blue-500/10 text-blue-600 dark:text-blue-400',
+  'Reference Author':    'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+  'Playbook Engineer':   'bg-violet-500/10 text-violet-600 dark:text-violet-400',
+  'Cohort Contributor':  'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400',
+};
+
+function BadgeTag({ badge }: { badge: string }) {
+  const cls = badgeColors[badge] ?? badgeColors['Cohort Contributor'];
+  return (
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${cls}`}>
+      [{badge}]
+    </span>
+  );
+}
+
+// ── Categorise a community submission ─────────────────────
+
+function categoryLabel(s: NewSubmission): string {
+  if (s.submission_type === 'Article')        return 'Authored Articles';
+  if (s.submission_type === 'Resource Link')  return 'Resource Links';
+  if (s.submission_type === 'Support Ticket') return 'Support Tickets';
+  if (s.badge === 'Diagram Architect')        return 'Diagrams';
+  if (s.badge === 'Reference Author')         return 'Quick References';
+  if (s.badge === 'Playbook Engineer')        return 'Prompt Playbooks';
+  return 'Shared Tips';
+}
+
+const CATEGORY_ICON: Record<string, React.ReactNode> = {
+  'Authored Articles': <BookOpen className="w-3.5 h-3.5" />,
+  'Resource Links':    <Link2 className="w-3.5 h-3.5" />,
+  'Support Tickets':   <Ticket className="w-3.5 h-3.5" />,
+  'Diagrams':          <Zap className="w-3.5 h-3.5" />,
+  'Quick References':  <Zap className="w-3.5 h-3.5" />,
+  'Prompt Playbooks':  <Zap className="w-3.5 h-3.5" />,
+  'Shared Tips':       <Zap className="w-3.5 h-3.5" />,
+};
+
+// ── Community contributor card (accordion) ────────────────
+
+interface ContributorGroup {
+  name: string;
+  topBadge: string;
+  submissions: NewSubmission[];
+}
+
+function buildSlugFromTitle(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+}
+
+function CommunityCard({ group, isNew, isOpen, onToggle }: {
+  group: ContributorGroup;
+  isNew: boolean;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  const initial = group.name.charAt(0).toUpperCase();
+  const byCategory = group.submissions.reduce<Record<string, NewSubmission[]>>((acc, s) => {
+    const cat = categoryLabel(s);
+    (acc[cat] = acc[cat] ?? []).push(s);
+    return acc;
+  }, {});
+
+  return (
+    <div className={`rounded-xl border overflow-hidden transition-all ${
+      isOpen
+        ? 'border-sky-400/40 dark:border-sky-500/30 shadow-md shadow-sky-500/5'
+        : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
+    } bg-white dark:bg-zinc-900`}>
+
+      {/* Header — click to toggle */}
+      <button
+        onClick={onToggle}
+        className="w-full flex items-center gap-3 px-5 py-4 text-left"
+      >
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white text-sm ${
+          isNew
+            ? 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-md shadow-sky-500/20'
+            : 'bg-gradient-to-br from-zinc-500 to-zinc-400'
+        }`}>
+          {initial}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="font-semibold text-zinc-800 dark:text-zinc-100 text-sm">{group.name}</span>
+            <BadgeTag badge={group.topBadge} />
+            {isNew && (
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold bg-sky-500 text-white rounded-full">
+                <Star className="w-2 h-2" /> NEW
+              </span>
+            )}
+          </div>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            {group.submissions.length} contribution{group.submissions.length !== 1 ? 's' : ''}
+          </p>
+        </div>
+        {isOpen
+          ? <ChevronDown className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+          : <ChevronRight className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+        }
+      </button>
+
+      {/* Expanded portfolio */}
+      {isOpen && (
+        <div className="border-t border-zinc-100 dark:border-zinc-800 px-5 py-4 space-y-5">
+          {Object.entries(byCategory).map(([cat, items]) => (
+            <div key={cat}>
+              <div className="flex items-center gap-2 mb-2.5">
+                <span className="text-zinc-400 dark:text-zinc-500">{CATEGORY_ICON[cat] ?? <Zap className="w-3.5 h-3.5" />}</span>
+                <h4 className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">{cat}</h4>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500">{items.length}</span>
+              </div>
+              <ul className="space-y-1.5">
+                {items.map((s) => {
+                  const slug = buildSlugFromTitle(s.title);
+                  if (s.submission_type === 'Article') {
+                    return (
+                      <li key={s.id}>
+                        <Link
+                          to={`/article/${slug}`}
+                          className="flex items-center gap-2 text-sm text-sky-600 dark:text-sky-400 hover:underline underline-offset-2 group"
+                        >
+                          <span className="w-1 h-1 rounded-full bg-sky-400 flex-shrink-0" />
+                          <span className="truncate group-hover:text-sky-500">{s.title}</span>
+                          <ChevronRight className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100" />
+                        </Link>
+                      </li>
+                    );
+                  }
+                  return (
+                    <li key={s.id} className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+                      <span className="w-1 h-1 rounded-full bg-zinc-400 flex-shrink-0" />
+                      <span className="truncate">{s.title}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Founder card (always expanded) ───────────────────────
+
+function FounderCard() {
+  return (
+    <div className="rounded-xl border border-amber-300/60 dark:border-amber-500/30 overflow-hidden bg-white dark:bg-zinc-900 shadow-sm shadow-amber-500/5">
+      {/* Header */}
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-amber-100 dark:border-amber-500/15">
+        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-400 flex items-center justify-center flex-shrink-0 font-bold text-white text-lg shadow-md shadow-amber-500/20">
+          J
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-bold text-zinc-800 dark:text-zinc-100">Jamin Ware</span>
+            <BadgeTag badge="Founder" />
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-bold bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-full border border-amber-200 dark:border-amber-500/20">
+              <Star className="w-2.5 h-2.5" /> PINNED
+            </span>
+          </div>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            6 Authored Articles • 1 Resource Link
+          </p>
+        </div>
+      </div>
+
+      {/* Authored Articles */}
+      <div className="px-5 py-4 space-y-5">
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <BookOpen className="w-3.5 h-3.5 text-amber-500" />
+            <h4 className="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wide">Authored Articles</h4>
+            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400">
+              {JAMIN_ARTICLES.length}
+            </span>
+          </div>
+          <ul className="space-y-2">
+            {JAMIN_ARTICLES.map((a) => (
+              <li key={a.slug}>
+                <Link
+                  to={`/article/${a.slug}`}
+                  className="flex items-center gap-2 text-sm text-sky-600 dark:text-sky-400 hover:underline underline-offset-2 group"
+                >
+                  <span className="w-1 h-1 rounded-full bg-sky-400 flex-shrink-0" />
+                  <span className="truncate group-hover:text-sky-500">{a.title}</span>
+                  <ChevronRight className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Resource Links */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <Link2 className="w-3.5 h-3.5 text-amber-500" />
+            <h4 className="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wide">Resource Links</h4>
+            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400">
+              {JAMIN_RESOURCES.length}
+            </span>
+          </div>
+          <ul className="space-y-2">
+            {JAMIN_RESOURCES.map((r) => (
+              <li key={r.title}>
+                <a
+                  href={r.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400 hover:underline underline-offset-2 group"
+                >
+                  <span className="w-1 h-1 rounded-full bg-amber-400 flex-shrink-0" />
+                  <span className="truncate">{r.title}</span>
+                  <ChevronRight className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Main page ─────────────────────────────────────────────
+
+export default function RecognitionPage() {
+  const navigate = useNavigate();
+  const [submissions, setSubmissions] = useState<NewSubmission[]>([]);
+  const [openContributor, setOpenContributor] = useState<string | null>(null);
+
+  useEffect(() => {
+    const local = loadLocalSubmissions();
+    if (local.length > 0) setSubmissions(local);
+
+    async function fetchFromSupabase() {
+      const { data } = await supabase
+        .from('submissions')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(200);
+      if (data && data.length > 0) {
+        setSubmissions((prev) => {
+          const localOnly = prev.filter((s) => s.id.startsWith('local-'));
+          const merged = [...localOnly, ...(data as NewSubmission[])];
+          const seen = new Set<string>();
+          return merged.filter((s) => {
+            if (seen.has(s.id)) return false;
+            seen.add(s.id);
+            return true;
+          });
+        });
+      }
+    }
+    fetchFromSupabase();
+  }, []);
+
+  // Group community submissions by contributor name
+  const groupMap = new Map<string, ContributorGroup>();
+  for (const s of submissions) {
+    const key = s.full_name.trim().toLowerCase();
+    if (key === 'jamin ware') continue;
+    if (!groupMap.has(key)) {
+      groupMap.set(key, { name: s.full_name.trim(), topBadge: s.badge || 'Cohort Contributor', submissions: [] });
+    }
+    const g = groupMap.get(key)!;
+    if (s.badge && s.badge !== 'Cohort Contributor') g.topBadge = s.badge;
+    g.submissions.push(s);
+  }
+  const communityGroups = Array.from(groupMap.values());
+  const newestName = submissions.find((s) => s.full_name.toLowerCase() !== 'jamin ware')?.full_name.trim() ?? null;
+  const totalContributors = 1 + communityGroups.length;
+
+  return (
+    <div className="max-w-4xl mx-auto space-y-8">
+
+      {/* Back navigation */}
+      <button
+        onClick={() => navigate(-1)}
+        className="inline-flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-sm font-medium"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back to Previous Page
+      </button>
+
+      {/* Hero banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-amber-950 border border-zinc-700/50 p-8">
+        <div className="absolute top-0 right-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-400/5 rounded-full blur-2xl pointer-events-none" />
+        <div className="relative">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2.5 rounded-xl bg-amber-500/20 border border-amber-500/30">
+              <Award className="w-6 h-6 text-amber-400" />
+            </div>
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+              Per Scholas — 2026-RTT-23
+            </span>
+          </div>
+          <h1 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-3">
+            Cohort 2026-RTT-23 Wall of Fame
+          </h1>
+          <p className="text-zinc-300 max-w-xl leading-relaxed text-sm">
+            Celebrating every learner who has contributed research, documentation, and knowledge to the
+            AI-Enabled Healthcare IT collective. Click any profile to explore their full portfolio.
+          </p>
+          <div className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/20 text-xs font-semibold text-amber-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+            {totalContributors} contributor{totalContributors !== 1 ? 's' : ''} recognised
+          </div>
+        </div>
+      </div>
+
+      {/* Founder section */}
+      <section>
+        <div className="flex items-center gap-2 mb-3">
+          <Star className="w-4 h-4 text-amber-500" />
+          <h2 className="text-sm font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Founder</h2>
+        </div>
+        <FounderCard />
+      </section>
+
+      {/* Community section */}
+      <section>
+        <div className="flex items-center gap-2 mb-3">
+          <Award className="w-4 h-4 text-sky-500" />
+          <h2 className="text-sm font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">
+            Community Contributors
+          </h2>
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
+            {communityGroups.length}
+          </span>
+        </div>
+
+        {communityGroups.length > 0 ? (
+          <div className="space-y-3">
+            {communityGroups.map((g) => (
+              <CommunityCard
+                key={g.name}
+                group={g}
+                isNew={g.name === newestName}
+                isOpen={openContributor === g.name}
+                onToggle={() => setOpenContributor((prev) => prev === g.name ? null : g.name)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-xl border-2 border-dashed border-zinc-200 dark:border-zinc-800 p-10 text-center">
+            <Award className="w-10 h-10 text-zinc-300 dark:text-zinc-700 mx-auto mb-3" />
+            <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+              No community submissions yet. Be the first to contribute!
+            </p>
+            <Link
+              to="/"
+              className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium transition-colors"
+            >
+              <Home className="w-4 h-4" />
+              Go to Submission Portal
+            </Link>
+          </div>
+        )}
+      </section>
+
+    </div>
+  );
+}
