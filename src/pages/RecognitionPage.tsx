@@ -102,8 +102,8 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
     <div className={`rounded-xl border overflow-hidden transition-all ${
       isOpen
         ? 'border-sky-400/40 dark:border-sky-500/30 shadow-md shadow-sky-500/5'
-        : 'border-zinc-200 dark:border-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-700'
-    } bg-white dark:bg-zinc-900`}>
+        : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600'
+    } bg-zinc-50 dark:bg-zinc-700`}>
 
       {/* Header — click to toggle */}
       <button
@@ -139,13 +139,13 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
 
       {/* Expanded portfolio */}
       {isOpen && (
-        <div className="border-t border-zinc-100 dark:border-zinc-800 px-5 py-4 space-y-5">
+        <div className="border-t border-zinc-100 dark:border-zinc-600 px-5 py-4 space-y-4">
           {Object.entries(byCategory).map(([cat, items]) => (
             <div key={cat}>
               <div className="flex items-center gap-2 mb-2.5">
                 <span className="text-zinc-400 dark:text-zinc-500">{CATEGORY_ICON[cat] ?? <Zap className="w-3.5 h-3.5" />}</span>
                 <h4 className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">{cat}</h4>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500">{items.length}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-600 text-zinc-500">{items.length}</span>
               </div>
               <ul className="space-y-1.5">
                 {items.map((s) => {
@@ -184,7 +184,7 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
 
 function FounderCard() {
   return (
-    <div className="rounded-xl border border-amber-300/60 dark:border-amber-500/30 overflow-hidden bg-white dark:bg-zinc-900 shadow-sm shadow-amber-500/5">
+    <div className="rounded-xl border border-amber-300/60 dark:border-amber-500/30 overflow-hidden bg-zinc-50 dark:bg-zinc-700 shadow-sm shadow-amber-500/5">
       {/* Header */}
       <div className="flex items-center gap-3 px-5 py-4 border-b border-amber-100 dark:border-amber-500/15">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-400 flex items-center justify-center flex-shrink-0 font-bold text-white text-lg shadow-md shadow-amber-500/20">
@@ -205,7 +205,7 @@ function FounderCard() {
       </div>
 
       {/* Authored Articles */}
-      <div className="px-5 py-4 space-y-5">
+      <div className="px-5 py-4 space-y-4">
         <div>
           <div className="flex items-center gap-2 mb-3">
             <BookOpen className="w-3.5 h-3.5 text-amber-500" />
@@ -365,7 +365,7 @@ export default function RecognitionPage() {
           <h2 className="text-sm font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">
             Community Contributors
           </h2>
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-500">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 dark:bg-zinc-700 text-zinc-500">
             {communityGroups.length}
           </span>
         </div>
@@ -383,7 +383,7 @@ export default function RecognitionPage() {
             ))}
           </div>
         ) : (
-          <div className="rounded-xl border-2 border-dashed border-zinc-200 dark:border-zinc-800 p-10 text-center">
+          <div className="rounded-xl border-2 border-dashed border-zinc-200 dark:border-zinc-700 p-8 text-center">
             <Award className="w-10 h-10 text-zinc-300 dark:text-zinc-700 mx-auto mb-3" />
             <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
               No community submissions yet. Be the first to contribute!

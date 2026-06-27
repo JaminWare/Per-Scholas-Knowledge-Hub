@@ -116,7 +116,7 @@ function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
 function FounderRow({ group }: { group: ContributorGroup }) {
   const statLine = buildStatLine(group.contributions);
   return (
-    <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-zinc-900 rounded-xl border border-amber-300/60 dark:border-amber-500/30 shadow-sm shadow-amber-500/5">
+    <div className="flex items-center gap-3 px-5 py-4 bg-zinc-50 dark:bg-zinc-700 rounded-xl border border-amber-300/60 dark:border-amber-500/30 shadow-sm shadow-amber-500/5">
       <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-amber-400 flex items-center justify-center flex-shrink-0 font-bold text-white text-base shadow-md shadow-amber-500/20">
         J
       </div>
@@ -140,8 +140,8 @@ function MemberRow({ group, isNew }: { group: ContributorGroup; isNew?: boolean 
   const statLine = buildStatLine(group.contributions);
 
   return (
-    <div className={`flex items-center gap-3 px-4 py-3 bg-white dark:bg-zinc-900 rounded-xl border ${
-      isNew ? 'border-sky-400/40 dark:border-sky-500/30' : 'border-zinc-200 dark:border-zinc-800'
+    <div className={`flex items-center gap-3 px-4 py-3 bg-zinc-50 dark:bg-zinc-700 rounded-xl border ${
+      isNew ? 'border-sky-400/40 dark:border-sky-500/30' : 'border-zinc-200 dark:border-zinc-600'
     }`}>
       <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white text-sm ${
         isNew ? 'bg-gradient-to-br from-sky-500 to-sky-400' : 'bg-gradient-to-br from-zinc-500 to-zinc-400'
@@ -259,7 +259,7 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
       {/* Claim your spot CTA */}
       <button
         onClick={onClaimBadge}
-        className="w-full flex items-center gap-3 p-4 bg-white dark:bg-zinc-900 border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-sky-400 dark:hover:border-sky-500/50 hover:bg-sky-50 dark:hover:bg-sky-500/5 rounded-xl transition-all group text-left"
+        className="w-full flex items-center gap-3 p-4 bg-zinc-50 dark:bg-zinc-700 border-2 border-dashed border-zinc-300 dark:border-zinc-600 hover:border-sky-400 dark:hover:border-sky-500/50 hover:bg-sky-50 dark:hover:bg-sky-500/5 rounded-xl transition-all group text-left"
       >
         <div className="w-11 h-11 rounded-xl bg-sky-100 dark:bg-sky-500/10 flex items-center justify-center group-hover:bg-sky-200 dark:group-hover:bg-sky-500/20 transition-colors flex-shrink-0">
           <Plus className="w-5 h-5 text-sky-600 dark:text-sky-400" />

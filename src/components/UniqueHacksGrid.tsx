@@ -55,7 +55,7 @@ export default function UniqueHacksGrid() {
 
   return (
     <section className="mt-8">
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6">
+      <div className="bg-zinc-50 dark:bg-zinc-700 border border-zinc-200 dark:border-zinc-600 rounded-xl p-5">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400">
@@ -75,7 +75,7 @@ export default function UniqueHacksGrid() {
               <button
                 key={tile.id}
                 onClick={() => navigate(tile.route)}
-                className={`group flex items-start gap-4 p-4 text-left bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-xl transition-all ${tile.accentClass}`}
+                className={`group flex items-start gap-4 p-4 text-left bg-zinc-100 dark:bg-zinc-600/50 border border-zinc-200 dark:border-zinc-600 rounded-xl transition-all ${tile.accentClass}`}
               >
                 <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${tile.iconBg}`}>
                   <Icon className="w-5 h-5 text-white" />
@@ -95,7 +95,7 @@ export default function UniqueHacksGrid() {
         </div>
 
         {/* Footer link */}
-        <div className="mt-5 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+        <div className="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-600">
           <button
             onClick={() => navigate('/study-tips')}
             className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"

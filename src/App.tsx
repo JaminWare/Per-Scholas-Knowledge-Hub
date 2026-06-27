@@ -25,10 +25,10 @@ function AppContent() {
   const mainRef = useRef<HTMLElement>(null);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100">
+    <div className="flex h-screen w-screen overflow-hidden bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100">
       {/* ── Sidebar ─────────────────────────────────── */}
       <div
-        className={`flex-shrink-0 border-r border-zinc-200 dark:border-zinc-800 h-full overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`flex-shrink-0 border-r border-zinc-300 dark:border-zinc-700 h-full overflow-hidden transition-all duration-300 ease-in-out ${
           sidebarOpen ? 'w-72' : 'w-0'
         }`}
       >
@@ -40,11 +40,11 @@ function AppContent() {
       {/* ── Main area ───────────────────────────────── */}
       <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
         {/* Sticky header */}
-        <header className="flex-shrink-0 z-30 bg-white/90 dark:bg-zinc-900/90 backdrop-blur-lg border-b border-zinc-200 dark:border-zinc-800">
+        <header className="flex-shrink-0 z-30 bg-zinc-50/90 dark:bg-zinc-800/90 backdrop-blur-lg border-b border-zinc-300 dark:border-zinc-700">
           <div className="flex items-center gap-3 px-4 py-3">
             <button
               onClick={() => setSidebarOpen((v) => !v)}
-              className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-sky-100 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-colors flex-shrink-0"
+              className="p-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 hover:bg-sky-100 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-colors flex-shrink-0"
               title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
             >
               {sidebarOpen
@@ -56,7 +56,7 @@ function AppContent() {
             </div>
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-sky-100 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-colors flex-shrink-0"
+              className="p-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 hover:bg-sky-100 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-colors flex-shrink-0"
               title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {theme === 'dark'
@@ -67,7 +67,7 @@ function AppContent() {
         </header>
 
         {/* Scrollable page content */}
-        <main ref={mainRef} className="flex-1 overflow-y-auto p-6 md:p-8">
+        <main ref={mainRef} className="flex-1 overflow-y-auto p-4 md:p-6">
           <ScrollToTop scrollRef={mainRef} />
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -80,7 +80,7 @@ function AppContent() {
         </main>
 
         {/* Footer */}
-        <footer className="flex-shrink-0 border-t border-zinc-200 dark:border-zinc-800 py-4 px-6">
+        <footer className="flex-shrink-0 border-t border-zinc-300 dark:border-zinc-700 py-3 px-5">
           <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-zinc-500 dark:text-zinc-500">
             <p>Per Scholas — Learners Knowledge Base: AI-Enabled Healthcare IT</p>
             <p>Pioneering Cohort 2026-RTT-23</p>

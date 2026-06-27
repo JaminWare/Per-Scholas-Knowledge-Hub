@@ -23,11 +23,11 @@
   }
 
   html.dark body {
-    @apply bg-zinc-900 text-zinc-100;
+    @apply bg-zinc-800 text-zinc-100;
   }
 
   html:not(.dark) body {
-    @apply bg-zinc-100 text-zinc-800;
+    @apply bg-zinc-200 text-zinc-800;
   }
 }
 
@@ -54,11 +54,11 @@
 
   /* ── Cards ── */
   html.dark .card {
-    @apply bg-zinc-900 rounded-xl border border-zinc-800 shadow-sm hover:shadow-md hover:border-zinc-700 transition-all duration-200;
+    @apply bg-zinc-700 rounded-xl border border-zinc-600 shadow-sm hover:shadow-md hover:border-zinc-500 transition-all duration-200;
   }
 
   html:not(.dark) .card {
-    @apply bg-white rounded-xl border border-zinc-200 shadow-sm hover:shadow-md hover:border-sky-300 transition-all duration-200;
+    @apply bg-zinc-50 rounded-xl border border-zinc-200 shadow-sm hover:shadow-md hover:border-sky-300 transition-all duration-200;
   }
 
   .glow {

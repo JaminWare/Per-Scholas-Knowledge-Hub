@@ -126,24 +126,24 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
       </div>
 
       {isOpen && query.trim().length >= 2 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 shadow-xl shadow-zinc-900/10 dark:shadow-black/20 overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-zinc-50 dark:bg-zinc-700 rounded-xl border border-zinc-200 dark:border-zinc-600 shadow-xl shadow-zinc-900/10 dark:shadow-black/20 overflow-hidden z-50">
           {isLoading ? (
             <div className="flex items-center justify-center gap-2 py-8 text-zinc-400 dark:text-zinc-500">
               <Loader2 className="w-5 h-5 animate-spin" />
               <span>Searching...</span>
             </div>
           ) : results.length > 0 ? (
-            <ul className="divide-y divide-zinc-100 dark:divide-zinc-700">
+            <ul className="divide-y divide-zinc-100 dark:divide-zinc-600">
               {results.map((result) => (
                 <li key={`${result.type}-${result.id}`}>
                   <button
                     onClick={() => handleSelect(result)}
-                    className="w-full flex items-start gap-3 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors text-left"
+                    className="w-full flex items-start gap-3 px-4 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-600/50 transition-colors text-left"
                   >
                     <div className={`mt-0.5 p-1.5 rounded-lg ${
                       result.type === 'article'
                         ? 'bg-sky-100 dark:bg-sky-900/30'
-                        : 'bg-zinc-100 dark:bg-zinc-700'
+                        : 'bg-zinc-200 dark:bg-zinc-600'
                     }`}>
                       {result.type === 'article'
                         ? <FileText className="w-4 h-4 text-sky-600 dark:text-sky-400" />

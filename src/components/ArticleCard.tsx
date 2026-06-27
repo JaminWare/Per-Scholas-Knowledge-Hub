@@ -22,7 +22,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
         to={articlePath}
         className="group relative block overflow-hidden rounded-2xl bg-gradient-to-br from-sky-500 to-sky-400 p-1 shadow-xl shadow-sky-500/10"
       >
-        <div className="relative h-full bg-white dark:bg-zinc-900 rounded-xl p-6">
+        <div className="relative h-full bg-zinc-50 dark:bg-zinc-700 rounded-xl p-6">
           <div className="absolute top-4 right-4">
             <span className="px-2 py-1 text-xs font-medium bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 rounded-full">
               Featured

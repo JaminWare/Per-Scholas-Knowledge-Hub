@@ -60,7 +60,7 @@ export default function ArticleRenderer({ blocks }: Props) {
           case 'code':
             return (
               <div key={i} className="rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700">
-                <div className="flex items-center gap-2 px-4 py-2 bg-zinc-100 dark:bg-zinc-800 border-b border-zinc-200 dark:border-zinc-700">
+                <div className="flex items-center gap-2 px-4 py-2 bg-zinc-100 dark:bg-zinc-700 border-b border-zinc-200 dark:border-zinc-600">
                   <Terminal className="w-4 h-4 text-sky-600 dark:text-sky-400" />
                   <span className="text-xs font-mono text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">{block.lang}</span>
                   <div className="ml-auto flex gap-1.5">
@@ -69,7 +69,7 @@ export default function ArticleRenderer({ blocks }: Props) {
                     ))}
                   </div>
                 </div>
-                <pre className="p-4 bg-zinc-50 dark:bg-zinc-950 overflow-x-auto text-sm">
+                <pre className="p-4 bg-zinc-50 dark:bg-zinc-900 overflow-x-auto text-sm">
                   <code className="text-sky-700 dark:text-sky-300 font-mono leading-relaxed whitespace-pre">{block.code}</code>
                 </pre>
               </div>
@@ -80,7 +80,7 @@ export default function ArticleRenderer({ blocks }: Props) {
               <div key={i} className="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-zinc-100 dark:bg-zinc-800">
+                    <tr className="bg-zinc-100 dark:bg-zinc-700">
                       {block.headers.map((h) => (
                         <th key={h} className="px-4 py-3 text-left font-semibold text-zinc-700 dark:text-zinc-200 whitespace-nowrap">{h}</th>
                       ))}
@@ -88,7 +88,7 @@ export default function ArticleRenderer({ blocks }: Props) {
                   </thead>
                   <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
                     {block.rows.map((row, ri) => (
-                      <tr key={ri} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
+                      <tr key={ri} className="hover:bg-zinc-50 dark:hover:bg-zinc-700/50 transition-colors">
                         {row.map((cell, ci) => (
                           <td key={ci} className="px-4 py-3 text-zinc-600 dark:text-zinc-400">{cell}</td>
                         ))}

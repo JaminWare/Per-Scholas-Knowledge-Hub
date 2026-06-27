@@ -196,14 +196,14 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   if (!isOpen) return null;
 
   const inputCls = (field: string) =>
-    `w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm transition-all ${
+    `w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm transition-all ${
       errors[field] ? 'border-red-400 dark:border-red-500/60' : 'border-zinc-300 dark:border-zinc-700'
     }`;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 dark:bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+      <div className="relative w-full max-w-lg bg-zinc-50 dark:bg-zinc-800 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
 
         <div className="px-6 pt-6 pb-4 border-b border-zinc-100 dark:border-zinc-800">
           <div className="flex items-start justify-between">
@@ -211,7 +211,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Submit Your Contribution</h2>
               <p className="text-sm text-zinc-500 mt-1">Share a tip, article, resource link, or log a support ticket.</p>
             </div>
-            <button onClick={onClose} className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
+            <button onClick={onClose} className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
               <X className="w-5 h-5" />
             </button>
           </div>
@@ -284,7 +284,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                 <select
                   value={ticketArea}
                   onChange={(e) => setTicketArea(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm appearance-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm appearance-none"
                 >
                   <option value="">Select a problem area…</option>
                   {TICKET_AREAS.map((a) => <option key={a} value={a}>{a}</option>)}
@@ -338,7 +338,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                 <select
                   value={subTrack}
                   onChange={(e) => setSubTrack(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm appearance-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm appearance-none"
                 >
                   <option value="">All {selectedCat.label} (general)</option>
                   {selectedCat.sub.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -383,7 +383,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                 value={mediaLink}
                 onChange={(e) => setMediaLink(e.target.value)}
                 placeholder="https://… (image URL, Mermaid diagram link, Canvas pin, etc.)"
-                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
               />
               <p className="text-xs text-zinc-400 mt-1">Supports image URLs, Mermaid diagram links, or direct asset embed URLs.</p>
             </div>
@@ -417,7 +417,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           <div className="flex items-center gap-3 pt-1">
             <button
               type="button" onClick={onClose}
-              className="flex-1 px-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-sm font-medium transition-colors"
+              className="flex-1 px-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-600 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-sm font-medium transition-colors"
             >
               Cancel
             </button>

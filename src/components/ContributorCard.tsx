@@ -14,7 +14,7 @@ export default function ContributorCard({ contributor }: ContributorCardProps) {
     .slice(0, 2);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-800 dark:to-zinc-900 p-6 border border-zinc-200 dark:border-zinc-700">
+    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-700 dark:to-zinc-800 p-6 border border-zinc-200 dark:border-zinc-600">
       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-sky-500/10 to-sky-400/10 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-sky-500/10 to-sky-400/10 rounded-full blur-2xl" />
 
