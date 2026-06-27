@@ -266,16 +266,26 @@ function TopAccordion({ group }: { group: NavGroup }) {
 
   return (
     <div>
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className={`sidebar-item w-full ${isActive || isChildActive ? 'active' : ''}`}
-      >
-        <Icon className="w-4 h-4 flex-shrink-0" />
-        <span className="flex-1 text-left truncate text-[13px]">{group.title}</span>
-        {expanded
-          ? <ChevronDown className="w-3.5 h-3.5 flex-shrink-0 opacity-60" />
-          : <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 opacity-60" />}
-      </button>
+      <div className="flex items-center">
+        <Link
+          to={`/${group.slug}`}
+          className={`sidebar-item flex-1 ${isActive || isChildActive ? 'active' : ''}`}
+        >
+          <Icon className="w-4 h-4 flex-shrink-0" />
+          <span className="flex-1 text-left truncate text-[13px]">{group.title}</span>
+        </Link>
+        {group.children && (
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="p-1.5 text-zinc-500 dark:text-zinc-600 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors flex-shrink-0"
+            aria-label={expanded ? 'Collapse' : 'Expand'}
+          >
+            {expanded
+              ? <ChevronDown className="w-3.5 h-3.5" />
+              : <ChevronRight className="w-3.5 h-3.5" />}
+          </button>
+        )}
+      </div>
       {expanded && group.children && (
         <div className="ml-4 pl-2 border-l border-zinc-300 dark:border-zinc-800 space-y-0.5 mt-0.5 mb-1">
           {group.children.map((c) => (

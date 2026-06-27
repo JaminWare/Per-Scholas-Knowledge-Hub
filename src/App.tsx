@@ -1,5 +1,5 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import { useState } from 'react';
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import Sidebar from './components/Sidebar';
 import SearchBar from './components/SearchBar';
@@ -9,9 +9,18 @@ import SectionPage from './pages/SectionPage';
 import ComingSoonPage from './pages/ComingSoonPage';
 import { PanelLeftOpen, PanelLeftClose, Sun, Moon } from 'lucide-react';
 
+function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | null> }) {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    scrollRef.current?.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { theme, toggleTheme } = useTheme();
+  const mainRef = useRef<HTMLElement>(null);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-zinc-100 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100">
@@ -56,7 +65,8 @@ function AppContent() {
         </header>
 
         {/* Scrollable page content */}
-        <main className="flex-1 overflow-y-auto p-6 md:p-8">
+        <main ref={mainRef} className="flex-1 overflow-y-auto p-6 md:p-8">
+          <ScrollToTop scrollRef={mainRef} />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/article/:slug" element={<ArticlePage />} />

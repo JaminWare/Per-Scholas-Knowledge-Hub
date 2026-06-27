@@ -141,11 +141,11 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
 type ArticleWithContributor = Article & { contributor?: { name: string } | null };
 
 function AppletCard({ article }: { article: ArticleWithContributor }) {
+  const isSample = article.is_sample;
   const authorName = (article.contributor as { name: string } | null)?.name
     ?? KNOWN_AUTHORS[article.slug]
-    ?? 'Knowledge Base';
+    ?? (isSample ? '[Sample Learner]' : 'Knowledge Base');
   const authorInitial = authorName.charAt(0).toUpperCase();
-  const isSample = article.is_sample;
 
   return (
     <div className={`group flex flex-col gap-4 rounded-xl p-5 border transition-all duration-200 ${
