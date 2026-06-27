@@ -393,7 +393,7 @@ export default function RecognitionPage() {
               className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium transition-colors"
             >
               <Home className="w-4 h-4" />
-              Go to Submission Portal
+              Submit Your Contribution
             </Link>
           </div>
         )}

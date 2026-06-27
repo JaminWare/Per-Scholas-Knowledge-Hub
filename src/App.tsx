@@ -25,7 +25,7 @@ function AppContent() {
   const mainRef = useRef<HTMLElement>(null);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-zinc-100 dark:bg-zinc-950 text-zinc-800 dark:text-zinc-100">
+    <div className="flex h-screen w-screen overflow-hidden bg-zinc-100 dark:bg-zinc-900 text-zinc-800 dark:text-zinc-100">
       {/* ── Sidebar ─────────────────────────────────── */}
       <div
         className={`flex-shrink-0 border-r border-zinc-200 dark:border-zinc-800 h-full overflow-hidden transition-all duration-300 ease-in-out ${

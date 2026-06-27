@@ -278,7 +278,7 @@ export default function HomePage() {
         </div>{/* end main column */}
 
         {/* ── Right sidebar control console ─────────────────── */}
-        <aside className="lg:col-span-1 lg:sticky lg:top-6 space-y-3">
+        <aside className="lg:col-span-1 space-y-3">
 
           {/* Widget 1 — Cohort Recognition Wall roster */}
           <CohortRecognitionWall
@@ -311,7 +311,7 @@ export default function HomePage() {
                 <div className="p-1.5 rounded-lg bg-sky-100 dark:bg-sky-500/10 flex-shrink-0">
                   <Send className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
                 </div>
-                <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-100">Quick Submission Portal</h3>
+                <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-100">Submit Your Contribution</h3>
               </div>
               <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-500 flex-shrink-0">
                 2026-RTT-23
@@ -375,7 +375,7 @@ export default function HomePage() {
               ) : quickSubmitDone ? (
                 <><CheckCircle className="w-4 h-4" /> Submitted!</>
               ) : (
-                <><Send className="w-4 h-4" /> Submit Contribution</>
+                <><Send className="w-4 h-4" /> Submit Your Contribution</>
               )}
             </button>
           </div>
