@@ -108,7 +108,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
           onChange={(e) => { setQuery(e.target.value); setIsOpen(true); }}
           onFocus={() => setIsOpen(true)}
           placeholder="Search articles, domains..."
-          className="w-full pl-12 pr-20 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all text-sm"
+          className="w-full pl-12 pr-20 py-2.5 rounded-xl bg-zinc-200 dark:bg-zinc-800 border border-zinc-400 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all text-sm"
         />
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
           {query && (
@@ -119,26 +119,26 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
               <X className="w-4 h-4" />
             </button>
           )}
-          <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-200 dark:bg-zinc-700 text-zinc-400 dark:text-zinc-500 text-xs font-medium">
+          <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-300 dark:bg-zinc-700 text-zinc-400 dark:text-zinc-500 text-xs font-medium">
             <span>⌘</span><span>K</span>
           </div>
         </div>
       </div>
 
       {isOpen && query.trim().length >= 2 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-zinc-50 dark:bg-zinc-700 rounded-xl border border-zinc-200 dark:border-zinc-600 shadow-xl shadow-zinc-900/10 dark:shadow-black/20 overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-zinc-100 dark:bg-zinc-700 rounded-xl border border-zinc-300 dark:border-zinc-600 shadow-xl shadow-zinc-900/10 dark:shadow-black/20 overflow-hidden z-50">
           {isLoading ? (
             <div className="flex items-center justify-center gap-2 py-8 text-zinc-400 dark:text-zinc-500">
               <Loader2 className="w-5 h-5 animate-spin" />
               <span>Searching...</span>
             </div>
           ) : results.length > 0 ? (
-            <ul className="divide-y divide-zinc-100 dark:divide-zinc-600">
+            <ul className="divide-y divide-zinc-200 dark:divide-zinc-600">
               {results.map((result) => (
                 <li key={`${result.type}-${result.id}`}>
                   <button
                     onClick={() => handleSelect(result)}
-                    className="w-full flex items-start gap-3 px-4 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-600/50 transition-colors text-left"
+                    className="w-full flex items-start gap-3 px-4 py-3 hover:bg-zinc-200 dark:hover:bg-zinc-600/50 transition-colors text-left"
                   >
                     <div className={`mt-0.5 p-1.5 rounded-lg ${
                       result.type === 'article'

@@ -135,10 +135,13 @@ export default function ArticlePage() {
           }
         } else if (articleContentMap[slug]) {
           setArticle(makeLocalArticle(slug));
+        } else if (isKnownSampleSlug(slug)) {
+          setArticle(makeLocalArticle(slug, slugToSampleTitle(slug)));
         }
       } catch (error) {
         console.error('Error fetching article:', error);
         if (articleContentMap[slug]) setArticle(makeLocalArticle(slug));
+        else if (isKnownSampleSlug(slug)) setArticle(makeLocalArticle(slug, slugToSampleTitle(slug)));
       } finally {
         setIsLoading(false);
       }
@@ -161,10 +164,6 @@ export default function ArticlePage() {
   }
 
   if (!article) {
-    if (slug && isKnownSampleSlug(slug)) {
-      setArticle(makeLocalArticle(slug, slugToSampleTitle(slug)));
-      return null;
-    }
     return (
       <div className="max-w-4xl mx-auto text-center py-20">
         <h1 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100 mb-4">Article Not Found</h1>
@@ -295,14 +294,14 @@ export default function ArticlePage() {
       </div>
 
       {/* ── Article body ─────────────────────────────────────── */}
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 md:p-8">
+      <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 md:p-8">
         {isSample ? (
           <div className="space-y-6">
             {/* Call-out block */}
-            <div className="rounded-lg border border-sky-300 dark:border-sky-500/40 bg-sky-50 dark:bg-sky-500/8 p-4">
+            <div className="rounded-lg border border-sky-300 dark:border-sky-500/40 bg-sky-50/80 dark:bg-sky-500/8 p-4">
               <div className="flex items-start gap-3 mb-3">
-                <div className="p-1.5 rounded-lg bg-sky-100 dark:bg-sky-500/20 flex-shrink-0 mt-0.5">
-                  <Lightbulb className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+                <div className="p-1.5 rounded-lg bg-sky-100/70 dark:bg-sky-500/20 flex-shrink-0 mt-0.5">
+                  <Lightbulb className="w-4 h-4 text-sky-700 dark:text-sky-400" />
                 </div>
                 <div>
                   <p className="text-xs font-bold text-sky-700 dark:text-sky-400 uppercase tracking-widest mb-1">Context Blueprint — Active Template Slot</p>
@@ -333,7 +332,7 @@ export default function ArticlePage() {
           {article.tags.map((tag) => (
             <span
               key={tag}
-              className="px-3 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-full text-sm"
+              className="px-3 py-1 bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-400 rounded-full text-sm"
             >
               {tag}
             </span>
@@ -358,7 +357,7 @@ export default function ArticlePage() {
 
       {/* Related articles */}
       {relatedArticles.length > 0 && (
-        <div className="mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+        <div className="mt-12 pt-8 border-t border-zinc-300 dark:border-zinc-800">
           <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">Related Articles</h2>
           <div className="grid md:grid-cols-3 gap-6">
             {relatedArticles.map((related) => (

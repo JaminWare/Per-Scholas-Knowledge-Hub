@@ -102,7 +102,7 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
   const navigate = useNavigate();
   if (minimal) {
     return (
-      <div className="col-span-full flex flex-col items-center justify-center gap-3 p-8 bg-zinc-50 dark:bg-zinc-900/50 border border-dashed border-zinc-300 dark:border-zinc-700 rounded-xl text-center">
+      <div className="col-span-full flex flex-col items-center justify-center gap-3 p-8 bg-zinc-100 dark:bg-zinc-900/50 border border-dashed border-zinc-300 dark:border-zinc-700 rounded-xl text-center">
         <Construction className="w-7 h-7 text-amber-400" />
         <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
           This module is currently being built or undergoing moderation review by our Cohort Leaders. Check back shortly!
@@ -152,7 +152,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
     <div className={`group flex flex-col gap-4 rounded-xl p-5 border transition-all duration-200 ${
       isSample
         ? 'bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20 hover:border-amber-400/60 dark:hover:border-amber-400/40'
-        : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:border-sky-400/40 dark:hover:border-sky-500/40 hover:shadow-lg hover:shadow-sky-500/5'
+        : 'bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:border-sky-400/40 dark:hover:border-sky-500/40 hover:shadow-lg hover:shadow-sky-500/5'
     }`}>
       {/* Sample badge */}
       {isSample && (
@@ -195,7 +195,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
       {article.tags.length > 0 && (
         <div className="flex flex-wrap gap-1.5">
           {article.tags.slice(0, 3).map((tag) => (
-            <span key={tag} className="px-2 py-0.5 rounded-full text-[11px] bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400">
+            <span key={tag} className="px-2 py-0.5 rounded-full text-[11px] bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
               {tag}
             </span>
           ))}
@@ -228,7 +228,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
 // ── Skeleton ──────────────────────────────────────────────
 function AppletSkeleton() {
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 animate-pulse">
+    <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 animate-pulse">
       <div className="flex items-start gap-3 mb-4">
         <div className="w-10 h-10 rounded-xl bg-zinc-200 dark:bg-zinc-800 flex-shrink-0" />
         <div className="flex-1 space-y-2">
@@ -260,7 +260,7 @@ function StudyTipsDashboard({ articles, isLoading }: { articles: ArticleWithCont
               </div>
               <h2 className={`text-base font-bold uppercase tracking-wide ${colors.header}`}>{key}</h2>
               {!isLoading && (
-                <span className="ml-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400">
+                <span className="ml-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
                   {catArticles.length}
                 </span>
               )}
@@ -392,7 +392,7 @@ export default function SectionPage() {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 md:p-8">
+        <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 md:p-8">
           <ArticleRenderer blocks={localContent.content} />
         </div>
 
@@ -424,7 +424,7 @@ export default function SectionPage() {
       )}
 
       {/* Section header */}
-      <div className="flex items-center gap-4 pb-6 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="flex items-center gap-4 pb-6 border-b border-zinc-300 dark:border-zinc-800">
         <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
           <Icon className="w-7 h-7 text-white" />
         </div>

@@ -27,7 +27,7 @@
   }
 
   html:not(.dark) body {
-    @apply bg-zinc-200 text-zinc-800;
+    @apply bg-zinc-300 text-zinc-800;
   }
 }
 
@@ -45,7 +45,7 @@
   /* ── Sidebar items — light mode ── */
   html:not(.dark) .sidebar-item {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200;
-    @apply text-zinc-700 hover:bg-zinc-300 hover:text-sky-700;
+    @apply text-zinc-700 hover:bg-zinc-400/40 hover:text-sky-700;
   }
 
   html:not(.dark) .sidebar-item.active {
@@ -58,7 +58,7 @@
   }
 
   html:not(.dark) .card {
-    @apply bg-zinc-50 rounded-xl border border-zinc-200 shadow-sm hover:shadow-md hover:border-sky-300 transition-all duration-200;
+    @apply bg-zinc-100 rounded-xl border border-zinc-300 shadow-sm hover:shadow-md hover:border-sky-300 transition-all duration-200;
   }
 
   .glow {

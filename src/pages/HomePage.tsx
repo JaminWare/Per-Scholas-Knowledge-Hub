@@ -185,8 +185,8 @@ export default function HomePage() {
                         <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1">{stat.subtext}</p>
                       )}
                     </div>
-                    <div className="p-2.5 rounded-xl bg-sky-100 dark:bg-sky-500/10">
-                      <Icon className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+                    <div className="p-2.5 rounded-xl bg-sky-100/70 dark:bg-sky-500/10">
+                      <Icon className="w-5 h-5 text-sky-700 dark:text-sky-400" />
                     </div>
                   </div>
                 </div>
@@ -213,7 +213,7 @@ export default function HomePage() {
           <section>
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Research Articles</h2>
-              <span className="text-xs text-zinc-500 dark:text-zinc-500 font-medium px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800">
+              <span className="text-xs text-zinc-600 dark:text-zinc-500 font-medium px-2.5 py-1 rounded-full bg-zinc-200 dark:bg-zinc-800">
                 Cohort 2026-RTT-23
               </span>
             </div>
@@ -234,7 +234,7 @@ export default function HomePage() {
                     </h3>
                     <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">{r.excerpt}</p>
                     <div className="mt-4 flex items-center justify-between">
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
                         {r.tag}
                       </span>
                       <span className="flex items-center gap-1 text-sky-600 dark:text-sky-400 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
@@ -289,7 +289,7 @@ export default function HomePage() {
           {/* View Detailed Portfolios CTA */}
           <Link
             to="/recognition"
-            className="flex items-center justify-between gap-2 w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 hover:border-amber-400/50 dark:hover:border-amber-500/40 hover:bg-amber-50 dark:hover:bg-amber-500/5 transition-all group"
+            className="flex items-center justify-between gap-2 w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-amber-400/50 dark:hover:border-amber-500/40 hover:bg-amber-50 dark:hover:bg-amber-500/5 transition-all group"
           >
             <div className="flex items-center gap-2.5">
               <div className="p-1.5 rounded-lg bg-amber-100 dark:bg-amber-500/10">
@@ -303,17 +303,17 @@ export default function HomePage() {
           </Link>
 
           {/* Widget 2 — Quick Submission Portal */}
-          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 space-y-3">
+          <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl p-4 space-y-3">
 
             {/* Header */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-sky-100 dark:bg-sky-500/10 flex-shrink-0">
-                  <Send className="w-3.5 h-3.5 text-sky-600 dark:text-sky-400" />
+                <div className="p-1.5 rounded-lg bg-sky-100/70 dark:bg-sky-500/10 flex-shrink-0">
+                  <Send className="w-3.5 h-3.5 text-sky-700 dark:text-sky-400" />
                 </div>
                 <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-100">Submit Your Contribution</h3>
               </div>
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-500 flex-shrink-0">
+              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-500 flex-shrink-0">
                 2026-RTT-23
               </span>
             </div>
@@ -328,14 +328,14 @@ export default function HomePage() {
               placeholder="Your Full Name"
               value={quickName}
               onChange={(e) => setQuickName(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
             />
 
             {/* Submission Type */}
             <select
               value={quickType}
               onChange={(e) => setQuickType(e.target.value as QuickType)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all cursor-pointer"
+              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all cursor-pointer"
             >
               <option value="Article">Article</option>
               <option value="Resource Link">Resource Link</option>
@@ -348,7 +348,7 @@ export default function HomePage() {
               placeholder="Title of your contribution"
               value={quickTitle}
               onChange={(e) => setQuickTitle(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
             />
 
             {/* Excerpt */}
@@ -357,7 +357,7 @@ export default function HomePage() {
               placeholder="Brief description or excerpt…"
               value={quickExcerpt}
               onChange={(e) => setQuickExcerpt(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all resize-none"
+              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all resize-none"
             />
 
             {/* Submit button */}
