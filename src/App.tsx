@@ -25,10 +25,10 @@ function AppContent() {
   const mainRef = useRef<HTMLElement>(null);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100">
+    <div className="flex h-screen w-screen overflow-hidden bg-[#f4f8fa] dark:bg-[#242427] text-zinc-800 dark:text-zinc-100">
       {/* ── Sidebar ─────────────────────────────────── */}
       <div
-        className={`flex-shrink-0 border-r border-slate-200 dark:border-zinc-700 h-full overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`flex-shrink-0 border-r border-zinc-700 h-full overflow-hidden transition-all duration-300 ease-in-out ${
           sidebarOpen ? 'w-72' : 'w-0'
         }`}
       >
@@ -39,12 +39,12 @@ function AppContent() {
 
       {/* ── Main area ───────────────────────────────── */}
       <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
-        {/* Sticky header */}
-        <header className="flex-shrink-0 z-30 bg-slate-100/95 dark:bg-zinc-800/90 backdrop-blur-lg border-b border-slate-200 dark:border-zinc-700">
+        {/* Sticky header — always dark charcoal in both modes */}
+        <header className="flex-shrink-0 z-30 bg-zinc-800/95 dark:bg-[#242427]/90 backdrop-blur-lg border-b border-zinc-700/80 dark:border-zinc-600">
           <div className="flex items-center gap-3 px-4 py-3">
             <button
               onClick={() => setSidebarOpen((v) => !v)}
-              className="p-2 rounded-lg bg-white dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 hover:bg-slate-200 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-colors flex-shrink-0"
+              className="p-2 rounded-lg bg-zinc-700 text-zinc-400 hover:bg-zinc-600 hover:text-sky-400 transition-colors flex-shrink-0"
               title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
             >
               {sidebarOpen
@@ -56,7 +56,7 @@ function AppContent() {
             </div>
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-white dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 hover:bg-slate-200 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400 transition-colors flex-shrink-0"
+              className="p-2 rounded-lg bg-zinc-700 text-zinc-400 hover:bg-zinc-600 hover:text-sky-400 transition-colors flex-shrink-0"
               title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {theme === 'dark'
@@ -80,7 +80,7 @@ function AppContent() {
         </main>
 
         {/* Footer */}
-        <footer className="flex-shrink-0 border-t border-slate-200 dark:border-zinc-700 py-3 px-5">
+        <footer className="flex-shrink-0 border-t border-zinc-700/40 dark:border-zinc-600 py-3 px-5">
           <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-zinc-500 dark:text-zinc-500">
             <p>Per Scholas — Learners Knowledge Base: AI-Enabled Healthcare IT</p>
             <p>Pioneering Cohort 2026-RTT-23</p>

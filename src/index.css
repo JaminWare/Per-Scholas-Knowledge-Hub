@@ -23,11 +23,11 @@
   }
 
   html.dark body {
-    @apply bg-zinc-800 text-zinc-100;
+    @apply bg-[#242427] text-zinc-100;
   }
 
   html:not(.dark) body {
-    @apply bg-slate-100 text-zinc-900;
+    @apply bg-[#f4f8fa] text-zinc-900;
   }
 }
 
@@ -42,19 +42,19 @@
     @apply bg-sky-500/15 text-sky-400;
   }
 
-  /* ── Sidebar items — light mode ── */
+  /* ── Sidebar items — light mode (sidebar is always dark charcoal) ── */
   html:not(.dark) .sidebar-item {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200;
-    @apply text-zinc-800 hover:bg-slate-200/50 hover:text-sky-700;
+    @apply text-zinc-100 hover:bg-zinc-700/60 hover:text-sky-400;
   }
 
   html:not(.dark) .sidebar-item.active {
-    @apply bg-slate-200 text-sky-700;
+    @apply bg-zinc-700/80 text-sky-400;
   }
 
   /* ── Cards ── */
   html.dark .card {
-    @apply bg-zinc-700 rounded-xl border border-zinc-600 shadow-sm hover:shadow-md hover:border-zinc-500 transition-all duration-200;
+    @apply bg-zinc-600 rounded-xl border border-zinc-500 shadow-sm hover:shadow-md hover:border-zinc-400 transition-all duration-200;
   }
 
   html:not(.dark) .card {

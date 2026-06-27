@@ -102,7 +102,7 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
   const navigate = useNavigate();
   if (minimal) {
     return (
-      <div className="col-span-full flex flex-col items-center justify-center gap-3 p-8 bg-zinc-100 dark:bg-zinc-900/50 border border-dashed border-zinc-300 dark:border-zinc-700 rounded-xl text-center">
+      <div className="col-span-full flex flex-col items-center justify-center gap-3 p-8 bg-white/80 dark:bg-zinc-700/50 border border-dashed border-zinc-300 dark:border-zinc-600 rounded-xl text-center">
         <Construction className="w-7 h-7 text-amber-400" />
         <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
           This module is currently being built or undergoing moderation review by our Cohort Leaders. Check back shortly!
@@ -155,7 +155,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
     <div className={`group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
       isSample
         ? 'bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20 hover:border-amber-400/70 dark:hover:border-amber-400/50 hover:shadow-[0_0_0_1.5px_rgba(251,191,36,0.5),0_4px_16px_rgba(251,191,36,0.08)]'
-        : 'bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
+        : 'bg-white dark:bg-zinc-700 border-slate-200 dark:border-zinc-600 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
     }`}>
 
       {/* ── Terminal Header Strip ── */}
@@ -260,7 +260,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
 // ── Skeleton ──────────────────────────────────────────────
 function AppletSkeleton() {
   return (
-    <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-5 animate-pulse">
+    <div className="bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 rounded-xl p-5 animate-pulse">
       <div className="flex items-start gap-3 mb-4">
         <div className="w-10 h-10 rounded-xl bg-zinc-200 dark:bg-zinc-800 flex-shrink-0" />
         <div className="flex-1 space-y-2">
@@ -320,7 +320,7 @@ function StudyTipsDashboard({ articles, isLoading }: { articles: ArticleWithCont
         return (
           <section>
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-zinc-100 dark:bg-zinc-800">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-slate-100 dark:bg-zinc-700">
                 <Lightbulb className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
               </div>
               <h2 className="text-base font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">General</h2>
@@ -424,7 +424,7 @@ export default function SectionPage() {
           </div>
         </div>
 
-        <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 md:p-8">
+        <div className="bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 rounded-xl p-6 md:p-8">
           <ArticleRenderer blocks={localContent.content} />
         </div>
 

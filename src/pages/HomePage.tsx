@@ -289,7 +289,7 @@ export default function HomePage() {
           {/* View Detailed Portfolios CTA */}
           <Link
             to="/recognition"
-            className="flex items-center justify-between gap-2 w-full px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 hover:border-amber-400/50 dark:hover:border-amber-500/40 hover:bg-amber-50 dark:hover:bg-amber-500/5 transition-all group"
+            className="flex items-center justify-between gap-2 w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 hover:border-amber-400/50 dark:hover:border-amber-500/40 hover:bg-amber-50 dark:hover:bg-amber-500/5 transition-all group"
           >
             <div className="flex items-center gap-2.5">
               <div className="p-1.5 rounded-lg bg-amber-100 dark:bg-amber-500/10">
@@ -303,7 +303,7 @@ export default function HomePage() {
           </Link>
 
           {/* Widget 2 — Quick Submission Portal */}
-          <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-800 rounded-xl p-4 space-y-3">
+          <div className="bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 rounded-xl p-4 space-y-3">
 
             {/* Header */}
             <div className="flex items-center justify-between">
@@ -328,14 +328,14 @@ export default function HomePage() {
               placeholder="Your Full Name"
               value={quickName}
               onChange={(e) => setQuickName(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+              className="w-full px-3 py-2 text-sm rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
             />
 
             {/* Submission Type */}
             <select
               value={quickType}
               onChange={(e) => setQuickType(e.target.value as QuickType)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all cursor-pointer"
+              className="w-full px-3 py-2 text-sm rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all cursor-pointer"
             >
               <option value="Article">Article</option>
               <option value="Resource Link">Resource Link</option>
@@ -348,7 +348,7 @@ export default function HomePage() {
               placeholder="Title of your contribution"
               value={quickTitle}
               onChange={(e) => setQuickTitle(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+              className="w-full px-3 py-2 text-sm rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
             />
 
             {/* Excerpt */}
@@ -357,7 +357,7 @@ export default function HomePage() {
               placeholder="Brief description or excerpt…"
               value={quickExcerpt}
               onChange={(e) => setQuickExcerpt(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-zinc-200 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all resize-none"
+              className="w-full px-3 py-2 text-sm rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all resize-none"
             />
 
             {/* Submit button */}
