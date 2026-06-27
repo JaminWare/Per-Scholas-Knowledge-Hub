@@ -27,7 +27,7 @@
   }
 
   html:not(.dark) body {
-    @apply bg-sky-50 text-zinc-900;
+    @apply bg-slate-100 text-zinc-900;
   }
 }
 
@@ -45,11 +45,11 @@
   /* ── Sidebar items — light mode ── */
   html:not(.dark) .sidebar-item {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200;
-    @apply text-zinc-800 hover:bg-sky-100/60 hover:text-sky-700;
+    @apply text-zinc-800 hover:bg-slate-200/50 hover:text-sky-700;
   }
 
   html:not(.dark) .sidebar-item.active {
-    @apply bg-sky-100 text-sky-700;
+    @apply bg-slate-200 text-sky-700;
   }
 
   /* ── Cards ── */
@@ -58,7 +58,7 @@
   }
 
   html:not(.dark) .card {
-    @apply bg-white rounded-xl border border-sky-100 shadow-sm hover:shadow-md hover:border-sky-300 transition-all duration-200;
+    @apply bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-sky-300 transition-all duration-200;
   }
 
   .glow {
