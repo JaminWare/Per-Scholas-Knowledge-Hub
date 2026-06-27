@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Share2, Bookmark, BookOpen } from 'lucide-react';
+import { ArrowLeft, Share2, Bookmark, BookOpen, ExternalLink } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
 import MarkdownRenderer from '../components/MarkdownRenderer';
@@ -277,6 +277,19 @@ export default function ArticlePage() {
           ))}
         </div>
       )}
+
+      {/* ── References & Citations ───────────────────────────── */}
+      <div className="mt-8 rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
+          <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+          <h2 className="text-base font-bold text-amber-700 dark:text-amber-400">References &amp; Citations</h2>
+        </div>
+        <div className="px-5 py-4">
+          <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            Contributors: add your references and citations using standard format (APA, MLA, or URL) in your submission via the portal below. External links will open in a new tab.
+          </p>
+        </div>
+      </div>
 
       {/* Related articles */}
       {relatedArticles.length > 0 && (

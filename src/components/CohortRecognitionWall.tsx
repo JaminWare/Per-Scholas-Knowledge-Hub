@@ -72,7 +72,7 @@ function buildStatLine(contributions: ContributionItem[]): string {
   }
   return Object.entries(counts)
     .map(([label, n]) => `${n} ${label}`)
-    .join(' · ');
+    .join(' • ');
 }
 
 const JAMIN_CONTRIBUTIONS: ContributionItem[] = [

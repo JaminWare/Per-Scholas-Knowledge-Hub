@@ -12,6 +12,7 @@ import { PanelLeftOpen, PanelLeftClose, Sun, Moon } from 'lucide-react';
 function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | null> }) {
   const { pathname } = useLocation();
   useEffect(() => {
+    window.scrollTo(0, 0);
     scrollRef.current?.scrollTo(0, 0);
   }, [pathname]);
   return null;
