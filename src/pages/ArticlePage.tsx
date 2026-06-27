@@ -11,7 +11,8 @@ import type { Article, Contributor } from '../types/database';
 export default function ArticlePage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const slug = location.hash.replace('#/', '').replace(/\/$/, '');
+  // Support paths like /#/section/slug or /#/article/slug — use only last segment.
+  const slug = location.hash.replace('#/', '').replace(/\/$/, '').split('/').pop() ?? '';
   const [article, setArticle] = useState<Article | null>(null);
   const [contributor, setContributor] = useState<Contributor | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);

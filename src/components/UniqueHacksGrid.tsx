@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Filter, ChevronRight, Sparkles, Zap } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ArticleCard from './ArticleCard';
@@ -12,6 +13,7 @@ const quickFilters = [
 ];
 
 export default function UniqueHacksGrid() {
+  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -117,7 +119,10 @@ export default function UniqueHacksGrid() {
         )}
 
         <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-          <button className="inline-flex items-center gap-1 text-sm font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors">
+          <button
+            onClick={() => navigate('/study-tips')}
+            className="inline-flex items-center gap-1 text-sm font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
+          >
             View all tips & tricks
             <ChevronRight className="w-4 h-4" />
           </button>

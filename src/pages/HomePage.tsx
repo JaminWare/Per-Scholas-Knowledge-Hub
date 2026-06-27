@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
 import CohortRecognitionWall from '../components/CohortRecognitionWall';
@@ -6,7 +7,34 @@ import UniqueHacksGrid from '../components/UniqueHacksGrid';
 import ContributorSubmissionModal, { type NewSubmission } from '../components/ContributorSubmissionModal';
 import SuccessToast from '../components/SuccessToast';
 import type { Article } from '../types/database';
-import { BookOpen, Eye, Users, Target, TrendingUp } from 'lucide-react';
+import { BookOpen, Eye, Users, Target, TrendingUp, ArrowRight, Shield, Terminal, Monitor } from 'lucide-react';
+
+const researchArticles = [
+  {
+    slug: 'firewall-basics',
+    title: 'The Role of Firewalls in Modern Network Security',
+    excerpt: 'A comprehensive breakdown of Windows Defender Firewall, inbound/outbound rule strategies, and defense-in-depth posture.',
+    icon: Shield,
+    color: 'from-sky-500 to-cyan-400',
+    tag: 'Network Security',
+  },
+  {
+    slug: 'command-documentation',
+    title: 'Command-Line Interface (CLI) Research',
+    excerpt: 'Analytical reference of essential CLI tools for systems administration, networking, and cloud environments.',
+    icon: Terminal,
+    color: 'from-zinc-600 to-zinc-500',
+    tag: 'Systems Admin',
+  },
+  {
+    slug: 'snap-in',
+    title: 'Microsoft Management Console (MMC) Snap-ins',
+    excerpt: 'Deep-dive into Task Scheduler, Performance Monitor, and Group Policy Editor — with real-world administrative use cases.',
+    icon: Monitor,
+    color: 'from-blue-500 to-sky-400',
+    tag: 'Windows Administration',
+  },
+];
 
 const stats = [
   { label: 'Total Collective Insights', value: '148 Articles', icon: BookOpen },
@@ -108,6 +136,44 @@ export default function HomePage() {
 
       {/* Unique Hacks Quick-Reference Grid */}
       <UniqueHacksGrid />
+
+      {/* Research Articles */}
+      <section>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Research Articles</h2>
+          <span className="text-xs text-zinc-500 dark:text-zinc-500 font-medium px-2.5 py-1 rounded-full bg-zinc-100 dark:bg-zinc-800">
+            Cohort 2026-RTT-23
+          </span>
+        </div>
+        <div className="grid md:grid-cols-3 gap-5">
+          {researchArticles.map((r) => {
+            const Icon = r.icon;
+            return (
+              <Link
+                key={r.slug}
+                to={`/article/${r.slug}`}
+                className="group block card p-5 hover:border-sky-400/40 dark:hover:border-sky-500/40 transition-all"
+              >
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${r.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-105 transition-transform`}>
+                  <Icon className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="font-semibold text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-snug">
+                  {r.title}
+                </h3>
+                <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">{r.excerpt}</p>
+                <div className="mt-4 flex items-center justify-between">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400">
+                    {r.tag}
+                  </span>
+                  <span className="flex items-center gap-1 text-sky-600 dark:text-sky-400 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                    Read <ArrowRight className="w-3 h-3" />
+                  </span>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
 
       {/* Recent Articles */}
       <section>

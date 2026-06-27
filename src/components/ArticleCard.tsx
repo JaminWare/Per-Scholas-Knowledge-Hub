@@ -12,10 +12,14 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
     month: 'short', day: 'numeric', year: 'numeric',
   });
 
+  const articlePath = article.section
+    ? `/${article.section.slug}/${article.slug}`
+    : `/article/${article.slug}`;
+
   if (featured) {
     return (
       <Link
-        to={`/${article.slug}`}
+        to={articlePath}
         className="group relative block overflow-hidden rounded-2xl bg-gradient-to-br from-sky-500 to-sky-400 p-1 shadow-xl shadow-sky-500/10"
       >
         <div className="relative h-full bg-white dark:bg-zinc-900 rounded-xl p-6">
@@ -46,7 +50,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
 
   return (
     <Link
-      to={`/${article.slug}`}
+      to={articlePath}
       className="group card p-5 hover:border-sky-400/40 dark:hover:border-sky-500/40"
     >
       <h3 className="font-semibold text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">

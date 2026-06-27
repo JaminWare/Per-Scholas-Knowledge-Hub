@@ -1,8 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, Send, Loader2, ChevronDown, Tag, Image } from 'lucide-react';
+import { X, Send, Loader2, ChevronDown, Tag, Image, FileText, Link2, Ticket } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 const LS_KEY = 'lkb_submissions';
+
+const SUBMISSION_TYPES = [
+  { value: 'Article',        label: 'Article',        icon: FileText, desc: 'A full research or study piece' },
+  { value: 'Resource Link',  label: 'Resource Link',  icon: Link2,    desc: 'A curated external link or tip' },
+  { value: 'Support Ticket', label: 'Support Ticket', icon: Ticket,   desc: 'Report an issue to be resolved' },
+] as const;
+
+type SubmissionType = typeof SUBMISSION_TYPES[number]['value'];
 
 const MASTER_CATEGORIES = [
   { label: 'Study Tips',       badge: 'Core 1 Expert',     sub: [
@@ -39,6 +47,14 @@ const MASTER_CATEGORIES = [
   ]},
 ];
 
+const TICKET_AREAS = [
+  'Platform / Navigation Issue',
+  'Article Error or Inaccuracy',
+  'Missing Content Request',
+  'Access / Permissions Problem',
+  'General Feedback',
+];
+
 function getBadge(masterCategory: string): string {
   return MASTER_CATEGORIES.find((c) => c.label === masterCategory)?.badge ?? 'Cohort Contributor';
 }
@@ -50,6 +66,7 @@ export interface NewSubmission {
   badge: string;
   title: string;
   content: string;
+  submission_type?: string;
   media_link?: string;
   created_at: string;
 }
@@ -72,19 +89,24 @@ interface Props {
 }
 
 export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted }: Props) {
-  const [masterCat, setMasterCat]       = useState('');
-  const [subTrack, setSubTrack]         = useState('');
-  const [fullName, setFullName]         = useState('');
-  const [title, setTitle]               = useState('');
-  const [mediaLink, setMediaLink]       = useState('');
-  const [content, setContent]           = useState('');
-  const [errors, setErrors]             = useState<Record<string, string>>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionType, setSubmissionType] = useState<SubmissionType | ''>('');
+  const [masterCat, setMasterCat]           = useState('');
+  const [subTrack, setSubTrack]             = useState('');
+  const [ticketArea, setTicketArea]         = useState('');
+  const [fullName, setFullName]             = useState('');
+  const [title, setTitle]                   = useState('');
+  const [mediaLink, setMediaLink]           = useState('');
+  const [content, setContent]               = useState('');
+  const [errors, setErrors]                 = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting]     = useState(false);
   const firstInputRef = useRef<HTMLInputElement>(null);
 
+  const isTicket    = submissionType === 'Support Ticket';
   const selectedCat = MASTER_CATEGORIES.find((c) => c.label === masterCat);
-  const autoBadge   = masterCat ? getBadge(masterCat) : null;
-  const trackValue  = subTrack || masterCat;
+  const autoBadge   = masterCat && !isTicket ? getBadge(masterCat) : null;
+  const trackValue  = isTicket
+    ? (ticketArea || 'Support Ticket — General')
+    : (subTrack || masterCat);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -100,42 +122,68 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   }, [isOpen]);
 
   useEffect(() => { setSubTrack(''); }, [masterCat]);
+  useEffect(() => {
+    setMasterCat(''); setSubTrack(''); setTicketArea('');
+    setTitle(''); setContent(''); setErrors({});
+  }, [submissionType]);
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!fullName.trim()) e.fullName = 'Name or Discord handle is required.';
-    if (!masterCat)       e.masterCat = 'Please select a master category.';
-    if (!title.trim())    e.title = 'Title is required.';
-    if (content.trim().length < 30) e.content = 'Content must be at least 30 characters.';
+    if (!fullName.trim())         e.fullName = 'Name or Discord handle is required.';
+    if (!submissionType)          e.submissionType = 'Please choose a submission type.';
+    if (!isTicket && !masterCat)  e.masterCat = 'Please select a master category.';
+    if (!title.trim())            e.title = isTicket ? 'Issue summary is required.' : 'Title is required.';
+    if (content.trim().length < 20)
+      e.content = isTicket
+        ? 'Problem description must be at least 20 characters.'
+        : 'Content must be at least 20 characters.';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
   const reset = () => {
-    setFullName(''); setMasterCat(''); setSubTrack('');
-    setTitle(''); setMediaLink(''); setContent(''); setErrors({});
+    setSubmissionType(''); setFullName(''); setMasterCat(''); setSubTrack('');
+    setTicketArea(''); setTitle(''); setMediaLink(''); setContent(''); setErrors({});
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
     setIsSubmitting(true);
-    const badge = getBadge(masterCat);
+    const badge = isTicket ? 'Cohort Contributor' : getBadge(masterCat);
     try {
       const { data, error } = await supabase
         .from('submissions')
-        .insert({ full_name: fullName.trim(), track: trackValue, badge, title: title.trim(), content: content.trim() })
+        .insert({
+          full_name: fullName.trim(),
+          track: trackValue,
+          badge,
+          title: title.trim(),
+          content: content.trim(),
+          submission_type: submissionType,
+        })
         .select().single();
       if (error) throw error;
-      const sub: NewSubmission = { ...(data as NewSubmission), badge, media_link: mediaLink.trim() || undefined };
+      const sub: NewSubmission = {
+        ...(data as NewSubmission),
+        badge,
+        submission_type: submissionType,
+        media_link: mediaLink.trim() || undefined,
+      };
       saveLocalSubmission(sub);
       onSubmitted(sub);
       reset(); onClose();
     } catch {
       const local: NewSubmission = {
-        id: `local-${Date.now()}`, full_name: fullName.trim(), track: trackValue, badge,
-        title: title.trim(), content: content.trim(),
-        media_link: mediaLink.trim() || undefined, created_at: new Date().toISOString(),
+        id: `local-${Date.now()}`,
+        full_name: fullName.trim(),
+        track: trackValue,
+        badge: isTicket ? 'Cohort Contributor' : getBadge(masterCat),
+        title: title.trim(),
+        content: content.trim(),
+        submission_type: submissionType,
+        media_link: mediaLink.trim() || undefined,
+        created_at: new Date().toISOString(),
       };
       saveLocalSubmission(local);
       onSubmitted(local);
@@ -161,7 +209,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           <div className="flex items-start justify-between">
             <div>
               <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Submit Your Contribution</h2>
-              <p className="text-sm text-zinc-500 mt-1">Share a tip, diagram, reference, or prompt to claim your badge.</p>
+              <p className="text-sm text-zinc-500 mt-1">Share a tip, article, resource link, or log a support ticket.</p>
             </div>
             <button onClick={onClose} className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
               <X className="w-5 h-5" />
@@ -171,6 +219,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4 max-h-[70vh] overflow-y-auto">
 
+          {/* Full name */}
           <div>
             <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
               Full Name / Discord Handle <span className="text-red-400">*</span>
@@ -186,38 +235,101 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
           </div>
 
+          {/* Submission type selector */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-              Master Category <span className="text-red-400">*</span>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+              Submission Type <span className="text-red-400">*</span>
             </label>
-            <div className="relative">
-              <select
-                value={masterCat}
-                onChange={(e) => setMasterCat(e.target.value)}
-                className={`${inputCls('masterCat')} appearance-none`}
-              >
-                <option value="" disabled>Select a category…</option>
-                {MASTER_CATEGORIES.map((c) => (
-                  <option key={c.label} value={c.label}>{c.label}</option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+            <div className="grid grid-cols-3 gap-2">
+              {SUBMISSION_TYPES.map((t) => {
+                const Icon = t.icon;
+                const active = submissionType === t.value;
+                return (
+                  <button
+                    key={t.value}
+                    type="button"
+                    onClick={() => setSubmissionType(t.value)}
+                    className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-all ${
+                      active
+                        ? t.value === 'Support Ticket'
+                          ? 'border-amber-400 bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400'
+                          : 'border-sky-400 bg-sky-50 dark:bg-sky-500/10 text-sky-700 dark:text-sky-400'
+                        : 'border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="text-xs font-semibold leading-tight">{t.label}</span>
+                  </button>
+                );
+              })}
             </div>
-            {errors.masterCat && <p className="mt-1 text-xs text-red-500">{errors.masterCat}</p>}
-            {autoBadge && (
-              <div className="mt-2 flex items-center gap-2">
-                <Tag className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
-                <span className="text-xs text-zinc-500">
-                  You will earn:{' '}
-                  <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-100 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400">
-                    [{autoBadge}]
-                  </span>
-                </span>
+            {errors.submissionType && <p className="mt-1 text-xs text-red-500">{errors.submissionType}</p>}
+            {isTicket && (
+              <div className="mt-2 flex items-start gap-2 p-3 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/20">
+                <Ticket className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
+                <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
+                  Support tickets are triaged by the team and will be converted into a knowledge base article once resolved.
+                </p>
               </div>
             )}
           </div>
 
-          {selectedCat && selectedCat.sub.length > 0 && (
+          {/* Support Ticket: area selector */}
+          {isTicket && (
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                Problem Area <span className="text-zinc-400 font-normal">(optional)</span>
+              </label>
+              <div className="relative">
+                <select
+                  value={ticketArea}
+                  onChange={(e) => setTicketArea(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm appearance-none"
+                >
+                  <option value="">Select a problem area…</option>
+                  {TICKET_AREAS.map((a) => <option key={a} value={a}>{a}</option>)}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+              </div>
+            </div>
+          )}
+
+          {/* Article / Resource Link: master category */}
+          {!isTicket && submissionType && (
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                Master Category <span className="text-red-400">*</span>
+              </label>
+              <div className="relative">
+                <select
+                  value={masterCat}
+                  onChange={(e) => setMasterCat(e.target.value)}
+                  className={`${inputCls('masterCat')} appearance-none`}
+                >
+                  <option value="" disabled>Select a category…</option>
+                  {MASTER_CATEGORIES.map((c) => (
+                    <option key={c.label} value={c.label}>{c.label}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+              </div>
+              {errors.masterCat && <p className="mt-1 text-xs text-red-500">{errors.masterCat}</p>}
+              {autoBadge && (
+                <div className="mt-2 flex items-center gap-2">
+                  <Tag className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
+                  <span className="text-xs text-zinc-500">
+                    You will earn:{' '}
+                    <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-100 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                      [{autoBadge}]
+                    </span>
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Sub-track */}
+          {!isTicket && selectedCat && selectedCat.sub.length > 0 && (
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
                 Specific Domain / Sub-track <span className="text-zinc-400 font-normal">(optional)</span>
@@ -236,56 +348,71 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             </div>
           )}
 
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-              Contribution / Article Title <span className="text-red-400">*</span>
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Fix Boot Camp Audio Driver on Windows 11"
-              className={inputCls('title')}
-            />
-            {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-              <span className="flex items-center gap-1.5">
-                <Image className="w-3.5 h-3.5 text-zinc-400" />
-                Media / Diagram Embed Link
-                <span className="text-zinc-400 font-normal">(optional)</span>
-              </span>
-            </label>
-            <input
-              type="url"
-              value={mediaLink}
-              onChange={(e) => setMediaLink(e.target.value)}
-              placeholder="https://… (image URL, Mermaid diagram link, Canvas pin, etc.)"
-              className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
-            />
-            <p className="text-xs text-zinc-400 mt-1">Supports image URLs, Mermaid diagram links, or direct asset embed URLs.</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-              Contribution Content <span className="text-red-400">*</span>
-            </label>
-            <textarea
-              rows={6}
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="Describe your tip, troubleshooting steps, prompt syntax, diagram description, or reference notes."
-              className={`${inputCls('content')} resize-none font-mono`}
-            />
-            <div className="flex items-center justify-between mt-1">
-              {errors.content
-                ? <p className="text-xs text-red-500">{errors.content}</p>
-                : <span />}
-              <span className="text-xs text-zinc-400">{content.length} chars</span>
+          {/* Title */}
+          {submissionType && (
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                {isTicket ? 'Issue Summary' : 'Contribution / Article Title'}{' '}
+                <span className="text-red-400">*</span>
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder={isTicket
+                  ? 'e.g. Broken link on Networking section page'
+                  : 'e.g. Fix Boot Camp Audio Driver on Windows 11'}
+                className={inputCls('title')}
+              />
+              {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
             </div>
-          </div>
+          )}
+
+          {/* Media link — not for tickets */}
+          {!isTicket && submissionType && (
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                <span className="flex items-center gap-1.5">
+                  <Image className="w-3.5 h-3.5 text-zinc-400" />
+                  Media / Diagram Embed Link
+                  <span className="text-zinc-400 font-normal">(optional)</span>
+                </span>
+              </label>
+              <input
+                type="url"
+                value={mediaLink}
+                onChange={(e) => setMediaLink(e.target.value)}
+                placeholder="https://… (image URL, Mermaid diagram link, Canvas pin, etc.)"
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
+              />
+              <p className="text-xs text-zinc-400 mt-1">Supports image URLs, Mermaid diagram links, or direct asset embed URLs.</p>
+            </div>
+          )}
+
+          {/* Content / Problem description */}
+          {submissionType && (
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                {isTicket ? 'Problem Description' : 'Contribution Content'}{' '}
+                <span className="text-red-400">*</span>
+              </label>
+              <textarea
+                rows={6}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder={isTicket
+                  ? 'Describe the problem in detail. Include steps to reproduce, what you expected, and what actually happened.'
+                  : 'Describe your tip, troubleshooting steps, prompt syntax, diagram description, or reference notes.'}
+                className={`${inputCls('content')} resize-none ${isTicket ? '' : 'font-mono'}`}
+              />
+              <div className="flex items-center justify-between mt-1">
+                {errors.content
+                  ? <p className="text-xs text-red-500">{errors.content}</p>
+                  : <span />}
+                <span className="text-xs text-zinc-400">{content.length} chars</span>
+              </div>
+            </div>
+          )}
 
           <div className="flex items-center gap-3 pt-1">
             <button
@@ -296,10 +423,16 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             </button>
             <button
               type="submit" disabled={isSubmitting}
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-medium text-sm transition-colors disabled:opacity-60 shadow-lg shadow-sky-500/20"
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors disabled:opacity-60 shadow-lg text-white ${
+                isTicket
+                  ? 'bg-amber-500 hover:bg-amber-600 shadow-amber-500/20'
+                  : 'bg-sky-500 hover:bg-sky-600 shadow-sky-500/20'
+              }`}
             >
-              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-              {isSubmitting ? 'Submitting…' : 'Claim My Badge'}
+              {isSubmitting
+                ? <Loader2 className="w-4 h-4 animate-spin" />
+                : isTicket ? <Ticket className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+              {isSubmitting ? 'Submitting…' : isTicket ? 'Log Ticket' : 'Claim My Badge'}
             </button>
           </div>
         </form>
