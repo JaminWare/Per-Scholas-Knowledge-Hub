@@ -76,7 +76,7 @@ function AppContent() {
 
 function RouteHandler() {
   const location = useLocation();
-  const segments = location.hash.replace('#/', '').split('/').filter(Boolean);
+  const segments = location.pathname.split('/').filter(Boolean);
   if (segments.length > 1) return <ArticlePage />;
   return <SectionPage />;
 }

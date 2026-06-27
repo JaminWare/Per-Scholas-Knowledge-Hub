@@ -11,8 +11,8 @@ import type { Article, Contributor } from '../types/database';
 export default function ArticlePage() {
   const location = useLocation();
   const navigate = useNavigate();
-  // Support paths like /#/section/slug or /#/article/slug — use only last segment.
-  const slug = location.hash.replace('#/', '').replace(/\/$/, '').split('/').pop() ?? '';
+  // HashRouter puts the path in location.pathname (e.g. /article/firewall-basics).
+  const slug = location.pathname.split('/').filter(Boolean).pop() ?? '';
   const [article, setArticle] = useState<Article | null>(null);
   const [contributor, setContributor] = useState<Contributor | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
@@ -20,7 +20,7 @@ export default function ArticlePage() {
 
   useEffect(() => {
     async function fetchArticle() {
-      if (!slug) return;
+      if (!slug) { setIsLoading(false); return; }
       try {
         const { data, error } = await supabase
           .from('articles')
@@ -40,9 +40,42 @@ export default function ArticlePage() {
               .limit(3);
             if (related) setRelatedArticles(related);
           }
+        } else if (articleContentMap[slug]) {
+          // Supabase record missing but local markdown exists — synthesize an Article.
+          setArticle({
+            id: slug,
+            slug,
+            title: slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+            content: articleContentMap[slug],
+            excerpt: null,
+            section_id: null,
+            contributor_id: null,
+            tags: [],
+            is_featured: false,
+            source_file: null,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          });
         }
       } catch (error) {
         console.error('Error fetching article:', error);
+        // If DB fails but local content exists, fall back gracefully.
+        if (articleContentMap[slug]) {
+          setArticle({
+            id: slug,
+            slug,
+            title: slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+            content: articleContentMap[slug],
+            excerpt: null,
+            section_id: null,
+            contributor_id: null,
+            tags: [],
+            is_featured: false,
+            source_file: null,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          });
+        }
       } finally {
         setIsLoading(false);
       }

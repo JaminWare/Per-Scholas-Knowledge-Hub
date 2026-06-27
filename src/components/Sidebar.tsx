@@ -100,6 +100,7 @@ const tracks: TrackSection[] = [
           { title: 'OSI Model & TCP/IP', slug: 'core1-networking/osi-tcpip' },
           { title: 'Ports & Protocols', slug: 'core1-networking/ports-protocols' },
           { title: 'Wireless Standards', slug: 'core1-networking/wireless' },
+          { title: 'The Role of Firewalls in Modern Network Security', slug: 'article/firewall-basics' },
         ]},
       { title: 'Domain 3.0 — Hardware', slug: 'core1-hardware', icon: Cpu,
         children: [
@@ -115,6 +116,7 @@ const tracks: TrackSection[] = [
         children: [
           { title: 'Motherboard Troubleshooting & PBQs', slug: 'core1-troubleshooting/motherboard-pbq' },
           { title: 'Network Connectivity Issues', slug: 'core1-troubleshooting/network' },
+          { title: 'Command-Line Interface (CLI) Research', slug: 'article/command-documentation' },
         ]},
     ],
   },
@@ -128,6 +130,7 @@ const tracks: TrackSection[] = [
         children: [
           { title: 'Windows Installation & Upgrade Matrix', slug: 'core2-os/windows-bootcamp' },
           { title: 'macOS & Linux Essentials', slug: 'core2-os/macos-linux' },
+          { title: 'Microsoft Management Console (MMC) Snap-ins', slug: 'article/snap-in' },
         ]},
       { title: 'Domain 2.0 — Security', slug: 'core2-security', icon: Shield,
         children: [

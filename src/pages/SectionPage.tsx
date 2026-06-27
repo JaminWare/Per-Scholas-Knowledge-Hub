@@ -75,7 +75,7 @@ function CopyLinkButton({ slug }: { slug: string }) {
 export default function SectionPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const slug = location.hash.replace('#/', '').replace(/\/$/, '');
+  const slug = location.pathname.replace(/^\//, '').replace(/\/$/, '');
 
   const [dbArticles, setDbArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
