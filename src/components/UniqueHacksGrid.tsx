@@ -1,129 +1,106 @@
-import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Filter, ChevronRight, Sparkles, Zap } from 'lucide-react';
-import { supabase } from '../lib/supabase';
-import ArticleCard from './ArticleCard';
-import type { Article } from '../types/database';
+import { Sparkles, Lightbulb, Network, BrainCircuit, HeartPulse, ChevronRight } from 'lucide-react';
 
-const quickFilters = [
-  { id: 'comptia', label: 'CompTIA Mnemonics', tag: 'mnemonics', icon: '⏱️' },
-  { id: 'healthcare', label: 'Healthcare Lab', tag: 'healthcare-lab', icon: '🏥' },
-  { id: 'networking', label: 'Networking Tips', tag: 'networking', icon: '🌐' },
-  { id: 'prompts', label: 'AI Prompt Hacks', tag: 'prompts', icon: '🤖' },
+interface QuickLaunchTile {
+  id: string;
+  label: string;
+  description: string;
+  icon: React.ComponentType<{ className?: string }>;
+  route: string;
+  accentClass: string;
+  iconBg: string;
+}
+
+const tiles: QuickLaunchTile[] = [
+  {
+    id: 'study-tips',
+    label: 'Study Tips Hub',
+    description: 'CompTIA mnemonics, OSI frameworks & active-recall flashcards',
+    icon: Lightbulb,
+    route: '/study-tips',
+    accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
+    iconBg: 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20',
+  },
+  {
+    id: 'networking',
+    label: 'Networking Domain',
+    description: 'Ports, protocols, OSI model & TCP/IP deep dives',
+    icon: Network,
+    route: '/core1-networking',
+    accentClass: 'hover:border-teal-400/50 dark:hover:border-teal-500/40',
+    iconBg: 'bg-gradient-to-br from-teal-500 to-teal-400 shadow-teal-500/20',
+  },
+  {
+    id: 'healthcare',
+    label: 'Healthcare Lab',
+    description: 'Clinical workflows, EHR devices & lab troubleshooting scenarios',
+    icon: HeartPulse,
+    route: '/healthcare-clinical',
+    accentClass: 'hover:border-cyan-400/50 dark:hover:border-cyan-500/40',
+    iconBg: 'bg-gradient-to-br from-cyan-500 to-cyan-400 shadow-cyan-500/20',
+  },
+  {
+    id: 'prompts',
+    label: 'AI Prompt Hacks',
+    description: 'PBQ simulation prompts, EHR troubleshooting frameworks & case studies',
+    icon: BrainCircuit,
+    route: '/azari-prompt-playbook',
+    accentClass: 'hover:border-amber-400/50 dark:hover:border-amber-500/40',
+    iconBg: 'bg-gradient-to-br from-amber-500 to-amber-400 shadow-amber-500/20',
+  },
 ];
 
 export default function UniqueHacksGrid() {
   const navigate = useNavigate();
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    async function fetchArticles() {
-      setIsLoading(true);
-      try {
-        let query = supabase.from('articles').select('*').order('created_at', { ascending: false });
-        if (activeFilter) query = query.contains('tags', [activeFilter]);
-        const { data } = await query.limit(6);
-        setArticles(data || []);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchArticles();
-  }, [activeFilter]);
 
   return (
     <section className="mt-8">
       <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6">
-        <div className="flex items-center gap-3 mb-4">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-6">
           <div className="p-2 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
             <h2 className="text-lg font-bold text-zinc-800 dark:text-zinc-100">Unique Hacks Quick-Reference Grid</h2>
-            <p className="text-sm text-zinc-500">Specialized, non-textbook shortcuts from the community</p>
+            <p className="text-sm text-zinc-500">Jump directly into a Control Panel — no searching required</p>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 mb-6">
-          <button
-            onClick={() => setActiveFilter(null)}
-            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              activeFilter === null
-                ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/20'
-                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-sky-100 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400'
-            }`}
-          >
-            <Filter className="w-4 h-4" />
-            All Tips
-          </button>
-          {quickFilters.map((f) => (
-            <button
-              key={f.id}
-              onClick={() => setActiveFilter(f.tag)}
-              className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                activeFilter === f.tag
-                  ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/20'
-                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:bg-sky-100 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400'
-              }`}
-            >
-              <span>{f.icon}</span>
-              {f.label}
-            </button>
-          ))}
-        </div>
-
-        {isLoading ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl animate-pulse">
-                <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-3/4" />
-                <div className="h-3 bg-zinc-200 dark:bg-zinc-700 rounded w-full mt-2" />
-              </div>
-            ))}
-          </div>
-        ) : articles.length > 0 ? (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {articles.map((article) => (
-              <div key={article.id} className="bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 hover:border-sky-400 dark:hover:border-sky-500/40 rounded-xl p-4 transition-colors">
-                <div className="flex items-start gap-2">
-                  <Zap className="w-4 h-4 text-sky-500 dark:text-sky-400 mt-0.5 flex-shrink-0" />
-                  <div>
-                    <h3 className="font-medium text-zinc-800 dark:text-zinc-100 text-sm">{article.title}</h3>
-                    {article.excerpt && (
-                      <p className="text-xs text-zinc-500 mt-1 line-clamp-2">{article.excerpt}</p>
-                    )}
-                    {article.tags.length > 0 && (
-                      <div className="flex gap-1 mt-2">
-                        {article.tags.slice(0, 2).map((tag) => (
-                          <span key={tag} className="px-2 py-0.5 text-xs bg-zinc-200 dark:bg-zinc-700 text-zinc-500 dark:text-zinc-400 rounded">{tag}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+        {/* Quick-launch tiles */}
+        <div className="grid sm:grid-cols-2 gap-4">
+          {tiles.map((tile) => {
+            const Icon = tile.icon;
+            return (
+              <button
+                key={tile.id}
+                onClick={() => navigate(tile.route)}
+                className={`group flex items-start gap-4 p-4 text-left bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 rounded-xl transition-all ${tile.accentClass}`}
+              >
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${tile.iconBg}`}>
+                  <Icon className="w-5 h-5 text-white" />
                 </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-8">
-            <div className="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mx-auto mb-3">
-              <Sparkles className="w-6 h-6 text-zinc-400 dark:text-zinc-600" />
-            </div>
-            <p className="text-zinc-500 text-sm">No tips found for this category yet.</p>
-            <p className="text-zinc-400 dark:text-zinc-600 text-xs mt-1">Be the first to contribute!</p>
-          </div>
-        )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-semibold text-sm text-zinc-800 dark:text-zinc-100">
+                      {tile.label}
+                    </p>
+                    <ChevronRight className="w-4 h-4 text-zinc-400 dark:text-zinc-600 flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 line-clamp-2">{tile.description}</p>
+                </div>
+              </button>
+            );
+          })}
+        </div>
 
-        <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
+        {/* Footer link */}
+        <div className="mt-5 pt-4 border-t border-zinc-100 dark:border-zinc-800">
           <button
             onClick={() => navigate('/study-tips')}
-            className="inline-flex items-center gap-1 text-sm font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
+            className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
           >
-            View all tips & tricks
+            Browse all study tips &amp; tricks
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
