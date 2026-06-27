@@ -1,5 +1,11 @@
 import { Fragment } from 'react';
 import { ExternalLink } from 'lucide-react';
+import {
+  FirewallNetworkSegmentationDiagram,
+  FirewallPacketInspectionDiagram,
+  HealthcareCloudHierarchyDiagram,
+  TRACEPromptPipelineDiagram,
+} from './DiagramComponents';
 
 type InlineToken =
   | { type: 'text'; value: string }
@@ -15,11 +21,12 @@ type Block =
   | { type: 'list'; items: string[] }
   | { type: 'table'; headers: string[]; rows: string[][] }
   | { type: 'paragraph'; content: string }
-  | { type: 'citations'; items: string[] };
+  | { type: 'citations'; items: string[] }
+  | { type: 'diagram'; id: string }
+  | { type: 'code_fence'; lang: string; code: string };
 
 function parseInline(text: string): InlineToken[] {
   const tokens: InlineToken[] = [];
-  // Order matters: **bold** and `code` must be matched before *italic*
   const pattern = /\*\*([^*]+)\*\*|`([^`]+)`|\[([^\]]+)\]\(([^)]+)\)|\*([^*\n]+)\*/g;
   let lastIndex = 0;
   let match: RegExpExecArray | null;
@@ -59,7 +66,7 @@ function renderInline(text: string): React.ReactNode {
             return <em key={i} className="italic text-zinc-500 dark:text-zinc-400">{token.value}</em>;
           case 'code':
             return (
-              <code key={i} className="px-1.5 py-0.5 bg-zinc-100 dark:bg-zinc-800 rounded text-[0.85em] font-mono text-sky-700 dark:text-sky-400 border border-zinc-200 dark:border-zinc-700">
+              <code key={i} className="px-1.5 py-0.5 bg-zinc-200 dark:bg-zinc-800 rounded text-[0.85em] font-mono text-sky-700 dark:text-sky-400 border border-zinc-300 dark:border-zinc-700">
                 {token.value}
               </code>
             );
@@ -93,6 +100,7 @@ function parseBlocks(content: string): Block[] {
   const lines = content.split('\n');
   const blocks: Block[] = [];
   let i = 0;
+  let pendingDiagramAfterTable: string | null = null;
 
   while (i < lines.length) {
     const trimmed = lines[i].trim();
@@ -102,10 +110,23 @@ function parseBlocks(content: string): Block[] {
       continue;
     }
 
+    // Code fence
+    if (trimmed.startsWith('```')) {
+      const lang = trimmed.slice(3).trim() || 'text';
+      i++;
+      const codeLines: string[] = [];
+      while (i < lines.length && !lines[i].trim().startsWith('```')) {
+        codeLines.push(lines[i]);
+        i++;
+      }
+      i++;
+      blocks.push({ type: 'code_fence', lang, code: codeLines.join('\n') });
+      continue;
+    }
+
     if (trimmed.startsWith('## ')) {
       const heading = trimmed.slice(3).trim();
       if (heading === 'References & Citations') {
-        // Consume all following list/paragraph lines until next H2
         i++;
         const citationItems: string[] = [];
         while (i < lines.length && !lines[i].trim().startsWith('## ')) {
@@ -116,6 +137,14 @@ function parseBlocks(content: string): Block[] {
           i++;
         }
         blocks.push({ type: 'citations', items: citationItems });
+      } else if (heading === 'Cloud Service Models in Healthcare') {
+        pendingDiagramAfterTable = 'healthcare-cloud-hierarchy';
+        blocks.push({ type: 'h2', content: heading });
+        i++;
+      } else if (heading === 'Evaluating AI Output Quality') {
+        blocks.push({ type: 'h2', content: heading });
+        blocks.push({ type: 'diagram', id: 'trace-pipeline' });
+        i++;
       } else {
         blocks.push({ type: 'h2', content: heading });
         i++;
@@ -124,8 +153,17 @@ function parseBlocks(content: string): Block[] {
       blocks.push({ type: 'h3', content: trimmed.slice(4) });
       i++;
     } else if (trimmed.startsWith('> ')) {
-      blocks.push({ type: 'blockquote', content: trimmed.slice(2) });
-      i++;
+      const bqContent = trimmed.slice(2);
+      if (bqContent.includes('**Figure 1:**')) {
+        blocks.push({ type: 'diagram', id: 'firewall-fig1' });
+        i++;
+      } else if (bqContent.includes('**Figure 2:**')) {
+        blocks.push({ type: 'diagram', id: 'firewall-fig2' });
+        i++;
+      } else {
+        blocks.push({ type: 'blockquote', content: bqContent });
+        i++;
+      }
     } else if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
       const items: string[] = [];
       while (i < lines.length) {
@@ -149,6 +187,10 @@ function parseBlocks(content: string): Block[] {
         const dataLines = tableLines.slice(1).filter((l) => !isAlignmentRow(l));
         const rows = dataLines.map(parseTableRow);
         blocks.push({ type: 'table', headers, rows });
+        if (pendingDiagramAfterTable) {
+          blocks.push({ type: 'diagram', id: pendingDiagramAfterTable });
+          pendingDiagramAfterTable = null;
+        }
       }
     } else {
       const paragraphLines: string[] = [];
@@ -163,6 +205,13 @@ function parseBlocks(content: string): Block[] {
   return blocks;
 }
 
+const diagramRegistry: Record<string, React.ComponentType<{ className?: string }>> = {
+  'firewall-fig1': FirewallNetworkSegmentationDiagram,
+  'firewall-fig2': FirewallPacketInspectionDiagram,
+  'healthcare-cloud-hierarchy': HealthcareCloudHierarchyDiagram,
+  'trace-pipeline': TRACEPromptPipelineDiagram,
+};
+
 interface Props {
   content: string;
 }
@@ -174,6 +223,15 @@ export default function MarkdownRenderer({ content }: Props) {
     <div className="space-y-5 text-zinc-700 dark:text-zinc-300 leading-relaxed">
       {blocks.map((block, idx) => {
         switch (block.type) {
+          case 'diagram': {
+            const DiagramComp = diagramRegistry[block.id];
+            if (!DiagramComp) return null;
+            return (
+              <div key={idx} className="my-6 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700">
+                <DiagramComp />
+              </div>
+            );
+          }
           case 'h2':
             return (
               <h2 key={idx} className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mt-8 mb-3 pb-2 border-b border-zinc-200 dark:border-zinc-800 first:mt-0">
@@ -209,7 +267,7 @@ export default function MarkdownRenderer({ content }: Props) {
             );
           case 'blockquote':
             return (
-              <blockquote key={idx} className="pl-4 border-l-4 border-sky-400 dark:border-sky-500 bg-sky-50 dark:bg-sky-950/20 rounded-r py-3 pr-4 text-zinc-600 dark:text-zinc-400">
+              <blockquote key={idx} className="pl-4 border-l-4 border-sky-400 dark:border-sky-500 bg-sky-50/80 dark:bg-sky-950/20 rounded-r py-3 pr-4 text-zinc-600 dark:text-zinc-400">
                 {renderInline(block.content)}
               </blockquote>
             );
@@ -229,7 +287,7 @@ export default function MarkdownRenderer({ content }: Props) {
               <div key={idx} className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700 my-6">
                 <table className="min-w-full text-sm border-collapse">
                   <thead>
-                    <tr className="bg-zinc-50 dark:bg-zinc-800/60">
+                    <tr className="bg-zinc-200/60 dark:bg-zinc-800/60">
                       {block.headers.map((header, hIdx) => (
                         <th key={hIdx} className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700 whitespace-nowrap">
                           {renderInline(header)}
@@ -239,7 +297,7 @@ export default function MarkdownRenderer({ content }: Props) {
                   </thead>
                   <tbody>
                     {block.rows.map((row, rIdx) => (
-                      <tr key={rIdx} className="border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-50 dark:hover:bg-zinc-800/30 transition-colors">
+                      <tr key={rIdx} className="border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/30 transition-colors">
                         {row.map((cell, cIdx) => (
                           <td key={cIdx} className="px-4 py-3 align-top text-zinc-600 dark:text-zinc-400">
                             {renderInline(cell)}
@@ -249,6 +307,22 @@ export default function MarkdownRenderer({ content }: Props) {
                     ))}
                   </tbody>
                 </table>
+              </div>
+            );
+          case 'code_fence':
+            return (
+              <div key={idx} className="rounded-xl overflow-hidden border border-zinc-300 dark:border-zinc-700 my-4">
+                <div className="flex items-center gap-2 px-4 py-2 bg-zinc-800 dark:bg-zinc-900 border-b border-zinc-700">
+                  <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">{block.lang}</span>
+                  <div className="ml-auto flex gap-1.5">
+                    {['#ff5f57', '#febc2e', '#28c840'].map((c) => (
+                      <span key={c} className="w-2.5 h-2.5 rounded-full" style={{ background: c }} />
+                    ))}
+                  </div>
+                </div>
+                <pre className="p-4 bg-zinc-900 overflow-x-auto text-sm">
+                  <code className="text-sky-300 font-mono leading-relaxed whitespace-pre">{block.code}</code>
+                </pre>
               </div>
             );
           case 'paragraph':

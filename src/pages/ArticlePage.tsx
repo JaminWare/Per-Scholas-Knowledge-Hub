@@ -4,6 +4,13 @@ import { ArrowLeft, Share2, Bookmark, BookOpen, ExternalLink, Lightbulb } from '
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
 import MarkdownRenderer from '../components/MarkdownRenderer';
+import {
+  OSIModelStackDiagram,
+  HL7MessageRoutingDiagram,
+  MDMEnrollmentFlowDiagram,
+  FirewallNetworkSegmentationDiagram,
+  FirewallPacketInspectionDiagram,
+} from '../components/DiagramComponents';
 import { articleContentMap } from '../data/articles';
 import type { Article, Contributor } from '../types/database';
 
@@ -81,6 +88,52 @@ function deriveAuthorName(contributor: Contributor | null, article: Article): st
   const featuredSlugs = ['firewall-basics', 'command-documentation', 'snap-in', 'intro-healthcare-it-security', 'cloud-computing-healthcare', 'ai-prompt-engineering-healthcare'];
   if (featuredSlugs.includes(article.slug)) return 'Jamin Ware';
   return 'Knowledge Base';
+}
+
+// Diagrams to inject above the blueprint outline for specific sample slugs
+const SAMPLE_SLUG_DIAGRAMS: Record<string, React.ComponentType<{ className?: string }>> = {
+  'core1-networking/sample-protocols': OSIModelStackDiagram,
+  'sample-protocols':                  OSIModelStackDiagram,
+  'healthcare-ehr/sample-hl7':         HL7MessageRoutingDiagram,
+  'sample-hl7':                        HL7MessageRoutingDiagram,
+  'core1-mobile/sample-mdm':           MDMEnrollmentFlowDiagram,
+  'sample-mdm':                        MDMEnrollmentFlowDiagram,
+};
+
+// Full-page diagram panels for founder Diagrams articles
+function NetworkTopologyArticleDiagrams() {
+  return (
+    <div className="space-y-8">
+      <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700">
+        <FirewallNetworkSegmentationDiagram />
+      </div>
+      <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700">
+        <FirewallPacketInspectionDiagram />
+      </div>
+      <div className="prose-style space-y-4 text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
+        <p>The three-tier network topology model divides enterprise switching infrastructure into three distinct functional layers. The <strong className="text-zinc-800 dark:text-zinc-200">Core Layer</strong> provides high-speed backbone connectivity between distribution switches with sub-millisecond failover. The <strong className="text-zinc-800 dark:text-zinc-200">Distribution Layer</strong> enforces routing policy, VLAN segmentation, and inter-subnet ACLs. The <strong className="text-zinc-800 dark:text-zinc-200">Access Layer</strong> connects end-user devices with port security, 802.1X authentication, and Power over Ethernet (PoE).</p>
+        <p>The firewall segmentation diagram above illustrates how the DMZ acts as a controlled buffer zone. Public-facing services (web servers, DNS resolvers) sit in the DMZ — reachable from the internet but fully isolated from the private LAN. Stateful Packet Inspection (SPI) tracks each TCP/UDP session in a state table, allowing return traffic for established connections while silently dropping unsolicited inbound probes.</p>
+      </div>
+    </div>
+  );
+}
+
+function OSIPDUArticleDiagrams() {
+  return (
+    <div className="space-y-8">
+      <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700">
+        <OSIModelStackDiagram />
+      </div>
+      <div className="space-y-4 text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
+        <p>Data encapsulation is the process of wrapping payload data with protocol-specific headers (and sometimes trailers) as it descends through the OSI stack before transmission. Each layer adds its own metadata so the receiving peer at the same layer can process it correctly.</p>
+        <p><strong className="text-zinc-800 dark:text-zinc-200">Layer 7–5 (Application/Presentation/Session):</strong> Raw data is formatted, encrypted if applicable (TLS lives here conceptually), and session multiplexed. PDU is simply called "Data".</p>
+        <p><strong className="text-zinc-800 dark:text-zinc-200">Layer 4 (Transport):</strong> TCP or UDP adds source/destination ports and, for TCP, sequence numbers and checksum. The PDU becomes a <code className="px-1 bg-zinc-200 dark:bg-zinc-800 rounded font-mono text-sky-700 dark:text-sky-400">Segment</code>.</p>
+        <p><strong className="text-zinc-800 dark:text-zinc-200">Layer 3 (Network):</strong> IP header adds source and destination IP addresses. The PDU becomes a <code className="px-1 bg-zinc-200 dark:bg-zinc-800 rounded font-mono text-sky-700 dark:text-sky-400">Packet</code>. Routers operate at this layer.</p>
+        <p><strong className="text-zinc-800 dark:text-zinc-200">Layer 2 (Data Link):</strong> Ethernet header adds MAC addresses; a trailer adds a Frame Check Sequence (FCS) CRC. PDU = <code className="px-1 bg-zinc-200 dark:bg-zinc-800 rounded font-mono text-sky-700 dark:text-sky-400">Frame</code>. Switches operate here.</p>
+        <p><strong className="text-zinc-800 dark:text-zinc-200">Layer 1 (Physical):</strong> Frames are serialized into electrical voltages, light pulses, or radio waves. PDU = <code className="px-1 bg-zinc-200 dark:bg-zinc-800 rounded font-mono text-sky-700 dark:text-sky-400">Bits</code>.</p>
+      </div>
+    </div>
+  );
 }
 
 function makeLocalArticle(slug: string, title?: string): Article {
@@ -186,6 +239,13 @@ export default function ArticlePage() {
   const authorName = deriveAuthorName(contributor, article);
   const trackLabel = deriveTrackLabel(article);
   const authorInitial = authorName.charAt(0).toUpperCase();
+
+  // Slug-specific diagram component for sample articles
+  const SampleDiagram = SAMPLE_SLUG_DIAGRAMS[article.slug] ?? null;
+
+  // Full-page diagram panel for founder Diagrams articles
+  const isNetworkTopologyArticle = article.slug === 'diagrams/network-topology-architecture';
+  const isOSIPDUArticle = article.slug === 'diagrams/osi-pdu-flow';
 
   function handleBack() {
     if (article?.section?.slug) {
@@ -295,8 +355,18 @@ export default function ArticlePage() {
 
       {/* ── Article body ─────────────────────────────────────── */}
       <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 md:p-8">
-        {isSample ? (
+        {isNetworkTopologyArticle ? (
+          <NetworkTopologyArticleDiagrams />
+        ) : isOSIPDUArticle ? (
+          <OSIPDUArticleDiagrams />
+        ) : isSample ? (
           <div className="space-y-6">
+            {/* Inline diagram above the blueprint for visual sample slugs */}
+            {SampleDiagram && (
+              <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700">
+                <SampleDiagram />
+              </div>
+            )}
             {/* Call-out block */}
             <div className="rounded-lg border border-sky-300 dark:border-sky-500/40 bg-sky-50/80 dark:bg-sky-500/8 p-4">
               <div className="flex items-start gap-3 mb-3">
@@ -317,7 +387,6 @@ export default function ArticlePage() {
                 Submit Your Contribution
               </Link>
             </div>
-
             {/* Blueprint outline via MarkdownRenderer */}
             <MarkdownRenderer content={BLUEPRINT_OUTLINE} />
           </div>

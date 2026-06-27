@@ -138,7 +138,7 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
   );
 }
 
-// ── Applet Card ───────────────────────────────────────────
+// ── Applet Card — Lab Capsule Format ─────────────────────
 type ArticleWithContributor = Article & { contributor?: { name: string } | null };
 
 function AppletCard({ article }: { article: ArticleWithContributor }) {
@@ -147,80 +147,109 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
     ?? KNOWN_AUTHORS[article.slug]
     ?? (isSample ? '[Sample Learner]' : 'Knowledge Base');
   const authorInitial = authorName.charAt(0).toUpperCase();
+  const toolsPreview = article.tags.length > 0
+    ? `$ Tools: ${article.tags.slice(0, 3).join(' · ')}`
+    : null;
 
   return (
-    <div className={`group flex flex-col gap-4 rounded-xl p-5 border transition-all duration-200 ${
+    <div className={`group flex flex-col rounded-xl border overflow-hidden transition-all duration-200 ${
       isSample
-        ? 'bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20 hover:border-amber-400/60 dark:hover:border-amber-400/40'
-        : 'bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:border-sky-400/40 dark:hover:border-sky-500/40 hover:shadow-lg hover:shadow-sky-500/5'
+        ? 'bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20 hover:border-amber-400/70 dark:hover:border-amber-400/50 hover:shadow-[0_0_0_1.5px_rgba(251,191,36,0.35)] hover:shadow-amber-500/5'
+        : 'bg-zinc-100 dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.3)] hover:shadow-sky-500/5'
     }`}>
-      {/* Sample badge */}
-      {isSample && (
-        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-amber-500/15 border border-amber-200 dark:border-amber-500/20 self-start">
-          <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-          <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wide">Sample Slot</span>
-        </div>
-      )}
 
-      {/* Header */}
-      <div className="flex items-start gap-3">
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${
-          isSample ? 'bg-gradient-to-br from-amber-400 to-amber-500 shadow-amber-500/20' : 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20'
+      {/* ── Terminal Header Strip ── */}
+      <div className={`flex items-center justify-between px-3 py-1.5 ${
+        isSample ? 'bg-zinc-800 dark:bg-zinc-900/80' : 'bg-zinc-800 dark:bg-zinc-900'
+      }`}>
+        <div className="flex items-center gap-2">
+          {isSample ? (
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+          ) : (
+            <span className="text-[11px] font-mono font-bold text-sky-400 select-none">{`</>`}</span>
+          )}
+          <span className="text-[10px] font-mono text-zinc-500 truncate max-w-[120px]">
+            {article.slug.split('/').pop()}
+          </span>
+        </div>
+        <span className={`text-[9px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wide flex-shrink-0 ${
+          isSample
+            ? 'bg-amber-500/20 text-amber-400 border border-amber-500/20'
+            : 'bg-sky-500/15 text-sky-400 border border-sky-500/20'
         }`}>
-          <BookOpen className="w-5 h-5 text-white" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <h3 className={`font-semibold text-sm leading-snug line-clamp-2 transition-colors ${
-            isSample
-              ? 'text-amber-800 dark:text-amber-300 group-hover:text-amber-600 dark:group-hover:text-amber-300'
-              : 'text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400'
-          }`}>
-            {article.title}
-          </h3>
-          <div className="flex items-center gap-1.5 mt-1.5">
-            <div className="w-5 h-5 rounded-md bg-gradient-to-br from-zinc-400 to-zinc-500 flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-[9px] font-bold">{authorInitial}</span>
-            </div>
-            <span className="text-xs text-zinc-500 dark:text-zinc-400 truncate">{authorName}</span>
-          </div>
-        </div>
+          {isSample ? '[Lab Documentation]' : '[Verified Peer Build]'}
+        </span>
       </div>
 
-      {/* Excerpt */}
-      {article.excerpt && (
-        <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-3 flex-1">{article.excerpt}</p>
-      )}
-
-      {/* Tags */}
-      {article.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {article.tags.slice(0, 3).map((tag) => (
-            <span key={tag} className="px-2 py-0.5 rounded-full text-[11px] bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
-              {tag}
-            </span>
-          ))}
+      {/* ── Card Body ── */}
+      <div className="flex flex-col gap-3 p-4 flex-1">
+        {/* Header */}
+        <div className="flex items-start gap-3">
+          <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${
+            isSample ? 'bg-gradient-to-br from-amber-400 to-amber-500 shadow-amber-500/20' : 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20'
+          }`}>
+            <BookOpen className="w-4 h-4 text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className={`font-semibold text-sm leading-snug line-clamp-2 transition-colors ${
+              isSample
+                ? 'text-amber-800 dark:text-amber-300 group-hover:text-amber-600 dark:group-hover:text-amber-300'
+                : 'text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400'
+            }`}>
+              {article.title}
+            </h3>
+            <div className="flex items-center gap-1.5 mt-1">
+              <div className="w-4 h-4 rounded bg-gradient-to-br from-zinc-400 to-zinc-500 flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-[8px] font-bold">{authorInitial}</span>
+              </div>
+              <span className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">{authorName}</span>
+            </div>
+          </div>
         </div>
-      )}
 
-      {/* Sample incentive caption */}
-      {isSample && (
-        <p className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-100/60 dark:bg-amber-500/10 rounded-lg px-3 py-2 border border-amber-200/60 dark:border-amber-500/15">
-          💡 This slot is open! Submit your research via the portal below to claim this applet.
-        </p>
-      )}
+        {/* Excerpt */}
+        {article.excerpt && (
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 flex-1 leading-relaxed">{article.excerpt}</p>
+        )}
 
-      {/* CTA button */}
-      <Link
-        to={`/article/${article.slug}`}
-        className={`mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border ${
-          isSample
-            ? 'bg-amber-500/10 hover:bg-amber-500 text-amber-700 dark:text-amber-400 hover:text-white border-amber-500/20 hover:border-amber-500'
-            : 'bg-sky-500/10 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 hover:shadow-md hover:shadow-sky-500/20'
-        }`}
-      >
-        Read Article
-        <ArrowRight className="w-3.5 h-3.5" />
-      </Link>
+        {/* Tags */}
+        {article.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {article.tags.slice(0, 3).map((tag) => (
+              <span key={tag} className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-300/60 dark:border-zinc-700/60">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Sample incentive caption */}
+        {isSample && (
+          <p className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-100/60 dark:bg-amber-500/10 rounded-lg px-2.5 py-2 border border-amber-200/60 dark:border-amber-500/15">
+            💡 This slot is open! Submit your research via the portal below to claim this applet.
+          </p>
+        )}
+
+        {/* Hover preview snippet */}
+        {toolsPreview && (
+          <div className="opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-200 text-[10px] font-mono text-emerald-700 dark:text-emerald-400 bg-zinc-900/6 dark:bg-zinc-900/60 px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 truncate">
+            {toolsPreview}
+          </div>
+        )}
+
+        {/* CTA button */}
+        <Link
+          to={`/article/${article.slug}`}
+          className={`mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border ${
+            isSample
+              ? 'bg-amber-500/10 hover:bg-amber-500 text-amber-700 dark:text-amber-400 hover:text-white border-amber-500/20 hover:border-amber-500'
+              : 'bg-sky-500/10 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 hover:shadow-md hover:shadow-sky-500/20'
+          }`}
+        >
+          Read Article
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      </div>
     </div>
   );
 }
