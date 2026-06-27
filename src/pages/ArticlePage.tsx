@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, Tag, Share2, Bookmark, FileCode } from 'lucide-react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
 import ContributorCard from '../components/ContributorCard';
+import MarkdownRenderer from '../components/MarkdownRenderer';
 import { articleContentMap } from '../data/articles';
 import type { Article, Contributor } from '../types/database';
 
@@ -163,10 +162,8 @@ export default function ArticlePage() {
           </div>
         </header>
 
-        <div className="prose prose-sky dark:prose-invert max-w-none prose-table:text-sm prose-td:align-top">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {markdownContent}
-          </ReactMarkdown>
+        <div className="mt-2">
+          <MarkdownRenderer content={markdownContent} />
         </div>
 
         {article.tags.length > 3 && (
