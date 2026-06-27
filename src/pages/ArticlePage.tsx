@@ -1,10 +1,12 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, Tag, Share2, Bookmark, FileCode } from 'lucide-react';
-import { marked } from 'marked';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
 import ContributorCard from '../components/ContributorCard';
+import { articleContentMap } from '../data/articles';
 import type { Article, Contributor } from '../types/database';
 
 export default function ArticlePage() {
@@ -87,14 +89,11 @@ export default function ArticlePage() {
     month: 'long', day: 'numeric', year: 'numeric',
   });
 
-  const renderedContent = useMemo(() => {
-    marked.setOptions({ gfm: true, breaks: true });
-    return marked.parse(article.content) as string;
-  }, [article.content]);
+  // Static content map takes priority; falls back to Supabase content field.
+  const markdownContent = articleContentMap[article.slug] ?? article.content;
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Universal Back Button */}
       <button
         onClick={() => navigate(-1)}
         className="inline-flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-sm font-medium mb-6"
@@ -103,7 +102,6 @@ export default function ArticlePage() {
         Back to Previous Page
       </button>
 
-      {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 mb-6">
         <Link to="/" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
           Home
@@ -123,7 +121,6 @@ export default function ArticlePage() {
         <span className="text-zinc-800 dark:text-zinc-100">{article.title}</span>
       </nav>
 
-      {/* Article Header */}
       <article>
         <header className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
@@ -166,13 +163,14 @@ export default function ArticlePage() {
           </div>
         </header>
 
-        <div
-          className="prose prose-sky dark:prose-invert max-w-none prose-table:text-sm prose-td:align-top"
-          dangerouslySetInnerHTML={{ __html: renderedContent }}
-        />
+        <div className="prose prose-sky dark:prose-invert max-w-none prose-table:text-sm prose-td:align-top">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {markdownContent}
+          </ReactMarkdown>
+        </div>
 
         {article.tags.length > 3 && (
-          <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800 not-prose">
+          <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
             <div className="flex flex-wrap gap-2">
               {article.tags.map((tag) => (
                 <span
