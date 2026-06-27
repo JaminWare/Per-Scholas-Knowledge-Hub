@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Share2, Bookmark, BookOpen, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Share2, Bookmark, BookOpen, ExternalLink, Lightbulb } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import { articleContentMap } from '../data/articles';
 import type { Article, Contributor } from '../types/database';
 
-// Section titles used in banner track labels
 const sectionTrackLabels: Record<string, string> = {
   'core1-networking':      'COMPTIA A+ CORE 1 — NETWORKING',
   'core1-troubleshooting': 'COMPTIA A+ CORE 1 — TROUBLESHOOTING',
@@ -27,7 +26,6 @@ const sectionTrackLabels: Record<string, string> = {
   'diagrams':              'DIAGRAMS',
 };
 
-// Role badge styles
 const roleBadgeStyles: Record<string, string> = {
   'Founder':             'bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20',
   'HealthIT Specialist': 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
@@ -37,22 +35,51 @@ const roleBadgeStyles: Record<string, string> = {
   'Playbook Engineer':   'bg-violet-500/10 text-violet-600 dark:text-violet-400',
 };
 
+const BLUEPRINT_OUTLINE = `### 1. Architectural Overview
+*Provide a high-level summary of the protocol, system component, or administrative tool.*
+
+### 2. Core Technical Requirements & Configurations
+*Detail step-by-step terminal commands, registry paths, or network ports crucial to this domain.*
+
+### 3. Real-World Troubleshooting Scenario
+*Map out a common failure state (e.g., device enrollment failure, boot loops, or network configuration errors) and the direct mitigation steps.*
+
+### 4. References & Peer Citations
+*List official documentation links (e.g., Microsoft Learn, AWS Architecture Whitepapers, or HHS/NIST guidelines).*`;
+
 function deriveTrackLabel(article: Article): string {
   if (article.section) {
     const key = article.section.slug;
     return sectionTrackLabels[key] ?? article.section.title.toUpperCase();
   }
-  // Derive from slug prefix when section join is unavailable
   const prefix = article.slug.split('/')[0];
   return sectionTrackLabels[prefix] ?? 'LEARNERS KNOWLEDGE BASE';
 }
 
 function deriveAuthorName(contributor: Contributor | null, article: Article): string {
   if (contributor?.name) return contributor.name;
-  // Featured research articles default to Jamin Ware
   const featuredSlugs = ['firewall-basics', 'command-documentation', 'snap-in', 'intro-healthcare-it-security', 'cloud-computing-healthcare', 'ai-prompt-engineering-healthcare'];
   if (featuredSlugs.includes(article.slug)) return 'Jamin Ware';
   return 'Knowledge Base';
+}
+
+function makeLocalArticle(slug: string): Article {
+  return {
+    id: slug,
+    slug,
+    title: slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+    content: articleContentMap[slug],
+    excerpt: null,
+    section_id: null,
+    contributor_id: null,
+    tags: [],
+    is_featured: false,
+    is_sample: false,
+    study_category: null,
+    source_file: null,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
 }
 
 export default function ArticlePage() {
@@ -87,39 +114,11 @@ export default function ArticlePage() {
             if (related) setRelatedArticles(related);
           }
         } else if (articleContentMap[slug]) {
-          setArticle({
-            id: slug,
-            slug,
-            title: slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-            content: articleContentMap[slug],
-            excerpt: null,
-            section_id: null,
-            contributor_id: null,
-            tags: [],
-            is_featured: false,
-            source_file: null,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          });
+          setArticle(makeLocalArticle(slug));
         }
       } catch (error) {
         console.error('Error fetching article:', error);
-        if (articleContentMap[slug]) {
-          setArticle({
-            id: slug,
-            slug,
-            title: slug.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
-            content: articleContentMap[slug],
-            excerpt: null,
-            section_id: null,
-            contributor_id: null,
-            tags: [],
-            is_featured: false,
-            source_file: null,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
-          });
-        }
+        if (articleContentMap[slug]) setArticle(makeLocalArticle(slug));
       } finally {
         setIsLoading(false);
       }
@@ -159,20 +158,29 @@ export default function ArticlePage() {
     );
   }
 
+  const isSample = article.is_sample === true || article.title.includes('[Sample]');
   const markdownContent = articleContentMap[article.slug] ?? article.content;
   const authorName = deriveAuthorName(contributor, article);
   const trackLabel = deriveTrackLabel(article);
   const authorInitial = authorName.charAt(0).toUpperCase();
 
+  function handleBack() {
+    if (article?.section?.slug) {
+      navigate('/' + article.section.slug);
+    } else {
+      navigate(-1);
+    }
+  }
+
   return (
     <div className="max-w-4xl mx-auto">
       {/* Back button */}
       <button
-        onClick={() => navigate(-1)}
+        onClick={handleBack}
         className="inline-flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-sm font-medium mb-5"
       >
         <ArrowLeft className="w-4 h-4" />
-        Back to Previous Page
+        {article.section ? `Back to ${article.section.title}` : 'Back'}
       </button>
 
       {/* Breadcrumb */}
@@ -195,45 +203,48 @@ export default function ArticlePage() {
 
       {/* ── Hero Banner ──────────────────────────────────────── */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-sky-950 border border-zinc-700/50 p-8 mb-8">
-        {/* Decorative orbs */}
         <div className="absolute top-0 right-0 w-72 h-72 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-sky-400/5 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative">
-          {/* Track label row */}
+          {/* Track label */}
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 rounded-xl bg-sky-500/20 border border-sky-500/30">
               <BookOpen className="w-5 h-5 text-sky-400" />
             </div>
-            <span className="text-xs font-bold text-sky-400 uppercase tracking-widest">
-              {trackLabel}
-            </span>
+            <span className="text-xs font-bold text-sky-400 uppercase tracking-widest">{trackLabel}</span>
           </div>
 
-          {/* Article title */}
+          {/* Title */}
           <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-5 leading-tight">
             {article.title}
           </h1>
 
-          {/* Contributor row */}
+          {/* Author row */}
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-md shadow-sky-500/20">
-                {authorInitial}
-              </div>
-              <span className="text-sm font-medium text-zinc-200">{authorName}</span>
-            </div>
-
-            {/* Role badge */}
-            {authorName === 'Jamin Ware' && (
-              <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${roleBadgeStyles['Founder']}`}>
-                [Founder]
+            {isSample ? (
+              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border border-dashed border-zinc-500/60 text-xs font-semibold text-zinc-400 bg-zinc-800/40">
+                [Sample Learner — Open Slot]
               </span>
-            )}
-            {contributor?.name && contributor.name !== 'Jamin Ware' && (
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400">
-                [Contributor]
-              </span>
+            ) : (
+              <>
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-md shadow-sky-500/20">
+                    {authorInitial}
+                  </div>
+                  <span className="text-sm font-medium text-zinc-200">{authorName}</span>
+                </div>
+                {authorName === 'Jamin Ware' && (
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${roleBadgeStyles['Founder']}`}>
+                    [Founder]
+                  </span>
+                )}
+                {contributor?.name && contributor.name !== 'Jamin Ware' && (
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400">
+                    [Contributor]
+                  </span>
+                )}
+              </>
             )}
 
             {/* Tags */}
@@ -261,7 +272,35 @@ export default function ArticlePage() {
 
       {/* ── Article body ─────────────────────────────────────── */}
       <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 md:p-8">
-        <MarkdownRenderer content={markdownContent} />
+        {isSample ? (
+          <div className="space-y-6">
+            {/* Call-out block */}
+            <div className="rounded-lg border border-sky-300 dark:border-sky-500/40 bg-sky-50 dark:bg-sky-500/8 p-4">
+              <div className="flex items-start gap-3 mb-3">
+                <div className="p-1.5 rounded-lg bg-sky-100 dark:bg-sky-500/20 flex-shrink-0 mt-0.5">
+                  <Lightbulb className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-sky-700 dark:text-sky-400 uppercase tracking-widest mb-1">Context Blueprint — Active Template Slot</p>
+                  <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                    This is an open slot in the Cohort Knowledge Base awaiting a peer contribution. Research the topic, follow the structural outline below, then use the submission panel to claim this applet.
+                  </p>
+                </div>
+              </div>
+              <Link
+                to="/"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-semibold transition-colors"
+              >
+                Submit Your Contribution
+              </Link>
+            </div>
+
+            {/* Blueprint outline via MarkdownRenderer */}
+            <MarkdownRenderer content={BLUEPRINT_OUTLINE} />
+          </div>
+        ) : (
+          <MarkdownRenderer content={markdownContent} />
+        )}
       </div>
 
       {/* All tags */}
@@ -278,18 +317,20 @@ export default function ArticlePage() {
         </div>
       )}
 
-      {/* ── References & Citations ───────────────────────────── */}
-      <div className="mt-8 rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
-          <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-          <h2 className="text-base font-bold text-amber-700 dark:text-amber-400">References &amp; Citations</h2>
+      {/* References & Citations — only for live articles */}
+      {!isSample && (
+        <div className="mt-8 rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
+          <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
+            <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+            <h2 className="text-base font-bold text-amber-700 dark:text-amber-400">References &amp; Citations</h2>
+          </div>
+          <div className="px-5 py-4">
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+              Contributors: add your references and citations using standard format (APA, MLA, or URL) in your submission via the portal below. External links will open in a new tab.
+            </p>
+          </div>
         </div>
-        <div className="px-5 py-4">
-          <p className="text-sm text-zinc-500 dark:text-zinc-400">
-            Contributors: add your references and citations using standard format (APA, MLA, or URL) in your submission via the portal below. External links will open in a new tab.
-          </p>
-        </div>
-      </div>
+      )}
 
       {/* Related articles */}
       {relatedArticles.length > 0 && (
