@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Award, Plus, BookOpen, Zap, Ticket, Link2, Star } from 'lucide-react';
+import { Award, Plus, BookOpen, Zap, Ticket, Link2, Star, Crown } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { loadLocalSubmissions, type NewSubmission } from './ContributorSubmissionModal';
 
@@ -64,15 +64,13 @@ const LABEL_ICON: Record<string, React.ReactNode> = {
   'Logged Support Tickets': <Ticket className="w-3 h-3" />,
 };
 
-function buildStatLine(contributions: ContributionItem[]): string {
+function buildStatEntries(contributions: ContributionItem[]): { label: string; count: number }[] {
   const counts: Record<string, number> = {};
   for (const c of contributions) {
     const label = categorizeLabel(c);
     counts[label] = (counts[label] ?? 0) + 1;
   }
-  return Object.entries(counts)
-    .map(([label, n]) => `${n} ${label}`)
-    .join(' • ');
+  return Object.entries(counts).map(([label, count]) => ({ label, count }));
 }
 
 const JAMIN_CONTRIBUTIONS: ContributionItem[] = [
@@ -115,11 +113,11 @@ function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
   return Array.from(map.values());
 }
 
-// ── Static Founder Row (pinned, amber-framed, no expand) ──
+// ── Static Founder Row (pinned, sky-tinted bg, Crown icon) ──
 function FounderRow({ group }: { group: ContributorGroup }) {
-  const statLine = buildStatLine(group.contributions);
+  const statEntries = buildStatEntries(group.contributions);
   return (
-    <div className="flex items-center gap-3 px-5 py-4 bg-white dark:bg-zinc-600 rounded-xl border border-amber-300/60 dark:border-amber-500/30 shadow-sm shadow-amber-500/5">
+    <div className="flex items-center gap-3 px-5 py-4 bg-sky-50/90 dark:bg-zinc-700/80 rounded-xl border border-sky-300/60 dark:border-amber-500/30 shadow-sm shadow-amber-500/5">
       <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-amber-400 flex items-center justify-center flex-shrink-0 font-bold text-white text-base shadow-md shadow-amber-500/20">
         J
       </div>
@@ -127,11 +125,18 @@ function FounderRow({ group }: { group: ContributorGroup }) {
         <div className="flex items-center gap-2 flex-wrap">
           <span className="font-bold text-zinc-800 dark:text-zinc-100 text-sm">{group.name}</span>
           <BadgeTag badge="Founder" />
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-bold bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-full border border-amber-200 dark:border-amber-500/20">
-            <Star className="w-2.5 h-2.5" /> PINNED
-          </span>
+          <Crown className="w-4 h-4 text-amber-500 flex-shrink-0" />
         </div>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">{statLine}</p>
+        <div className="flex flex-wrap gap-1 mt-1">
+          {statEntries.map(({ label, count }) => (
+            <span
+              key={label}
+              className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-100/60 text-amber-950 dark:bg-zinc-800/80 dark:text-zinc-100"
+            >
+              {count} {label}
+            </span>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -140,7 +145,7 @@ function FounderRow({ group }: { group: ContributorGroup }) {
 // ── Static Member Row (flat, no expand) ──────────────────
 function MemberRow({ group, isNew }: { group: ContributorGroup; isNew?: boolean }) {
   const initial = group.name.charAt(0).toUpperCase();
-  const statLine = buildStatLine(group.contributions);
+  const statEntries = buildStatEntries(group.contributions);
 
   return (
     <div className={`flex items-center gap-3 px-4 py-3 bg-white dark:bg-zinc-600 rounded-xl border ${
@@ -161,7 +166,16 @@ function MemberRow({ group, isNew }: { group: ContributorGroup; isNew?: boolean 
             </span>
           )}
         </div>
-        <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5 truncate">{statLine}</p>
+        <div className="flex flex-wrap gap-1 mt-1">
+          {statEntries.map(({ label, count }) => (
+            <span
+              key={label}
+              className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-sky-100/70 text-sky-900 dark:bg-zinc-800/80 dark:text-zinc-100"
+            >
+              {count} {label}
+            </span>
+          ))}
+        </div>
       </div>
       {/* Per-category mini icons */}
       <div className="hidden sm:flex items-center gap-1 flex-shrink-0">

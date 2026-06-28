@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
-  Zap, Star, Ticket, Home,
+  Zap, Star, Ticket, Home, Crown,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { loadLocalSubmissions, type NewSubmission } from '../components/ContributorSubmissionModal';
@@ -95,13 +95,14 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
     (acc[cat] = acc[cat] ?? []).push(s);
     return acc;
   }, {});
+  const totalCount = group.submissions.length;
 
   return (
     <div className={`rounded-xl border overflow-hidden transition-all ${
       isOpen
         ? 'border-sky-400/40 dark:border-sky-500/30 shadow-md shadow-sky-500/5'
         : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600'
-    } bg-zinc-50 dark:bg-zinc-700`}>
+    } bg-white dark:bg-zinc-700`}>
 
       {/* Header — click to toggle */}
       <button
@@ -125,9 +126,11 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
               </span>
             )}
           </div>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-            {group.submissions.length} contribution{group.submissions.length !== 1 ? 's' : ''}
-          </p>
+          <div className="flex flex-wrap gap-1 mt-1">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-sky-100/70 text-sky-900 dark:bg-zinc-800/80 dark:text-zinc-100">
+              {totalCount} contribution{totalCount !== 1 ? 's' : ''}
+            </span>
+          </div>
         </div>
         {isOpen
           ? <ChevronDown className="w-4 h-4 text-zinc-400 flex-shrink-0" />
@@ -182,9 +185,9 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
 
 function FounderCard() {
   return (
-    <div className="rounded-xl border border-amber-300/60 dark:border-amber-500/30 overflow-hidden bg-zinc-50 dark:bg-zinc-700 shadow-sm shadow-amber-500/5">
+    <div className="rounded-xl border border-sky-300/60 dark:border-amber-500/30 overflow-hidden bg-sky-50/90 dark:bg-zinc-700/80 shadow-sm shadow-amber-500/5">
       {/* Header */}
-      <div className="flex items-center gap-3 px-5 py-4 border-b border-amber-100 dark:border-amber-500/15">
+      <div className="flex items-center gap-3 px-5 py-4 border-b border-sky-100 dark:border-amber-500/15">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-400 flex items-center justify-center flex-shrink-0 font-bold text-white text-lg shadow-md shadow-amber-500/20">
           J
         </div>
@@ -192,13 +195,13 @@ function FounderCard() {
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-bold text-zinc-800 dark:text-zinc-100">Jamin Ware</span>
             <BadgeTag badge="Founder" />
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-bold bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-full border border-amber-200 dark:border-amber-500/20">
-              <Star className="w-2.5 h-2.5" /> PINNED
+            <Crown className="w-4 h-4 text-amber-500 flex-shrink-0" />
+          </div>
+          <div className="flex flex-wrap gap-1 mt-1">
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-100/60 text-amber-950 dark:bg-zinc-800/80 dark:text-zinc-100">
+              {JAMIN_ARTICLES.length} Authored Articles
             </span>
           </div>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-            9 Authored Articles
-          </p>
         </div>
       </div>
 

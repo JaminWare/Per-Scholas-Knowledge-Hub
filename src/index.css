@@ -27,7 +27,7 @@
   }
 
   html:not(.dark) body {
-    @apply bg-[#f4f8fa] text-zinc-900;
+    @apply bg-slate-200 text-zinc-900;
   }
 }
 
