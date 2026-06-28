@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Share2, Bookmark, BookOpen, ExternalLink, Lightbulb } from 'lucide-react';
+import { ArrowLeft, Share2, Bookmark, BookOpen, ExternalLink, UploadCloud } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
 import MarkdownRenderer from '../components/MarkdownRenderer';
@@ -52,18 +52,6 @@ const roleBadgeStyles: Record<string, string> = {
   'Playbook Engineer':   'bg-violet-500/10 text-violet-600 dark:text-violet-400',
 };
 
-const BLUEPRINT_OUTLINE = `### 1. Architectural Overview
-*Provide a high-level summary of the protocol, system component, or administrative tool.*
-
-### 2. Core Technical Requirements & Configurations
-*Detail step-by-step terminal commands, registry paths, or network ports crucial to this domain.*
-
-### 3. Real-World Troubleshooting Scenario
-*Map out a common failure state (e.g., device enrollment failure, boot loops, or network configuration errors) and the direct mitigation steps.*
-
-### 4. References & Peer Citations
-*List official documentation links (e.g., Microsoft Learn, AWS Architecture Whitepapers, or HHS/NIST guidelines).*`;
-
 const SAMPLE_KEYWORDS = [
   'comptia', 'core1', 'core2', 'mobile', 'networking', 'hardware',
   'virtualization', 'troubleshooting', 'os', 'security', 'software',
@@ -100,16 +88,6 @@ function deriveAuthorName(contributor: Contributor | null, article: Article): st
   if (featuredSlugs.includes(article.slug)) return 'Jamin Ware';
   return 'Knowledge Base';
 }
-
-// Diagrams to inject above the blueprint outline for specific sample slugs
-const SAMPLE_SLUG_DIAGRAMS: Record<string, React.ComponentType<{ className?: string }>> = {
-  'core1-networking/sample-protocols': OSIModelStackDiagram,
-  'sample-protocols':                  OSIModelStackDiagram,
-  'healthcare-ehr/sample-hl7':         HL7MessageRoutingDiagram,
-  'sample-hl7':                        HL7MessageRoutingDiagram,
-  'core1-mobile/sample-mdm':           MDMEnrollmentFlowDiagram,
-  'sample-mdm':                        MDMEnrollmentFlowDiagram,
-};
 
 // Full-page diagram panels for founder Diagrams articles
 function NetworkTopologyArticleDiagrams() {
@@ -579,12 +557,9 @@ export default function ArticlePage() {
   const trackLabel = deriveTrackLabel(article);
   const authorInitial = authorName.charAt(0).toUpperCase();
 
-  // Slug-specific diagram component for sample articles
-  const SampleDiagram = SAMPLE_SLUG_DIAGRAMS[article.slug] ?? null;
-
-  // Founder bypass: never render sample blueprint for known founder slugs
+  // Founder bypass: never render sample gateway for known founder slugs
   const isFounderSlug = FOUNDER_SLUGS.has(article.slug) || authorName === 'Jamin Ware';
-  const effectiveIsSample = isSample && !isFounderSlug;
+  const effectiveIsSample = (article.title.toLowerCase().startsWith('[sample]') || isSample) && !isFounderSlug;
 
   // Full-page diagram panel routing
   const isNetworkTopologyArticle = article.slug === 'diagrams/network-topology-architecture';
@@ -709,35 +684,24 @@ export default function ArticlePage() {
         ) : isTCPIPArticle ? (
           <TCPIPArticleContent />
         ) : effectiveIsSample ? (
-          <div className="space-y-6">
-            {/* Inline diagram above the blueprint for visual sample slugs */}
-            {SampleDiagram && (
-              <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700">
-                <SampleDiagram />
+          <div className="max-w-2xl mx-auto text-center my-12">
+            <div className="bg-white dark:bg-zinc-700/40 border border-dashed border-zinc-400 dark:border-zinc-600 rounded-lg p-8">
+              <div className="flex justify-center mb-5">
+                <UploadCloud className="w-10 h-10 text-sky-500" />
               </div>
-            )}
-            {/* Call-out block */}
-            <div className="rounded-lg border border-sky-300 dark:border-sky-500/40 bg-sky-50/80 dark:bg-sky-500/10 p-4">
-              <div className="flex items-start gap-3 mb-3">
-                <div className="p-1.5 rounded-lg bg-sky-100/70 dark:bg-sky-500/25 flex-shrink-0 mt-0.5">
-                  <Lightbulb className="w-4 h-4 text-sky-700 dark:text-sky-300" />
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-sky-700 dark:text-sky-300 uppercase tracking-widest mb-1">Context Blueprint — Active Template Slot</p>
-                  <p className="text-sm text-zinc-700 dark:text-zinc-200 leading-relaxed">
-                    This is an open slot in the Cohort Knowledge Base awaiting a peer contribution. Research the topic, follow the structural outline below, then use the submission panel to claim this applet.
-                  </p>
-                </div>
-              </div>
+              <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-3">
+                Active Curriculum Research Slot
+              </h2>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
+                To encourage active recall, hands-on lab replication, and peer-to-peer research, the content for this domain applet is left completely open for the cohort.
+              </p>
               <Link
                 to="/"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-semibold transition-colors"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-semibold transition-colors"
               >
-                Submit Your Contribution
+                Submit your contribution
               </Link>
             </div>
-            {/* Blueprint outline via MarkdownRenderer */}
-            <MarkdownRenderer content={BLUEPRINT_OUTLINE} />
           </div>
         ) : (
           <MarkdownRenderer content={markdownContent} />
