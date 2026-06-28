@@ -369,75 +369,105 @@ function CurriculumDashboard({
   context: string;
 }) {
   const allMappedDomains = CURRICULUM_TRACKS.flatMap((t) => [...t.domains]);
+  const uncategorized = articles.filter(
+    (a) => !a.study_category || !allMappedDomains.includes(a.study_category),
+  );
+
+  // Helper: render domain rows for a single track
+  function TrackDomains({
+    domains,
+    colors,
+  }: {
+    domains: readonly string[];
+    colors: { domainHeader: string };
+  }) {
+    return (
+      <div className="space-y-8">
+        {domains.map((domain) => {
+          const domainArticles = articles.filter((a) => a.study_category === domain);
+          return (
+            <div key={domain}>
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className={`text-sm font-bold ${colors.domainHeader}`}>{domain}</h3>
+                {!isLoading && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+                    {domainArticles.length}
+                  </span>
+                )}
+              </div>
+              <div className={SCROLL_TRACK}>
+                {isLoading ? (
+                  <>
+                    <AppletSkeleton />
+                    <AppletSkeleton />
+                  </>
+                ) : domainArticles.length > 0 ? (
+                  domainArticles.map((a) => <AppletCard key={a.id} article={a} />)
+                ) : (
+                  <OpenSlotPlaceholder domain={domain} context={context} />
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  const [core1, core2, healthcare] = CURRICULUM_TRACKS;
 
   return (
-    <div className="space-y-12">
-      {CURRICULUM_TRACKS.map(({ track, icon: TrackIcon, color, domains }) => {
-        const colors = TRACK_COLORS[color];
-        return (
-          <section key={track}>
-            {/* Track header */}
-            <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
-              <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${colors.icon}`}>
-                <TrackIcon className="w-4 h-4" />
-              </div>
-              <h2 className={`text-base font-bold uppercase tracking-widest ${colors.header}`}>{track}</h2>
+    <div className="space-y-10">
+      {/* 1. General / uncategorized — rendered first */}
+      {!isLoading && uncategorized.length > 0 && (
+        <section>
+          <div className="flex items-center gap-2.5 mb-4">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-slate-100 dark:bg-zinc-700">
+              <Lightbulb className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
             </div>
+            <h2 className="text-base font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">General</h2>
+          </div>
+          <div className={SCROLL_TRACK}>
+            {uncategorized.map((a) => <AppletCard key={a.id} article={a} />)}
+          </div>
+        </section>
+      )}
 
-            {/* Domain rows */}
-            <div className="space-y-8">
-              {domains.map((domain) => {
-                const domainArticles = articles.filter((a) => a.study_category === domain);
-                return (
-                  <div key={domain}>
-                    <div className="flex items-center gap-2 mb-3">
-                      <h3 className={`text-sm font-bold ${colors.domainHeader}`}>{domain}</h3>
-                      {!isLoading && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
-                          {domainArticles.length}
-                        </span>
-                      )}
-                    </div>
-                    <div className={SCROLL_TRACK}>
-                      {isLoading ? (
-                        <>
-                          <AppletSkeleton />
-                          <AppletSkeleton />
-                        </>
-                      ) : domainArticles.length > 0 ? (
-                        domainArticles.map((a) => <AppletCard key={a.id} article={a} />)
-                      ) : (
-                        <OpenSlotPlaceholder domain={domain} context={context} />
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+      {/* 2. Core 1 + Core 2 — side-by-side columns */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
+        {/* Core 1 */}
+        <section>
+          <div className={`flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700`}>
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[core1.color].icon}`}>
+              <core1.icon className="w-4 h-4" />
             </div>
-          </section>
-        );
-      })}
+            <h2 className={`text-base font-bold uppercase tracking-widest ${TRACK_COLORS[core1.color].header}`}>{core1.track}</h2>
+          </div>
+          <TrackDomains domains={core1.domains} colors={TRACK_COLORS[core1.color]} />
+        </section>
 
-      {/* Uncategorized spill */}
-      {(() => {
-        const uncategorized = articles.filter(
-          (a) => !a.study_category || !allMappedDomains.includes(a.study_category),
-        );
-        if (isLoading || uncategorized.length === 0) return null;
-        return (
-          <section>
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-slate-100 dark:bg-zinc-700">
-                <Lightbulb className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
-              </div>
-              <h2 className="text-base font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">General</h2>
+        {/* Core 2 */}
+        <section>
+          <div className={`flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700`}>
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[core2.color].icon}`}>
+              <core2.icon className="w-4 h-4" />
             </div>
-            <div className={SCROLL_TRACK}>
-              {uncategorized.map((a) => <AppletCard key={a.id} article={a} />)}
-            </div>
-          </section>
-        );
-      })()}
+            <h2 className={`text-base font-bold uppercase tracking-widest ${TRACK_COLORS[core2.color].header}`}>{core2.track}</h2>
+          </div>
+          <TrackDomains domains={core2.domains} colors={TRACK_COLORS[core2.color]} />
+        </section>
+      </div>
+
+      {/* 3. Advanced Healthcare IT — full width */}
+      <section>
+        <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+          <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[healthcare.color].icon}`}>
+            <healthcare.icon className="w-4 h-4" />
+          </div>
+          <h2 className={`text-base font-bold uppercase tracking-widest ${TRACK_COLORS[healthcare.color].header}`}>{healthcare.track}</h2>
+        </div>
+        <TrackDomains domains={healthcare.domains} colors={TRACK_COLORS[healthcare.color]} />
+      </section>
     </div>
   );
 }
