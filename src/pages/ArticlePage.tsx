@@ -702,10 +702,10 @@ export default function ArticlePage() {
                 </p>
                 <ul className="space-y-2 text-xs text-zinc-700 dark:text-zinc-300">
                   {[
-                    { icon: '📋', label: 'Cross-Reference Objectives', detail: 'Identify the precise sub-domain criteria outlined in the official CompTIA A+ or Healthcare IT blueprints to capture all mandatory definitions.' },
-                    { icon: '💻', label: 'Stand Up a Sandbox Lab', detail: 'Replicate the concept practically using localized virtual machines, Windows administrative command shells, or clinical interface test environments.' },
-                    { icon: '🛠️', label: 'Map Command Syntax & Ports', detail: 'Document explicit troubleshooting switches, exact transport protocols, configuration flags, or standard healthcare messaging paths.' },
-                    { icon: '📑', label: 'Gather Authoritative Citations', detail: 'Collect official vendor documentation endpoints (such as Microsoft Learn, IETF RFC definitions, or Cisco Press) to build your article footer references.' },
+                    { icon: '🎯', label: 'Identify the Core Concept', detail: 'Look up how this topic fits into your current module objectives. Focus on defining what it is and why it matters to an IT or Healthcare professional.' },
+                    { icon: '🔍', label: 'Explore it Practically', detail: 'Try interacting with the concept directly. Open a command shell, check your system settings, or sketch out the basic step-by-step data workflow on paper.' },
+                    { icon: '📝', label: 'Summarize the Key Facts', detail: 'Break down the most essential points. Aim to capture the core definitions, common troubleshooting commands, port numbers, or compliance rules a peer would need to study.' },
+                    { icon: '🔗', label: 'Gather Reliable References', detail: "Find at least two trusted, official documentation links (such as Microsoft Learn, Cisco, CompTIA, or healthcare standard bodies) to place in your article's footer." },
                   ].map(({ icon, label, detail }) => (
                     <li key={label} className="flex gap-3 items-start rounded-md bg-zinc-50 dark:bg-zinc-800/50 px-3 py-2">
                       <span className="flex-shrink-0 text-sm leading-[1.4]">{icon}</span>
