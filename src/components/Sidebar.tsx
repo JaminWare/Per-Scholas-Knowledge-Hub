@@ -54,7 +54,7 @@ const tracks: TrackSection[] = [
     domains: [
       { title: 'Domain 1.0 — OS',               slug: 'core2-os',         icon: Monitor },
       { title: 'Domain 2.0 — Security',          slug: 'core2-security',   icon: Shield  },
-      { title: 'Domain 3.0 — OS Troubleshooting',slug: 'core2-software',   icon: Wrench  },
+      { title: 'Domain 3.0 — Troubleshooting',    slug: 'core2-software',   icon: Wrench  },
       { title: 'Domain 4.0 — SOP',               slug: 'core2-operations', icon: Users   },
     ],
   },
