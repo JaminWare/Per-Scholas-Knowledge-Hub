@@ -695,6 +695,29 @@ export default function ArticlePage() {
               <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
                 To encourage active recall, hands-on lab replication, and peer-to-peer research, the content for this domain applet is left completely open for the cohort.
               </p>
+
+              <div className="mt-2 mb-6 text-left">
+                <p className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-3">
+                  Research Pointers &amp; Getting Started
+                </p>
+                <ul className="space-y-2 text-xs text-zinc-700 dark:text-zinc-300">
+                  {[
+                    { icon: '📋', label: 'Cross-Reference Objectives', detail: 'Identify the precise sub-domain criteria outlined in the official CompTIA A+ or Healthcare IT blueprints to capture all mandatory definitions.' },
+                    { icon: '💻', label: 'Stand Up a Sandbox Lab', detail: 'Replicate the concept practically using localized virtual machines, Windows administrative command shells, or clinical interface test environments.' },
+                    { icon: '🛠️', label: 'Map Command Syntax & Ports', detail: 'Document explicit troubleshooting switches, exact transport protocols, configuration flags, or standard healthcare messaging paths.' },
+                    { icon: '📑', label: 'Gather Authoritative Citations', detail: 'Collect official vendor documentation endpoints (such as Microsoft Learn, IETF RFC definitions, or Cisco Press) to build your article footer references.' },
+                  ].map(({ icon, label, detail }) => (
+                    <li key={label} className="flex gap-3 items-start rounded-md bg-zinc-50 dark:bg-zinc-800/50 px-3 py-2">
+                      <span className="flex-shrink-0 text-sm leading-[1.4]">{icon}</span>
+                      <span>
+                        <span className="font-semibold text-zinc-800 dark:text-zinc-200">{label}: </span>
+                        {detail}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
               <Link
                 to="/"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-semibold transition-colors"
