@@ -83,7 +83,6 @@ const JAMIN_CONTRIBUTIONS: ContributionItem[] = [
   { id: 'jw-8',  title: 'Enterprise Three-Tier Network Topology Architecture', track: 'Diagrams',                    badge: 'Founder', submission_type: 'Article' },
   { id: 'jw-9',  title: 'OSI Model Data Encapsulation & PDU Flow',             track: 'Diagrams',                    badge: 'Founder', submission_type: 'Article' },
   { id: 'jw-10', title: 'TCP/IP Protocol Suite — Four-Layer Model, IPv4 vs. IPv6 & Packet Transmission', track: 'CompTIA A+ Core 1 — Networking', badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-1',  title: 'Essential Port Numbers & Protocols — Quick References', track: 'Quick References — Port Numbers & Protocols', badge: 'Founder', submission_type: 'Resource Link' },
 ];
 
 const JAMIN_WARE: ContributorGroup = {
@@ -113,19 +112,21 @@ function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
   return Array.from(map.values());
 }
 
-// ── Static Founder Row (pinned, sky-tinted bg, Crown icon) ──
+// ── Static Founder Row (pinned, sky-tinted bg, Crown above avatar) ──
 function FounderRow({ group }: { group: ContributorGroup }) {
   const statEntries = buildStatEntries(group.contributions);
   return (
     <div className="flex items-center gap-3 px-5 py-4 bg-sky-50/90 dark:bg-zinc-700/80 rounded-xl border border-sky-300/60 dark:border-amber-500/30 shadow-sm shadow-amber-500/5">
-      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-amber-400 flex items-center justify-center flex-shrink-0 font-bold text-white text-base shadow-md shadow-amber-500/20">
-        J
+      <div className="flex flex-col items-center gap-1 flex-shrink-0">
+        <Crown className="w-4 h-4 text-amber-500" />
+        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-amber-400 flex items-center justify-center font-bold text-white text-base shadow-md shadow-amber-500/20">
+          J
+        </div>
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="font-bold text-zinc-800 dark:text-zinc-100 text-sm">{group.name}</span>
           <BadgeTag badge="Founder" />
-          <Crown className="w-4 h-4 text-amber-500 flex-shrink-0" />
         </div>
         <div className="flex flex-wrap gap-1 mt-1">
           {statEntries.map(({ label, count }) => (

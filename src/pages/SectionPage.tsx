@@ -58,19 +58,47 @@ const KNOWN_AUTHORS: Record<string, string> = {
   'ai-prompt-engineering-healthcare': 'Jamin Ware',
 };
 
-// Study Tips categorical rows
-const STUDY_CATEGORIES = [
-  { key: 'Core 1 Topics',      icon: Laptop,   color: 'sky' },
-  { key: 'Core 2 Topics',      icon: Monitor,  color: 'teal' },
-  { key: 'Testing Strategies', icon: FileText, color: 'amber' },
-  { key: 'Active Recalls',     icon: Sparkles, color: 'violet' },
+// Study Tips three-track curriculum map
+const STUDY_TRACKS = [
+  {
+    track: 'CompTIA A+ Core 1',
+    icon: Laptop,
+    color: 'sky' as const,
+    domains: [
+      'Domain 1.0 — Mobile Devices',
+      'Domain 2.0 — Networking',
+      'Domain 3.0 — Hardware',
+      'Domain 4.0 — Virtualization & Cloud',
+      'Domain 5.0 — Hardware & Network Troubleshooting',
+    ],
+  },
+  {
+    track: 'CompTIA A+ Core 2',
+    icon: Monitor,
+    color: 'teal' as const,
+    domains: [
+      'Domain 1.0 — Operating Systems',
+      'Domain 2.0 — Security',
+      'Domain 3.0 — Software Troubleshooting',
+      'Domain 4.0 — Operational Procedures',
+    ],
+  },
+  {
+    track: 'Advanced Healthcare IT',
+    icon: Heart,
+    color: 'cyan' as const,
+    domains: [
+      'EHR Architecture',
+      'HIPAA Data Security',
+      'Clinical Workflows',
+    ],
+  },
 ] as const;
 
-const STUDY_CAT_COLORS = {
-  sky:    { header: 'text-sky-600 dark:text-sky-400',    icon: 'bg-sky-500/10 text-sky-500' },
-  teal:   { header: 'text-teal-600 dark:text-teal-400',  icon: 'bg-teal-500/10 text-teal-500' },
-  amber:  { header: 'text-amber-600 dark:text-amber-400', icon: 'bg-amber-500/10 text-amber-500' },
-  violet: { header: 'text-violet-600 dark:text-violet-400', icon: 'bg-violet-500/10 text-violet-500' },
+const STUDY_TRACK_COLORS = {
+  sky:  { header: 'text-sky-600 dark:text-sky-400',   icon: 'bg-sky-500/10 text-sky-500',   domainHeader: 'text-sky-500 dark:text-sky-400'  },
+  teal: { header: 'text-teal-600 dark:text-teal-400', icon: 'bg-teal-500/10 text-teal-500', domainHeader: 'text-teal-500 dark:text-teal-400' },
+  cyan: { header: 'text-cyan-600 dark:text-cyan-400', icon: 'bg-cyan-500/10 text-cyan-500', domainHeader: 'text-cyan-500 dark:text-cyan-400' },
 };
 
 function CopyLinkButton({ slug }: { slug: string }) {
@@ -277,45 +305,115 @@ function AppletSkeleton() {
   );
 }
 
-// ── Study Tips grouped view ───────────────────────────────
+// ── Study Tips placeholder for empty domains ─────────────
+function StudyTipPlaceholder({ domain }: { domain: string }) {
+  return (
+    <div className="group flex flex-col rounded-xl border overflow-hidden bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20">
+      {/* Terminal header */}
+      <div
+        className="flex items-center justify-between px-3 py-1.5 bg-zinc-800 dark:bg-zinc-900/80"
+        style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
+      >
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+          <span className="text-[10px] font-mono text-zinc-500 truncate max-w-[120px]">open-slot</span>
+        </div>
+        <span className="text-[9px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wide flex-shrink-0 bg-amber-500/20 text-amber-400 border border-amber-500/20">
+          [Lab Documentation]
+        </span>
+      </div>
+      {/* Body */}
+      <div className="flex flex-col gap-3 p-4 flex-1">
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md bg-gradient-to-br from-amber-400 to-amber-500 shadow-amber-500/20">
+            <Lightbulb className="w-4 h-4 text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-sm leading-snug text-amber-800 dark:text-amber-300">
+              {domain} — Study Tips
+            </h3>
+            <div className="flex items-center gap-1.5 mt-1">
+              <div className="w-4 h-4 rounded bg-gradient-to-br from-zinc-400 to-zinc-500 flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-[8px] font-bold">S</span>
+              </div>
+              <span className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">[Sample Learner]</span>
+            </div>
+          </div>
+        </div>
+        <p className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-100/60 dark:bg-amber-500/10 rounded-lg px-2.5 py-2 border border-amber-200/60 dark:border-amber-500/15">
+          💡 This slot is open! Submit your research via the portal below to claim this applet.
+        </p>
+        <Link
+          to="/"
+          className="mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-amber-500/10 hover:bg-amber-500 text-amber-700 dark:text-amber-400 hover:text-white border-amber-500/20 hover:border-amber-500"
+        >
+          Submit a Contribution
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+// ── Study Tips grouped three-track view ───────────────────
 function StudyTipsDashboard({ articles, isLoading }: { articles: ArticleWithContributor[]; isLoading: boolean }) {
   return (
-    <div className="space-y-10">
-      {STUDY_CATEGORIES.map(({ key, icon: CatIcon, color }) => {
-        const catArticles = articles.filter((a) => a.study_category === key);
-        const colors = STUDY_CAT_COLORS[color];
+    <div className="space-y-12">
+      {STUDY_TRACKS.map(({ track, icon: TrackIcon, color, domains }) => {
+        const colors = STUDY_TRACK_COLORS[color];
         return (
-          <section key={key}>
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${colors.icon}`}>
-                <CatIcon className="w-4 h-4" />
+          <section key={track}>
+            {/* Track-level header */}
+            <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${colors.icon}`}>
+                <TrackIcon className="w-4.5 h-4.5 w-4 h-4" />
               </div>
-              <h2 className={`text-base font-bold uppercase tracking-wide ${colors.header}`}>{key}</h2>
-              {!isLoading && (
-                <span className="ml-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
-                  {catArticles.length}
-                </span>
-              )}
+              <h2 className={`text-base font-bold uppercase tracking-widest ${colors.header}`}>{track}</h2>
             </div>
-            {isLoading ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <AppletSkeleton />
-                <AppletSkeleton />
-              </div>
-            ) : catArticles.length > 0 ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {catArticles.map((a) => <AppletCard key={a.id} article={a} />)}
-              </div>
-            ) : (
-              <ComingSoonPanel minimal />
-            )}
+
+            {/* Domain sub-sections */}
+            <div className="space-y-8">
+              {domains.map((domain) => {
+                const domainArticles = articles.filter((a) => a.study_category === domain);
+                return (
+                  <div key={domain}>
+                    {/* Domain sub-header */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <h3 className={`text-sm font-bold ${colors.domainHeader}`}>{domain}</h3>
+                      {!isLoading && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+                          {domainArticles.length}
+                        </span>
+                      )}
+                    </div>
+                    {isLoading ? (
+                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <AppletSkeleton />
+                        <AppletSkeleton />
+                      </div>
+                    ) : domainArticles.length > 0 ? (
+                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {domainArticles.map((a) => <AppletCard key={a.id} article={a} />)}
+                      </div>
+                    ) : (
+                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <StudyTipPlaceholder domain={domain} />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </section>
         );
       })}
 
       {/* Uncategorized articles */}
       {(() => {
-        const uncategorized = articles.filter((a) => !a.study_category);
+        const allMappedCategories = STUDY_TRACKS.flatMap((t) => t.domains);
+        const uncategorized = articles.filter(
+          (a) => !a.study_category || !allMappedCategories.includes(a.study_category as never),
+        );
         if (isLoading || uncategorized.length === 0) return null;
         return (
           <section>
