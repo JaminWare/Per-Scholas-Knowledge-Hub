@@ -7,7 +7,7 @@ import contentMap from '../data/contentMap';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, FileText, Sparkles, Layout, Laptop, Monitor, Database,
-  Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight, User,
+  Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight,
   Construction,
 } from 'lucide-react';
 
@@ -58,8 +58,8 @@ const KNOWN_AUTHORS: Record<string, string> = {
   'ai-prompt-engineering-healthcare': 'Jamin Ware',
 };
 
-// Study Tips three-track curriculum map
-const STUDY_TRACKS = [
+// ── Shared three-track curriculum map ────────────────────
+const CURRICULUM_TRACKS = [
   {
     track: 'CompTIA A+ Core 1',
     icon: Laptop,
@@ -95,11 +95,24 @@ const STUDY_TRACKS = [
   },
 ] as const;
 
-const STUDY_TRACK_COLORS = {
+const TRACK_COLORS = {
   sky:  { header: 'text-sky-600 dark:text-sky-400',   icon: 'bg-sky-500/10 text-sky-500',   domainHeader: 'text-sky-500 dark:text-sky-400'  },
   teal: { header: 'text-teal-600 dark:text-teal-400', icon: 'bg-teal-500/10 text-teal-500', domainHeader: 'text-teal-500 dark:text-teal-400' },
   cyan: { header: 'text-cyan-600 dark:text-cyan-400', icon: 'bg-cyan-500/10 text-cyan-500', domainHeader: 'text-cyan-500 dark:text-cyan-400' },
 };
+
+// Dashboard slugs → display context label
+const DASHBOARD_CONTEXTS: Record<string, string> = {
+  'study-tips':            'Study Tips',
+  'diagrams':              'Diagram',
+  'quick-references':      'Quick Reference',
+  'azari-prompt-playbook': 'Prompt',
+};
+
+// Horizontal scroll track container
+const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-track]:bg-transparent';
+// Fixed card width for snapping
+const CARD_WIDTH = 'w-[280px] sm:w-[320px] md:w-[350px] shrink-0 snap-start';
 
 function CopyLinkButton({ slug }: { slug: string }) {
   const [copied, setCopied] = useState(false);
@@ -130,20 +143,18 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
   const navigate = useNavigate();
   if (minimal) {
     return (
-      <div className="col-span-full flex flex-col items-center justify-center gap-3 p-8 bg-white/80 dark:bg-zinc-700/50 border border-dashed border-zinc-300 dark:border-zinc-600 rounded-xl text-center">
+      <div className={`${CARD_WIDTH} flex flex-col items-center justify-center gap-3 p-8 bg-white/80 dark:bg-zinc-700/50 border border-dashed border-zinc-300 dark:border-zinc-600 rounded-xl text-center`}>
         <Construction className="w-7 h-7 text-amber-400" />
         <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-          This module is currently being built or undergoing moderation review by our Cohort Leaders. Check back shortly!
+          This module is currently being built or undergoing moderation review. Check back shortly!
         </p>
       </div>
     );
   }
   return (
     <div className="flex flex-col items-center justify-center gap-6 py-16 text-center">
-      <div className="relative">
-        <div className="w-18 h-18 w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-400/20 flex items-center justify-center">
-          <Construction className="w-8 h-8 text-amber-500 dark:text-amber-400" />
-        </div>
+      <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-400/20 flex items-center justify-center">
+        <Construction className="w-8 h-8 text-amber-500 dark:text-amber-400" />
       </div>
       <div className="space-y-2">
         <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Coming Soon</h2>
@@ -180,7 +191,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
     : null;
 
   return (
-    <div className={`group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
+    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
       isSample
         ? 'bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20 hover:border-amber-400/70 dark:hover:border-amber-400/50 hover:shadow-[0_0_0_1.5px_rgba(251,191,36,0.5),0_4px_16px_rgba(251,191,36,0.08)]'
         : 'bg-white dark:bg-zinc-700 border-slate-200 dark:border-zinc-600 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
@@ -214,7 +225,6 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
 
       {/* ── Card Body ── */}
       <div className="flex flex-col gap-3 p-4 flex-1">
-        {/* Header */}
         <div className="flex items-start gap-3">
           <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${
             isSample ? 'bg-gradient-to-br from-amber-400 to-amber-500 shadow-amber-500/20' : 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20'
@@ -238,12 +248,10 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
           </div>
         </div>
 
-        {/* Excerpt */}
         {article.excerpt && (
           <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 flex-1 leading-relaxed">{article.excerpt}</p>
         )}
 
-        {/* Tags */}
         {article.tags.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {article.tags.slice(0, 3).map((tag) => (
@@ -254,21 +262,18 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
           </div>
         )}
 
-        {/* Sample incentive caption */}
         {isSample && (
           <p className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-100/60 dark:bg-amber-500/10 rounded-lg px-2.5 py-2 border border-amber-200/60 dark:border-amber-500/15">
             💡 This slot is open! Submit your research via the portal below to claim this applet.
           </p>
         )}
 
-        {/* Hover preview snippet */}
         {toolsPreview && (
           <div className="opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-200 text-[10px] font-mono text-emerald-700 dark:text-emerald-400 bg-zinc-900/6 dark:bg-zinc-900/60 px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 truncate">
             {toolsPreview}
           </div>
         )}
 
-        {/* CTA button */}
         <Link
           to={`/article/${article.slug}`}
           className={`mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border ${
@@ -288,7 +293,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
 // ── Skeleton ──────────────────────────────────────────────
 function AppletSkeleton() {
   return (
-    <div className="bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 rounded-xl p-5 animate-pulse">
+    <div className={`${CARD_WIDTH} bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 rounded-xl p-5 animate-pulse`}>
       <div className="flex items-start gap-3 mb-4">
         <div className="w-10 h-10 rounded-xl bg-zinc-200 dark:bg-zinc-800 flex-shrink-0" />
         <div className="flex-1 space-y-2">
@@ -305,11 +310,10 @@ function AppletSkeleton() {
   );
 }
 
-// ── Study Tips placeholder for empty domains ─────────────
-function StudyTipPlaceholder({ domain }: { domain: string }) {
+// ── Open slot placeholder capsule ────────────────────────
+function OpenSlotPlaceholder({ domain, context }: { domain: string; context: string }) {
   return (
-    <div className="group flex flex-col rounded-xl border overflow-hidden bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20">
-      {/* Terminal header */}
+    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20`}>
       <div
         className="flex items-center justify-between px-3 py-1.5 bg-zinc-800 dark:bg-zinc-900/80"
         style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
@@ -322,7 +326,6 @@ function StudyTipPlaceholder({ domain }: { domain: string }) {
           [Lab Documentation]
         </span>
       </div>
-      {/* Body */}
       <div className="flex flex-col gap-3 p-4 flex-1">
         <div className="flex items-start gap-3">
           <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md bg-gradient-to-br from-amber-400 to-amber-500 shadow-amber-500/20">
@@ -330,7 +333,7 @@ function StudyTipPlaceholder({ domain }: { domain: string }) {
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-sm leading-snug text-amber-800 dark:text-amber-300">
-              {domain} — Study Tips
+              {domain} — {context}
             </h3>
             <div className="flex items-center gap-1.5 mt-1">
               <div className="w-4 h-4 rounded bg-gradient-to-br from-zinc-400 to-zinc-500 flex items-center justify-center flex-shrink-0">
@@ -355,29 +358,38 @@ function StudyTipPlaceholder({ domain }: { domain: string }) {
   );
 }
 
-// ── Study Tips grouped three-track view ───────────────────
-function StudyTipsDashboard({ articles, isLoading }: { articles: ArticleWithContributor[]; isLoading: boolean }) {
+// ── Curriculum dashboard — three-track horizontal layout ─
+function CurriculumDashboard({
+  articles,
+  isLoading,
+  context,
+}: {
+  articles: ArticleWithContributor[];
+  isLoading: boolean;
+  context: string;
+}) {
+  const allMappedDomains = CURRICULUM_TRACKS.flatMap((t) => [...t.domains]);
+
   return (
     <div className="space-y-12">
-      {STUDY_TRACKS.map(({ track, icon: TrackIcon, color, domains }) => {
-        const colors = STUDY_TRACK_COLORS[color];
+      {CURRICULUM_TRACKS.map(({ track, icon: TrackIcon, color, domains }) => {
+        const colors = TRACK_COLORS[color];
         return (
           <section key={track}>
-            {/* Track-level header */}
+            {/* Track header */}
             <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${colors.icon}`}>
-                <TrackIcon className="w-4.5 h-4.5 w-4 h-4" />
+                <TrackIcon className="w-4 h-4" />
               </div>
               <h2 className={`text-base font-bold uppercase tracking-widest ${colors.header}`}>{track}</h2>
             </div>
 
-            {/* Domain sub-sections */}
+            {/* Domain rows */}
             <div className="space-y-8">
               {domains.map((domain) => {
                 const domainArticles = articles.filter((a) => a.study_category === domain);
                 return (
                   <div key={domain}>
-                    {/* Domain sub-header */}
                     <div className="flex items-center gap-2 mb-3">
                       <h3 className={`text-sm font-bold ${colors.domainHeader}`}>{domain}</h3>
                       {!isLoading && (
@@ -386,20 +398,18 @@ function StudyTipsDashboard({ articles, isLoading }: { articles: ArticleWithCont
                         </span>
                       )}
                     </div>
-                    {isLoading ? (
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <AppletSkeleton />
-                        <AppletSkeleton />
-                      </div>
-                    ) : domainArticles.length > 0 ? (
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {domainArticles.map((a) => <AppletCard key={a.id} article={a} />)}
-                      </div>
-                    ) : (
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <StudyTipPlaceholder domain={domain} />
-                      </div>
-                    )}
+                    <div className={SCROLL_TRACK}>
+                      {isLoading ? (
+                        <>
+                          <AppletSkeleton />
+                          <AppletSkeleton />
+                        </>
+                      ) : domainArticles.length > 0 ? (
+                        domainArticles.map((a) => <AppletCard key={a.id} article={a} />)
+                      ) : (
+                        <OpenSlotPlaceholder domain={domain} context={context} />
+                      )}
+                    </div>
                   </div>
                 );
               })}
@@ -408,11 +418,10 @@ function StudyTipsDashboard({ articles, isLoading }: { articles: ArticleWithCont
         );
       })}
 
-      {/* Uncategorized articles */}
+      {/* Uncategorized spill */}
       {(() => {
-        const allMappedCategories = STUDY_TRACKS.flatMap((t) => t.domains);
         const uncategorized = articles.filter(
-          (a) => !a.study_category || !allMappedCategories.includes(a.study_category as never),
+          (a) => !a.study_category || !allMappedDomains.includes(a.study_category),
         );
         if (isLoading || uncategorized.length === 0) return null;
         return (
@@ -423,7 +432,7 @@ function StudyTipsDashboard({ articles, isLoading }: { articles: ArticleWithCont
               </div>
               <h2 className="text-base font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">General</h2>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className={SCROLL_TRACK}>
               {uncategorized.map((a) => <AppletCard key={a.id} article={a} />)}
             </div>
           </section>
@@ -446,8 +455,8 @@ export default function SectionPage() {
   const Icon = meta?.icon ?? BookOpen;
   const localContent = contentMap[slug];
   const isSubPage = slug.includes('/') || (meta?.track !== undefined);
-  // Domain sections (e.g. core1-mobile) always use the applet grid — never the legacy article view
   const isDomainSection = meta?.track !== undefined && !slug.includes('/');
+  const dashboardContext = DASHBOARD_CONTEXTS[slug];
 
   useEffect(() => {
     async function fetchArticles() {
@@ -529,7 +538,7 @@ export default function SectionPage() {
         {!isLoading && dbArticles.length > 0 && (
           <div className="mt-10">
             <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-4">More in this section</h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className={SCROLL_TRACK}>
               {dbArticles.map((a) => <AppletCard key={a.id} article={a} />)}
             </div>
           </div>
@@ -553,7 +562,7 @@ export default function SectionPage() {
         </button>
       )}
 
-      {/* Section header */}
+      {/* Section header — article count subtitle removed */}
       <div className="flex items-center gap-4 pb-6 border-b border-zinc-300 dark:border-zinc-800">
         <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
           <Icon className="w-7 h-7 text-white" />
@@ -563,22 +572,18 @@ export default function SectionPage() {
             <p className="text-xs font-bold text-sky-500 dark:text-sky-400 uppercase tracking-wider mb-1">{meta.track}</p>
           )}
           <h1 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">{displayTitle}</h1>
-          <p className="text-zinc-500 dark:text-zinc-500 text-sm flex items-center gap-1.5">
-            <User className="w-3.5 h-3.5" />
-            {isLoading ? '…' : `${dbArticles.length} article${dbArticles.length !== 1 ? 's' : ''}`}
-          </p>
         </div>
       </div>
 
-      {/* Study Tips uses grouped category rows */}
-      {slug === 'study-tips' ? (
-        <StudyTipsDashboard articles={dbArticles} isLoading={isLoading} />
+      {/* Three-track curriculum dashboards or flat scroll row */}
+      {dashboardContext ? (
+        <CurriculumDashboard articles={dbArticles} isLoading={isLoading} context={dashboardContext} />
       ) : isLoading ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className={SCROLL_TRACK}>
           {[...Array(4)].map((_, i) => <AppletSkeleton key={i} />)}
         </div>
       ) : dbArticles.length > 0 ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className={SCROLL_TRACK}>
           {dbArticles.map((a) => <AppletCard key={a.id} article={a} />)}
         </div>
       ) : (
