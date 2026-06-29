@@ -7,7 +7,7 @@ import ContributorSubmissionModal, { type NewSubmission } from '../components/Co
 import SuccessToast from '../components/SuccessToast';
 import type { Article } from '../types/database';
 import {
-  TrendingUp, ArrowRight, Users,
+  TrendingUp, ArrowRight, Users, UploadCloud, X,
   Shield, Terminal, Monitor, ChevronRight, Award, Send, Loader2, CheckCircle,
 } from 'lucide-react';
 
@@ -47,6 +47,7 @@ export default function HomePage() {
   const [recentArticles,   setRecentArticles]   = useState<Article[]>([]);
   const [isLoading,        setIsLoading]         = useState(true);
   const [modalOpen,        setModalOpen]         = useState(false);
+  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
   const [latestSubmission, setLatestSubmission]  = useState<NewSubmission | null>(null);
   const [toastVisible,     setToastVisible]      = useState(false);
   const [toastMessage,     setToastMessage]      = useState('');
@@ -123,7 +124,10 @@ export default function HomePage() {
         setQuickType('Article');
         setQuickTitle('');
         setQuickExcerpt('');
-        setTimeout(() => setQuickSubmitDone(false), 3000);
+        setTimeout(() => {
+          setQuickSubmitDone(false);
+          setIsSubmitModalOpen(false);
+        }, 2500);
       }
     } catch (e) {
       console.error(e);
@@ -249,83 +253,26 @@ export default function HomePage() {
         {/* ── Right sidebar control console ─────────────────── */}
         <aside className="lg:col-span-1 space-y-3">
 
-          {/* Widget 1 — Quick Submission Portal (primary focal action) */}
-          <div className="bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 rounded-xl p-4 space-y-3">
-
-            {/* Header */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 rounded-lg bg-sky-100/70 dark:bg-sky-500/10 flex-shrink-0">
-                  <Send className="w-3.5 h-3.5 text-sky-700 dark:text-sky-400" />
-                </div>
-                <h3 className="text-sm font-bold text-zinc-800 dark:text-zinc-100">Submit Your Contribution</h3>
+          {/* Widget 1 — Contribute Placard (opens modal) */}
+          <button
+            onClick={() => setIsSubmitModalOpen(true)}
+            className="w-full text-left bg-gradient-to-r from-amber-50 to-orange-50 dark:from-zinc-800 dark:to-zinc-900 border border-amber-200 dark:border-zinc-700/60 rounded-xl p-4 cursor-pointer hover:shadow-lg hover:shadow-amber-500/10 hover:border-amber-300 dark:hover:border-amber-700/50 transition-all duration-200 group"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-500/15 flex-shrink-0 group-hover:bg-amber-200 dark:group-hover:bg-amber-500/25 transition-colors">
+                <UploadCloud className="w-5 h-5 text-amber-500" />
               </div>
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-500 flex-shrink-0">
-                2026-RTT-23
-              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold tracking-tight text-zinc-800 dark:text-zinc-100 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors duration-200">
+                  Contribute to the Hub
+                </p>
+                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">
+                  Submit new articles, references, or lab notes
+                </p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-zinc-300 dark:text-zinc-600 group-hover:text-amber-400 transition-colors flex-shrink-0" />
             </div>
-
-            <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed">
-              Contribute research, links, or feedback directly to the cohort hub.
-            </p>
-
-            {/* Full Name */}
-            <input
-              type="text"
-              placeholder="Your Full Name"
-              value={quickName}
-              onChange={(e) => setQuickName(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
-            />
-
-            {/* Submission Type */}
-            <select
-              value={quickType}
-              onChange={(e) => setQuickType(e.target.value as QuickType)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all cursor-pointer"
-            >
-              <option value="Article">Article</option>
-              <option value="Resource Link">Resource Link</option>
-              <option value="Support Ticket">Support Ticket</option>
-            </select>
-
-            {/* Title */}
-            <input
-              type="text"
-              placeholder="Title of your contribution"
-              value={quickTitle}
-              onChange={(e) => setQuickTitle(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
-            />
-
-            {/* Excerpt */}
-            <textarea
-              rows={3}
-              placeholder="Brief description or excerpt…"
-              value={quickExcerpt}
-              onChange={(e) => setQuickExcerpt(e.target.value)}
-              className="w-full px-3 py-2 text-sm rounded-lg bg-slate-100 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all resize-none"
-            />
-
-            {/* Submit button */}
-            <button
-              onClick={handleQuickSubmit}
-              disabled={isQuickSubmitting || !quickName.trim() || !quickTitle.trim()}
-              className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 ${
-                quickSubmitDone
-                  ? 'bg-emerald-500 text-white'
-                  : 'bg-sky-500 hover:bg-sky-600 text-white disabled:opacity-50 disabled:cursor-not-allowed'
-              }`}
-            >
-              {isQuickSubmitting ? (
-                <><Loader2 className="w-4 h-4 animate-spin" /> Submitting…</>
-              ) : quickSubmitDone ? (
-                <><CheckCircle className="w-4 h-4" /> Submitted!</>
-              ) : (
-                <><Send className="w-4 h-4" /> Submit Your Contribution</>
-              )}
-            </button>
-          </div>
+          </button>
 
           {/* Widget 2 — View Detailed Portfolios emblem */}
           <Link
@@ -357,6 +304,94 @@ export default function HomePage() {
         onClose={() => setModalOpen(false)}
         onSubmitted={handleSubmitted}
       />
+
+      {/* ── Quick-submit modal overlay ─────────────────── */}
+      {isSubmitModalOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={(e) => { if (e.target === e.currentTarget) setIsSubmitModalOpen(false); }}
+        >
+          <div className="bg-white dark:bg-zinc-800 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-2xl w-full max-w-md p-6 space-y-4">
+
+            {/* Modal header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-amber-100 dark:bg-amber-500/15">
+                  <UploadCloud className="w-4 h-4 text-amber-500" />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 leading-none">Contribute to the Hub</h2>
+                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">Cohort 2026-RTT-23</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsSubmitModalOpen(false)}
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-all"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Full Name */}
+            <input
+              type="text"
+              placeholder="Your Full Name"
+              value={quickName}
+              onChange={(e) => setQuickName(e.target.value)}
+              className="w-full px-3 py-2.5 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/60 transition-all"
+            />
+
+            {/* Submission Type */}
+            <select
+              value={quickType}
+              onChange={(e) => setQuickType(e.target.value as QuickType)}
+              className="w-full px-3 py-2.5 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/60 transition-all cursor-pointer"
+            >
+              <option value="Article">Article</option>
+              <option value="Resource Link">Resource Link</option>
+              <option value="Support Ticket">Support Ticket</option>
+            </select>
+
+            {/* Title */}
+            <input
+              type="text"
+              placeholder="Title of your contribution"
+              value={quickTitle}
+              onChange={(e) => setQuickTitle(e.target.value)}
+              className="w-full px-3 py-2.5 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/60 transition-all"
+            />
+
+            {/* Description / Excerpt */}
+            <textarea
+              rows={3}
+              placeholder="Brief description or excerpt…"
+              value={quickExcerpt}
+              onChange={(e) => setQuickExcerpt(e.target.value)}
+              className="w-full px-3 py-2.5 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/60 transition-all resize-none"
+            />
+
+            {/* Primary action */}
+            <button
+              onClick={handleQuickSubmit}
+              disabled={isQuickSubmitting || !quickName.trim() || !quickTitle.trim()}
+              className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
+                quickSubmitDone
+                  ? 'bg-emerald-500 text-white'
+                  : 'bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed'
+              }`}
+            >
+              {isQuickSubmitting ? (
+                <><Loader2 className="w-4 h-4 animate-spin" /> Submitting…</>
+              ) : quickSubmitDone ? (
+                <><CheckCircle className="w-4 h-4" /> Submitted!</>
+              ) : (
+                <><Send className="w-4 h-4" /> Submit Your Contribution</>
+              )}
+            </button>
+
+          </div>
+        </div>
+      )}
 
       <SuccessToast
         message={toastMessage}
