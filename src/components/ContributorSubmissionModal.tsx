@@ -78,10 +78,15 @@ function getFilteredCategories(type: SubmissionType) {
 }
 
 function getBadge(trackName: string): string {
-  for (const cat of MASTER_CATEGORIES) {
-    if (cat.sub.includes(trackName)) return cat.badge;
-  }
-  return 'Cohort Contributor';
+  // Check for specific sub-tracks first
+  if (trackName.includes('Core 2')) return 'Core 2 Expert';
+  if (trackName.includes('Advanced Healthcare IT')) return 'Healthcare IT Specialist';
+  if (trackName.includes('Prompt Playbook')) return 'Playbook Engineer';
+  if (trackName.includes('Diagrams')) return 'Diagram Architect';
+  if (trackName.includes('Quick References')) return 'Reference Author';
+  
+  // Fallback for Core 1 and anything else
+  return 'Core 1 Expert';
 }
 
 function buildFormattedContent(authorName: string, trackValue: string, rawContent: string): string {
