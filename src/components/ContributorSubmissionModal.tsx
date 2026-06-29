@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   X, Send, Loader2, ChevronDown, ChevronLeft, Tag,
   FileText, Link2, BookOpen, Zap, GitBranch,
@@ -15,18 +15,18 @@ const PROFANITY_PATTERN = new RegExp(
     'piss', 'cock', 'dick', 'pussy', 'whore', 'slut', 'retard', 'nigger',
     'faggot', 'kike', 'spic', 'chink', 'wetback',
   ].join('|'),
-  'i',
+  'i'
 );
 
 // ── Submission types ──────────────────────────────────────────────────────────
 type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Quick Reference' | 'Resource Link';
 
 const SUBMISSION_TYPES = [
-  { value: 'Article'        as SubmissionType, label: 'Article',        icon: FileText  },
-  { value: 'Study Tip'      as SubmissionType, label: 'Study Tip',      icon: BookOpen  },
-  { value: 'Diagram'        as SubmissionType, label: 'Diagram',        icon: GitBranch },
-  { value: 'Quick Reference'as SubmissionType, label: 'Quick Ref',      icon: Zap       },
-  { value: 'Resource Link'  as SubmissionType, label: 'Resource Link',  icon: Link2     },
+  { value: 'Article'         as SubmissionType, label: 'Article',        icon: FileText  },
+  { value: 'Study Tip'       as SubmissionType, label: 'Study Tip',      icon: BookOpen  },
+  { value: 'Diagram'         as SubmissionType, label: 'Diagram',        icon: GitBranch },
+  { value: 'Quick Reference' as SubmissionType, label: 'Quick Ref',      icon: Zap       },
+  { value: 'Resource Link'   as SubmissionType, label: 'Resource Link',  icon: Link2     },
 ];
 
 const MASTER_CATEGORIES = [
@@ -208,15 +208,17 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [submissionType,   setSubmissionType]   = useState<SubmissionType>('Article');
   const [masterCat,        setMasterCat]        = useState('Study Tips');
   const [subTrack,         setSubTrack]         = useState('');
-  const [fullName,  setFullName]  = useState('');
-  const [title,     setTitle]     = useState('');
-  const [content,   setContent]   = useState('');
+  const [fullName,         setFullName]         = useState('');
+  const [title,            setTitle]            = useState('');
+  const [content,          setContent]          = useState('');
   const [errors,           setErrors]           = useState<Record<string, string>>({});
   const [formError,        setFormError]        = useState('');
   const [isSubmitting,     setIsSubmitting]     = useState(false);
   const [checklistResults, setChecklistResults] = useState<Record<string, boolean>>(
     Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false]))
   );
+
+  const lastInjectedTemplate = useRef('');
 
   const isResourceLink = submissionType === 'Resource Link';
   const isArticle      = submissionType === 'Article';
@@ -231,20 +233,24 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   // Reset sub-track when category changes
   useEffect(() => { setSubTrack(''); }, [masterCat]);
 
-  // Template injection: fire on open and on type switch
+  // Bulletproof Template Injection
   useEffect(() => {
     if (!isOpen || isResourceLink) {
       if (isResourceLink) { setContent(''); setErrors({}); setFormError(''); }
       return;
     }
     const template = CONTENT_TEMPLATES[submissionType] ?? '';
-    const templateValues = Object.values(CONTENT_TEMPLATES);
-    if (content.trim() === '' || templateValues.includes(content)) {
+    
+    // Only inject if the field is perfectly blank, or if it exactly matches the last template we pushed.
+    if (content.trim() === '' || content.trim() === lastInjectedTemplate.current.trim()) {
       setContent(template);
+      lastInjectedTemplate.current = template;
     }
-    setErrors({}); setFormError('');
+    
+    setErrors({}); 
+    setFormError('');
     setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
-  }, [isOpen, submissionType]);
+  }, [isOpen, submissionType, isResourceLink]);
 
   // Live checklist evaluation for Article type
   useEffect(() => {
@@ -275,6 +281,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setContent('');
     setErrors({});
     setFormError('');
+    lastInjectedTemplate.current = '';
     setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
   };
 
@@ -347,6 +354,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       reset();
       onClose();
     } catch {
+      // Fallback for local preview if database isn't connected
       const local: NewSubmission = {
         id: `local-${Date.now()}`,
         full_name: fullName.trim(),
@@ -375,7 +383,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/60 dark:bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/60 dark:bg-black/70 backdrop-blur-sm" onClick={() => { reset(); onClose(); }} />
 
       <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[90vh]">
 
@@ -410,7 +418,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         )}
 
         {/* ── Scrollable body ─────────────────────────────────────────────────── */}
-        <div className="px-6 py-5 overflow-y-auto flex-1">
+        <div className="px-6 py-5 overflow-y-auto flex-1 custom-scrollbar">
 
           {/* ── STEP 1 — Categorization ─────────────────────────────────────── */}
           {step === 1 && (
@@ -556,7 +564,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Brief description or excerpt..."
                     rows={10}
-                    className={`${inputCls('content')} resize-none font-mono leading-relaxed`}
+                    className={`${inputCls('content')} resize-none font-mono leading-relaxed custom-scrollbar`}
                   />
                   <div className="flex items-center justify-between mt-1">
                     {errors.content
