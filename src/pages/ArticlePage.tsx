@@ -4,6 +4,7 @@ import { ArrowLeft, Share2, Bookmark, BookOpen, ExternalLink, UploadCloud } from
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
 import MarkdownRenderer from '../components/MarkdownRenderer';
+import ContributorSubmissionModal, { type NewSubmission } from '../components/ContributorSubmissionModal';
 import {
   OSIModelStackDiagram,
   HL7MessageRoutingDiagram,
@@ -477,6 +478,7 @@ export default function ArticlePage() {
   const [contributor, setContributor] = useState<Contributor | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     async function fetchArticle() {
@@ -719,12 +721,12 @@ export default function ArticlePage() {
                 </ul>
               </div>
 
-              <Link
-                to="/"
+              <button
+                onClick={() => setModalOpen(true)}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-semibold transition-colors"
               >
                 Submit your contribution
-              </Link>
+              </button>
             </div>
           </div>
         ) : (
@@ -772,6 +774,12 @@ export default function ArticlePage() {
           </div>
         </div>
       )}
+
+      <ContributorSubmissionModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmitted={(_s: NewSubmission) => setModalOpen(false)}
+      />
     </div>
   );
 }
