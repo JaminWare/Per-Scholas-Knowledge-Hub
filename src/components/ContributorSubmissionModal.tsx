@@ -131,10 +131,27 @@ async function trySampleSlotOverwrite(trackValue: string, submissionId: string, 
     await supabase.from('articles').update({ title: cleanTitle, content: formattedContent, is_sample: false, is_featured: false }).eq('id', targetArticle.id);
     await supabase.from('submissions').update({ is_approved: true }).eq('id', submissionId);
     onRefresh?.();
-  } catch (err) {
-    console.error('[trySampleSlotOverwrite]', err);
-  }
-}
+  } catch (err: any) {
+      console.error('[Database Ingestion Failure]', err);
+      alert(`Database Error: ${err?.message || JSON.stringify(err)} \n\nFalling back to local cache storage.`);
+      
+      const local: NewSubmission = {
+        id: `local-${Date.now()}`,
+        full_name: fullName.trim(),
+        track,
+        badge: autoBadge,
+        title: title.trim(),
+        content: rawContent,
+        submission_type: submissionType,
+        created_at: new Date().toISOString(),
+      };
+      saveLocalSubmission(local);
+      onSubmitted(local);
+      reset();
+      onClose();
+    } finally {
+      setIsSubmitting(false);
+    }
 
 // ---------------------------------------------------------------------------
 // Main Modal Component
