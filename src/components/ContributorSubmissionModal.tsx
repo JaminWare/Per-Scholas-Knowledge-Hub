@@ -1,9 +1,23 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, Send, Loader2, ChevronDown, Tag, Image, FileText, Link2, Ticket } from 'lucide-react';
+import {
+  X, Send, Loader2, ChevronDown, Tag, Image, FileText, Link2, Ticket,
+  CheckCircle, XCircle,
+} from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 const LS_KEY = 'lkb_submissions';
 
+// ── Profanity filter ──────────────────────────────────────────────────────────
+const PROFANITY_PATTERN = new RegExp(
+  [
+    'fuck', 'shit', 'bitch', 'asshole', 'bastard', 'cunt', 'damn',
+    'piss', 'cock', 'dick', 'pussy', 'whore', 'slut', 'retard', 'nigger',
+    'faggot', 'kike', 'spic', 'chink', 'wetback',
+  ].join('|'),
+  'i',
+);
+
+// ── Submission types ──────────────────────────────────────────────────────────
 const SUBMISSION_TYPES = [
   { value: 'Article',        label: 'Article',        icon: FileText, desc: 'A full research or study piece' },
   { value: 'Resource Link',  label: 'Resource Link',  icon: Link2,    desc: 'A curated external link or tip' },
@@ -59,6 +73,128 @@ function getBadge(masterCategory: string): string {
   return MASTER_CATEGORIES.find((c) => c.label === masterCategory)?.badge ?? 'Cohort Contributor';
 }
 
+// ── Checklist rules (Article submissions only) ────────────────────────────────
+const HEALTHCARE_KEYWORDS = [
+  'patient', 'clinic', 'hospital', 'ehr', 'hipaa', 'provider',
+  'clinical', 'medical', 'care',
+];
+
+interface ChecklistRule {
+  id: string;
+  label: string;
+  hint: string;
+  test: (text: string) => boolean;
+}
+
+const CHECKLIST_RULES: ChecklistRule[] = [
+  {
+    id: 'depth',
+    label: '100-word minimum depth',
+    hint: 'Add more detail — aim for at least 100 words.',
+    test: (t) => t.trim().split(/\s+/).filter(Boolean).length >= 100,
+  },
+  {
+    id: 'healthcare',
+    label: 'Healthcare relevance (2+ keywords)',
+    hint: 'Mention at least two healthcare terms (e.g., EHR, HIPAA, patient).',
+    test: (t) => {
+      const lower = t.toLowerCase();
+      return HEALTHCARE_KEYWORDS.filter((kw) => lower.includes(kw)).length >= 2;
+    },
+  },
+  {
+    id: 'citation',
+    label: 'Reference URL included',
+    hint: 'Paste a reference URL (must start with https://).',
+    test: (t) => /https?:\/\//.test(t),
+  },
+  {
+    id: 'structure',
+    label: 'Structured formatting (bullets or paragraphs)',
+    hint: 'Add bullet points (* or -) or break your text into separate paragraphs.',
+    test: (t) => /(^\s*[-*] |\n\n)/m.test(t),
+  },
+];
+
+function evaluateChecklist(text: string): Record<string, boolean> {
+  return Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, r.test(text)]));
+}
+
+// ── Auto-formatting template ──────────────────────────────────────────────────
+function buildFormattedContent(params: {
+  authorName: string;
+  masterCat: string;
+  trackValue: string;
+  rawContent: string;
+}): string {
+  const { authorName, masterCat, trackValue, rawContent } = params;
+  return [
+    `> 💡 **Community Contribution** | Research curated by **${authorName}** for track **${masterCat}** — **${trackValue}**.`,
+    '',
+    '## Executive Overview & Core Concepts',
+    '',
+    rawContent.trim(),
+    '',
+    '## Healthcare IT Professional Relevance',
+    '',
+    'This research directly supports professionals working within healthcare IT environments. The concepts covered relate to real-world clinical and administrative workflows — from EHR system configurations to HIPAA-compliant security postures. Students are encouraged to map these technical details to patient-facing outcomes, provider productivity, and regulatory compliance frameworks used across hospital networks and clinical settings.',
+    '',
+    '### References & Authoritative Sources',
+    '',
+    '- *(Add your APA, MLA, or direct URL citations below.)*',
+  ].join('\n');
+}
+
+// ── Sample slot overwrite ─────────────────────────────────────────────────────
+async function trySampleSlotOverwrite(params: {
+  trackValue: string;
+  submissionId: string;
+  formattedContent: string;
+  onRefresh?: () => void;
+}): Promise<void> {
+  const { trackValue, submissionId, formattedContent, onRefresh } = params;
+  try {
+    const { data: sampleArticles } = await supabase
+      .from('articles')
+      .select('id, title, study_category')
+      .ilike('title', '%[Sample]%')
+      .order('created_at', { ascending: true })
+      .limit(20);
+
+    if (!sampleArticles || sampleArticles.length === 0) return;
+
+    // Prefer an article whose study_category appears in or matches the track value
+    const trackLower = trackValue.toLowerCase();
+    let targetArticle = sampleArticles.find((a) => {
+      if (!a.study_category) return false;
+      const cat = (a.study_category as string).toLowerCase();
+      return trackLower.includes(cat) || cat.includes(trackLower);
+    }) ?? sampleArticles[0];
+
+    if (!targetArticle) return;
+
+    // Strip [Sample] prefix, preserving the original topic title
+    const cleanTitle = (targetArticle.title as string)
+      .replace(/^\s*\[sample\]\s*/i, '')
+      .trim();
+
+    await supabase
+      .from('articles')
+      .update({ title: cleanTitle, content: formattedContent, is_sample: false, is_featured: false })
+      .eq('id', targetArticle.id);
+
+    await supabase
+      .from('submissions')
+      .update({ is_approved: true })
+      .eq('id', submissionId);
+
+    onRefresh?.();
+  } catch (err) {
+    console.error('[trySampleSlotOverwrite]', err);
+  }
+}
+
+// ── LocalStorage helpers ──────────────────────────────────────────────────────
 export interface NewSubmission {
   id: string;
   full_name: string;
@@ -82,13 +218,16 @@ function saveLocalSubmission(s: NewSubmission) {
   localStorage.setItem(LS_KEY, JSON.stringify(merged));
 }
 
+// ── Props ─────────────────────────────────────────────────────────────────────
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSubmitted: (s: NewSubmission) => void;
+  onRefresh?: () => void;
 }
 
-export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted }: Props) {
+// ── Component ─────────────────────────────────────────────────────────────────
+export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh }: Props) {
   const [submissionType, setSubmissionType] = useState<SubmissionType | ''>('');
   const [masterCat, setMasterCat]           = useState('');
   const [subTrack, setSubTrack]             = useState('');
@@ -98,15 +237,28 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [mediaLink, setMediaLink]           = useState('');
   const [content, setContent]               = useState('');
   const [errors, setErrors]                 = useState<Record<string, string>>({});
+  const [formError, setFormError]           = useState('');
   const [isSubmitting, setIsSubmitting]     = useState(false);
+  const [checklistResults, setChecklistResults] = useState<Record<string, boolean>>(
+    Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false]))
+  );
   const firstInputRef = useRef<HTMLInputElement>(null);
 
-  const isTicket    = submissionType === 'Support Ticket';
+  const isTicket  = submissionType === 'Support Ticket';
+  const isArticle = submissionType === 'Article';
   const selectedCat = MASTER_CATEGORIES.find((c) => c.label === masterCat);
   const autoBadge   = masterCat && !isTicket ? getBadge(masterCat) : null;
   const trackValue  = isTicket
     ? (ticketArea || 'Support Ticket — General')
     : (subTrack || masterCat);
+
+  const allChecksPassed = isArticle
+    ? Object.values(checklistResults).every(Boolean)
+    : true;
+
+  useEffect(() => {
+    if (isArticle) setChecklistResults(evaluateChecklist(content));
+  }, [content, isArticle]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -124,7 +276,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   useEffect(() => { setSubTrack(''); }, [masterCat]);
   useEffect(() => {
     setMasterCat(''); setSubTrack(''); setTicketArea('');
-    setTitle(''); setContent(''); setErrors({});
+    setTitle(''); setContent(''); setErrors({}); setFormError('');
+    setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
   }, [submissionType]);
 
   const validate = () => {
@@ -143,14 +296,44 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   const reset = () => {
     setSubmissionType(''); setFullName(''); setMasterCat(''); setSubTrack('');
-    setTicketArea(''); setTitle(''); setMediaLink(''); setContent(''); setErrors({});
+    setTicketArea(''); setTitle(''); setMediaLink(''); setContent('');
+    setErrors({}); setFormError('');
+    setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError('');
+
+    // Pre-flight: blank / spam shield
+    if (content.trim().length < 20) {
+      setErrors((prev) => ({
+        ...prev,
+        content: "Please provide a more detailed summary to support the cohort's studies.",
+      }));
+      return;
+    }
+
+    // Pre-flight: profanity filter
+    if (PROFANITY_PATTERN.test(title) || PROFANITY_PATTERN.test(content)) {
+      setFormError(
+        'Submission contains restricted language. Please align your contribution with professional healthcare and academic standards.'
+      );
+      return;
+    }
+
     if (!validate()) return;
+
+    // Article checklist gate (defensive — button is also disabled)
+    if (isArticle && !allChecksPassed) return;
+
     setIsSubmitting(true);
     const badge = isTicket ? 'Cohort Contributor' : getBadge(masterCat);
+
+    const formattedContent = isArticle
+      ? buildFormattedContent({ authorName: fullName.trim(), masterCat, trackValue, rawContent: content.trim() })
+      : null;
+
     try {
       const { data, error } = await supabase
         .from('submissions')
@@ -161,9 +344,13 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           title: title.trim(),
           content: content.trim(),
           submission_type: submissionType,
+          formatted_content: formattedContent,
+          is_approved: false,
         })
         .select().single();
+
       if (error) throw error;
+
       const sub: NewSubmission = {
         ...(data as NewSubmission),
         badge,
@@ -171,9 +358,17 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         media_link: mediaLink.trim() || undefined,
       };
       saveLocalSubmission(sub);
+
+      // Fire-and-forget: attempt sample slot overwrite without blocking modal close
+      if (isArticle && formattedContent) {
+        trySampleSlotOverwrite({ trackValue, submissionId: sub.id, formattedContent, onRefresh });
+      }
+
       onSubmitted(sub);
-      reset(); onClose();
+      reset();
+      onClose();
     } catch {
+      // Offline / DB error fallback — still saves locally
       const local: NewSubmission = {
         id: `local-${Date.now()}`,
         full_name: fullName.trim(),
@@ -187,7 +382,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       };
       saveLocalSubmission(local);
       onSubmitted(local);
-      reset(); onClose();
+      reset();
+      onClose();
     } finally {
       setIsSubmitting(false);
     }
@@ -216,6 +412,13 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             </button>
           </div>
         </div>
+
+        {/* Form-level error banner (profanity / system errors) */}
+        {formError && (
+          <div className="mx-6 mt-4 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30">
+            <p className="text-sm text-red-600 dark:text-red-400 leading-snug">{formError}</p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4 max-h-[70vh] overflow-y-auto">
 
@@ -411,6 +614,44 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   : <span />}
                 <span className="text-xs text-zinc-400">{content.length} chars</span>
               </div>
+
+              {/* ── Publication Checklist (Article only) ─────────── */}
+              {isArticle && (
+                <div className="mt-3 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+                  <div className="px-3 py-2 bg-zinc-100 dark:bg-zinc-700/60 border-b border-zinc-200 dark:border-zinc-700">
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+                      Publication Checklist
+                    </p>
+                  </div>
+                  <div className="divide-y divide-zinc-100 dark:divide-zinc-700/50">
+                    {CHECKLIST_RULES.map((rule) => {
+                      const passed = checklistResults[rule.id];
+                      return (
+                        <div key={rule.id} className="flex items-start gap-3 px-3 py-2.5">
+                          {passed
+                            ? <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                            : <XCircle    className="w-4 h-4 text-rose-500   flex-shrink-0 mt-0.5" />
+                          }
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-xs font-medium leading-tight ${
+                              passed
+                                ? 'text-zinc-700 dark:text-zinc-300'
+                                : 'text-rose-600 dark:text-rose-400'
+                            }`}>
+                              {rule.label}
+                            </p>
+                            {!passed && (
+                              <p className="text-[11px] text-rose-400 dark:text-rose-400/80 mt-0.5 leading-snug">
+                                {rule.hint}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -422,11 +663,15 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               Cancel
             </button>
             <button
-              type="submit" disabled={isSubmitting}
-              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors disabled:opacity-60 shadow-lg text-white ${
-                isTicket
-                  ? 'bg-amber-500 hover:bg-amber-600 shadow-amber-500/20'
-                  : 'bg-sky-500 hover:bg-sky-600 shadow-sky-500/20'
+              type="submit"
+              disabled={isSubmitting || (isArticle && !allChecksPassed)}
+              title={isArticle && !allChecksPassed ? 'Complete all checklist requirements to publish.' : undefined}
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors shadow-lg text-white ${
+                isArticle && !allChecksPassed
+                  ? 'bg-zinc-400 dark:bg-zinc-600 cursor-not-allowed opacity-60'
+                  : isTicket
+                    ? 'bg-amber-500 hover:bg-amber-600 shadow-amber-500/20 disabled:opacity-60'
+                    : 'bg-sky-500 hover:bg-sky-600 shadow-sky-500/20 disabled:opacity-60'
               }`}
             >
               {isSubmitting

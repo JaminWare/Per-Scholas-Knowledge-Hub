@@ -473,7 +473,7 @@ function CurriculumDashboard({
 }
 
 // ── Main SectionPage ──────────────────────────────────────
-export default function SectionPage() {
+export default function SectionPage({ refreshKey = 0 }: { refreshKey?: number }) {
   const location = useLocation();
   const navigate = useNavigate();
   const slug = location.pathname.replace(/^\//, '').replace(/\/$/, '');
@@ -509,7 +509,7 @@ export default function SectionPage() {
       }
     }
     fetchArticles();
-  }, [slug]);
+  }, [slug, refreshKey]);
 
   // ── Rich local wiki article ──────────────────────────────
   if (localContent && !isDomainSection) {

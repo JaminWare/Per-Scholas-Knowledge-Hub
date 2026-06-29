@@ -42,7 +42,7 @@ const researchArticles = [
   },
 ];
 
-export default function HomePage() {
+export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
   const [featuredArticles, setFeaturedArticles] = useState<Article[]>([]);
   const [recentArticles,   setRecentArticles]   = useState<Article[]>([]);
   const [isLoading,        setIsLoading]         = useState(true);
@@ -309,6 +309,7 @@ export default function HomePage() {
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         onSubmitted={handleSubmitted}
+        onRefresh={onRefresh}
       />
 
       {/* ── Quick-submit modal overlay ─────────────────── */}

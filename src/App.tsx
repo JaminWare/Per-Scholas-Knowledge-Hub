@@ -1,5 +1,5 @@
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import Sidebar from './components/Sidebar';
 import SearchBar from './components/SearchBar';
@@ -23,6 +23,8 @@ function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { theme, toggleTheme } = useTheme();
   const mainRef = useRef<HTMLElement>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-slate-200 dark:bg-[#242427] text-zinc-800 dark:text-zinc-100">
@@ -70,11 +72,11 @@ function AppContent() {
         <main ref={mainRef} className="flex-1 overflow-y-auto p-4 md:p-6">
           <ScrollToTop scrollRef={mainRef} />
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
             <Route path="/recognition" element={<RecognitionPage />} />
             <Route path="/article/:slug" element={<ArticlePage />} />
             <Route path="/article/:slug/*" element={<ArticlePage />} />
-            <Route path="/:slug/*" element={<SectionPage />} />
+            <Route path="/:slug/*" element={<SectionPage refreshKey={refreshKey} />} />
             <Route path="*" element={<ComingSoonPage />} />
           </Routes>
         </main>
