@@ -229,7 +229,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
     try {
       const { data, error } = await supabase.from('submissions').insert({
-        full_name: fullName.trim(), track, badge: autoBadge, title: title.trim(), content: rawContent, submission_type: submissionType, formatted_content: formattedContent, is_approved: false,
+        full_name: fullName.trim(), track, badge: autoBadge, title: title.trim(), content: rawContent, submission_type: submissionType, formatted_content: formattedContent, is_approved: true,
       }).select().single();
 
       if (error) throw error;
