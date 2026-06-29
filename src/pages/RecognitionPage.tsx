@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
-  Zap, Star, Ticket, Home, Crown,
+  Zap, Star, Home, Crown,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { loadLocalSubmissions, type NewSubmission } from '../components/ContributorSubmissionModal';
@@ -57,19 +57,7 @@ function categoryLabel(s: NewSubmission): string {
   return 'Shared Tips';
 }
 
-const CATEGORY_ICON: Record<string, React.ReactNode> = {
-  'Authored Articles': <BookOpen className="w-3.5 h-3.5" />,
-  'Resource Links':    <Zap className="w-3.5 h-3.5" />,
-  'Support Tickets':   <Ticket className="w-3.5 h-3.5" />,
-  'Diagrams':          <Zap className="w-3.5 h-3.5" />,
-  'Quick References':  <Zap className="w-3.5 h-3.5" />,
-  'Prompt Playbooks':  <Zap className="w-3.5 h-3.5" />,
-  'Shared Tips':       <Zap className="w-3.5 h-3.5" />,
-};
-
-// ── Community contributor card (accordion + dropdown) ─────
-
-type ViewMode = 'accordion' | 'dropdown';
+// ── Community contributor card (dropdown only) ────────────
 
 interface ContributorGroup {
   name: string;
@@ -85,19 +73,13 @@ function buildSlugFromTitle(title: string): string {
     .replace(/\s+/g, '-');
 }
 
-function CommunityCard({ group, isNew, isOpen, onToggle, viewMode }: {
+function CommunityCard({ group, isNew, isOpen, onToggle }: {
   group: ContributorGroup;
   isNew: boolean;
   isOpen: boolean;
   onToggle: () => void;
-  viewMode: ViewMode;
 }) {
   const initial = group.name.charAt(0).toUpperCase();
-  const byCategory = group.submissions.reduce<Record<string, NewSubmission[]>>((acc, s) => {
-    const cat = categoryLabel(s);
-    (acc[cat] = acc[cat] ?? []).push(s);
-    return acc;
-  }, {});
   const totalCount = group.submissions.length;
   const articleSubmissions = group.submissions.filter((s) => s.submission_type === 'Article');
 
@@ -162,65 +144,25 @@ function CommunityCard({ group, isNew, isOpen, onToggle, viewMode }: {
         }
       </button>
 
-      {/* Expanded portfolio */}
-      {isOpen && viewMode === 'accordion' && (
-        <div className="border-t border-zinc-100 dark:border-zinc-600 px-5 py-4 space-y-4">
-          {Object.entries(byCategory).map(([cat, items]) => (
-            <div key={cat}>
-              <div className="flex items-center gap-2 mb-2.5">
-                <span className="text-zinc-400 dark:text-zinc-500">{CATEGORY_ICON[cat] ?? <Zap className="w-3.5 h-3.5" />}</span>
-                <h4 className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wide">{cat}</h4>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-600 text-zinc-500">{items.length}</span>
-              </div>
-              <ul className="space-y-1.5">
-                {items.map((s) => {
-                  const slug = buildSlugFromTitle(s.title);
-                  if (s.submission_type === 'Article') {
-                    return (
-                      <li key={s.id}>
-                        <Link
-                          to={`/article/${slug}`}
-                          className="flex items-center gap-2 text-sm text-sky-600 dark:text-sky-400 hover:underline underline-offset-2 group"
-                        >
-                          <span className="w-1 h-1 rounded-full bg-sky-400 flex-shrink-0" />
-                          <span className="truncate text-zinc-900 dark:text-zinc-100 group-hover:text-sky-500">{s.title}</span>
-                          <ChevronRight className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100" />
-                        </Link>
-                      </li>
-                    );
-                  }
-                  return (
-                    <li key={s.id} className="flex items-center gap-2 text-sm">
-                      <span className="w-1 h-1 rounded-full bg-zinc-400 flex-shrink-0" />
-                      <span className="truncate text-zinc-900 dark:text-zinc-100">{s.title}</span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ))}
-        </div>
-      )}
-
       {/* Dropdown view mode */}
-      {isOpen && viewMode === 'dropdown' && (
-        <div className="border-t border-zinc-100 dark:border-zinc-600 px-5 py-4 overflow-visible">
-          <p className="font-mono text-[9px] uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-2">Navigate to Article</p>
+      {isOpen && (
+        <div className="border-t border-sky-100 dark:border-zinc-600 px-5 py-4 overflow-visible">
+          <p className="font-mono text-[9px] uppercase tracking-widest text-sky-400 dark:text-sky-600 mb-2">Navigate to Article</p>
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={(e) => { e.stopPropagation(); setDropdownOpen((p) => !p); }}
-              className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-600 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:border-sky-400/50 dark:hover:border-sky-500/40 transition-all"
+              className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:border-sky-400 dark:hover:border-sky-600 transition-all"
             >
-              <span className="font-mono text-xs text-zinc-700 dark:text-zinc-300">
+              <span className="font-mono text-xs text-sky-700 dark:text-sky-400">
                 {articleSubmissions.length > 0
                   ? `${articleSubmissions.length} article${articleSubmissions.length !== 1 ? 's' : ''} — select to navigate`
                   : `${totalCount} contribution${totalCount !== 1 ? 's' : ''}`}
               </span>
-              <ChevronDown className={`w-4 h-4 text-zinc-400 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-4 h-4 text-sky-400 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {dropdownOpen && (
-              <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl border border-zinc-200 dark:border-zinc-600 bg-white dark:bg-zinc-800 shadow-xl shadow-zinc-900/10 overflow-hidden">
+              <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl border border-sky-200 dark:border-sky-800/60 bg-sky-50/90 dark:bg-sky-950/40 shadow-xl shadow-sky-900/10 divide-y divide-sky-100 dark:divide-sky-900/50 overflow-hidden">
                 {group.submissions.map((s) => {
                   const slug = buildSlugFromTitle(s.title);
                   const isArticle = s.submission_type === 'Article';
@@ -229,20 +171,20 @@ function CommunityCard({ group, isNew, isOpen, onToggle, viewMode }: {
                       key={s.id}
                       to={`/article/${slug}`}
                       onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-sky-50 dark:hover:bg-sky-500/10 transition-colors group border-b border-zinc-100 dark:border-zinc-700 last:border-0"
+                      className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:border-sky-500 hover:bg-sky-100/60 dark:hover:bg-sky-500/10 transition-all group"
                     >
                       <BookOpen className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
-                      <span className="text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 truncate">{s.title}</span>
-                      <ChevronRight className="w-3 h-3 text-zinc-300 dark:text-zinc-600 group-hover:text-sky-400 flex-shrink-0 ml-auto" />
+                      <span className="text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-sky-700 dark:group-hover:text-sky-300 truncate">{s.title}</span>
+                      <ChevronRight className="w-3 h-3 text-sky-300 dark:text-sky-700 group-hover:text-sky-500 flex-shrink-0 ml-auto" />
                     </Link>
                   ) : (
                     <div
                       key={s.id}
-                      className="flex items-center gap-3 px-4 py-2.5 border-b border-zinc-100 dark:border-zinc-700 last:border-0"
+                      className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
                     >
-                      <Zap className="w-3.5 h-3.5 text-zinc-400 flex-shrink-0" />
-                      <span className="text-sm text-zinc-900 dark:text-zinc-100 truncate">{s.title}</span>
-                      <span className="ml-auto text-[10px] font-mono text-zinc-400 dark:text-zinc-500 flex-shrink-0">{categoryLabel(s)}</span>
+                      <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />
+                      <span className="text-sm text-zinc-700 dark:text-zinc-200 truncate">{s.title}</span>
+                      <span className="ml-auto text-[10px] font-mono text-sky-500 dark:text-sky-600 flex-shrink-0">{categoryLabel(s)}</span>
                     </div>
                   );
                 })}
@@ -257,7 +199,7 @@ function CommunityCard({ group, isNew, isOpen, onToggle, viewMode }: {
 
 // ── Founder card (accordion + dropdown) ──────────────────
 
-function FounderCard({ viewMode }: { viewMode: ViewMode }) {
+function FounderCard() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -293,67 +235,38 @@ function FounderCard({ viewMode }: { viewMode: ViewMode }) {
         </div>
       </div>
 
-      {/* Body — accordion mode */}
-      {viewMode === 'accordion' && (
-        <div className="px-5 py-4">
-          <div className="flex items-center gap-2 mb-3">
-            <BookOpen className="w-3.5 h-3.5 text-amber-500" />
-            <h4 className="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wide">Authored Articles</h4>
-            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400">
-              {JAMIN_ARTICLES.length}
+      {/* Body — dropdown navigation */}
+      <div className="px-5 py-4 overflow-visible">
+        <p className="font-mono text-[9px] uppercase tracking-widest text-amber-500/70 dark:text-amber-600 mb-2">Navigate to Article</p>
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={(e) => { e.stopPropagation(); setDropdownOpen((p) => !p); }}
+            className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-amber-50 dark:bg-sky-950/30 border border-amber-200 dark:border-sky-800/60 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:border-amber-400/60 dark:hover:border-amber-500/40 transition-all"
+          >
+            <span className="font-mono text-xs text-amber-700 dark:text-amber-400">
+              {JAMIN_ARTICLES.length} articles — select to navigate
             </span>
-          </div>
-          <ul className="space-y-2">
-            {JAMIN_ARTICLES.map((a) => (
-              <li key={a.slug}>
+            <ChevronDown className={`w-4 h-4 text-amber-400 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+          </button>
+
+          {dropdownOpen && (
+            <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl border border-sky-200 dark:border-sky-800/60 bg-sky-50/90 dark:bg-sky-950/40 shadow-xl shadow-sky-900/10 divide-y divide-sky-100 dark:divide-sky-900/50 overflow-hidden">
+              {JAMIN_ARTICLES.map((a) => (
                 <Link
+                  key={a.slug}
                   to={`/article/${a.slug}`}
-                  className="flex items-center gap-2 text-sm hover:underline underline-offset-2 group"
+                  onClick={() => setDropdownOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:border-amber-400 hover:bg-sky-100/60 dark:hover:bg-sky-500/10 transition-all group"
                 >
-                  <span className="w-1 h-1 rounded-full bg-sky-400 flex-shrink-0" />
-                  <span className="truncate text-zinc-900 dark:text-zinc-100 group-hover:text-sky-500">{a.title}</span>
-                  <ChevronRight className="w-3 h-3 flex-shrink-0 opacity-0 group-hover:opacity-100 text-sky-400" />
+                  <BookOpen className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+                  <span className="text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-amber-700 dark:group-hover:text-amber-300 truncate">{a.title}</span>
+                  <ChevronRight className="w-3 h-3 text-sky-300 dark:text-sky-700 group-hover:text-amber-400 flex-shrink-0 ml-auto" />
                 </Link>
-              </li>
-            ))}
-          </ul>
+              ))}
+            </div>
+          )}
         </div>
-      )}
-
-      {/* Body — dropdown mode */}
-      {viewMode === 'dropdown' && (
-        <div className="px-5 py-4 overflow-visible">
-          <p className="font-mono text-[9px] uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-2">Navigate to Article</p>
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={(e) => { e.stopPropagation(); setDropdownOpen((p) => !p); }}
-              className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-amber-50 dark:bg-zinc-800 border border-amber-200 dark:border-zinc-600 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:border-amber-400/60 dark:hover:border-amber-500/40 transition-all"
-            >
-              <span className="font-mono text-xs text-zinc-700 dark:text-zinc-300">
-                {JAMIN_ARTICLES.length} articles — select to navigate
-              </span>
-              <ChevronDown className={`w-4 h-4 text-zinc-400 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            {dropdownOpen && (
-              <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl border border-zinc-200 dark:border-zinc-600 bg-white dark:bg-zinc-800 shadow-xl shadow-zinc-900/10 overflow-hidden">
-                {JAMIN_ARTICLES.map((a) => (
-                  <Link
-                    key={a.slug}
-                    to={`/article/${a.slug}`}
-                    onClick={() => setDropdownOpen(false)}
-                    className="flex items-center gap-3 px-4 py-2.5 hover:bg-amber-50 dark:hover:bg-amber-500/10 transition-colors group border-b border-zinc-100 dark:border-zinc-700 last:border-0"
-                  >
-                    <BookOpen className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
-                    <span className="text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 truncate">{a.title}</span>
-                    <ChevronRight className="w-3 h-3 text-zinc-300 dark:text-zinc-600 group-hover:text-amber-400 flex-shrink-0 ml-auto" />
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -362,9 +275,8 @@ function FounderCard({ viewMode }: { viewMode: ViewMode }) {
 
 export default function RecognitionPage() {
   const navigate = useNavigate();
-  const [submissions,      setSubmissions]      = useState<NewSubmission[]>([]);
-  const [openContributor,  setOpenContributor]  = useState<string | null>(null);
-  const [viewMode,         setViewMode]         = useState<ViewMode>('accordion');
+  const [submissions,     setSubmissions]     = useState<NewSubmission[]>([]);
+  const [openContributor, setOpenContributor] = useState<string | null>(null);
 
   useEffect(() => {
     const local = loadLocalSubmissions();
@@ -452,30 +364,8 @@ export default function RecognitionPage() {
         <div className="flex items-center gap-2 mb-3">
           <Star className="w-4 h-4 text-amber-500" />
           <h2 className="text-sm font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Founder</h2>
-          <div className="ml-auto flex items-center gap-1 rounded-lg border border-zinc-200 dark:border-zinc-600 p-0.5 bg-zinc-50 dark:bg-zinc-800">
-            <button
-              onClick={() => setViewMode('accordion')}
-              className={`font-mono text-xs px-2.5 py-1 rounded-md transition-all ${
-                viewMode === 'accordion'
-                  ? 'bg-amber-500 text-white shadow-sm'
-                  : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200'
-              }`}
-            >
-              LIST
-            </button>
-            <button
-              onClick={() => setViewMode('dropdown')}
-              className={`font-mono text-xs px-2.5 py-1 rounded-md transition-all ${
-                viewMode === 'dropdown'
-                  ? 'bg-amber-500 text-white shadow-sm'
-                  : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200'
-              }`}
-            >
-              SELECT
-            </button>
-          </div>
         </div>
-        <FounderCard viewMode={viewMode} />
+        <FounderCard />
       </section>
 
       {/* Community section */}
@@ -488,30 +378,6 @@ export default function RecognitionPage() {
           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 dark:bg-zinc-700 text-zinc-500">
             {communityGroups.length}
           </span>
-          {communityGroups.length > 0 && (
-            <div className="ml-auto flex items-center gap-1 rounded-lg border border-zinc-200 dark:border-zinc-600 p-0.5 bg-zinc-50 dark:bg-zinc-800">
-              <button
-                onClick={() => setViewMode('accordion')}
-                className={`font-mono text-xs px-2.5 py-1 rounded-md transition-all ${
-                  viewMode === 'accordion'
-                    ? 'bg-sky-500 text-white shadow-sm'
-                    : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200'
-                }`}
-              >
-                LIST
-              </button>
-              <button
-                onClick={() => setViewMode('dropdown')}
-                className={`font-mono text-xs px-2.5 py-1 rounded-md transition-all ${
-                  viewMode === 'dropdown'
-                    ? 'bg-sky-500 text-white shadow-sm'
-                    : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200'
-                }`}
-              >
-                SELECT
-              </button>
-            </div>
-          )}
         </div>
 
         {communityGroups.length > 0 ? (
@@ -523,7 +389,6 @@ export default function RecognitionPage() {
                 isNew={g.name === newestName}
                 isOpen={openContributor === g.name}
                 onToggle={() => setOpenContributor((prev) => prev === g.name ? null : g.name)}
-                viewMode={viewMode}
               />
             ))}
           </div>

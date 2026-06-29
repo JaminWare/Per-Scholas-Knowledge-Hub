@@ -13,7 +13,7 @@ import {
 
 const LS_KEY = 'lkb_submissions';
 
-type QuickType = 'Article' | 'Resource Link' | 'Support Ticket';
+type QuickType = 'Article' | 'Resource Link' | 'Support Ticket' | 'Study Tip' | 'Diagram' | 'Quick Reference';
 
 const researchArticles = [
   {
@@ -55,6 +55,7 @@ export default function HomePage() {
   // Quick Submission Portal form state
   const [quickName,        setQuickName]         = useState('');
   const [quickType,        setQuickType]         = useState<QuickType>('Article');
+  const [quickTrack,       setQuickTrack]        = useState('CompTIA A+ Core 1 — Domain 1.0');
   const [quickTitle,       setQuickTitle]        = useState('');
   const [quickExcerpt,     setQuickExcerpt]      = useState('');
   const [isQuickSubmitting, setIsQuickSubmitting] = useState(false);
@@ -88,14 +89,18 @@ export default function HomePage() {
     if (!quickName.trim() || !quickTitle.trim() || isQuickSubmitting) return;
     setIsQuickSubmitting(true);
     try {
-      const badge = quickType === 'Resource Link' ? 'Reference Author' : 'Cohort Contributor';
+      const badge =
+        quickType === 'Resource Link'  ? 'Reference Author'  :
+        quickType === 'Quick Reference' ? 'Reference Author' :
+        quickType === 'Diagram'        ? 'Diagram Architect' :
+        'Cohort Contributor';
       const { data, error } = await supabase
         .from('submissions')
         .insert({
           full_name: quickName.trim(),
           title: quickTitle.trim(),
           content: quickExcerpt.trim(),
-          track: 'General',
+          track: quickTrack,
           badge,
           submission_type: quickType,
         })
@@ -122,6 +127,7 @@ export default function HomePage() {
         setQuickSubmitDone(true);
         setQuickName('');
         setQuickType('Article');
+        setQuickTrack('CompTIA A+ Core 1 — Domain 1.0');
         setQuickTitle('');
         setQuickExcerpt('');
         setTimeout(() => {
@@ -350,6 +356,35 @@ export default function HomePage() {
               <option value="Article">Article</option>
               <option value="Resource Link">Resource Link</option>
               <option value="Support Ticket">Support Ticket</option>
+              <option value="Study Tip">Study Tip</option>
+              <option value="Diagram">Diagram</option>
+              <option value="Quick Reference">Quick Reference</option>
+            </select>
+
+            {/* Domain / Track */}
+            <select
+              value={quickTrack}
+              onChange={(e) => setQuickTrack(e.target.value)}
+              className="w-full px-3 py-2.5 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/60 transition-all cursor-pointer"
+            >
+              <optgroup label="CompTIA A+ Core 1">
+                <option value="CompTIA A+ Core 1 — Domain 1.0">Core 1 — Domain 1.0 (Mobile Devices)</option>
+                <option value="CompTIA A+ Core 1 — Domain 2.0">Core 1 — Domain 2.0 (Networking)</option>
+                <option value="CompTIA A+ Core 1 — Domain 3.0">Core 1 — Domain 3.0 (Hardware)</option>
+                <option value="CompTIA A+ Core 1 — Domain 4.0">Core 1 — Domain 4.0 (Virtualization &amp; Cloud)</option>
+                <option value="CompTIA A+ Core 1 — Domain 5.0">Core 1 — Domain 5.0 (Hardware &amp; Network Troubleshooting)</option>
+              </optgroup>
+              <optgroup label="CompTIA A+ Core 2">
+                <option value="CompTIA A+ Core 2 — Domain 1.0">Core 2 — Domain 1.0 (Operating Systems)</option>
+                <option value="CompTIA A+ Core 2 — Domain 2.0">Core 2 — Domain 2.0 (Security)</option>
+                <option value="CompTIA A+ Core 2 — Domain 3.0">Core 2 — Domain 3.0 (Software Troubleshooting)</option>
+                <option value="CompTIA A+ Core 2 — Domain 4.0">Core 2 — Domain 4.0 (Operational Procedures)</option>
+              </optgroup>
+              <optgroup label="Advanced Healthcare IT">
+                <option value="Advanced Healthcare IT — EHR Architecture">Advanced Healthcare IT — EHR Architecture</option>
+                <option value="Advanced Healthcare IT — HIPAA Data Security">Advanced Healthcare IT — HIPAA Data Security</option>
+                <option value="Advanced Healthcare IT — Clinical Workflows">Advanced Healthcare IT — Clinical Workflows</option>
+              </optgroup>
             </select>
 
             {/* Title */}
