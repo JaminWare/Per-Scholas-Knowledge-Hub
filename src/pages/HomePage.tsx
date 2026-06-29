@@ -7,7 +7,7 @@ import ContributorSubmissionModal, { type NewSubmission } from '../components/Co
 import SuccessToast from '../components/SuccessToast';
 import type { Article } from '../types/database';
 import {
-  BookOpen, Eye, TrendingUp, ArrowRight,
+  TrendingUp, ArrowRight, Users,
   Shield, Terminal, Monitor, ChevronRight, Award, Send, Loader2, CheckCircle,
 } from 'lucide-react';
 
@@ -46,8 +46,6 @@ export default function HomePage() {
   const [featuredArticles, setFeaturedArticles] = useState<Article[]>([]);
   const [recentArticles,   setRecentArticles]   = useState<Article[]>([]);
   const [isLoading,        setIsLoading]         = useState(true);
-  const [totalArticleCount, setTotalArticleCount] = useState<number>(0);
-  const [totalViewCount,   setTotalViewCount]    = useState<number>(0);
   const [modalOpen,        setModalOpen]         = useState(false);
   const [latestSubmission, setLatestSubmission]  = useState<NewSubmission | null>(null);
   const [toastVisible,     setToastVisible]      = useState(false);
@@ -64,19 +62,12 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [featuredRes, recentRes, countRes] = await Promise.all([
+        const [featuredRes, recentRes] = await Promise.all([
           supabase.from('articles').select('*, contributor:contributors(*)').eq('is_featured', true).limit(3),
-          supabase.from('articles').select('*, contributor:contributors(*)').order('created_at', { ascending: false }).limit(50),
-          supabase.from('articles').select('*', { count: 'exact', head: true }),
+          supabase.from('articles').select('*, contributor:contributors(*)').order('created_at', { ascending: false }).limit(6),
         ]);
         if (featuredRes.data) setFeaturedArticles(featuredRes.data);
-        if (recentRes.data) {
-          setRecentArticles(recentRes.data.slice(0, 6));
-          const views = (recentRes.data as (Article & { view_count?: number })[])
-            .reduce((acc, a) => acc + (a.view_count ?? 0), 0);
-          setTotalViewCount(views);
-        }
-        if (countRes.count !== null) setTotalArticleCount(countRes.count);
+        if (recentRes.data)   setRecentArticles(recentRes.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -172,36 +163,6 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* Hub Activity Overview */}
-          <section className="grid grid-cols-1 md:grid-cols-2 max-w-4xl gap-4">
-            <div className="card p-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm text-zinc-500 dark:text-zinc-500 mb-1">Total Collective Insights</p>
-                  <p className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">
-                    {totalArticleCount > 0 ? `${totalArticleCount} Articles` : '— Articles'}
-                  </p>
-                </div>
-                <div className="p-2.5 rounded-xl bg-sky-100/70 dark:bg-sky-500/10">
-                  <BookOpen className="w-5 h-5 text-sky-700 dark:text-sky-400" />
-                </div>
-              </div>
-            </div>
-            <div className="card p-5">
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm text-zinc-500 dark:text-zinc-500 mb-1">Total Resource Views</p>
-                  <p className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">
-                    {totalViewCount.toLocaleString()}
-                  </p>
-                </div>
-                <div className="p-2.5 rounded-xl bg-sky-100/70 dark:bg-sky-500/10">
-                  <Eye className="w-5 h-5 text-sky-700 dark:text-sky-400" />
-                </div>
-              </div>
-            </div>
-          </section>
-
           {/* Featured Articles */}
           {featuredArticles.length > 0 && (
             <section>
@@ -277,7 +238,7 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="card p-12 text-center">
-                <BookOpen className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mx-auto mb-4" />
+                <Award className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mx-auto mb-4" />
                 <p className="text-zinc-500 dark:text-zinc-500">No articles yet. Check back soon!</p>
               </div>
             )}
@@ -366,20 +327,25 @@ export default function HomePage() {
             </button>
           </div>
 
-          {/* Widget 2 — View Detailed Portfolios CTA */}
+          {/* Widget 2 — View Detailed Portfolios emblem */}
           <Link
             to="/recognition"
-            className="flex items-center justify-between gap-2 w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 hover:border-sky-500/50 dark:hover:border-sky-500/50 hover:bg-sky-50 dark:hover:bg-sky-500/5 transition-all duration-200 group"
+            className="block w-full bg-gradient-to-r from-sky-50 to-slate-50 dark:from-zinc-800 dark:to-zinc-900 border border-sky-200 dark:border-zinc-700/60 rounded-xl p-4 hover:shadow-lg hover:shadow-sky-500/10 hover:border-sky-300 dark:hover:border-sky-700/60 transition-all duration-200 group"
           >
-            <div className="flex items-center gap-2.5">
-              <div className="p-1.5 rounded-lg bg-sky-100 dark:bg-sky-500/10">
-                <Award className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-sky-100 dark:bg-sky-500/15 flex-shrink-0">
+                <Users className="w-5 h-5 text-sky-500" />
               </div>
-              <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-200 group-hover:text-sky-700 dark:group-hover:text-sky-400 transition-colors">
-                View Detailed Portfolios →
-              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-bold tracking-tight text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors duration-200">
+                  View Detailed Portfolios →
+                </p>
+                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">
+                  Explore full contributor portfolios
+                </p>
+              </div>
+              <ChevronRight className="w-4 h-4 text-zinc-300 dark:text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0" />
             </div>
-            <ChevronRight className="w-4 h-4 text-zinc-400 dark:text-zinc-600 group-hover:text-sky-500 transition-colors flex-shrink-0" />
           </Link>
 
         </aside>

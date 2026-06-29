@@ -204,10 +204,11 @@ function CommunityCard({ group, isNew, isOpen, onToggle, viewMode }: {
 
       {/* Dropdown view mode */}
       {isOpen && viewMode === 'dropdown' && (
-        <div className="border-t border-zinc-100 dark:border-zinc-600 px-5 py-4">
+        <div className="border-t border-zinc-100 dark:border-zinc-600 px-5 py-4 overflow-visible">
+          <p className="font-mono text-[9px] uppercase tracking-widest text-zinc-400 dark:text-zinc-500 mb-2">Navigate to Article</p>
           <div className="relative" ref={dropdownRef}>
             <button
-              onClick={() => setDropdownOpen((p) => !p)}
+              onClick={(e) => { e.stopPropagation(); setDropdownOpen((p) => !p); }}
               className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-600 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:border-sky-400/50 dark:hover:border-sky-500/40 transition-all"
             >
               <span className="font-mono text-xs text-zinc-700 dark:text-zinc-300">
@@ -219,7 +220,7 @@ function CommunityCard({ group, isNew, isOpen, onToggle, viewMode }: {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute left-0 right-0 top-full mt-1.5 z-50 rounded-xl border border-zinc-200 dark:border-zinc-600 bg-white dark:bg-zinc-800 shadow-xl shadow-zinc-900/10 overflow-hidden">
+              <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl border border-zinc-200 dark:border-zinc-600 bg-white dark:bg-zinc-800 shadow-xl shadow-zinc-900/10 overflow-hidden">
                 {group.submissions.map((s) => {
                   const slug = buildSlugFromTitle(s.title);
                   const isArticle = s.submission_type === 'Article';
