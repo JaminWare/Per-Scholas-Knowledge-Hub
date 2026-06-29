@@ -551,7 +551,7 @@ export default function ArticlePage() {
     );
   }
 
-  const isSample = article.is_sample === true || article.title.includes('[Sample]');
+  const isSample = article.is_sample === true || /\[\s*sample\s*\]/i.test(article.title);
   const markdownContent = articleContentMap[article.slug] ?? article.content;
   const authorName = deriveAuthorName(contributor, article);
   const trackLabel = deriveTrackLabel(article);
@@ -559,7 +559,7 @@ export default function ArticlePage() {
 
   // Founder bypass: never render sample gateway for known founder slugs
   const isFounderSlug = FOUNDER_SLUGS.has(article.slug) || authorName === 'Jamin Ware';
-  const effectiveIsSample = (article.title.toLowerCase().startsWith('[sample]') || isSample) && !isFounderSlug;
+  const effectiveIsSample = isSample && !isFounderSlug;
 
   // Full-page diagram panel routing
   const isNetworkTopologyArticle = article.slug === 'diagrams/network-topology-architecture';
