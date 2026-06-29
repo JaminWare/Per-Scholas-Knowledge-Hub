@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import {
-  X, Send, Loader2, ChevronDown, Tag, Image, FileText, Link2, Ticket,
+  X, Send, Loader2, ChevronDown, Tag, Image, FileText, Link2,
   CheckCircle, XCircle,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -19,15 +19,14 @@ const PROFANITY_PATTERN = new RegExp(
 
 // ── Submission types ──────────────────────────────────────────────────────────
 const SUBMISSION_TYPES = [
-  { value: 'Article',        label: 'Article',        icon: FileText, desc: 'A full research or study piece' },
-  { value: 'Resource Link',  label: 'Resource Link',  icon: Link2,    desc: 'A curated external link or tip' },
-  { value: 'Support Ticket', label: 'Support Ticket', icon: Ticket,   desc: 'Report an issue to be resolved' },
+  { value: 'Article',        label: 'Article',       icon: FileText, desc: 'A full research or study piece' },
+  { value: 'Resource Link',  label: 'Resource Link', icon: Link2,    desc: 'A curated external link or tip' },
 ] as const;
 
 type SubmissionType = typeof SUBMISSION_TYPES[number]['value'];
 
 const MASTER_CATEGORIES = [
-  { label: 'Study Tips',       badge: 'Core 1 Expert',     sub: [
+  { label: 'Study Tips',      badge: 'Core 1 Expert',     sub: [
     'CompTIA A+ Core 1 — Domain 1.0 (Mobile Devices)',
     'CompTIA A+ Core 1 — Domain 2.0 (Networking)',
     'CompTIA A+ Core 1 — Domain 3.0 (Hardware)',
@@ -41,19 +40,19 @@ const MASTER_CATEGORIES = [
     'Advanced Healthcare IT — HIPAA Data Security',
     'Advanced Healthcare IT — Clinical Workflows',
   ]},
-  { label: 'Diagrams',          badge: 'Diagram Architect', sub: [
+  { label: 'Diagrams',         badge: 'Diagram Architect', sub: [
     'Diagrams — Motherboard / Hardware Blueprints',
     'Diagrams — Network Topology',
     'Diagrams — EHR / Clinical Data Flow',
     'Diagrams — Security Architecture',
   ]},
-  { label: 'Quick References',  badge: 'Reference Author',  sub: [
+  { label: 'Quick References', badge: 'Reference Author',  sub: [
     'Quick References — Port Numbers & Protocols',
     'Quick References — CLI Commands',
     'Quick References — Acronyms & Mnemonics',
     'Quick References — Subnetting Cheatsheet',
   ]},
-  { label: 'Prompt Playbook',   badge: 'Playbook Engineer', sub: [
+  { label: 'Prompt Playbook',  badge: 'Playbook Engineer', sub: [
     'Prompt Playbook — CompTIA PBQ Simulations',
     'Prompt Playbook — Healthcare Case Studies',
     'Prompt Playbook — EHR Troubleshooting Frameworks',
@@ -61,8 +60,9 @@ const MASTER_CATEGORIES = [
   ]},
 ];
 
-// ── Questionnaire templates (keyed by master category) ───────────────────────
-const STUDY_TIPS_TEMPLATE = `## 🔬 CompTIA A+ Technical Core
+// ── Content templates (keyed by master category) ─────────────────────────────
+const CONTENT_TEMPLATES: Record<string, string> = {
+  'Study Tips': `## 🔬 CompTIA A+ Technical Core
 - **Core Concept Definition:** [What is the absolute textbook definition of this topic/protocol? Why does CompTIA care about it?]
 - **Operational Diagnostics:** [How does a technician check if this component or service is running properly? What CLI commands, tools, or physical configurations are used?]
 
@@ -72,10 +72,7 @@ const STUDY_TIPS_TEMPLATE = `## 🔬 CompTIA A+ Technical Core
 - **Regulatory Compliance Framework:** [What specific HIPAA security rule, administrative safeguard, or device encryption protocol applies to managing this system safely?]
 
 ## 🔗 Verifiable Domain Sources
-- Trusted Reference Link: https://`;
-
-const CONTENT_TEMPLATES: Record<string, string> = {
-  'Study Tips': STUDY_TIPS_TEMPLATE,
+- Trusted Reference Link: https://`,
 
   'Diagrams': `## 🗺️ Visual Framework & Infrastructure Flow
 - **Data Pathway Directions:** [Where does traffic enter this diagram, and where does it terminate? Map the path from user desktop to back-end server storage arrays.]
@@ -98,22 +95,24 @@ const CONTENT_TEMPLATES: Record<string, string> = {
 ## 🔗 Trusted Cheat Sheet Sources
 - Blueprint Reference Link: https://`,
 
-  'Prompt Playbook': STUDY_TIPS_TEMPLATE,
-};
+  'Prompt Playbook': `## 🔬 CompTIA A+ Technical Core
+- **Core Concept Definition:** [What is the absolute textbook definition of this topic/protocol? Why does CompTIA care about it?]
+- **Operational Diagnostics:** [How does a technician check if this component or service is running properly? What CLI commands, tools, or physical configurations are used?]
 
-const TICKET_AREAS = [
-  'Platform / Navigation Issue',
-  'Article Error or Inaccuracy',
-  'Missing Content Request',
-  'Access / Permissions Problem',
-  'General Feedback',
-];
+## 🏥 Healthcare IT Integration & Clinical Context
+- **EHR & Medical Device Interface:** [How does this specific technology interface with clinic workstations, hospital networks, or Electronic Health Records (EHR) environments?]
+- **Provider & Patient Impact:** [Why does a healthcare provider, nurse, or clinical specialist care about this system staying online? How does a failure here delay patient care or disrupt clinical workflows?]
+- **Regulatory Compliance Framework:** [What specific HIPAA security rule, administrative safeguard, or device encryption protocol applies to managing this system safely?]
+
+## 🔗 Verifiable Domain Sources
+- Trusted Reference Link: https://`,
+};
 
 function getBadge(masterCategory: string): string {
   return MASTER_CATEGORIES.find((c) => c.label === masterCategory)?.badge ?? 'Cohort Contributor';
 }
 
-// ── Checklist rules (Article submissions only) ────────────────────────────────
+// ── Checklist rules ───────────────────────────────────────────────────────────
 const HEALTHCARE_KEYWORDS = [
   'patient', 'clinic', 'hospital', 'ehr', 'hipaa', 'provider',
   'clinical', 'medical', 'care',
@@ -266,10 +265,9 @@ interface Props {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh }: Props) {
-  const [submissionType, setSubmissionType] = useState<SubmissionType | ''>('Article');
+  const [submissionType, setSubmissionType] = useState<SubmissionType>('Article');
   const [masterCat, setMasterCat]           = useState('Study Tips');
   const [subTrack, setSubTrack]             = useState('');
-  const [ticketArea, setTicketArea]         = useState('');
   const [fullName, setFullName]             = useState('');
   const [title, setTitle]                   = useState('');
   const [mediaLink, setMediaLink]           = useState('');
@@ -281,25 +279,23 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false]))
   );
 
-  const firstInputRef         = useRef<HTMLInputElement>(null);
-  const lastInjectedTemplate  = useRef('');
+  const firstInputRef        = useRef<HTMLInputElement>(null);
+  const lastInjectedTemplate = useRef('');
 
-  const isTicket  = submissionType === 'Support Ticket';
-  const isArticle = submissionType === 'Article';
-  const selectedCat = MASTER_CATEGORIES.find((c) => c.label === masterCat);
-  const autoBadge   = masterCat && !isTicket ? getBadge(masterCat) : null;
-  const trackValue  = isTicket
-    ? (ticketArea || 'Support Ticket — General')
-    : (subTrack || masterCat);
+  const isResourceLink = submissionType === 'Resource Link';
+  const isArticle      = submissionType === 'Article';
+  const selectedCat    = MASTER_CATEGORIES.find((c) => c.label === masterCat);
+  const autoBadge      = masterCat ? getBadge(masterCat) : null;
+  const trackValue     = subTrack || masterCat;
 
-  const allChecksPassed = isArticle
-    ? Object.values(checklistResults).every(Boolean)
-    : true;
+  const allChecksPassed = isResourceLink
+    ? /^https?:\/\/.+/.test(content.trim())
+    : Object.values(checklistResults).every(Boolean);
 
   // Live checklist evaluation
   useEffect(() => {
-    if (isArticle) setChecklistResults(evaluateChecklist(content));
-  }, [content, isArticle]);
+    if (!isResourceLink) setChecklistResults(evaluateChecklist(content));
+  }, [content, isResourceLink]);
 
   // Focus + keyboard
   useEffect(() => {
@@ -319,49 +315,52 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   // Clear sub-track when category changes
   useEffect(() => { setSubTrack(''); }, [masterCat]);
 
-  // Reset non-persistent fields when type switches (preserve masterCat default)
+  // Reset content/errors when type switches
   useEffect(() => {
-    setSubTrack(''); setTicketArea('');
+    setSubTrack('');
     setTitle(''); setContent(''); setErrors({}); setFormError('');
     lastInjectedTemplate.current = '';
     setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
   }, [submissionType]);
 
-  // Aggressive template injection: fires on open, on category change, on type change.
-  // Overwrites only if content is blank or still holds the previously injected template.
-  useEffect(() => {
-    if (!isOpen || isTicket || !masterCat) return;
-    const template = CONTENT_TEMPLATES[masterCat];
-    if (!template) return;
-    const currentTrimmed = content.trim();
-    const canInject =
-      currentTrimmed === '' ||
-      currentTrimmed === lastInjectedTemplate.current.trim();
-    if (!canInject) return;
-    setContent(template);
-    lastInjectedTemplate.current = template;
-  // content intentionally omitted — only fire on selection/open changes, not keystrokes
+  // Eager template injection — fires on open, category change, or type change.
   // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (isOpen && submissionType !== 'Resource Link' && masterCat) {
+      const template = CONTENT_TEMPLATES[masterCat];
+      if (template && (content.trim() === '' || content.trim() === lastInjectedTemplate.current.trim())) {
+        setContent(template);
+        lastInjectedTemplate.current = template;
+      }
+    }
   }, [isOpen, masterCat, submissionType]);
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!fullName.trim())        e.fullName = 'Name or Discord handle is required.';
-    if (!submissionType)         e.submissionType = 'Please choose a submission type.';
-    if (!isTicket && !masterCat) e.masterCat = 'Please select a master category.';
-    if (!title.trim())           e.title = isTicket ? 'Issue summary is required.' : 'Title is required.';
-    if (content.trim().length < 20)
-      e.content = isTicket
-        ? 'Problem description must be at least 20 characters.'
-        : 'Content must be at least 20 characters.';
+    if (!fullName.trim()) e.fullName = 'Name or Discord handle is required.';
+    if (!masterCat)       e.masterCat = 'Please select a master category.';
+    if (!title.trim())    e.title = 'Title is required.';
+    if (isResourceLink) {
+      if (!/^https?:\/\/.+/.test(content.trim()))
+        e.content = 'Please enter a valid https:// URL.';
+    } else {
+      if (content.trim().length < 20)
+        e.content = 'Content must be at least 20 characters.';
+    }
     setErrors(e);
     return Object.keys(e).length === 0;
   };
 
   const reset = () => {
-    setSubmissionType(''); setFullName(''); setMasterCat(''); setSubTrack('');
-    setTicketArea(''); setTitle(''); setMediaLink(''); setContent('');
-    setErrors({}); setFormError('');
+    setSubmissionType('Article');
+    setMasterCat('Study Tips');
+    setSubTrack('');
+    setFullName('');
+    setTitle('');
+    setMediaLink('');
+    setContent('');
+    setErrors({});
+    setFormError('');
     lastInjectedTemplate.current = '';
     setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
   };
@@ -369,14 +368,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError('');
-
-    if (content.trim().length < 20) {
-      setErrors((prev) => ({
-        ...prev,
-        content: "Please provide a more detailed summary to support the cohort's studies.",
-      }));
-      return;
-    }
 
     if (PROFANITY_PATTERN.test(title) || PROFANITY_PATTERN.test(content)) {
       setFormError(
@@ -386,12 +377,12 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     }
 
     if (!validate()) return;
-    if (isArticle && !allChecksPassed) return;
+    if (!isResourceLink && isArticle && !allChecksPassed) return;
 
     setIsSubmitting(true);
-    const badge = isTicket ? 'Cohort Contributor' : getBadge(masterCat);
+    const badge = getBadge(masterCat);
 
-    const formattedContent = isArticle
+    const formattedContent = !isResourceLink
       ? buildFormattedContent({ authorName: fullName.trim(), masterCat, trackValue, rawContent: content.trim() })
       : null;
 
@@ -420,7 +411,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       };
       saveLocalSubmission(sub);
 
-      if (isArticle && formattedContent) {
+      if (!isResourceLink && formattedContent) {
         trySampleSlotOverwrite({ trackValue, submissionId: sub.id, formattedContent, onRefresh });
       }
 
@@ -432,7 +423,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         id: `local-${Date.now()}`,
         full_name: fullName.trim(),
         track: trackValue,
-        badge: isTicket ? 'Cohort Contributor' : getBadge(masterCat),
+        badge: getBadge(masterCat),
         title: title.trim(),
         content: content.trim(),
         submission_type: submissionType,
@@ -464,7 +455,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           <div className="flex items-start justify-between">
             <div>
               <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Submit Your Contribution</h2>
-              <p className="text-sm text-zinc-500 mt-1">Share a tip, article, resource link, or log a support ticket.</p>
+              <p className="text-sm text-zinc-500 mt-1">Share an article, study tip, diagram, quick reference, or resource link.</p>
             </div>
             <button onClick={onClose} className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
               <X className="w-5 h-5" />
@@ -501,7 +492,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
               Submission Type <span className="text-red-400">*</span>
             </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {SUBMISSION_TYPES.map((t) => {
                 const Icon = t.icon;
                 const active = submissionType === t.value;
@@ -512,9 +503,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     onClick={() => setSubmissionType(t.value)}
                     className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-all ${
                       active
-                        ? t.value === 'Support Ticket'
-                          ? 'border-amber-400 bg-amber-50 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400'
-                          : 'border-sky-400 bg-sky-50 dark:bg-sky-500/10 text-sky-700 dark:text-sky-400'
+                        ? 'border-sky-400 bg-sky-50 dark:bg-sky-500/10 text-sky-700 dark:text-sky-400'
                         : 'border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600'
                     }`}
                   >
@@ -524,82 +513,51 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                 );
               })}
             </div>
-            {errors.submissionType && <p className="mt-1 text-xs text-red-500">{errors.submissionType}</p>}
-            {isTicket && (
-              <div className="mt-2 flex items-start gap-2 p-3 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/20">
-                <Ticket className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
-                <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed">
-                  Support tickets are triaged by the team and will be converted into a knowledge base article once resolved.
-                </p>
+          </div>
+
+          {/* Master category */}
+          <div>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+              Master Category <span className="text-red-400">*</span>
+            </label>
+            <div className="relative">
+              <select
+                value={masterCat}
+                onChange={(e) => setMasterCat(e.target.value)}
+                className={`${inputCls('masterCat')} appearance-none`}
+              >
+                <option value="" disabled>Select a category…</option>
+                {MASTER_CATEGORIES.map((c) => (
+                  <option key={c.label} value={c.label}>{c.label}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+            </div>
+            {errors.masterCat && <p className="mt-1 text-xs text-red-500">{errors.masterCat}</p>}
+            {autoBadge && (
+              <div className="mt-2 flex items-center gap-2">
+                <Tag className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
+                <span className="text-xs text-zinc-500">
+                  You will earn:{' '}
+                  <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-100 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                    [{autoBadge}]
+                  </span>
+                </span>
               </div>
             )}
           </div>
 
-          {/* Support Ticket: area selector */}
-          {isTicket && (
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-                Problem Area <span className="text-zinc-400 font-normal">(optional)</span>
-              </label>
-              <div className="relative">
-                <select
-                  value={ticketArea}
-                  onChange={(e) => setTicketArea(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm appearance-none"
-                >
-                  <option value="">Select a problem area…</option>
-                  {TICKET_AREAS.map((a) => <option key={a} value={a}>{a}</option>)}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
-              </div>
-            </div>
-          )}
-
-          {/* Article / Resource Link: master category */}
-          {!isTicket && submissionType && (
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-                Master Category <span className="text-red-400">*</span>
-              </label>
-              <div className="relative">
-                <select
-                  value={masterCat}
-                  onChange={(e) => setMasterCat(e.target.value)}
-                  className={`${inputCls('masterCat')} appearance-none`}
-                >
-                  <option value="" disabled>Select a category…</option>
-                  {MASTER_CATEGORIES.map((c) => (
-                    <option key={c.label} value={c.label}>{c.label}</option>
-                  ))}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
-              </div>
-              {errors.masterCat && <p className="mt-1 text-xs text-red-500">{errors.masterCat}</p>}
-              {autoBadge && (
-                <div className="mt-2 flex items-center gap-2">
-                  <Tag className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
-                  <span className="text-xs text-zinc-500">
-                    You will earn:{' '}
-                    <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-100 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400">
-                      [{autoBadge}]
-                    </span>
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Sub-track — scrollable for large option sets */}
-          {!isTicket && selectedCat && selectedCat.sub.length > 0 && (
+          {/* Sub-track — scrollable wrapper */}
+          {selectedCat && selectedCat.sub.length > 0 && (
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
                 Specific Domain / Sub-track <span className="text-zinc-400 font-normal">(optional)</span>
               </label>
-              <div className="relative">
+              <div className="relative max-h-56 overflow-y-auto">
                 <select
                   value={subTrack}
                   onChange={(e) => setSubTrack(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm appearance-none max-h-56 overflow-y-auto"
+                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm appearance-none"
                 >
                   <option value="">All {selectedCat.label} (general)</option>
                   {selectedCat.sub.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -610,113 +568,118 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           )}
 
           {/* Title */}
-          {submissionType && (
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-                {isTicket ? 'Issue Summary' : 'Contribution / Article Title'}{' '}
-                <span className="text-red-400">*</span>
-              </label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder={isTicket
-                  ? 'e.g. Broken link on Networking section page'
-                  : 'e.g. Fix Boot Camp Audio Driver on Windows 11'}
-                className={inputCls('title')}
-              />
-              {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
-            </div>
-          )}
+          <div>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+              Contribution Title <span className="text-red-400">*</span>
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="e.g. Fix Boot Camp Audio Driver on Windows 11"
+              className={inputCls('title')}
+            />
+            {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
+          </div>
 
-          {/* Media link — not for tickets */}
-          {!isTicket && submissionType && (
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-                <span className="flex items-center gap-1.5">
-                  <Image className="w-3.5 h-3.5 text-zinc-400" />
-                  Media / Diagram Embed Link
-                  <span className="text-zinc-400 font-normal">(optional)</span>
-                </span>
-              </label>
+          {/* Media link */}
+          <div>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+              <span className="flex items-center gap-1.5">
+                <Image className="w-3.5 h-3.5 text-zinc-400" />
+                Media / Diagram Embed Link
+                <span className="text-zinc-400 font-normal">(optional)</span>
+              </span>
+            </label>
+            <input
+              type="url"
+              value={mediaLink}
+              onChange={(e) => setMediaLink(e.target.value)}
+              placeholder="https://… (image URL, Mermaid diagram link, Canvas pin, etc.)"
+              className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
+            />
+            <p className="text-xs text-zinc-400 mt-1">Supports image URLs, Mermaid diagram links, or direct asset embed URLs.</p>
+          </div>
+
+          {/* Content — URL input for Resource Link, textarea for everything else */}
+          <div>
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+              {isResourceLink ? 'Resource URL' : 'Contribution Content'}{' '}
+              <span className="text-red-400">*</span>
+            </label>
+
+            {isResourceLink ? (
               <input
                 type="url"
-                value={mediaLink}
-                onChange={(e) => setMediaLink(e.target.value)}
-                placeholder="https://… (image URL, Mermaid diagram link, Canvas pin, etc.)"
-                className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
-              />
-              <p className="text-xs text-zinc-400 mt-1">Supports image URLs, Mermaid diagram links, or direct asset embed URLs.</p>
-            </div>
-          )}
-
-          {/* Content / Problem description */}
-          {submissionType && (
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-                {isTicket ? 'Problem Description' : 'Contribution Content'}{' '}
-                <span className="text-red-400">*</span>
-              </label>
-              <textarea
-                rows={12}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                placeholder={isTicket
-                  ? 'Describe the problem in detail. Include steps to reproduce, what you expected, and what actually happened.'
-                  : 'Describe your tip, troubleshooting steps, prompt syntax, diagram description, or reference notes.'}
-                className={`${inputCls('content')} resize-none font-mono text-xs leading-relaxed`}
+                placeholder="https://… (paste the resource URL)"
+                className={inputCls('content')}
               />
-              {!isTicket && lastInjectedTemplate.current && content.trim() !== '' && (
-                <p className="mt-1 text-[11px] text-sky-500 dark:text-sky-400 italic">
-                  Template pre-loaded — replace the placeholder text with your actual content.
-                </p>
-              )}
-              <div className="flex items-center justify-between mt-1">
-                {errors.content
-                  ? <p className="text-xs text-red-500">{errors.content}</p>
-                  : <span />}
-                <span className="text-xs text-zinc-400">{content.length} chars</span>
-              </div>
+            ) : (
+              <>
+                <textarea
+                  rows={12}
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="Describe your tip, troubleshooting steps, prompt syntax, diagram description, or reference notes."
+                  className={`${inputCls('content')} resize-none font-mono text-xs leading-relaxed`}
+                />
+                {lastInjectedTemplate.current && content.trim() !== '' && (
+                  <p className="mt-1 text-[11px] text-sky-500 dark:text-sky-400 italic">
+                    Template pre-loaded — replace the placeholder text with your actual content.
+                  </p>
+                )}
+              </>
+            )}
 
-              {/* Publication Checklist (Article only) */}
-              {isArticle && (
-                <div className="mt-3 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
-                  <div className="px-3 py-2 bg-zinc-100 dark:bg-zinc-700/60 border-b border-zinc-200 dark:border-zinc-700">
-                    <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
-                      Publication Checklist
-                    </p>
-                  </div>
-                  <div className="divide-y divide-zinc-100 dark:divide-zinc-700/50">
-                    {CHECKLIST_RULES.map((rule) => {
-                      const passed = checklistResults[rule.id];
-                      return (
-                        <div key={rule.id} className="flex items-start gap-3 px-3 py-2.5">
-                          {passed
-                            ? <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-                            : <XCircle    className="w-4 h-4 text-rose-500   flex-shrink-0 mt-0.5" />
-                          }
-                          <div className="flex-1 min-w-0">
-                            <p className={`text-xs font-medium leading-tight ${
-                              passed
-                                ? 'text-zinc-700 dark:text-zinc-300'
-                                : 'text-rose-600 dark:text-rose-400'
-                            }`}>
-                              {rule.label}
-                            </p>
-                            {!passed && (
-                              <p className="text-[11px] text-rose-400 dark:text-rose-400/80 mt-0.5 leading-snug">
-                                {rule.hint}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+            <div className="flex items-center justify-between mt-1">
+              {errors.content
+                ? <p className="text-xs text-red-500">{errors.content}</p>
+                : <span />}
+              {!isResourceLink && (
+                <span className="text-xs text-zinc-400">{content.length} chars</span>
               )}
             </div>
-          )}
+
+            {/* Publication Checklist (non-Resource Link only) */}
+            {isArticle && (
+              <div className="mt-3 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+                <div className="px-3 py-2 bg-zinc-100 dark:bg-zinc-700/60 border-b border-zinc-200 dark:border-zinc-700">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+                    Publication Checklist
+                  </p>
+                </div>
+                <div className="divide-y divide-zinc-100 dark:divide-zinc-700/50">
+                  {CHECKLIST_RULES.map((rule) => {
+                    const passed = checklistResults[rule.id];
+                    return (
+                      <div key={rule.id} className="flex items-start gap-3 px-3 py-2.5">
+                        {passed
+                          ? <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          : <XCircle    className="w-4 h-4 text-rose-500   flex-shrink-0 mt-0.5" />
+                        }
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-xs font-medium leading-tight ${
+                            passed
+                              ? 'text-zinc-700 dark:text-zinc-300'
+                              : 'text-rose-600 dark:text-rose-400'
+                          }`}>
+                            {rule.label}
+                          </p>
+                          {!passed && (
+                            <p className="text-[11px] text-rose-400 dark:text-rose-400/80 mt-0.5 leading-snug">
+                              {rule.hint}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
 
           <div className="flex items-center gap-3 pt-1">
             <button
@@ -727,20 +690,18 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             </button>
             <button
               type="submit"
-              disabled={isSubmitting || (isArticle && !allChecksPassed)}
-              title={isArticle && !allChecksPassed ? 'Complete all checklist requirements to publish.' : undefined}
+              disabled={isSubmitting || (!isResourceLink && isArticle && !allChecksPassed)}
+              title={!isResourceLink && isArticle && !allChecksPassed ? 'Complete all checklist requirements to publish.' : undefined}
               className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors shadow-lg text-white ${
-                isArticle && !allChecksPassed
+                !isResourceLink && isArticle && !allChecksPassed
                   ? 'bg-zinc-400 dark:bg-zinc-600 cursor-not-allowed opacity-60'
-                  : isTicket
-                    ? 'bg-amber-500 hover:bg-amber-600 shadow-amber-500/20 disabled:opacity-60'
-                    : 'bg-sky-500 hover:bg-sky-600 shadow-sky-500/20 disabled:opacity-60'
+                  : 'bg-sky-500 hover:bg-sky-600 shadow-sky-500/20 disabled:opacity-60'
               }`}
             >
               {isSubmitting
                 ? <Loader2 className="w-4 h-4 animate-spin" />
-                : isTicket ? <Ticket className="w-4 h-4" /> : <Send className="w-4 h-4" />}
-              {isSubmitting ? 'Submitting…' : isTicket ? 'Log Ticket' : 'Claim My Badge'}
+                : <Send className="w-4 h-4" />}
+              {isSubmitting ? 'Submitting…' : 'Claim My Badge'}
             </button>
           </div>
         </form>
