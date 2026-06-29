@@ -3,7 +3,7 @@ import {
   X, Send, Loader2, ChevronDown, ChevronLeft, Tag,
   FileText, Link2, BookOpen, Zap, GitBranch,
   AlertCircle, CheckCircle, XCircle,
-  HeartPulse, Link as LinkIcon,
+  Link as LinkIcon,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -116,19 +116,13 @@ function evaluateChecklist(text: string): Record<string, boolean> {
   return Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, r.test(text)]));
 }
 
-// ── Content assembly ──────────────────────────────────────────────────────────
-function assembleContent(coreConcept: string, healthcareImpact: string, referenceUrl: string): string {
-  return [
-    '## 🔬 Core Technical Concept',
-    coreConcept.trim(),
-    '',
-    '## 🏥 Healthcare IT & Clinical Impact',
-    healthcareImpact.trim(),
-    '',
-    '## 🔗 Verifiable Source',
-    `- ${referenceUrl.trim()}`,
-  ].join('\n');
-}
+// ── Content templates (keyed by submission type) ─────────────────────────────
+const CONTENT_TEMPLATES: Record<string, string> = {
+  'Article': `## 🔬 Core Concept Definition\n[What is the absolute textbook definition of this topic?]\n\n## 🏥 Healthcare IT Integration & Clinical Context\n[How does this interface with clinical workstations or impact patient care?]\n\n## 🔗 Verifiable Domain Sources\n[Paste trusted reference link: https://]`,
+  'Study Tip': `## 💡 Quick Study Hack\n[Explain the mnemonic or trick to remember this concept]\n\n## 🏥 Clinical Scenario\n[Give an example of how this appears in a hospital IT setting]\n\n## 🔗 Reference\n[Source link: https://]`,
+  'Diagram': `## 🗺️ Visual Framework\n[Describe the data pathway or topology]\n\n## 🏥 Clinical Workflow Mapping\n[What medical systems run across these lines?]\n\n## 🔗 Architecture Link\n[Reference link: https://]`,
+  'Quick Reference': `## ⚡ Rapid Field Matrix\n[List command flags or port numbers]\n\n## 🏥 Remediation Plan\n[Immediate fix to prevent clinical downtime]\n\n## 🔗 Source\n[Reference link: https://]`,
+};
 
 function buildFormattedContent(params: {
   authorName: string;
@@ -239,11 +233,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [submissionType,   setSubmissionType]   = useState<SubmissionType>('Article');
   const [masterCat,        setMasterCat]        = useState('Study Tips');
   const [subTrack,         setSubTrack]         = useState('');
-  const [fullName,         setFullName]         = useState('');
-  const [title,            setTitle]            = useState('');
-  const [coreConcept,      setCoreConcept]      = useState('');
-  const [healthcareImpact, setHealthcareImpact] = useState('');
-  const [referenceUrl,     setReferenceUrl]     = useState('');
+  const [fullName,  setFullName]  = useState('');
+  const [title,     setTitle]     = useState('');
+  const [content,   setContent]   = useState('');
   const [errors,           setErrors]           = useState<Record<string, string>>({});
   const [formError,        setFormError]        = useState('');
   const [isSubmitting,     setIsSubmitting]     = useState(false);
@@ -261,22 +253,29 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     ? Object.values(checklistResults).every(Boolean)
     : true;
 
-  // Live checklist evaluation for Article type
-  useEffect(() => {
-    if (!isArticle) return;
-    const assembled = assembleContent(coreConcept, healthcareImpact, referenceUrl);
-    setChecklistResults(evaluateChecklist(assembled));
-  }, [coreConcept, healthcareImpact, referenceUrl, isArticle]);
-
   // Reset sub-track when category changes
   useEffect(() => { setSubTrack(''); }, [masterCat]);
 
-  // Reset content fields when submission type changes
+  // Template injection: fire on open and on type switch
   useEffect(() => {
-    setCoreConcept(''); setHealthcareImpact(''); setReferenceUrl('');
+    if (!isOpen || isResourceLink) {
+      if (isResourceLink) { setContent(''); setErrors({}); setFormError(''); }
+      return;
+    }
+    const template = CONTENT_TEMPLATES[submissionType] ?? '';
+    const templateValues = Object.values(CONTENT_TEMPLATES);
+    if (content.trim() === '' || templateValues.includes(content)) {
+      setContent(template);
+    }
     setErrors({}); setFormError('');
     setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
-  }, [submissionType]);
+  }, [isOpen, submissionType]);
+
+  // Live checklist evaluation for Article type
+  useEffect(() => {
+    if (!isArticle) return;
+    setChecklistResults(evaluateChecklist(content));
+  }, [content, isArticle]);
 
   // Keyboard + scroll lock
   useEffect(() => {
@@ -298,9 +297,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setSubTrack('');
     setFullName('');
     setTitle('');
-    setCoreConcept('');
-    setHealthcareImpact('');
-    setReferenceUrl('');
+    setContent('');
     setErrors({});
     setFormError('');
     setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
@@ -319,20 +316,16 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const handleAssembleAndSubmit = async () => {
     const e: Record<string, string> = {};
     if (isResourceLink) {
-      if (!/^https?:\/\/.+/.test(referenceUrl.trim()))
-        e.referenceUrl = 'Please enter a valid https:// URL.';
+      if (!/^https?:\/\/.+/.test(content.trim()))
+        e.content = 'Please enter a valid https:// URL.';
     } else {
-      if (coreConcept.trim().length < 50)
-        e.coreConcept = 'Please add more detail (aim for at least a few sentences).';
-      if (healthcareImpact.trim().length < 20)
-        e.healthcareImpact = 'Please explain how this relates to Healthcare IT.';
-      if (!/^https?:\/\/.+/.test(referenceUrl.trim()))
-        e.referenceUrl = 'Please provide a valid https:// reference URL.';
+      if (content.trim().length < 50)
+        e.content = 'Please add more detail — replace the bracketed prompts with your actual research.';
     }
     setErrors(e);
     if (Object.keys(e).length > 0) return;
 
-    if (PROFANITY_PATTERN.test(title) || PROFANITY_PATTERN.test(coreConcept) || PROFANITY_PATTERN.test(healthcareImpact)) {
+    if (PROFANITY_PATTERN.test(title) || PROFANITY_PATTERN.test(content)) {
       setFormError('Submission contains restricted language. Please align your contribution with professional healthcare and academic standards.');
       return;
     }
@@ -341,10 +334,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
     setIsSubmitting(true);
     const badge = getBadge(masterCat);
-
-    const rawContent = isResourceLink
-      ? referenceUrl.trim()
-      : assembleContent(coreConcept, healthcareImpact, referenceUrl);
+    const rawContent = content.trim();
 
     const formattedContent = !isResourceLink
       ? buildFormattedContent({ authorName: fullName.trim(), masterCat, trackValue, rawContent })
@@ -565,62 +555,43 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           {/* ── STEP 2 — Knowledge Extraction ──────────────────────────────── */}
           {step === 2 && (
             <div className="space-y-5">
-              {/* Content fields (not for Resource Link) */}
-              {!isResourceLink && (
-                <>
-                  <div>
-                    <label className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
-                      <BookOpen className="w-4 h-4 text-sky-500" />
-                      Core Concept <span className="text-red-400">*</span>
-                    </label>
-                    <textarea
-                      rows={5}
-                      value={coreConcept}
-                      onChange={(e) => setCoreConcept(e.target.value)}
-                      placeholder="Explain the topic. What is it, how does it work, and why does CompTIA care about it? Include any relevant CLI commands, protocols, or configurations."
-                      className={`${inputCls('coreConcept')} resize-none`}
-                    />
-                    <div className="flex items-center justify-between mt-1">
-                      {errors.coreConcept
-                        ? <p className="text-xs text-red-500">{errors.coreConcept}</p>
-                        : <span />}
-                      <span className="text-xs text-zinc-400">{coreConcept.split(/\s+/).filter(Boolean).length} words</span>
-                    </div>
+              {isResourceLink ? (
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                    <LinkIcon className="w-4 h-4 text-emerald-500" />
+                    Resource URL <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="url"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="https://…"
+                    className={`${inputCls('content')} focus:ring-emerald-500/40`}
+                  />
+                  {errors.content && <p className="mt-1 text-xs text-red-500">{errors.content}</p>}
+                </div>
+              ) : (
+                <div>
+                  <label className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                    <BookOpen className="w-4 h-4 text-sky-500" />
+                    Contribution Body <span className="text-red-400">*</span>
+                  </label>
+                  <textarea
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    placeholder="Brief description or excerpt..."
+                    rows={10}
+                    className={`${inputCls('content')} resize-none font-mono leading-relaxed`}
+                  />
+                  <div className="flex items-center justify-between mt-1">
+                    {errors.content
+                      ? <p className="text-xs text-red-500">{errors.content}</p>
+                      : <p className="text-xs italic text-sky-600 dark:text-sky-400">Template pre-loaded — replace the bracketed text with your actual research.</p>
+                    }
+                    <span className="text-xs text-zinc-400 ml-2 flex-shrink-0">{content.split(/\s+/).filter(Boolean).length} words</span>
                   </div>
-
-                  <div>
-                    <label className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
-                      <HeartPulse className="w-4 h-4 text-amber-500" />
-                      Healthcare IT Impact <span className="text-red-400">*</span>
-                    </label>
-                    <textarea
-                      rows={4}
-                      value={healthcareImpact}
-                      onChange={(e) => setHealthcareImpact(e.target.value)}
-                      placeholder="Why does a medical clinic or hospital care about this? How does it affect patient care, EHR systems, or HIPAA compliance?"
-                      className={`${inputCls('healthcareImpact')} resize-none`}
-                    />
-                    {errors.healthcareImpact && <p className="mt-1 text-xs text-red-500">{errors.healthcareImpact}</p>}
-                  </div>
-                </>
+                </div>
               )}
-
-              {/* Reference / Resource URL */}
-              <div>
-                <label className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
-                  <LinkIcon className="w-4 h-4 text-emerald-500" />
-                  {isResourceLink ? 'Resource URL' : 'Verifiable Reference URL'}{' '}
-                  <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="url"
-                  value={referenceUrl}
-                  onChange={(e) => setReferenceUrl(e.target.value)}
-                  placeholder="https://…"
-                  className={`${inputCls('referenceUrl')} focus:ring-emerald-500/40`}
-                />
-                {errors.referenceUrl && <p className="mt-1 text-xs text-red-500">{errors.referenceUrl}</p>}
-              </div>
 
               {/* Article: Publication Checklist */}
               {isArticle && (
