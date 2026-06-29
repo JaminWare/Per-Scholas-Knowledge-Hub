@@ -61,6 +61,46 @@ const MASTER_CATEGORIES = [
   ]},
 ];
 
+// ── Questionnaire templates (keyed by master category) ───────────────────────
+const STUDY_TIPS_TEMPLATE = `## 🔬 CompTIA A+ Technical Core
+- **Core Concept Definition:** [What is the absolute textbook definition of this topic/protocol? Why does CompTIA care about it?]
+- **Operational Diagnostics:** [How does a technician check if this component or service is running properly? What CLI commands, tools, or physical configurations are used?]
+
+## 🏥 Healthcare IT Integration & Clinical Context
+- **EHR & Medical Device Interface:** [How does this specific technology interface with clinic workstations, hospital networks, or Electronic Health Records (EHR) environments?]
+- **Provider & Patient Impact:** [Why does a healthcare provider, nurse, or clinical specialist care about this system staying online? How does a failure here delay patient care or disrupt clinical workflows?]
+- **Regulatory Compliance Framework:** [What specific HIPAA security rule, administrative safeguard, or device encryption protocol applies to managing this system safely?]
+
+## 🔗 Verifiable Domain Sources
+- Trusted Reference Link: https://`;
+
+const CONTENT_TEMPLATES: Record<string, string> = {
+  'Study Tips': STUDY_TIPS_TEMPLATE,
+
+  'Diagrams': `## 🗺️ Visual Framework & Infrastructure Flow
+- **Data Pathway Directions:** [Where does traffic enter this diagram, and where does it terminate? Map the path from user desktop to back-end server storage arrays.]
+- **Boundary Controls:** [Where are the firewall rules, network segmentation points, or access control parameters located along this visual track?]
+
+## 🏥 Healthcare IT Integration & Clinical Context
+- **Clinical Workflow Mapping:** [How does this precise infrastructure layout keep hospital systems running smoothly? What medical systems (e.g., PACS imaging, HL7 telemetry feeds) run across these specific connection lines?]
+- **Data Protection Controls:** [How does this topology isolate private patient health data (PHI) from public networks to preserve absolute HIPAA data security compliance?]
+
+## 🔗 Architecture References
+- Blueprint Reference Link: https://`,
+
+  'Quick References': `## ⚡ Rapid Field Reference Matrix
+- **Command Flags & Key Mappings:** [What are the essential command line parameters, port values, or configuration arguments a tech needs on demand?]
+- **Symptom vs Remediation Action Plan:** [If Symptom X happens, what is the immediate Step 1 and Step 2 fix to resolve it under pressure?]
+
+## 🏥 Healthcare IT Integration & Clinical Context
+- **Clinical Support Utility:** [How does having this fast reference guide protect hospital operations? How does applying this rapid fix prevent clinic device downtime or secure patient health records during an active tech support ticket?]
+
+## 🔗 Trusted Cheat Sheet Sources
+- Blueprint Reference Link: https://`,
+
+  'Prompt Playbook': STUDY_TIPS_TEMPLATE,
+};
+
 const TICKET_AREAS = [
   'Platform / Navigation Issue',
   'Article Error or Inaccuracy',
@@ -118,73 +158,6 @@ const CHECKLIST_RULES: ChecklistRule[] = [
 
 function evaluateChecklist(text: string): Record<string, boolean> {
   return Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, r.test(text)]));
-}
-
-// ── Content field tracks ──────────────────────────────────────────────────────
-
-interface ArticleFields {
-  coreDefinition: string;
-  operationalDiagnostics: string;
-  clinicalWorkflowImpact: string;
-  regulatoryCompliance: string;
-  referenceLink: string;
-}
-
-interface DiagramFields {
-  dataPathway: string;
-  boundaryControls: string;
-  medicalSystemIntegration: string;
-  archReferenceLink: string;
-}
-
-interface QuickRefFields {
-  fieldReferenceMatrix: string;
-  symptomActionPlan: string;
-  clinicalSupportUtility: string;
-  cheatSheetLink: string;
-}
-
-function assembleArticleContent(f: ArticleFields): string {
-  return [
-    '## 🔬 CompTIA A+ Technical Core',
-    `- **Core Concept Definition:** ${f.coreDefinition.trim()}`,
-    `- **Operational Diagnostics:** ${f.operationalDiagnostics.trim()}`,
-    '',
-    '## 🏥 Healthcare IT Integration & Clinical Context',
-    `- **Clinical Workflow Impact:** ${f.clinicalWorkflowImpact.trim()}`,
-    `- **Regulatory & HIPAA Compliance:** ${f.regulatoryCompliance.trim()}`,
-    '',
-    '## 🔗 Verifiable Domain Sources',
-    `- Trusted Reference Link: ${f.referenceLink.trim() || 'https://'}`,
-  ].join('\n');
-}
-
-function assembleDiagramContent(f: DiagramFields): string {
-  return [
-    '## 🗺️ Visual Framework & Infrastructure Flow',
-    `- **Data Pathway Directions:** ${f.dataPathway.trim()}`,
-    `- **Boundary Controls:** ${f.boundaryControls.trim()}`,
-    '',
-    '## 🏥 Healthcare IT Integration & Clinical Context',
-    `- **Medical System Integration:** ${f.medicalSystemIntegration.trim()}`,
-    '',
-    '## 🔗 Architecture References',
-    `- Blueprint Reference Link: ${f.archReferenceLink.trim() || 'https://'}`,
-  ].join('\n');
-}
-
-function assembleQuickRefContent(f: QuickRefFields): string {
-  return [
-    '## ⚡ Rapid Field Reference Matrix',
-    `- **Command Flags & Key Mappings:** ${f.fieldReferenceMatrix.trim()}`,
-    `- **Symptom vs Remediation Action Plan:** ${f.symptomActionPlan.trim()}`,
-    '',
-    '## 🏥 Healthcare IT Integration & Clinical Context',
-    `- **Clinical Support Utility:** ${f.clinicalSupportUtility.trim()}`,
-    '',
-    '## 🔗 Trusted Cheat Sheet Sources',
-    `- Blueprint Reference Link: ${f.cheatSheetLink.trim() || 'https://'}`,
-  ].join('\n');
 }
 
 // ── Formatted content wrapper ─────────────────────────────────────────────────
@@ -300,76 +273,24 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [fullName, setFullName]             = useState('');
   const [title, setTitle]                   = useState('');
   const [mediaLink, setMediaLink]           = useState('');
-
-  // Support ticket — keeps single textarea
-  const [ticketContent, setTicketContent] = useState('');
-
-  // Article / Study Tips / Prompt Playbook fields
-  const [artCoreDef, setArtCoreDef]                   = useState('');
-  const [artOpsDiag, setArtOpsDiag]                   = useState('');
-  const [artClinicalImpact, setArtClinicalImpact]     = useState('');
-  const [artRegulatoryComp, setArtRegulatoryComp]     = useState('');
-  const [artRefLink, setArtRefLink]                   = useState('');
-
-  // Diagram fields
-  const [diagDataPathway, setDiagDataPathway]           = useState('');
-  const [diagBoundaryControls, setDiagBoundaryControls] = useState('');
-  const [diagMedicalInteg, setDiagMedicalInteg]         = useState('');
-  const [diagArchLink, setDiagArchLink]                 = useState('');
-
-  // Quick Reference fields
-  const [qrFieldMatrix, setQrFieldMatrix]             = useState('');
-  const [qrSymptomPlan, setQrSymptomPlan]             = useState('');
-  const [qrClinicalUtil, setQrClinicalUtil]           = useState('');
-  const [qrCheatLink, setQrCheatLink]                 = useState('');
-
-  const [errors, setErrors]           = useState<Record<string, string>>({});
-  const [formError, setFormError]     = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [content, setContent]               = useState('');
+  const [errors, setErrors]                 = useState<Record<string, string>>({});
+  const [formError, setFormError]           = useState('');
+  const [isSubmitting, setIsSubmitting]     = useState(false);
   const [checklistResults, setChecklistResults] = useState<Record<string, boolean>>(
     Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false]))
   );
 
-  const firstInputRef = useRef<HTMLInputElement>(null);
+  const firstInputRef         = useRef<HTMLInputElement>(null);
+  const lastInjectedTemplate  = useRef('');
 
   const isTicket  = submissionType === 'Support Ticket';
   const isArticle = submissionType === 'Article';
-  const isDiagram = masterCat === 'Diagrams';
-  const isQuickRef = masterCat === 'Quick References';
-  const isArticleTrack = isArticle && !isDiagram && !isQuickRef;
-
   const selectedCat = MASTER_CATEGORIES.find((c) => c.label === masterCat);
   const autoBadge   = masterCat && !isTicket ? getBadge(masterCat) : null;
   const trackValue  = isTicket
     ? (ticketArea || 'Support Ticket — General')
     : (subTrack || masterCat);
-
-  // Build the assembled content string based on active track
-  function getAssembledContent(): string {
-    if (isTicket) return ticketContent;
-    if (isDiagram) return assembleDiagramContent({
-      dataPathway: diagDataPathway,
-      boundaryControls: diagBoundaryControls,
-      medicalSystemIntegration: diagMedicalInteg,
-      archReferenceLink: diagArchLink,
-    });
-    if (isQuickRef) return assembleQuickRefContent({
-      fieldReferenceMatrix: qrFieldMatrix,
-      symptomActionPlan: qrSymptomPlan,
-      clinicalSupportUtility: qrClinicalUtil,
-      cheatSheetLink: qrCheatLink,
-    });
-    // Article / Study Tips / Prompt Playbook
-    return assembleArticleContent({
-      coreDefinition: artCoreDef,
-      operationalDiagnostics: artOpsDiag,
-      clinicalWorkflowImpact: artClinicalImpact,
-      regulatoryCompliance: artRegulatoryComp,
-      referenceLink: artRefLink,
-    });
-  }
-
-  const assembledContent = getAssembledContent();
 
   const allChecksPassed = isArticle
     ? Object.values(checklistResults).every(Boolean)
@@ -377,15 +298,10 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   // Live checklist evaluation
   useEffect(() => {
-    if (isArticle) setChecklistResults(evaluateChecklist(assembledContent));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    isArticle,
-    artCoreDef, artOpsDiag, artClinicalImpact, artRegulatoryComp, artRefLink,
-    diagDataPathway, diagBoundaryControls, diagMedicalInteg, diagArchLink,
-    qrFieldMatrix, qrSymptomPlan, qrClinicalUtil, qrCheatLink,
-  ]);
+    if (isArticle) setChecklistResults(evaluateChecklist(content));
+  }, [content, isArticle]);
 
+  // Focus + keyboard
   useEffect(() => {
     if (!isOpen) return;
     setTimeout(() => firstInputRef.current?.focus(), 50);
@@ -394,84 +310,75 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     return () => document.removeEventListener('keydown', handler);
   }, [isOpen, onClose]);
 
+  // Body scroll lock
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
+  // Clear sub-track when category changes
   useEffect(() => { setSubTrack(''); }, [masterCat]);
 
+  // Reset non-persistent fields when type switches (preserve masterCat default)
   useEffect(() => {
-    setMasterCat(''); setSubTrack(''); setTicketArea('');
-    setTitle(''); setErrors({}); setFormError('');
+    setSubTrack(''); setTicketArea('');
+    setTitle(''); setContent(''); setErrors({}); setFormError('');
+    lastInjectedTemplate.current = '';
     setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
   }, [submissionType]);
 
-  const resetContentFields = () => {
-    setTicketContent('');
-    setArtCoreDef(''); setArtOpsDiag(''); setArtClinicalImpact('');
-    setArtRegulatoryComp(''); setArtRefLink('');
-    setDiagDataPathway(''); setDiagBoundaryControls('');
-    setDiagMedicalInteg(''); setDiagArchLink('');
-    setQrFieldMatrix(''); setQrSymptomPlan('');
-    setQrClinicalUtil(''); setQrCheatLink('');
+  // Aggressive template injection: fires on open, on category change, on type change.
+  // Overwrites only if content is blank or still holds the previously injected template.
+  useEffect(() => {
+    if (!isOpen || isTicket || !masterCat) return;
+    const template = CONTENT_TEMPLATES[masterCat];
+    if (!template) return;
+    const currentTrimmed = content.trim();
+    const canInject =
+      currentTrimmed === '' ||
+      currentTrimmed === lastInjectedTemplate.current.trim();
+    if (!canInject) return;
+    setContent(template);
+    lastInjectedTemplate.current = template;
+  // content intentionally omitted — only fire on selection/open changes, not keystrokes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, masterCat, submissionType]);
+
+  const validate = () => {
+    const e: Record<string, string> = {};
+    if (!fullName.trim())        e.fullName = 'Name or Discord handle is required.';
+    if (!submissionType)         e.submissionType = 'Please choose a submission type.';
+    if (!isTicket && !masterCat) e.masterCat = 'Please select a master category.';
+    if (!title.trim())           e.title = isTicket ? 'Issue summary is required.' : 'Title is required.';
+    if (content.trim().length < 20)
+      e.content = isTicket
+        ? 'Problem description must be at least 20 characters.'
+        : 'Content must be at least 20 characters.';
+    setErrors(e);
+    return Object.keys(e).length === 0;
   };
 
   const reset = () => {
     setSubmissionType(''); setFullName(''); setMasterCat(''); setSubTrack('');
-    setTicketArea(''); setTitle(''); setMediaLink('');
-    resetContentFields();
+    setTicketArea(''); setTitle(''); setMediaLink(''); setContent('');
     setErrors({}); setFormError('');
+    lastInjectedTemplate.current = '';
     setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
-  };
-
-  const validate = () => {
-    const e: Record<string, string> = {};
-    if (!fullName.trim())         e.fullName = 'Name or Discord handle is required.';
-    if (!submissionType)          e.submissionType = 'Please choose a submission type.';
-    if (!isTicket && !masterCat)  e.masterCat = 'Please select a master category.';
-    if (!title.trim())            e.title = isTicket ? 'Issue summary is required.' : 'Title is required.';
-
-    if (isTicket) {
-      if (ticketContent.trim().length < 20)
-        e.ticketContent = 'Problem description must be at least 20 characters.';
-    } else if (isDiagram) {
-      if (!diagDataPathway.trim())       e.diagDataPathway = 'This field is required.';
-      if (!diagBoundaryControls.trim())  e.diagBoundaryControls = 'This field is required.';
-      if (!diagMedicalInteg.trim())      e.diagMedicalInteg = 'This field is required.';
-      if (diagArchLink.trim() && !diagArchLink.trim().startsWith('https://'))
-        e.diagArchLink = 'URL must start with https://';
-    } else if (isQuickRef) {
-      if (!qrFieldMatrix.trim())   e.qrFieldMatrix = 'This field is required.';
-      if (!qrSymptomPlan.trim())   e.qrSymptomPlan = 'This field is required.';
-      if (!qrClinicalUtil.trim())  e.qrClinicalUtil = 'This field is required.';
-      if (qrCheatLink.trim() && !qrCheatLink.trim().startsWith('https://'))
-        e.qrCheatLink = 'URL must start with https://';
-    } else {
-      if (!artCoreDef.trim())         e.artCoreDef = 'This field is required.';
-      if (!artOpsDiag.trim())         e.artOpsDiag = 'This field is required.';
-      if (!artClinicalImpact.trim())  e.artClinicalImpact = 'This field is required.';
-      if (!artRegulatoryComp.trim())  e.artRegulatoryComp = 'This field is required.';
-      if (artRefLink.trim() && !artRefLink.trim().startsWith('https://'))
-        e.artRefLink = 'URL must start with https://';
-    }
-
-    setErrors(e);
-    return Object.keys(e).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError('');
 
-    const assembled = getAssembledContent();
-
-    if (assembled.trim().length < 20) {
-      setFormError("Please fill in the required fields to support the cohort's studies.");
+    if (content.trim().length < 20) {
+      setErrors((prev) => ({
+        ...prev,
+        content: "Please provide a more detailed summary to support the cohort's studies.",
+      }));
       return;
     }
 
-    if (PROFANITY_PATTERN.test(title) || PROFANITY_PATTERN.test(assembled)) {
+    if (PROFANITY_PATTERN.test(title) || PROFANITY_PATTERN.test(content)) {
       setFormError(
         'Submission contains restricted language. Please align your contribution with professional healthcare and academic standards.'
       );
@@ -485,7 +392,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     const badge = isTicket ? 'Cohort Contributor' : getBadge(masterCat);
 
     const formattedContent = isArticle
-      ? buildFormattedContent({ authorName: fullName.trim(), masterCat, trackValue, rawContent: assembled })
+      ? buildFormattedContent({ authorName: fullName.trim(), masterCat, trackValue, rawContent: content.trim() })
       : null;
 
     try {
@@ -496,7 +403,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           track: trackValue,
           badge,
           title: title.trim(),
-          content: assembled,
+          content: content.trim(),
           submission_type: submissionType,
           formatted_content: formattedContent,
           is_approved: false,
@@ -527,7 +434,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         track: trackValue,
         badge: isTicket ? 'Cohort Contributor' : getBadge(masterCat),
         title: title.trim(),
-        content: assembled,
+        content: content.trim(),
         submission_type: submissionType,
         media_link: mediaLink.trim() || undefined,
         created_at: new Date().toISOString(),
@@ -547,15 +454,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     `w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm transition-all ${
       errors[field] ? 'border-red-400 dark:border-red-500/60' : 'border-zinc-300 dark:border-zinc-700'
     }`;
-
-  const fieldLabel = (text: string, required = true) => (
-    <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-      {text} {required && <span className="text-red-400">*</span>}
-    </label>
-  );
-
-  const fieldError = (key: string) =>
-    errors[key] ? <p className="mt-1 text-xs text-red-500">{errors[key]}</p> : null;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -584,7 +482,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
           {/* Full name */}
           <div>
-            {fieldLabel('Full Name / Discord Handle')}
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+              Full Name / Discord Handle <span className="text-red-400">*</span>
+            </label>
             <input
               ref={firstInputRef}
               type="text"
@@ -593,7 +493,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               placeholder="e.g. Jane Smith or @jsmith_rtt23"
               className={inputCls('fullName')}
             />
-            {fieldError('fullName')}
+            {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
           </div>
 
           {/* Submission type */}
@@ -624,7 +524,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                 );
               })}
             </div>
-            {fieldError('submissionType')}
+            {errors.submissionType && <p className="mt-1 text-xs text-red-500">{errors.submissionType}</p>}
             {isTicket && (
               <div className="mt-2 flex items-start gap-2 p-3 rounded-xl bg-amber-50 dark:bg-amber-500/5 border border-amber-200 dark:border-amber-500/20">
                 <Ticket className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
@@ -638,7 +538,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           {/* Support Ticket: area selector */}
           {isTicket && (
             <div>
-              {fieldLabel('Problem Area', false)}
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                Problem Area <span className="text-zinc-400 font-normal">(optional)</span>
+              </label>
               <div className="relative">
                 <select
                   value={ticketArea}
@@ -653,10 +555,12 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             </div>
           )}
 
-          {/* Master category */}
+          {/* Article / Resource Link: master category */}
           {!isTicket && submissionType && (
             <div>
-              {fieldLabel('Master Category')}
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                Master Category <span className="text-red-400">*</span>
+              </label>
               <div className="relative">
                 <select
                   value={masterCat}
@@ -670,7 +574,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                 </select>
                 <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
               </div>
-              {fieldError('masterCat')}
+              {errors.masterCat && <p className="mt-1 text-xs text-red-500">{errors.masterCat}</p>}
               {autoBadge && (
                 <div className="mt-2 flex items-center gap-2">
                   <Tag className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
@@ -685,15 +589,17 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             </div>
           )}
 
-          {/* Sub-track */}
+          {/* Sub-track — scrollable for large option sets */}
           {!isTicket && selectedCat && selectedCat.sub.length > 0 && (
             <div>
-              {fieldLabel('Specific Domain / Sub-track', false)}
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                Specific Domain / Sub-track <span className="text-zinc-400 font-normal">(optional)</span>
+              </label>
               <div className="relative">
                 <select
                   value={subTrack}
                   onChange={(e) => setSubTrack(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm appearance-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm appearance-none max-h-56 overflow-y-auto"
                 >
                   <option value="">All {selectedCat.label} (general)</option>
                   {selectedCat.sub.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -706,7 +612,10 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           {/* Title */}
           {submissionType && (
             <div>
-              {fieldLabel(isTicket ? 'Issue Summary' : 'Contribution / Article Title')}
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                {isTicket ? 'Issue Summary' : 'Contribution / Article Title'}{' '}
+                <span className="text-red-400">*</span>
+              </label>
               <input
                 type="text"
                 value={title}
@@ -716,7 +625,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   : 'e.g. Fix Boot Camp Audio Driver on Windows 11'}
                 className={inputCls('title')}
               />
-              {fieldError('title')}
+              {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
             </div>
           )}
 
@@ -741,247 +650,71 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             </div>
           )}
 
-          {/* ── Structured content fields ──────────────────────────────────── */}
-
-          {/* TICKET — single textarea */}
-          {isTicket && (
+          {/* Content / Problem description */}
+          {submissionType && (
             <div>
-              {fieldLabel('Problem Description')}
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
+                {isTicket ? 'Problem Description' : 'Contribution Content'}{' '}
+                <span className="text-red-400">*</span>
+              </label>
               <textarea
-                rows={6}
-                value={ticketContent}
-                onChange={(e) => setTicketContent(e.target.value)}
-                placeholder="Describe the problem in detail. Include steps to reproduce, what you expected, and what actually happened."
-                className={`${inputCls('ticketContent')} resize-none`}
+                rows={12}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                placeholder={isTicket
+                  ? 'Describe the problem in detail. Include steps to reproduce, what you expected, and what actually happened.'
+                  : 'Describe your tip, troubleshooting steps, prompt syntax, diagram description, or reference notes.'}
+                className={`${inputCls('content')} resize-none font-mono text-xs leading-relaxed`}
               />
-              {fieldError('ticketContent')}
-            </div>
-          )}
-
-          {/* ARTICLE / STUDY TIPS / PROMPT PLAYBOOK */}
-          {!isTicket && submissionType && !isDiagram && !isQuickRef && masterCat && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 pt-1">
-                <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-700" />
-                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Research Fields</span>
-                <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-700" />
-              </div>
-
-              <div>
-                {fieldLabel('Textbook definition of this topic/protocol')}
-                <textarea
-                  rows={3}
-                  value={artCoreDef}
-                  onChange={(e) => setArtCoreDef(e.target.value)}
-                  placeholder="What is the absolute textbook definition of this topic? Why does CompTIA care about it?"
-                  className={`${inputCls('artCoreDef')} resize-none`}
-                />
-                {fieldError('artCoreDef')}
-              </div>
-
-              <div>
-                {fieldLabel('CLI commands, diagnostic checks, or configurations used')}
-                <textarea
-                  rows={3}
-                  value={artOpsDiag}
-                  onChange={(e) => setArtOpsDiag(e.target.value)}
-                  placeholder="How does a technician verify this component or service is running properly? What commands or tools are used?"
-                  className={`${inputCls('artOpsDiag')} resize-none`}
-                />
-                {fieldError('artOpsDiag')}
-              </div>
-
-              <div>
-                {fieldLabel('How a failure here delays patient care or disrupts healthcare providers')}
-                <textarea
-                  rows={3}
-                  value={artClinicalImpact}
-                  onChange={(e) => setArtClinicalImpact(e.target.value)}
-                  placeholder="Why does a healthcare provider, nurse, or clinical specialist care about this system staying online?"
-                  className={`${inputCls('artClinicalImpact')} resize-none`}
-                />
-                {fieldError('artClinicalImpact')}
-              </div>
-
-              <div>
-                {fieldLabel('Specific HIPAA security rule or device encryption protocol that applies')}
-                <textarea
-                  rows={3}
-                  value={artRegulatoryComp}
-                  onChange={(e) => setArtRegulatoryComp(e.target.value)}
-                  placeholder="What administrative safeguard, EHR interface rule, or HIPAA compliance framework applies to this system?"
-                  className={`${inputCls('artRegulatoryComp')} resize-none`}
-                />
-                {fieldError('artRegulatoryComp')}
-              </div>
-
-              <div>
-                {fieldLabel('Trusted resource URL (must start with https://)', false)}
-                <input
-                  type="url"
-                  value={artRefLink}
-                  onChange={(e) => setArtRefLink(e.target.value)}
-                  placeholder="https://"
-                  className={inputCls('artRefLink')}
-                />
-                {fieldError('artRefLink')}
-              </div>
-            </div>
-          )}
-
-          {/* DIAGRAM */}
-          {!isTicket && submissionType && isDiagram && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 pt-1">
-                <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-700" />
-                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Architecture Fields</span>
-                <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-700" />
-              </div>
-
-              <div>
-                {fieldLabel('Traffic direction flow from user workstation to back-end server storage')}
-                <textarea
-                  rows={3}
-                  value={diagDataPathway}
-                  onChange={(e) => setDiagDataPathway(e.target.value)}
-                  placeholder="Where does traffic enter this diagram, and where does it terminate? Map the full data path."
-                  className={`${inputCls('diagDataPathway')} resize-none`}
-                />
-                {fieldError('diagDataPathway')}
-              </div>
-
-              <div>
-                {fieldLabel('Where firewall rules or access controls sit along this visual track')}
-                <textarea
-                  rows={3}
-                  value={diagBoundaryControls}
-                  onChange={(e) => setDiagBoundaryControls(e.target.value)}
-                  placeholder="Where are the firewall rules, segmentation points, or access control parameters in this diagram?"
-                  className={`${inputCls('diagBoundaryControls')} resize-none`}
-                />
-                {fieldError('diagBoundaryControls')}
-              </div>
-
-              <div>
-                {fieldLabel('Clinical workflows (e.g., PACS imaging, HL7 data) running across this link')}
-                <textarea
-                  rows={3}
-                  value={diagMedicalInteg}
-                  onChange={(e) => setDiagMedicalInteg(e.target.value)}
-                  placeholder="How does this layout keep hospital systems running? What medical systems run across these connection lines?"
-                  className={`${inputCls('diagMedicalInteg')} resize-none`}
-                />
-                {fieldError('diagMedicalInteg')}
-              </div>
-
-              <div>
-                {fieldLabel('Topology source URL (must start with https://)', false)}
-                <input
-                  type="url"
-                  value={diagArchLink}
-                  onChange={(e) => setDiagArchLink(e.target.value)}
-                  placeholder="https://"
-                  className={inputCls('diagArchLink')}
-                />
-                {fieldError('diagArchLink')}
-              </div>
-            </div>
-          )}
-
-          {/* QUICK REFERENCE */}
-          {!isTicket && submissionType && isQuickRef && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 pt-1">
-                <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-700" />
-                <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400">Reference Fields</span>
-                <div className="flex-1 h-px bg-zinc-200 dark:bg-zinc-700" />
-              </div>
-
-              <div>
-                {fieldLabel('Essential command-line flags, ports, or rapid configuration key mappings')}
-                <textarea
-                  rows={3}
-                  value={qrFieldMatrix}
-                  onChange={(e) => setQrFieldMatrix(e.target.value)}
-                  placeholder="What command line parameters, port values, or configuration arguments does a tech need on demand?"
-                  className={`${inputCls('qrFieldMatrix')} resize-none`}
-                />
-                {fieldError('qrFieldMatrix')}
-              </div>
-
-              <div>
-                {fieldLabel('Immediate Step 1 and Step 2 fix to resolve this issue under pressure')}
-                <textarea
-                  rows={3}
-                  value={qrSymptomPlan}
-                  onChange={(e) => setQrSymptomPlan(e.target.value)}
-                  placeholder="If Symptom X happens, what is the immediate Step 1 and Step 2 fix?"
-                  className={`${inputCls('qrSymptomPlan')} resize-none`}
-                />
-                {fieldError('qrSymptomPlan')}
-              </div>
-
-              <div>
-                {fieldLabel('How this fast fix prevents hospital device downtime or safeguards health records')}
-                <textarea
-                  rows={3}
-                  value={qrClinicalUtil}
-                  onChange={(e) => setQrClinicalUtil(e.target.value)}
-                  placeholder="How does having this fast reference guide protect hospital operations and patient health records?"
-                  className={`${inputCls('qrClinicalUtil')} resize-none`}
-                />
-                {fieldError('qrClinicalUtil')}
-              </div>
-
-              <div>
-                {fieldLabel('Authoritative reference URL (must start with https://)', false)}
-                <input
-                  type="url"
-                  value={qrCheatLink}
-                  onChange={(e) => setQrCheatLink(e.target.value)}
-                  placeholder="https://"
-                  className={inputCls('qrCheatLink')}
-                />
-                {fieldError('qrCheatLink')}
-              </div>
-            </div>
-          )}
-
-          {/* Publication Checklist (Article track only) */}
-          {isArticle && !isTicket && masterCat && (
-            <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
-              <div className="px-3 py-2 bg-zinc-100 dark:bg-zinc-700/60 border-b border-zinc-200 dark:border-zinc-700">
-                <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
-                  Publication Checklist
+              {!isTicket && lastInjectedTemplate.current && content.trim() !== '' && (
+                <p className="mt-1 text-[11px] text-sky-500 dark:text-sky-400 italic">
+                  Template pre-loaded — replace the placeholder text with your actual content.
                 </p>
+              )}
+              <div className="flex items-center justify-between mt-1">
+                {errors.content
+                  ? <p className="text-xs text-red-500">{errors.content}</p>
+                  : <span />}
+                <span className="text-xs text-zinc-400">{content.length} chars</span>
               </div>
-              <div className="divide-y divide-zinc-100 dark:divide-zinc-700/50">
-                {CHECKLIST_RULES.map((rule) => {
-                  const passed = checklistResults[rule.id];
-                  return (
-                    <div key={rule.id} className="flex items-start gap-3 px-3 py-2.5">
-                      {passed
-                        ? <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-                        : <XCircle    className="w-4 h-4 text-rose-500   flex-shrink-0 mt-0.5" />
-                      }
-                      <div className="flex-1 min-w-0">
-                        <p className={`text-xs font-medium leading-tight ${
-                          passed
-                            ? 'text-zinc-700 dark:text-zinc-300'
-                            : 'text-rose-600 dark:text-rose-400'
-                        }`}>
-                          {rule.label}
-                        </p>
-                        {!passed && (
-                          <p className="text-[11px] text-rose-400 dark:text-rose-400/80 mt-0.5 leading-snug">
-                            {rule.hint}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+
+              {/* Publication Checklist (Article only) */}
+              {isArticle && (
+                <div className="mt-3 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+                  <div className="px-3 py-2 bg-zinc-100 dark:bg-zinc-700/60 border-b border-zinc-200 dark:border-zinc-700">
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+                      Publication Checklist
+                    </p>
+                  </div>
+                  <div className="divide-y divide-zinc-100 dark:divide-zinc-700/50">
+                    {CHECKLIST_RULES.map((rule) => {
+                      const passed = checklistResults[rule.id];
+                      return (
+                        <div key={rule.id} className="flex items-start gap-3 px-3 py-2.5">
+                          {passed
+                            ? <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                            : <XCircle    className="w-4 h-4 text-rose-500   flex-shrink-0 mt-0.5" />
+                          }
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-xs font-medium leading-tight ${
+                              passed
+                                ? 'text-zinc-700 dark:text-zinc-300'
+                                : 'text-rose-600 dark:text-rose-400'
+                            }`}>
+                              {rule.label}
+                            </p>
+                            {!passed && (
+                              <p className="text-[11px] text-rose-400 dark:text-rose-400/80 mt-0.5 leading-snug">
+                                {rule.hint}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
