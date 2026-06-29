@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   X, Send, Loader2, ChevronDown, Tag,
   FileText, Link2, BookOpen, Zap, GitBranch,
-  AlertCircle, Link as LinkIcon,
+  AlertCircle, Link as LinkIcon, ImagePlus,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type NewSubmission, saveLocalSubmission } from '../utils/submissions';
@@ -63,6 +63,20 @@ const MASTER_CATEGORIES = [
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+function getFilteredCategories(type: SubmissionType) {
+  switch (type) {
+    case 'Article':
+    case 'Study Tip':
+      return MASTER_CATEGORIES.filter((c) => c.label === 'Study Tips');
+    case 'Diagram':
+      return MASTER_CATEGORIES.filter((c) => c.label === 'Diagrams');
+    case 'Quick Reference':
+      return MASTER_CATEGORIES.filter((c) => c.label === 'Quick References');
+    case 'Resource Link':
+      return MASTER_CATEGORIES;
+  }
+}
+
 function getBadge(trackName: string): string {
   for (const cat of MASTER_CATEGORIES) {
     if (cat.sub.includes(trackName)) return cat.badge;
@@ -126,19 +140,30 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [track, setTrack] = useState(MASTER_CATEGORIES[0].sub[0]);
   const [isTrackDropdownOpen, setIsTrackDropdownOpen] = useState(false);
   const [title, setTitle] = useState('');
-  
+
   // Clean Guided Fields
   const [concept, setConcept] = useState('');
   const [impact, setImpact] = useState('');
   const [references, setReferences] = useState('');
   const [resourceUrl, setResourceUrl] = useState('');
-  
+  const [diagramUrl, setDiagramUrl] = useState('');
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isResourceLink = submissionType === 'Resource Link';
+  const filteredCategories = getFilteredCategories(submissionType);
   const autoBadge = getBadge(track);
+
+  // Reset track to first item of filtered list when submission type changes
+  useEffect(() => {
+    const filtered = getFilteredCategories(submissionType);
+    const allSubs = filtered.flatMap((c) => c.sub);
+    if (!allSubs.includes(track)) {
+      setTrack(filtered[0].sub[0]);
+    }
+  }, [submissionType]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -155,6 +180,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setImpact('');
     setReferences('');
     setResourceUrl('');
+    setDiagramUrl('');
     setErrors({});
     setFormError('');
     setIsTrackDropdownOpen(false);
@@ -167,6 +193,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       md += `\n\n## 🏥 Healthcare IT Integration\n${impact.trim()}`;
     }
     md += `\n\n## 🔗 References & Citations\n${references.trim()}`;
+    if (diagramUrl.trim()) {
+      md += `\n\n## 📐 Visual Attachment\n![Diagram](${diagramUrl.trim()})`;
+    }
     return md;
   };
 
@@ -174,14 +203,14 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     const e: Record<string, string> = {};
     if (!fullName.trim()) e.fullName = 'Required.';
     if (!title.trim()) e.title = 'Required.';
-    
+
     if (isResourceLink) {
       if (!/^https?:\/\/.+/.test(resourceUrl.trim())) e.resourceUrl = 'Valid URL required.';
     } else {
       if (concept.trim().length < 15) e.concept = 'Please provide a slightly more detailed description.';
       if (references.trim().length === 0) e.references = 'Please provide at least one reference link or citation.';
     }
-    
+
     setErrors(e);
     if (Object.keys(e).length > 0) return;
 
@@ -230,7 +259,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 dark:bg-black/70 backdrop-blur-sm" onClick={() => { reset(); onClose(); }} />
       <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[90vh]">
-        
+
         {/* Header */}
         <div className="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex items-center justify-between flex-shrink-0">
           <div>
@@ -250,7 +279,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         {/* Scrollable Body */}
         <div className="px-6 py-5 overflow-y-auto flex-1 custom-scrollbar">
           <div className="space-y-6">
-            
+
             {/* 1. Name */}
             <div>
               <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Full Name / Discord Handle</label>
@@ -270,7 +299,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               </div>
             </div>
 
-            {/* 3. INLINE SCROLLABLE DROPDOWN */}
+            {/* 3. INLINE SCROLLABLE DROPDOWN (filtered by type) */}
             <div>
               <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Curriculum Track</label>
               <div className="relative">
@@ -278,16 +307,14 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   <span className="truncate pr-4 text-zinc-900 dark:text-zinc-100">{track}</span>
                   <ChevronDown className={`w-4 h-4 text-zinc-400 flex-shrink-0 transition-transform ${isTrackDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
-                
+
                 {isTrackDropdownOpen && (
                   <div className="w-full mt-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-inner overflow-hidden flex flex-col">
-                    {/* The Headliner */}
                     <div className="bg-zinc-100 dark:bg-zinc-800/80 px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500 border-b border-zinc-200 dark:border-zinc-800">
                       Track
                     </div>
-                    {/* The Inner Scrollable Window */}
                     <div className="max-h-48 overflow-y-auto custom-scrollbar p-2 space-y-3">
-                      {MASTER_CATEGORIES.map((cat) => (
+                      {filteredCategories.map((cat) => (
                         <div key={cat.label}>
                           <div className="px-2 py-1 text-[10px] font-bold text-sky-500 uppercase tracking-wider">{cat.label}</div>
                           <div className="mt-1 space-y-1">
@@ -330,18 +357,18 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                 </div>
               ) : (
                 <div className="space-y-4">
-                  
+
                   {/* Guided Description Field */}
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       1. Guided Description <span className="text-red-400">*</span>
                     </label>
-                    <textarea 
-                      value={concept} 
-                      onChange={(e) => setConcept(e.target.value)} 
-                      placeholder="Explain the main idea, textbook definition, or step-by-step process..." 
-                      rows={4} 
-                      className={`${inputCls('concept')} font-mono resize-y custom-scrollbar`} 
+                    <textarea
+                      value={concept}
+                      onChange={(e) => setConcept(e.target.value)}
+                      placeholder="Explain the main idea, textbook definition, or step-by-step process..."
+                      rows={4}
+                      className={`${inputCls('concept')} font-mono resize-y custom-scrollbar`}
                     />
                     {errors.concept && <p className="mt-1 text-xs text-red-500">{errors.concept}</p>}
                   </div>
@@ -351,12 +378,12 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       2. Clinical / Healthcare Impact <span className="text-zinc-400 font-normal">(Optional)</span>
                     </label>
-                    <textarea 
-                      value={impact} 
-                      onChange={(e) => setImpact(e.target.value)} 
-                      placeholder="How does this apply to hospitals, EHRs, or patient data security?" 
-                      rows={3} 
-                      className={`${inputCls('impact')} font-mono resize-y custom-scrollbar`} 
+                    <textarea
+                      value={impact}
+                      onChange={(e) => setImpact(e.target.value)}
+                      placeholder="How does this apply to hospitals, EHRs, or patient data security?"
+                      rows={3}
+                      className={`${inputCls('impact')} font-mono resize-y custom-scrollbar`}
                     />
                   </div>
 
@@ -365,14 +392,35 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       3. References and Citations <span className="text-red-400">*</span>
                     </label>
-                    <textarea 
-                      value={references} 
-                      onChange={(e) => setReferences(e.target.value)} 
-                      placeholder="Paste links (e.g., https://...) or cite your sources here..." 
-                      rows={2} 
-                      className={`${inputCls('references')} font-mono resize-y custom-scrollbar`} 
+                    <textarea
+                      value={references}
+                      onChange={(e) => setReferences(e.target.value)}
+                      placeholder="Paste links (e.g., https://...) or cite your sources here..."
+                      rows={2}
+                      className={`${inputCls('references')} font-mono resize-y custom-scrollbar`}
                     />
                     {errors.references && <p className="mt-1 text-xs text-red-500">{errors.references}</p>}
+                  </div>
+
+                  {/* Diagram / Visual Attachment */}
+                  <div>
+                    <label className="flex items-center gap-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      <ImagePlus className="w-3.5 h-3.5 text-sky-500" />
+                      4. Diagram / Visual Attachment <span className="text-zinc-400 font-normal">(Optional)</span>
+                    </label>
+                    <input
+                      type="url"
+                      value={diagramUrl}
+                      onChange={(e) => setDiagramUrl(e.target.value)}
+                      placeholder="Paste image URL (e.g., https://i.imgur.com/example.png)"
+                      className={inputCls('diagramUrl')}
+                    />
+                    <div className="mt-2 flex items-start gap-2 px-3 py-2.5 rounded-lg bg-amber-50 dark:bg-amber-500/5 border border-amber-200/60 dark:border-amber-500/20">
+                      <span className="text-amber-500 text-sm flex-shrink-0 mt-px">&#9888;&#65039;</span>
+                      <p className="text-[11px] leading-relaxed text-amber-700 dark:text-amber-400/90">
+                        Supported file types: .png, .jpg, .jpeg, .svg (Max size: 5MB). Ensure text in diagrams is highly legible to preserve UI layout responsiveness.
+                      </p>
+                    </div>
                   </div>
 
                 </div>

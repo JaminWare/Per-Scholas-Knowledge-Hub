@@ -163,7 +163,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5">
+      <nav className="flex-1 overflow-y-auto py-3 px-2 pb-40 space-y-0.5">
         <Link
           to="/"
           className={`sidebar-item ${location.hash === '' || location.hash === '#/' ? 'active' : ''}`}

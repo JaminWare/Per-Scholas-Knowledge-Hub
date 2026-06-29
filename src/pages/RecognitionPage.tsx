@@ -200,7 +200,7 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl border border-zinc-800 bg-zinc-900 shadow-2xl overflow-hidden max-h-64 overflow-y-auto">
+              <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl bg-zinc-800/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-700/50 shadow-xl overflow-hidden max-h-64 overflow-y-auto">
                 {Array.from(groupSubmissionsByTrack(group.submissions).entries()).map(([bucket, items]) => (
                   <div key={bucket}>
                     <span className={SECTION_HDR}>{bucket}</span>
@@ -295,7 +295,7 @@ function FounderCard() {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl border border-zinc-800 bg-zinc-900 shadow-2xl overflow-hidden max-h-64 overflow-y-auto">
+            <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl bg-zinc-800/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-700/50 shadow-xl overflow-hidden max-h-64 overflow-y-auto">
               {Array.from(groupArticlesByTrack(JAMIN_ARTICLES).entries()).map(([bucket, items]) => (
                 <div key={bucket}>
                   <span className={SECTION_HDR}>{bucket}</span>

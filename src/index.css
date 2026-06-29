@@ -23,7 +23,7 @@
   }
 
   html.dark body {
-    @apply bg-[#242427] text-zinc-100;
+    @apply bg-[#1e2538] text-zinc-100;
   }
 
   html:not(.dark) body {
