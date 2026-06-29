@@ -551,7 +551,8 @@ export default function ArticlePage() {
     );
   }
 
-  const isSample = article.is_sample === true || /\[\s*sample\s*\]/i.test(article.title);
+  const strictlyIsSample = /\[\s*sample\s*\]/i.test(article?.title ?? '');
+  const isSample = strictlyIsSample || article.is_sample === true;
   const markdownContent = articleContentMap[article.slug] ?? article.content;
   const authorName = deriveAuthorName(contributor, article);
   const trackLabel = deriveTrackLabel(article);
@@ -561,11 +562,11 @@ export default function ArticlePage() {
   const isFounderSlug = FOUNDER_SLUGS.has(article.slug) || authorName === 'Jamin Ware';
   const effectiveIsSample = isSample && !isFounderSlug;
 
-  // Full-page diagram panel routing
-  const isNetworkTopologyArticle = article.slug === 'diagrams/network-topology-architecture';
-  const isOSIPDUArticle          = article.slug === 'diagrams/osi-pdu-flow';
-  const isOSIQuickRefArticle     = article.slug === 'quick-references/osi-model';
-  const isTCPIPArticle           = article.slug === 'core1-networking/sample-protocols';
+  // Full-page diagram panel routing — each is suppressed when title matches [Sample]
+  const isNetworkTopologyArticle = article.slug === 'diagrams/network-topology-architecture' && !strictlyIsSample;
+  const isOSIPDUArticle          = article.slug === 'diagrams/osi-pdu-flow' && !strictlyIsSample;
+  const isOSIQuickRefArticle     = article.slug === 'quick-references/osi-model' && !strictlyIsSample;
+  const isTCPIPArticle           = article.slug === 'core1-networking/sample-protocols' && !strictlyIsSample;
 
   function handleBack() {
     if (article?.section?.slug) {
@@ -761,7 +762,7 @@ export default function ArticlePage() {
       )}
 
       {/* Related articles */}
-      {relatedArticles.length > 0 && (
+      {relatedArticles.length > 0 && !strictlyIsSample && (
         <div className="mt-12 pt-8 border-t border-zinc-300 dark:border-zinc-800">
           <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">Related Articles</h2>
           <div className="grid md:grid-cols-3 gap-6">
