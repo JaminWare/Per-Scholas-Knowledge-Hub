@@ -63,61 +63,50 @@ const MASTER_CATEGORIES = [
 
 // ── Starter template skeletons (keyed by master category label) ──────────────
 const CONTENT_TEMPLATES: Record<string, string> = {
-  'Study Tips': `## 🎯 Core Technical Summary
-- [Provide a crisp 2-3 sentence definition of this exam topic here]
-- [Break down how this system or component operates under normal conditions]
+  'Study Tips': `## 🔬 CompTIA A+ Technical Core
+- **Core Concept Definition:** [What is the absolute textbook definition of this topic/protocol? Why does CompTIA care about it?]
+- **Operational Diagnostics:** [How does a technician check if this component or service is running properly? What CLI commands, tools, or physical configurations are used?]
 
-## 🔧 Step-by-Step Practical Application & Troubleshooting
-* Step 1: [Document an active command-line utility, hardware installation step, or diagnostic check]
-* Step 2: [Detail the exact configuration syntax, port mapping, or error code verification paths]
+## 🏥 Healthcare IT Integration & Clinical Context
+- **EHR & Medical Device Interface:** [How does this specific technology interface with clinic workstations, hospital networks, or Electronic Health Records (EHR) environments?]
+- **Provider & Patient Impact:** [Why does a healthcare provider, nurse, or clinical specialist care about this system staying online? How does a failure here delay patient care or disrupt clinical workflows?]
+- **Regulatory Compliance Framework:** [What specific HIPAA security rule, administrative safeguard, or device encryption protocol applies to managing this system safely?]
 
-## 🏥 Healthcare IT Professional Relevance
-[Crucial: Explain why an IT technician in a clinical or hospital environment must master this concept. Mention how this tech interfaces with healthcare environments, clinic networks, medical devices, providers, or EHR/HIPAA data protection.]
+## 🔗 Verifiable Domain Sources
+- Trusted Reference Link: https://`,
 
-## 🔗 Trusted References & Citations
-- Official Documentation: https://learn.microsoft.com or https://www.comptia.org`,
+  'Diagrams': `## 🗺️ Visual Framework & Infrastructure Flow
+- **Data Pathway Directions:** [Where does traffic enter this diagram, and where does it terminate? Map the path from user desktop to back-end server storage arrays.]
+- **Boundary Controls:** [Where are the firewall rules, network segmentation points, or access control parameters located along this visual track?]
 
-  'Diagrams': `## 🗺️ Visual Architecture Map
-- [Describe the layout flow of this technical diagram here]
-- [Map out the data direction from client-side system to server or clinical storage array]
+## 🏥 Healthcare IT Integration & Clinical Context
+- **Clinical Workflow Mapping:** [How does this precise infrastructure layout keep hospital systems running smoothly? What medical systems (e.g., PACS imaging, HL7 telemetry feeds) run across these specific connection lines?]
+- **Data Protection Controls:** [How does this topology isolate private patient health data (PHI) from public networks to preserve absolute HIPAA data security compliance?]
 
-## ⚙️ Component Layer Breakdown
-* Layer 1: [Specify the core physical layer components or protocol endpoints]
-* Layer 2: [Document interface engines, firewall boundaries, or communication pathways]
+## 🔗 Architecture References
+- Blueprint Reference Link: https://`,
 
-## 🏥 Clinical Workflow Integration
-[Explain how this data flow map safeguards patient care. Detail how hospital networks or providers rely on this topology to access clinical records securely without violation risks.]
+  'Quick References': `## ⚡ Rapid Field Reference Matrix
+- **Command Flags & Key Mappings:** [What are the essential command line parameters, port values, or configuration arguments a tech needs on demand?]
+- **Symptom vs Remediation Action Plan:** [If Symptom X happens, what is the immediate Step 1 and Step 2 fix to resolve it under pressure?]
 
-## 🔗 Topology Reference Sources
-- Cisco or Vendor Reference: https://www.cisco.com`,
+## 🏥 Healthcare IT Integration & Clinical Context
+- **Clinical Support Utility:** [How does having this fast reference guide protect hospital operations? How does applying this rapid fix prevent clinic device downtime or secure patient health records during an active tech support ticket?]
 
-  'Quick References': `## ⚡ Rapid Verification Matrix
-* Topic/Command Flag: [Detail standard command-line flags or configuration values]
-* Port / Protocol Assignment: [Map active system ports or operational modes]
+## 🔗 Trusted Cheat Sheet Sources
+- Blueprint Reference Link: https://`,
 
-## 📋 Fast Diagnostic Cheat Sheet
-- Symptom A -> Action Plan: [Detail immediate remediation step]
-- Symptom B -> Action Plan: [Detail immediate remediation step]
+  'Prompt Playbook': `## 🔬 CompTIA A+ Technical Core
+- **Core Concept Definition:** [What is the absolute textbook definition of this topic/protocol? Why does CompTIA care about it?]
+- **Operational Diagnostics:** [How does a technician check if this component or service is running properly? What CLI commands, tools, or physical configurations are used?]
 
-## 🏥 Compliance & Medical System Utility
-[Document how this rapid reference guide protects hospital operations or ensures HIPAA device encryption rules remain locked down during standard field support tickets.]
+## 🏥 Healthcare IT Integration & Clinical Context
+- **EHR & Medical Device Interface:** [How does this specific technology interface with clinic workstations, hospital networks, or Electronic Health Records (EHR) environments?]
+- **Provider & Patient Impact:** [Why does a healthcare provider, nurse, or clinical specialist care about this system staying online? How does a failure here delay patient care or disrupt clinical workflows?]
+- **Regulatory Compliance Framework:** [What specific HIPAA security rule, administrative safeguard, or device encryption protocol applies to managing this system safely?]
 
-## 🔗 Authoritative Cheat Sheet Reference
-- Blueprint Source: https://www.comptia.org`,
-
-  'Prompt Playbook': `## 🎯 Core Technical Summary
-- [Provide a crisp 2-3 sentence definition of this exam topic here]
-- [Break down how this system or component operates under normal conditions]
-
-## 🔧 Step-by-Step Practical Application & Troubleshooting
-* Step 1: [Document an active command-line utility, hardware installation step, or diagnostic check]
-* Step 2: [Detail the exact configuration syntax, port mapping, or error code verification paths]
-
-## 🏥 Healthcare IT Professional Relevance
-[Crucial: Explain why an IT technician in a clinical or hospital environment must master this concept. Mention how this tech interfaces with healthcare environments, clinic networks, medical devices, providers, or EHR/HIPAA data protection.]
-
-## 🔗 Trusted References & Citations
-- Official Documentation: https://learn.microsoft.com or https://www.comptia.org`,
+## 🔗 Verifiable Domain Sources
+- Trusted Reference Link: https://`,
 };
 
 const TICKET_AREAS = [
@@ -287,8 +276,8 @@ interface Props {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh }: Props) {
-  const [submissionType, setSubmissionType] = useState<SubmissionType | ''>('');
-  const [masterCat, setMasterCat]           = useState('');
+  const [submissionType, setSubmissionType] = useState<SubmissionType | ''>('Article');
+  const [masterCat, setMasterCat]           = useState('Study Tips');
   const [subTrack, setSubTrack]             = useState('');
   const [ticketArea, setTicketArea]         = useState('');
   const [fullName, setFullName]             = useState('');
