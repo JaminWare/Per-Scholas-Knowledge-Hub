@@ -2,13 +2,12 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
-import CohortRecognitionWall from '../components/CohortRecognitionWall';
 import UniqueHacksGrid from '../components/UniqueHacksGrid';
 import ContributorSubmissionModal, { type NewSubmission } from '../components/ContributorSubmissionModal';
 import SuccessToast from '../components/SuccessToast';
 import type { Article } from '../types/database';
 import {
-  BookOpen, Eye, Users, Target, TrendingUp, ArrowRight,
+  BookOpen, Eye, TrendingUp, ArrowRight,
   Shield, Terminal, Monitor, ChevronRight, Award, Send, Loader2, CheckCircle,
 } from 'lucide-react';
 
@@ -43,17 +42,12 @@ const researchArticles = [
   },
 ];
 
-const stats = [
-  { label: 'Total Collective Insights', value: '148 Articles', icon: BookOpen },
-  { label: 'Total Resource Views',      value: '2,450',        icon: Eye },
-  { label: 'Active Contributors',       value: '25', subtext: 'Cohort 2026-RTT-23', icon: Users },
-  { label: 'Hand-Off Readiness',        value: '85%', subtext: 'Completed', icon: Target },
-];
-
 export default function HomePage() {
   const [featuredArticles, setFeaturedArticles] = useState<Article[]>([]);
   const [recentArticles,   setRecentArticles]   = useState<Article[]>([]);
   const [isLoading,        setIsLoading]         = useState(true);
+  const [totalArticleCount, setTotalArticleCount] = useState<number>(0);
+  const [totalViewCount,   setTotalViewCount]    = useState<number>(0);
   const [modalOpen,        setModalOpen]         = useState(false);
   const [latestSubmission, setLatestSubmission]  = useState<NewSubmission | null>(null);
   const [toastVisible,     setToastVisible]      = useState(false);
@@ -70,12 +64,19 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [featuredRes, recentRes] = await Promise.all([
+        const [featuredRes, recentRes, countRes] = await Promise.all([
           supabase.from('articles').select('*, contributor:contributors(*)').eq('is_featured', true).limit(3),
-          supabase.from('articles').select('*, contributor:contributors(*)').order('created_at', { ascending: false }).limit(6),
+          supabase.from('articles').select('*, contributor:contributors(*)').order('created_at', { ascending: false }).limit(50),
+          supabase.from('articles').select('*', { count: 'exact', head: true }),
         ]);
         if (featuredRes.data) setFeaturedArticles(featuredRes.data);
-        if (recentRes.data)   setRecentArticles(recentRes.data);
+        if (recentRes.data) {
+          setRecentArticles(recentRes.data.slice(0, 6));
+          const views = (recentRes.data as (Article & { view_count?: number })[])
+            .reduce((acc, a) => acc + (a.view_count ?? 0), 0);
+          setTotalViewCount(views);
+        }
+        if (countRes.count !== null) setTotalArticleCount(countRes.count);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -172,26 +173,33 @@ export default function HomePage() {
           </section>
 
           {/* Hub Activity Overview */}
-          <section className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
-            {stats.map((stat) => {
-              const Icon = stat.icon;
-              return (
-                <div key={stat.label} className="card p-5">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-sm text-zinc-500 dark:text-zinc-500 mb-1">{stat.label}</p>
-                      <p className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">{stat.value}</p>
-                      {stat.subtext && (
-                        <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-1">{stat.subtext}</p>
-                      )}
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-sky-100/70 dark:bg-sky-500/10">
-                      <Icon className="w-5 h-5 text-sky-700 dark:text-sky-400" />
-                    </div>
-                  </div>
+          <section className="grid grid-cols-1 md:grid-cols-2 max-w-4xl gap-4">
+            <div className="card p-5">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm text-zinc-500 dark:text-zinc-500 mb-1">Total Collective Insights</p>
+                  <p className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">
+                    {totalArticleCount > 0 ? `${totalArticleCount} Articles` : '— Articles'}
+                  </p>
                 </div>
-              );
-            })}
+                <div className="p-2.5 rounded-xl bg-sky-100/70 dark:bg-sky-500/10">
+                  <BookOpen className="w-5 h-5 text-sky-700 dark:text-sky-400" />
+                </div>
+              </div>
+            </div>
+            <div className="card p-5">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-sm text-zinc-500 dark:text-zinc-500 mb-1">Total Resource Views</p>
+                  <p className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">
+                    {totalViewCount.toLocaleString()}
+                  </p>
+                </div>
+                <div className="p-2.5 rounded-xl bg-sky-100/70 dark:bg-sky-500/10">
+                  <Eye className="w-5 h-5 text-sky-700 dark:text-sky-400" />
+                </div>
+              </div>
+            </div>
           </section>
 
           {/* Featured Articles */}
@@ -280,29 +288,7 @@ export default function HomePage() {
         {/* ── Right sidebar control console ─────────────────── */}
         <aside className="lg:col-span-1 space-y-3">
 
-          {/* Widget 1 — Cohort Recognition Wall roster */}
-          <CohortRecognitionWall
-            newSubmission={latestSubmission}
-            onClaimBadge={() => setModalOpen(true)}
-          />
-
-          {/* View Detailed Portfolios CTA */}
-          <Link
-            to="/recognition"
-            className="flex items-center justify-between gap-2 w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 hover:border-amber-400/50 dark:hover:border-amber-500/40 hover:bg-amber-50 dark:hover:bg-amber-500/5 transition-all group"
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="p-1.5 rounded-lg bg-amber-100 dark:bg-amber-500/10">
-                <Award className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-              </div>
-              <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-200 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors">
-                View Detailed Portfolios
-              </span>
-            </div>
-            <ChevronRight className="w-4 h-4 text-zinc-400 dark:text-zinc-600 group-hover:text-amber-500 transition-colors flex-shrink-0" />
-          </Link>
-
-          {/* Widget 2 — Quick Submission Portal */}
+          {/* Widget 1 — Quick Submission Portal (primary focal action) */}
           <div className="bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 rounded-xl p-4 space-y-3">
 
             {/* Header */}
@@ -379,6 +365,22 @@ export default function HomePage() {
               )}
             </button>
           </div>
+
+          {/* Widget 2 — View Detailed Portfolios CTA */}
+          <Link
+            to="/recognition"
+            className="flex items-center justify-between gap-2 w-full px-4 py-3 rounded-xl bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 hover:border-sky-500/50 dark:hover:border-sky-500/50 hover:bg-sky-50 dark:hover:bg-sky-500/5 transition-all duration-200 group"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 rounded-lg bg-sky-100 dark:bg-sky-500/10">
+                <Award className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+              </div>
+              <span className="text-sm font-semibold text-zinc-700 dark:text-zinc-200 group-hover:text-sky-700 dark:group-hover:text-sky-400 transition-colors">
+                View Detailed Portfolios →
+              </span>
+            </div>
+            <ChevronRight className="w-4 h-4 text-zinc-400 dark:text-zinc-600 group-hover:text-sky-500 transition-colors flex-shrink-0" />
+          </Link>
 
         </aside>
 
