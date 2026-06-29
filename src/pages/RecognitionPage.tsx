@@ -9,18 +9,18 @@ import { loadLocalSubmissions, type NewSubmission } from '../components/Contribu
 
 // ── Static Founder data ───────────────────────────────────
 
-interface ArticleEntry { title: string; slug: string }
+interface ArticleEntry { title: string; slug: string; track: string }
 
 const JAMIN_ARTICLES: ArticleEntry[] = [
-  { title: 'Introduction to Healthcare IT Security',                                slug: 'intro-healthcare-it-security' },
-  { title: 'Cloud Computing in Healthcare',                                         slug: 'cloud-computing-healthcare' },
-  { title: 'AI Prompt Engineering for Healthcare',                                  slug: 'ai-prompt-engineering-healthcare' },
-  { title: 'The Role of Firewalls in Modern Network Security',                      slug: 'firewall-basics' },
-  { title: 'Command-Line Interface (CLI) Research',                                 slug: 'command-documentation' },
-  { title: 'Microsoft Management Console (MMC) Snap-ins',                           slug: 'snap-in' },
-  { title: 'Enterprise Three-Tier Network Topology Architecture',                   slug: 'diagrams/network-topology-architecture' },
-  { title: 'OSI Model Data Encapsulation & PDU Flow',                               slug: 'diagrams/osi-pdu-flow' },
-  { title: 'TCP/IP Protocol Suite — Four-Layer Model, IPv4 vs. IPv6 & Packet Transmission', slug: 'core1-networking/sample-protocols' },
+  { title: 'Introduction to Healthcare IT Security',                                slug: 'intro-healthcare-it-security',              track: 'Advanced Healthcare IT' },
+  { title: 'Cloud Computing in Healthcare',                                         slug: 'cloud-computing-healthcare',                track: 'Advanced Healthcare IT' },
+  { title: 'AI Prompt Engineering for Healthcare',                                  slug: 'ai-prompt-engineering-healthcare',          track: 'Advanced Healthcare IT' },
+  { title: 'The Role of Firewalls in Modern Network Security',                      slug: 'firewall-basics',                           track: 'CompTIA A+ Core 2' },
+  { title: 'Command-Line Interface (CLI) Research',                                 slug: 'command-documentation',                    track: 'CompTIA A+ Core 2' },
+  { title: 'Microsoft Management Console (MMC) Snap-ins',                           slug: 'snap-in',                                  track: 'CompTIA A+ Core 2' },
+  { title: 'Enterprise Three-Tier Network Topology Architecture',                   slug: 'diagrams/network-topology-architecture',   track: 'CompTIA A+ Core 1' },
+  { title: 'OSI Model Data Encapsulation & PDU Flow',                               slug: 'diagrams/osi-pdu-flow',                    track: 'CompTIA A+ Core 1' },
+  { title: 'TCP/IP Protocol Suite — Four-Layer Model, IPv4 vs. IPv6 & Packet Transmission', slug: 'core1-networking/sample-protocols', track: 'CompTIA A+ Core 1' },
 ];
 
 // ── Badge colour map ──────────────────────────────────────
@@ -56,6 +56,45 @@ function categoryLabel(s: NewSubmission): string {
   if (s.badge === 'Playbook Engineer')        return 'Prompt Playbooks';
   return 'Shared Tips';
 }
+
+// ── Track grouping ────────────────────────────────────────
+
+const TRACK_ORDER = [
+  'CompTIA A+ Core 1',
+  'CompTIA A+ Core 2',
+  'Advanced Healthcare IT',
+  'Other Contributions',
+] as const;
+
+function resolveTrack(track: string): string {
+  if (track.includes('Core 1')) return 'CompTIA A+ Core 1';
+  if (track.includes('Core 2')) return 'CompTIA A+ Core 2';
+  if (track.toLowerCase().includes('healthcare')) return 'Advanced Healthcare IT';
+  return 'Other Contributions';
+}
+
+function groupSubmissionsByTrack(submissions: NewSubmission[]): Map<string, NewSubmission[]> {
+  const map = new Map<string, NewSubmission[]>(TRACK_ORDER.map((t) => [t, []]));
+  for (const s of submissions) {
+    const bucket = resolveTrack(s.track ?? '');
+    map.get(bucket)!.push(s);
+  }
+  // Drop empty buckets
+  for (const [key, val] of map) { if (val.length === 0) map.delete(key); }
+  return map;
+}
+
+function groupArticlesByTrack(articles: ArticleEntry[]): Map<string, ArticleEntry[]> {
+  const map = new Map<string, ArticleEntry[]>(TRACK_ORDER.map((t) => [t, []]));
+  for (const a of articles) {
+    const bucket = resolveTrack(a.track);
+    map.get(bucket)!.push(a);
+  }
+  for (const [key, val] of map) { if (val.length === 0) map.delete(key); }
+  return map;
+}
+
+const SECTION_HDR = 'text-[10px] font-mono tracking-wider text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-3 py-1 block border-y border-zinc-200 dark:border-zinc-700 first:border-t-0';
 
 // ── Community contributor card (dropdown only) ────────────
 
@@ -162,32 +201,39 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl border border-sky-200 dark:border-sky-800/60 bg-sky-50/90 dark:bg-sky-950/40 shadow-xl shadow-sky-900/10 divide-y divide-sky-100 dark:divide-sky-900/50 overflow-hidden">
-                {group.submissions.map((s) => {
-                  const slug = buildSlugFromTitle(s.title);
-                  const isArticle = s.submission_type === 'Article';
-                  return isArticle ? (
-                    <Link
-                      key={s.id}
-                      to={`/article/${slug}`}
-                      onClick={() => setDropdownOpen(false)}
-                      className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:border-sky-500 hover:bg-sky-100/60 dark:hover:bg-sky-500/10 transition-all group"
-                    >
-                      <BookOpen className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
-                      <span className="text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-sky-700 dark:group-hover:text-sky-300 truncate">{s.title}</span>
-                      <ChevronRight className="w-3 h-3 text-sky-300 dark:text-sky-700 group-hover:text-sky-500 flex-shrink-0 ml-auto" />
-                    </Link>
-                  ) : (
-                    <div
-                      key={s.id}
-                      className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
-                    >
-                      <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />
-                      <span className="text-sm text-zinc-700 dark:text-zinc-200 truncate">{s.title}</span>
-                      <span className="ml-auto text-[10px] font-mono text-sky-500 dark:text-sky-600 flex-shrink-0">{categoryLabel(s)}</span>
+              <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl border border-sky-200 dark:border-sky-800/60 bg-sky-50/90 dark:bg-sky-950/40 shadow-xl shadow-sky-900/10 overflow-hidden max-h-64 overflow-y-auto">
+                {Array.from(groupSubmissionsByTrack(group.submissions).entries()).map(([bucket, items]) => (
+                  <div key={bucket}>
+                    <span className={SECTION_HDR}>{bucket}</span>
+                    <div className="divide-y divide-sky-100 dark:divide-sky-900/50">
+                      {items.map((s) => {
+                        const slug = buildSlugFromTitle(s.title);
+                        const isArticle = s.submission_type === 'Article';
+                        return isArticle ? (
+                          <Link
+                            key={s.id}
+                            to={`/article/${slug}`}
+                            onClick={() => setDropdownOpen(false)}
+                            className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:border-sky-500 hover:bg-sky-100/60 dark:hover:bg-sky-500/10 transition-all group"
+                          >
+                            <BookOpen className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
+                            <span className="text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-sky-700 dark:group-hover:text-sky-300 truncate">{s.title}</span>
+                            <ChevronRight className="w-3 h-3 text-sky-300 dark:text-sky-700 group-hover:text-sky-500 flex-shrink-0 ml-auto" />
+                          </Link>
+                        ) : (
+                          <div
+                            key={s.id}
+                            className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
+                          >
+                            <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />
+                            <span className="text-sm text-zinc-700 dark:text-zinc-200 truncate">{s.title}</span>
+                            <span className="ml-auto text-[10px] font-mono text-sky-500 dark:text-sky-600 flex-shrink-0">{categoryLabel(s)}</span>
+                          </div>
+                        );
+                      })}
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -250,18 +296,25 @@ function FounderCard() {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl border border-sky-200 dark:border-sky-800/60 bg-sky-50/90 dark:bg-sky-950/40 shadow-xl shadow-sky-900/10 divide-y divide-sky-100 dark:divide-sky-900/50 overflow-hidden">
-              {JAMIN_ARTICLES.map((a) => (
-                <Link
-                  key={a.slug}
-                  to={`/article/${a.slug}`}
-                  onClick={() => setDropdownOpen(false)}
-                  className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:border-amber-400 hover:bg-sky-100/60 dark:hover:bg-sky-500/10 transition-all group"
-                >
-                  <BookOpen className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
-                  <span className="text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-amber-700 dark:group-hover:text-amber-300 truncate">{a.title}</span>
-                  <ChevronRight className="w-3 h-3 text-sky-300 dark:text-sky-700 group-hover:text-amber-400 flex-shrink-0 ml-auto" />
-                </Link>
+            <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl border border-sky-200 dark:border-sky-800/60 bg-sky-50/90 dark:bg-sky-950/40 shadow-xl shadow-sky-900/10 overflow-hidden max-h-64 overflow-y-auto">
+              {Array.from(groupArticlesByTrack(JAMIN_ARTICLES).entries()).map(([bucket, items]) => (
+                <div key={bucket}>
+                  <span className={SECTION_HDR}>{bucket}</span>
+                  <div className="divide-y divide-sky-100 dark:divide-sky-900/50">
+                    {items.map((a) => (
+                      <Link
+                        key={a.slug}
+                        to={`/article/${a.slug}`}
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:border-amber-400 hover:bg-sky-100/60 dark:hover:bg-sky-500/10 transition-all group"
+                      >
+                        <BookOpen className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
+                        <span className="text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-amber-700 dark:group-hover:text-amber-300 truncate">{a.title}</span>
+                        <ChevronRight className="w-3 h-3 text-sky-300 dark:text-sky-700 group-hover:text-amber-400 flex-shrink-0 ml-auto" />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           )}

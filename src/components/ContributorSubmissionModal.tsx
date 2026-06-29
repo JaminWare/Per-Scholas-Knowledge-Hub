@@ -341,10 +341,13 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
   }, [submissionType]);
 
-  // Inject a Markdown scaffold when the user picks a master category (Article / non-ticket).
+  // Inject a Markdown scaffold when the user picks a master category, switches types,
+  // or opens the modal with a category already selected.
   // Only overwrites if the field is blank or still holds the previously injected template.
   useEffect(() => {
-    if (isTicket || !masterCat) return;
+    if (!isOpen) return;
+    const ticket = submissionType === 'Support Ticket';
+    if (ticket || !masterCat) return;
     const template = CONTENT_TEMPLATES[masterCat];
     if (!template) return;
     const currentTrimmed = content.trim();
@@ -354,8 +357,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     if (!injectable) return;
     setContent(template);
     lastInjectedTemplate.current = template;
+  // content is intentionally omitted — we only want to fire on selection changes, not keystrokes
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [masterCat, submissionType]);
+  }, [isOpen, masterCat, submissionType]);
 
   const validate = () => {
     const e: Record<string, string> = {};
