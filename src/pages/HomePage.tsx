@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
 import UniqueHacksGrid from '../components/UniqueHacksGrid';
-import ContributorSubmissionModal, { type NewSubmission } from '../components/ContributorSubmissionModal';
+import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
+import { type NewSubmission } from '../utils/submissions';
 import SuccessToast from '../components/SuccessToast';
 import type { Article } from '../types/database';
 import {

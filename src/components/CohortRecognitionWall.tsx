@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Award, Plus, BookOpen, Zap, Link2, Star, Crown } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { loadLocalSubmissions, type NewSubmission } from './ContributorSubmissionModal';
+import { loadLocalSubmissions, type NewSubmission } from '../utils/submissions';
 
 interface Props {
   newSubmission: NewSubmission | null;

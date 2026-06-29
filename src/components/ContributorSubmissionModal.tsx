@@ -6,8 +6,7 @@ import {
   Link as LinkIcon,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-
-const LS_KEY = 'lkb_submissions';
+import { type NewSubmission, loadLocalSubmissions, saveLocalSubmission } from '../utils/submissions';
 
 // ── Profanity filter ──────────────────────────────────────────────────────────
 const PROFANITY_PATTERN = new RegExp(
@@ -193,30 +192,6 @@ async function trySampleSlotOverwrite(params: {
   } catch (err) {
     console.error('[trySampleSlotOverwrite]', err);
   }
-}
-
-// ── LocalStorage helpers ──────────────────────────────────────────────────────
-export interface NewSubmission {
-  id: string;
-  full_name: string;
-  track: string;
-  badge: string;
-  title: string;
-  content: string;
-  submission_type?: string;
-  media_link?: string;
-  created_at: string;
-}
-
-export function loadLocalSubmissions(): NewSubmission[] {
-  try { return JSON.parse(localStorage.getItem(LS_KEY) ?? '[]'); }
-  catch { return []; }
-}
-
-function saveLocalSubmission(s: NewSubmission) {
-  const existing = loadLocalSubmissions();
-  const merged = [s, ...existing.filter((x) => x.id !== s.id)].slice(0, 60);
-  localStorage.setItem(LS_KEY, JSON.stringify(merged));
 }
 
 // ── Props ─────────────────────────────────────────────────────────────────────

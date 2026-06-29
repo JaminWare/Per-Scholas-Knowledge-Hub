@@ -5,7 +5,7 @@ import {
   Zap, Star, Home, Crown,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { loadLocalSubmissions, type NewSubmission } from '../components/ContributorSubmissionModal';
+import { loadLocalSubmissions, type NewSubmission } from '../utils/submissions';
 
 // ── Static Founder data ───────────────────────────────────
 
