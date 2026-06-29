@@ -61,6 +61,65 @@ const MASTER_CATEGORIES = [
   ]},
 ];
 
+// ── Starter template skeletons (keyed by master category label) ──────────────
+const CONTENT_TEMPLATES: Record<string, string> = {
+  'Study Tips': `## 🎯 Core Technical Summary
+- [Provide a crisp 2-3 sentence definition of this exam topic here]
+- [Break down how this system or component operates under normal conditions]
+
+## 🔧 Step-by-Step Practical Application & Troubleshooting
+* Step 1: [Document an active command-line utility, hardware installation step, or diagnostic check]
+* Step 2: [Detail the exact configuration syntax, port mapping, or error code verification paths]
+
+## 🏥 Healthcare IT Professional Relevance
+[Crucial: Explain why an IT technician in a clinical or hospital environment must master this concept. Mention how this tech interfaces with healthcare environments, clinic networks, medical devices, providers, or EHR/HIPAA data protection.]
+
+## 🔗 Trusted References & Citations
+- Official Documentation: https://learn.microsoft.com or https://www.comptia.org`,
+
+  'Diagrams': `## 🗺️ Visual Architecture Map
+- [Describe the layout flow of this technical diagram here]
+- [Map out the data direction from client-side system to server or clinical storage array]
+
+## ⚙️ Component Layer Breakdown
+* Layer 1: [Specify the core physical layer components or protocol endpoints]
+* Layer 2: [Document interface engines, firewall boundaries, or communication pathways]
+
+## 🏥 Clinical Workflow Integration
+[Explain how this data flow map safeguards patient care. Detail how hospital networks or providers rely on this topology to access clinical records securely without violation risks.]
+
+## 🔗 Topology Reference Sources
+- Cisco or Vendor Reference: https://www.cisco.com`,
+
+  'Quick References': `## ⚡ Rapid Verification Matrix
+* Topic/Command Flag: [Detail standard command-line flags or configuration values]
+* Port / Protocol Assignment: [Map active system ports or operational modes]
+
+## 📋 Fast Diagnostic Cheat Sheet
+- Symptom A -> Action Plan: [Detail immediate remediation step]
+- Symptom B -> Action Plan: [Detail immediate remediation step]
+
+## 🏥 Compliance & Medical System Utility
+[Document how this rapid reference guide protects hospital operations or ensures HIPAA device encryption rules remain locked down during standard field support tickets.]
+
+## 🔗 Authoritative Cheat Sheet Reference
+- Blueprint Source: https://www.comptia.org`,
+
+  'Prompt Playbook': `## 🎯 Core Technical Summary
+- [Provide a crisp 2-3 sentence definition of this exam topic here]
+- [Break down how this system or component operates under normal conditions]
+
+## 🔧 Step-by-Step Practical Application & Troubleshooting
+* Step 1: [Document an active command-line utility, hardware installation step, or diagnostic check]
+* Step 2: [Detail the exact configuration syntax, port mapping, or error code verification paths]
+
+## 🏥 Healthcare IT Professional Relevance
+[Crucial: Explain why an IT technician in a clinical or hospital environment must master this concept. Mention how this tech interfaces with healthcare environments, clinic networks, medical devices, providers, or EHR/HIPAA data protection.]
+
+## 🔗 Trusted References & Citations
+- Official Documentation: https://learn.microsoft.com or https://www.comptia.org`,
+};
+
 const TICKET_AREAS = [
   'Platform / Navigation Issue',
   'Article Error or Inaccuracy',
@@ -243,6 +302,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false]))
   );
   const firstInputRef = useRef<HTMLInputElement>(null);
+  const lastInjectedTemplate = useRef('');
 
   const isTicket  = submissionType === 'Support Ticket';
   const isArticle = submissionType === 'Article';
@@ -277,8 +337,25 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   useEffect(() => {
     setMasterCat(''); setSubTrack(''); setTicketArea('');
     setTitle(''); setContent(''); setErrors({}); setFormError('');
+    lastInjectedTemplate.current = '';
     setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
   }, [submissionType]);
+
+  // Inject a Markdown scaffold when the user picks a master category (Article / non-ticket).
+  // Only overwrites if the field is blank or still holds the previously injected template.
+  useEffect(() => {
+    if (isTicket || !masterCat) return;
+    const template = CONTENT_TEMPLATES[masterCat];
+    if (!template) return;
+    const currentTrimmed = content.trim();
+    const injectable =
+      currentTrimmed === '' ||
+      currentTrimmed === lastInjectedTemplate.current.trim();
+    if (!injectable) return;
+    setContent(template);
+    lastInjectedTemplate.current = template;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [masterCat, submissionType]);
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -600,14 +677,19 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                 <span className="text-red-400">*</span>
               </label>
               <textarea
-                rows={6}
+                rows={isTicket ? 6 : 10}
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder={isTicket
                   ? 'Describe the problem in detail. Include steps to reproduce, what you expected, and what actually happened.'
                   : 'Describe your tip, troubleshooting steps, prompt syntax, diagram description, or reference notes.'}
-                className={`${inputCls('content')} resize-none ${isTicket ? '' : 'font-mono'}`}
+                className={`${inputCls('content')} resize-none ${isTicket ? '' : 'font-mono text-xs leading-relaxed'}`}
               />
+              {!isTicket && lastInjectedTemplate.current && content.trim() !== '' && (
+                <p className="mt-1 text-[11px] text-sky-500 dark:text-sky-400 italic">
+                  Template pre-loaded — replace the placeholder text with your actual content.
+                </p>
+              )}
               <div className="flex items-center justify-between mt-1">
                 {errors.content
                   ? <p className="text-xs text-red-500">{errors.content}</p>
