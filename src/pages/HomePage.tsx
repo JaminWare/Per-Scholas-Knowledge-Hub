@@ -8,13 +8,9 @@ import { type NewSubmission } from '../utils/submissions';
 import SuccessToast from '../components/SuccessToast';
 import type { Article } from '../types/database';
 import {
-  TrendingUp, ArrowRight, Users, UploadCloud, X,
-  Shield, Terminal, Monitor, ChevronRight, Award, Send, Loader2, CheckCircle,
+  TrendingUp, ArrowRight, Users, UploadCloud,
+  Shield, Terminal, Monitor, ChevronRight, Award,
 } from 'lucide-react';
-
-const LS_KEY = 'lkb_submissions';
-
-type QuickType = 'Article' | 'Resource Link' | 'Study Tip' | 'Diagram' | 'Quick Reference';
 
 const researchArticles = [
   {
@@ -48,19 +44,8 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
   const [recentArticles,   setRecentArticles]   = useState<Article[]>([]);
   const [isLoading,        setIsLoading]         = useState(true);
   const [modalOpen,        setModalOpen]         = useState(false);
-  const [isSubmitModalOpen, setIsSubmitModalOpen] = useState(false);
-  const [latestSubmission, setLatestSubmission]  = useState<NewSubmission | null>(null);
   const [toastVisible,     setToastVisible]      = useState(false);
   const [toastMessage,     setToastMessage]      = useState('');
-
-  // Quick Submission Portal form state
-  const [quickName,        setQuickName]         = useState('');
-  const [quickType,        setQuickType]         = useState<QuickType>('Article');
-  const [quickTrack,       setQuickTrack]        = useState('CompTIA A+ Core 1 — Domain 1.0');
-  const [quickTitle,       setQuickTitle]        = useState('');
-  const [quickExcerpt,     setQuickExcerpt]      = useState('');
-  const [isQuickSubmitting, setIsQuickSubmitting] = useState(false);
-  const [quickSubmitDone,  setQuickSubmitDone]   = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -81,66 +66,8 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
   }, []);
 
   const handleSubmitted = (submission: NewSubmission) => {
-    setLatestSubmission(submission);
     setToastMessage(`${submission.full_name} — "${submission.title}" added to the wall!`);
     setToastVisible(true);
-  };
-
-  const handleQuickSubmit = async () => {
-    if (!quickName.trim() || !quickTitle.trim() || isQuickSubmitting) return;
-    setIsQuickSubmitting(true);
-    try {
-      const badge =
-        quickType === 'Resource Link'  ? 'Reference Author'  :
-        quickType === 'Quick Reference' ? 'Reference Author' :
-        quickType === 'Diagram'        ? 'Diagram Architect' :
-        'Cohort Contributor';
-      const { data, error } = await supabase
-        .from('submissions')
-        .insert({
-          full_name: quickName.trim(),
-          title: quickTitle.trim(),
-          content: quickExcerpt.trim(),
-          track: quickTrack,
-          badge,
-          submission_type: quickType,
-        })
-        .select()
-        .single();
-
-      if (!error && data) {
-        const submission: NewSubmission = {
-          id: data.id,
-          full_name: data.full_name,
-          track: data.track,
-          badge: data.badge,
-          title: data.title,
-          content: data.content,
-          submission_type: data.submission_type,
-          created_at: data.created_at,
-        };
-        // Persist to localStorage so RecognitionPage can read it
-        try {
-          const existing: NewSubmission[] = JSON.parse(localStorage.getItem(LS_KEY) ?? '[]');
-          localStorage.setItem(LS_KEY, JSON.stringify([submission, ...existing]));
-        } catch { /* ignore */ }
-        handleSubmitted(submission);
-        setQuickSubmitDone(true);
-        setQuickName('');
-        setQuickType('Article');
-        setQuickTrack('CompTIA A+ Core 1 — Domain 1.0');
-        setQuickTitle('');
-        setQuickExcerpt('');
-        setTimeout(() => {
-          setQuickSubmitDone(false);
-          setIsSubmitModalOpen(false);
-        }, 2500);
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsQuickSubmitting(false);
-    }
   };
 
   return (
@@ -262,7 +189,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
           {/* Widget 1 — Contribute Placard (opens modal) */}
           <button
-            onClick={() => setIsSubmitModalOpen(true)}
+            onClick={() => setModalOpen(true)}
             className="w-full text-left bg-gradient-to-r from-amber-50 to-orange-50 dark:from-zinc-800 dark:to-zinc-900 border border-amber-200 dark:border-zinc-700/60 rounded-xl p-5 cursor-pointer hover:shadow-lg hover:shadow-amber-500/10 hover:border-amber-300 dark:hover:border-amber-700/50 transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
@@ -312,122 +239,6 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         onSubmitted={handleSubmitted}
         onRefresh={onRefresh}
       />
-
-      {/* ── Quick-submit modal overlay ─────────────────── */}
-      {isSubmitModalOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={(e) => { if (e.target === e.currentTarget) setIsSubmitModalOpen(false); }}
-        >
-          <div className="bg-white dark:bg-zinc-800 rounded-2xl border border-zinc-200 dark:border-zinc-700 shadow-2xl w-full max-w-md p-6 space-y-4">
-
-            {/* Modal header */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-lg bg-amber-100 dark:bg-amber-500/15">
-                  <UploadCloud className="w-4 h-4 text-amber-500" />
-                </div>
-                <div>
-                  <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100 leading-none">Contribute to the Hub</h2>
-                  <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">Cohort 2026-RTT-23</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsSubmitModalOpen(false)}
-                className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-all"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Full Name */}
-            <input
-              type="text"
-              placeholder="Your Full Name"
-              value={quickName}
-              onChange={(e) => setQuickName(e.target.value)}
-              className="w-full px-3 py-2.5 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/60 transition-all"
-            />
-
-            {/* Submission Type */}
-            <select
-              value={quickType}
-              onChange={(e) => setQuickType(e.target.value as QuickType)}
-              className="w-full px-3 py-2.5 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/60 transition-all cursor-pointer"
-            >
-              <option value="Article">Article</option>
-              <option value="Resource Link">Resource Link</option>
-              <option value="Study Tip">Study Tip</option>
-              <option value="Diagram">Diagram</option>
-              <option value="Quick Reference">Quick Reference</option>
-            </select>
-
-            {/* Domain / Track */}
-            <select
-              value={quickTrack}
-              onChange={(e) => setQuickTrack(e.target.value)}
-              className="w-full px-3 py-2.5 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/60 transition-all cursor-pointer"
-            >
-              <optgroup label="CompTIA A+ Core 1">
-                <option value="CompTIA A+ Core 1 — Domain 1.0">Core 1 — Domain 1.0 (Mobile Devices)</option>
-                <option value="CompTIA A+ Core 1 — Domain 2.0">Core 1 — Domain 2.0 (Networking)</option>
-                <option value="CompTIA A+ Core 1 — Domain 3.0">Core 1 — Domain 3.0 (Hardware)</option>
-                <option value="CompTIA A+ Core 1 — Domain 4.0">Core 1 — Domain 4.0 (Virtualization &amp; Cloud)</option>
-                <option value="CompTIA A+ Core 1 — Domain 5.0">Core 1 — Domain 5.0 (Hardware &amp; Network Troubleshooting)</option>
-              </optgroup>
-              <optgroup label="CompTIA A+ Core 2">
-                <option value="CompTIA A+ Core 2 — Domain 1.0">Core 2 — Domain 1.0 (Operating Systems)</option>
-                <option value="CompTIA A+ Core 2 — Domain 2.0">Core 2 — Domain 2.0 (Security)</option>
-                <option value="CompTIA A+ Core 2 — Domain 3.0">Core 2 — Domain 3.0 (Software Troubleshooting)</option>
-                <option value="CompTIA A+ Core 2 — Domain 4.0">Core 2 — Domain 4.0 (Operational Procedures)</option>
-              </optgroup>
-              <optgroup label="Advanced Healthcare IT">
-                <option value="Advanced Healthcare IT — EHR Architecture">Advanced Healthcare IT — EHR Architecture</option>
-                <option value="Advanced Healthcare IT — HIPAA Data Security">Advanced Healthcare IT — HIPAA Data Security</option>
-                <option value="Advanced Healthcare IT — Clinical Workflows">Advanced Healthcare IT — Clinical Workflows</option>
-              </optgroup>
-            </select>
-
-            {/* Title */}
-            <input
-              type="text"
-              placeholder="Title of your contribution"
-              value={quickTitle}
-              onChange={(e) => setQuickTitle(e.target.value)}
-              className="w-full px-3 py-2.5 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/60 transition-all"
-            />
-
-            {/* Description / Excerpt */}
-            <textarea
-              rows={3}
-              placeholder="Brief description or excerpt…"
-              value={quickExcerpt}
-              onChange={(e) => setQuickExcerpt(e.target.value)}
-              className="w-full px-3 py-2.5 text-sm rounded-lg bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/60 transition-all resize-none"
-            />
-
-            {/* Primary action */}
-            <button
-              onClick={handleQuickSubmit}
-              disabled={isQuickSubmitting || !quickName.trim() || !quickTitle.trim()}
-              className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200 ${
-                quickSubmitDone
-                  ? 'bg-emerald-500 text-white'
-                  : 'bg-amber-500 hover:bg-amber-600 text-white shadow-lg shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed'
-              }`}
-            >
-              {isQuickSubmitting ? (
-                <><Loader2 className="w-4 h-4 animate-spin" /> Submitting…</>
-              ) : quickSubmitDone ? (
-                <><CheckCircle className="w-4 h-4" /> Submitted!</>
-              ) : (
-                <><Send className="w-4 h-4" /> Submit Your Contribution</>
-              )}
-            </button>
-
-          </div>
-        </div>
-      )}
 
       <SuccessToast
         message={toastMessage}
