@@ -732,7 +732,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                 </button>
 
                 {isTrackDropdownOpen && (
-                  <div className="absolute z-50 w-full mt-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-xl max-h-60 overflow-y-auto custom-scrollbar">
+                  <div className="w-full mt-2 bg-zinc-50 dark:bg-zinc-900/50 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-inner max-h-56 overflow-y-auto custom-scrollbar">
                     {MASTER_CATEGORIES.map((cat) => (
                       <div key={cat.label}>
                         <div className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800/80 text-[10px] font-bold text-zinc-500 uppercase tracking-wider sticky top-0">
