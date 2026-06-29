@@ -72,10 +72,10 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6 items-start">
 
         {/* ── Main content column (3/4 width) ───────────────── */}
-        <div className="lg:col-span-3 space-y-10">
+        <div className="lg:col-span-2 xl:col-span-3 space-y-10">
 
           {/* Hero */}
           <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-sky-950 dark:from-zinc-950 dark:via-zinc-900 dark:to-sky-950 border border-zinc-200 dark:border-zinc-800 p-8 md:p-12">
@@ -190,9 +190,9 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Widget 1 — Contribute Placard (opens modal) */}
           <button
             onClick={() => setModalOpen(true)}
-            className="w-full text-left flex-shrink-0 min-h-[160px] h-auto bg-gradient-to-r from-amber-50 to-orange-50 dark:from-zinc-800 dark:to-zinc-900 border border-amber-200 dark:border-zinc-700/60 rounded-xl px-5 py-4 cursor-pointer hover:shadow-lg hover:shadow-amber-500/10 hover:border-amber-300 dark:hover:border-amber-700/50 transition-all duration-200 group"
+            className="w-full min-w-[260px] flex flex-row items-center justify-start text-left p-6 min-h-[160px] h-auto bg-gradient-to-r from-amber-50 to-orange-50 dark:from-zinc-800 dark:to-zinc-900 border border-amber-200 dark:border-zinc-700/60 rounded-xl cursor-pointer hover:shadow-lg hover:shadow-amber-500/10 hover:border-amber-300 dark:hover:border-amber-700/50 transition-all duration-200 group"
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 w-full">
               <div className="p-3 rounded-xl bg-amber-100 dark:bg-amber-500/15 flex-shrink-0 group-hover:bg-amber-200 dark:group-hover:bg-amber-500/25 transition-colors">
                 <UploadCloud className="w-7 h-7 text-amber-500" />
               </div>
@@ -211,9 +211,9 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Widget 2 — View Detailed Portfolios emblem */}
           <Link
             to="/recognition"
-            className="block w-full flex-shrink-0 min-h-[160px] h-auto bg-gradient-to-r from-sky-50 to-slate-50 dark:from-zinc-800 dark:to-zinc-900 border border-sky-200 dark:border-zinc-700/60 rounded-xl px-5 py-4 hover:shadow-lg hover:shadow-sky-500/10 hover:border-sky-300 dark:hover:border-sky-700/60 transition-all duration-200 group"
+            className="block w-full min-w-[260px] flex flex-row items-center justify-start text-left p-6 min-h-[160px] h-auto bg-gradient-to-r from-sky-50 to-slate-50 dark:from-zinc-800 dark:to-zinc-900 border border-sky-200 dark:border-zinc-700/60 rounded-xl hover:shadow-lg hover:shadow-sky-500/10 hover:border-sky-300 dark:hover:border-sky-700/60 transition-all duration-200 group"
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 w-full">
               <div className="p-3 rounded-xl bg-sky-100 dark:bg-sky-500/15 flex-shrink-0">
                 <Users className="w-7 h-7 text-sky-500" />
               </div>

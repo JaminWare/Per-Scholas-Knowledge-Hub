@@ -143,6 +143,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   // Clean Guided Fields
   const [concept, setConcept] = useState('');
+  const [aPlusRelevance, setAPlusRelevance] = useState('');
   const [impact, setImpact] = useState('');
   const [references, setReferences] = useState('');
   const [resourceUrl, setResourceUrl] = useState('');
@@ -177,6 +178,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setTrack(MASTER_CATEGORIES[0].sub[0]);
     setTitle('');
     setConcept('');
+    setAPlusRelevance('');
     setImpact('');
     setReferences('');
     setResourceUrl('');
@@ -189,9 +191,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const assembleContent = () => {
     if (isResourceLink) return resourceUrl.trim();
     let md = `## 🔬 Guided Description\n${concept.trim()}`;
-    if (impact.trim()) {
-      md += `\n\n## 🏥 Healthcare IT Integration\n${impact.trim()}`;
-    }
+    md += `\n\n## ⚡ CompTIA A+ Relevance\n${aPlusRelevance.trim()}`;
+    md += `\n\n## 🏥 Healthcare IT Integration\n${impact.trim()}`;
     md += `\n\n## 🔗 References & Citations\n${references.trim()}`;
     if (diagramUrl.trim()) {
       md += `\n\n## 📐 Visual Attachment\n![Diagram](${diagramUrl.trim()})`;
@@ -207,8 +208,10 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     if (isResourceLink) {
       if (!/^https?:\/\/.+/.test(resourceUrl.trim())) e.resourceUrl = 'Valid URL required.';
     } else {
-      if (concept.trim().length < 15) e.concept = 'Please provide a slightly more detailed description.';
-      if (references.trim().length === 0) e.references = 'Please provide at least one reference link or citation.';
+      if (concept.trim().length < 15) e.concept = 'Required.';
+      if (aPlusRelevance.trim().length < 15) e.aPlusRelevance = 'Required.';
+      if (impact.trim().length < 15) e.impact = 'Required.';
+      if (references.trim().length === 0) e.references = 'Required.';
     }
 
     setErrors(e);
@@ -358,7 +361,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               ) : (
                 <div className="space-y-4">
 
-                  {/* Guided Description Field */}
+                  {/* Row 1: Guided Description */}
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       1. Guided Description <span className="text-red-400">*</span>
@@ -373,24 +376,40 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     {errors.concept && <p className="mt-1 text-xs text-red-500">{errors.concept}</p>}
                   </div>
 
-                  {/* Healthcare Impact Field */}
+                  {/* Row 2: CompTIA A+ Relevance */}
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                      2. Clinical / Healthcare Impact <span className="text-zinc-400 font-normal">(Optional)</span>
+                      2. CompTIA A+ Relevance <span className="text-red-400">*</span>
+                    </label>
+                    <textarea
+                      value={aPlusRelevance}
+                      onChange={(e) => setAPlusRelevance(e.target.value)}
+                      placeholder="How does this topic map to the CompTIA A+ exam objectives (Core 1 / Core 2)?"
+                      rows={3}
+                      className={`${inputCls('aPlusRelevance')} font-mono resize-y custom-scrollbar`}
+                    />
+                    {errors.aPlusRelevance && <p className="mt-1 text-xs text-red-500">{errors.aPlusRelevance}</p>}
+                  </div>
+
+                  {/* Row 3: Clinical / Healthcare Impact */}
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      3. Clinical / Healthcare Impact <span className="text-red-400">*</span>
                     </label>
                     <textarea
                       value={impact}
                       onChange={(e) => setImpact(e.target.value)}
-                      placeholder="How does this apply to hospitals, EHRs, or patient data security?"
+                      placeholder="How does this apply to clinical workflows, hospital networks, or patient care?"
                       rows={3}
                       className={`${inputCls('impact')} font-mono resize-y custom-scrollbar`}
                     />
+                    {errors.impact && <p className="mt-1 text-xs text-red-500">{errors.impact}</p>}
                   </div>
 
-                  {/* References & Citations Field */}
+                  {/* Row 4: References & Citations */}
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                      3. References and Citations <span className="text-red-400">*</span>
+                      4. References and Citations <span className="text-red-400">*</span>
                     </label>
                     <textarea
                       value={references}
@@ -402,11 +421,11 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     {errors.references && <p className="mt-1 text-xs text-red-500">{errors.references}</p>}
                   </div>
 
-                  {/* Diagram / Visual Attachment */}
+                  {/* Row 5: Diagram / Visual Attachment */}
                   <div>
                     <label className="flex items-center gap-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       <ImagePlus className="w-3.5 h-3.5 text-sky-500" />
-                      4. Diagram / Visual Attachment <span className="text-zinc-400 font-normal">(Optional)</span>
+                      5. Diagram / Visual Attachment <span className="text-zinc-400 font-normal">(Optional)</span>
                     </label>
                     <input
                       type="url"

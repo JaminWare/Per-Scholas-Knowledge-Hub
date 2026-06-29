@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
-  Zap, Star, Home, Crown,
+  Zap, Star, Home, Crown, Link2,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { loadLocalSubmissions, type NewSubmission } from '../utils/submissions';
@@ -200,15 +200,18 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl bg-zinc-800/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-700/50 shadow-xl overflow-hidden max-h-64 overflow-y-auto">
-                {Array.from(groupSubmissionsByTrack(group.submissions).entries()).map(([bucket, items]) => (
+              <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl bg-slate-900/95 dark:bg-[#1a233a]/95 border border-slate-700/60 shadow-2xl backdrop-blur-md overflow-hidden max-h-64 overflow-y-auto">
+                {Array.from(groupSubmissionsByTrack(group.submissions).entries()).map(([bucket, items]) => {
+                  const articles = items.filter((s) => s.submission_type === 'Article');
+                  const resourceLinks = items.filter((s) => s.submission_type === 'Resource Link');
+                  const others = items.filter((s) => s.submission_type !== 'Article' && s.submission_type !== 'Resource Link');
+                  return (
                   <div key={bucket}>
                     <span className={SECTION_HDR}>{bucket}</span>
                     <div className="divide-y divide-zinc-800">
-                      {items.map((s) => {
+                      {articles.map((s) => {
                         const slug = buildSlugFromTitle(s.title);
-                        const isArticle = s.submission_type === 'Article';
-                        return isArticle ? (
+                        return (
                           <Link
                             key={s.id}
                             to={`/article/${slug}`}
@@ -219,20 +222,43 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
                             <span className="text-sm text-zinc-100 group-hover:text-sky-300 truncate">{s.title}</span>
                             <ChevronRight className="w-3 h-3 text-zinc-600 group-hover:text-sky-500 flex-shrink-0 ml-auto" />
                           </Link>
-                        ) : (
-                          <div
-                            key={s.id}
-                            className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
-                          >
-                            <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />
-                            <span className="text-sm text-zinc-300 truncate">{s.title}</span>
-                            <span className="ml-auto text-[10px] font-mono text-sky-500 flex-shrink-0">{categoryLabel(s)}</span>
-                          </div>
                         );
                       })}
+                      {others.map((s) => (
+                        <div
+                          key={s.id}
+                          className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
+                        >
+                          <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />
+                          <span className="text-sm text-zinc-300 truncate">{s.title}</span>
+                          <span className="ml-auto text-[10px] font-mono text-sky-500 flex-shrink-0">{categoryLabel(s)}</span>
+                        </div>
+                      ))}
                     </div>
+                    {resourceLinks.length > 0 && (
+                      <div className="mx-2 my-2">
+                        <span className="block px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-emerald-400">Resource Library</span>
+                        <div className="grid gap-1.5 mt-1">
+                          {resourceLinks.map((s) => (
+                            <a
+                              key={s.id}
+                              href={s.content}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => setDropdownOpen(false)}
+                              className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 hover:border-emerald-400/40 hover:bg-emerald-500/15 transition-all group"
+                            >
+                              <Link2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
+                              <span className="text-xs text-emerald-100 group-hover:text-emerald-300 truncate font-medium">{s.title}</span>
+                              <ChevronRight className="w-3 h-3 text-emerald-600 group-hover:text-emerald-400 flex-shrink-0 ml-auto" />
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -295,7 +321,7 @@ function FounderCard() {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl bg-zinc-800/95 dark:bg-zinc-900/95 backdrop-blur-md border border-zinc-700/50 shadow-xl overflow-hidden max-h-64 overflow-y-auto">
+            <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl bg-slate-900/95 dark:bg-[#1a233a]/95 border border-slate-700/60 shadow-2xl backdrop-blur-md overflow-hidden max-h-64 overflow-y-auto">
               {Array.from(groupArticlesByTrack(JAMIN_ARTICLES).entries()).map(([bucket, items]) => (
                 <div key={bucket}>
                   <span className={SECTION_HDR}>{bucket}</span>
