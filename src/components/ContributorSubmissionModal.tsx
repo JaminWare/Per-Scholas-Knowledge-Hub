@@ -2,14 +2,11 @@ import { useState, useEffect } from 'react';
 import {
   X, Send, Loader2, ChevronDown, Tag,
   FileText, Link2, BookOpen, Zap, GitBranch,
-  AlertCircle, Link as LinkIcon, ImagePlus,
+  AlertCircle, Link as LinkIcon, ImagePlus
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type NewSubmission, saveLocalSubmission } from '../utils/submissions';
 
-// ---------------------------------------------------------------------------
-// Types & Constants
-// ---------------------------------------------------------------------------
 type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Quick Reference' | 'Resource Link';
 
 const PROFANITY_PATTERN = new RegExp(
@@ -60,9 +57,6 @@ const MASTER_CATEGORIES = [
   ]},
 ];
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
 function getFilteredCategories(type: SubmissionType) {
   switch (type) {
     case 'Article':
@@ -78,14 +72,11 @@ function getFilteredCategories(type: SubmissionType) {
 }
 
 function getBadge(trackName: string): string {
-  // Check for specific sub-tracks first
   if (trackName.includes('Core 2')) return 'Core 2 Expert';
   if (trackName.includes('Advanced Healthcare IT')) return 'Healthcare IT Specialist';
   if (trackName.includes('Prompt Playbook')) return 'Playbook Engineer';
   if (trackName.includes('Diagrams')) return 'Diagram Architect';
   if (trackName.includes('Quick References')) return 'Reference Author';
-  
-  // Fallback for Core 1 and anything else
   return 'Core 1 Expert';
 }
 
@@ -100,22 +91,12 @@ function buildFormattedContent(authorName: string, trackValue: string, rawConten
     '## Healthcare IT Professional Relevance',
     '',
     'This research directly supports professionals working within healthcare IT environments. The concepts covered relate to real-world clinical and administrative workflows — from EHR system configurations to HIPAA-compliant security postures.',
-    '',
-    '### References & Authoritative Sources',
-    '',
-    '- *(See citations in the core content above)*',
   ].join('\n');
 }
 
 async function trySampleSlotOverwrite(trackValue: string, submissionId: string, formattedContent: string, onRefresh?: () => void) {
   try {
-    const { data: sampleArticles } = await supabase
-      .from('articles')
-      .select('id, title, study_category')
-      .ilike('title', '%[Sample]%')
-      .order('created_at', { ascending: true })
-      .limit(20);
-
+    const { data: sampleArticles } = await supabase.from('articles').select('id, title, study_category').ilike('title', '%[Sample]%').order('created_at', { ascending: true }).limit(20);
     if (!sampleArticles || sampleArticles.length === 0) return;
 
     const trackLower = trackValue.toLowerCase();
@@ -131,68 +112,47 @@ async function trySampleSlotOverwrite(trackValue: string, submissionId: string, 
     await supabase.from('articles').update({ title: cleanTitle, content: formattedContent, is_sample: false, is_featured: false }).eq('id', targetArticle.id);
     await supabase.from('submissions').update({ is_approved: true }).eq('id', submissionId);
     onRefresh?.();
-  } catch (err: any) {
-      console.error('[Database Ingestion Failure]', err);
-      alert(`Database Error: ${err?.message || JSON.stringify(err)} \n\nFalling back to local cache storage.`);
-      
-      const local: NewSubmission = {
-        id: `local-${Date.now()}`,
-        full_name: fullName.trim(),
-        track,
-        badge: autoBadge,
-        title: title.trim(),
-        content: rawContent,
-        submission_type: submissionType,
-        created_at: new Date().toISOString(),
-      };
-      saveLocalSubmission(local);
-      onSubmitted(local);
-      reset();
-      onClose();
-    } finally {
-      setIsSubmitting(false);
-    }
+  } catch (err) {
+    console.error('[trySampleSlotOverwrite]', err);
+  }
+}
 
-// ---------------------------------------------------------------------------
-// Main Modal Component
-// ---------------------------------------------------------------------------
 export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh }: { isOpen: boolean; onClose: () => void; onSubmitted: (s: NewSubmission) => void; onRefresh?: () => void; }) {
   const [fullName, setFullName] = useState('');
   const [submissionType, setSubmissionType] = useState<SubmissionType>('Article');
-  const [track, setTrack] = useState(MASTER_CATEGORIES[0].sub[0]);
+  
+  const filteredCategories = getFilteredCategories(submissionType);
+  const [track, setTrack] = useState(filteredCategories[0].sub[0]);
   const [isTrackDropdownOpen, setIsTrackDropdownOpen] = useState(false);
   const [title, setTitle] = useState('');
-
-  // Clean Guided Fields
+  
   const [concept, setConcept] = useState('');
   const [aPlusRelevance, setAPlusRelevance] = useState('');
   const [impact, setImpact] = useState('');
   const [references, setReferences] = useState('');
   const [resourceUrl, setResourceUrl] = useState('');
   const [diagramUrl, setDiagramUrl] = useState('');
-
+  
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isResourceLink = submissionType === 'Resource Link';
-  const filteredCategories = getFilteredCategories(submissionType);
   const autoBadge = getBadge(track);
 
-  // Reset track to first item of filtered list when submission type changes
   useEffect(() => {
-    const filtered = getFilteredCategories(submissionType);
-    const allSubs = filtered.flatMap((c) => c.sub);
-    if (!allSubs.includes(track)) {
-      setTrack(filtered[0].sub[0]);
-    }
+    const newFiltered = getFilteredCategories(submissionType);
+    setTrack(newFiltered[0].sub[0]);
+    setErrors({});
+    setFormError('');
   }, [submissionType]);
 
   useEffect(() => {
-    if (!isOpen) return;
-    setErrors({});
-    setFormError('');
-  }, [isOpen, submissionType]);
+    if (!isOpen) {
+      setErrors({});
+      setFormError('');
+    }
+  }, [isOpen]);
 
   const reset = () => {
     setFullName('');
@@ -217,7 +177,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     md += `\n\n## 🏥 Healthcare IT Integration\n${impact.trim()}`;
     md += `\n\n## 🔗 References & Citations\n${references.trim()}`;
     if (diagramUrl.trim()) {
-      md += `\n\n## 📐 Visual Attachment\n![Diagram](${diagramUrl.trim()})`;
+      md += `\n\n## 🗺️ Visual Architecture\n![Diagram](${diagramUrl.trim()})`;
     }
     return md;
   };
@@ -226,7 +186,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     const e: Record<string, string> = {};
     if (!fullName.trim()) e.fullName = 'Required.';
     if (!title.trim()) e.title = 'Required.';
-
+    
     if (isResourceLink) {
       if (!/^https?:\/\/.+/.test(resourceUrl.trim())) e.resourceUrl = 'Valid URL required.';
     } else {
@@ -235,7 +195,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       if (impact.trim().length < 15) e.impact = 'Required.';
       if (references.trim().length === 0) e.references = 'Required.';
     }
-
+    
     setErrors(e);
     if (Object.keys(e).length > 0) return;
 
@@ -251,7 +211,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
     try {
       const { data, error } = await supabase.from('submissions').insert({
-        full_name: fullName.trim(), track, badge: autoBadge, title: title.trim(), content: rawContent, submission_type: submissionType, formatted_content: formattedContent, is_approved: true,
+        full_name: fullName.trim(), track, badge: autoBadge, title: title.trim(), content: rawContent, submission_type: submissionType, formatted_content: formattedContent, is_approved: false,
       }).select().single();
 
       if (error) throw error;
@@ -264,7 +224,10 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       onSubmitted(sub);
       reset();
       onClose();
-    } catch {
+    } catch (err: any) {
+      console.error('[Database Ingestion Failure]', err);
+      alert(`Database Error: ${err?.message || JSON.stringify(err)} \n\nFalling back to local cache storage.`);
+      
       const local: NewSubmission = {
         id: `local-${Date.now()}`, full_name: fullName.trim(), track, badge: autoBadge, title: title.trim(), content: rawContent, submission_type: submissionType, created_at: new Date().toISOString(),
       };
@@ -282,10 +245,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-zinc-950/65 dark:bg-zinc-300/20 backdrop-blur-sm" onClick={() => { reset(); onClose(); }} />
+      <div className="absolute inset-0 bg-zinc-950/70 dark:bg-zinc-300/25 backdrop-blur-sm" onClick={() => { reset(); onClose(); }} />
       <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[90vh]">
-
-        {/* Header */}
+        
         <div className="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex items-center justify-between flex-shrink-0">
           <div>
             <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Contribute to the Hub</h2>
@@ -301,17 +263,15 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           </div>
         )}
 
-        {/* Scrollable Body */}
         <div className="px-6 py-5 overflow-y-auto flex-1 custom-scrollbar">
           <div className="space-y-6">
-
-            {/* 1. Name */}
+            
             <div>
               <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Full Name / Discord Handle</label>
               <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="e.g. Jane Smith" className={inputCls('fullName')} />
+              {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
             </div>
 
-            {/* 2. Type */}
             <div>
               <label className="block text-sm font-semibold mb-2 text-zinc-900 dark:text-zinc-100">Contribution Type</label>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
@@ -324,7 +284,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               </div>
             </div>
 
-            {/* 3. INLINE SCROLLABLE DROPDOWN (filtered by type) */}
             <div>
               <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Curriculum Track</label>
               <div className="relative">
@@ -332,7 +291,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   <span className="truncate pr-4 text-zinc-900 dark:text-zinc-100">{track}</span>
                   <ChevronDown className={`w-4 h-4 text-zinc-400 flex-shrink-0 transition-transform ${isTrackDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
-
+                
                 {isTrackDropdownOpen && (
                   <div className="w-full mt-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-inner overflow-hidden flex flex-col">
                     <div className="bg-zinc-100 dark:bg-zinc-800/80 px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500 border-b border-zinc-200 dark:border-zinc-800">
@@ -361,13 +320,12 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               </div>
             </div>
 
-            {/* 4. Title */}
             <div>
               <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Contribution Title</label>
               <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. TCP/IP Protocol Suite" className={inputCls('title')} />
+              {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
             </div>
 
-            {/* 5. GUIDED SUBMISSION BUILDER */}
             <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800">
               <div className="flex items-center gap-2 mb-4">
                 <BookOpen className="w-4 h-4 text-sky-500" />
@@ -382,86 +340,50 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                 </div>
               ) : (
                 <div className="space-y-4">
-
-                  {/* Row 1: Guided Description */}
+                  
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       1. Guided Description <span className="text-red-400">*</span>
                     </label>
-                    <textarea
-                      value={concept}
-                      onChange={(e) => setConcept(e.target.value)}
-                      placeholder="Explain the main idea, textbook definition, or step-by-step process..."
-                      rows={4}
-                      className={`${inputCls('concept')} font-mono resize-y custom-scrollbar`}
-                    />
+                    <textarea value={concept} onChange={(e) => setConcept(e.target.value)} placeholder="Explain the main idea, textbook definition, or step-by-step process..." rows={4} className={`${inputCls('concept')} font-mono resize-y custom-scrollbar`} />
                     {errors.concept && <p className="mt-1 text-xs text-red-500">{errors.concept}</p>}
                   </div>
 
-                  {/* Row 2: CompTIA A+ Relevance */}
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       2. CompTIA A+ Relevance <span className="text-red-400">*</span>
                     </label>
-                    <textarea
-                      value={aPlusRelevance}
-                      onChange={(e) => setAPlusRelevance(e.target.value)}
-                      placeholder="How does this topic map to the CompTIA A+ exam objectives (Core 1 / Core 2)?"
-                      rows={3}
-                      className={`${inputCls('aPlusRelevance')} font-mono resize-y custom-scrollbar`}
-                    />
+                    <textarea value={aPlusRelevance} onChange={(e) => setAPlusRelevance(e.target.value)} placeholder="How does this topic map to the CompTIA A+ exam objectives (Core 1 / Core 2)?" rows={3} className={`${inputCls('aPlusRelevance')} font-mono resize-y custom-scrollbar`} />
                     {errors.aPlusRelevance && <p className="mt-1 text-xs text-red-500">{errors.aPlusRelevance}</p>}
                   </div>
 
-                  {/* Row 3: Clinical / Healthcare Impact */}
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       3. Clinical / Healthcare Impact <span className="text-red-400">*</span>
                     </label>
-                    <textarea
-                      value={impact}
-                      onChange={(e) => setImpact(e.target.value)}
-                      placeholder="How does this apply to clinical workflows, hospital networks, or patient care?"
-                      rows={3}
-                      className={`${inputCls('impact')} font-mono resize-y custom-scrollbar`}
-                    />
+                    <textarea value={impact} onChange={(e) => setImpact(e.target.value)} placeholder="How does this apply to clinical workflows, hospital networks, or patient care?" rows={3} className={`${inputCls('impact')} font-mono resize-y custom-scrollbar`} />
                     {errors.impact && <p className="mt-1 text-xs text-red-500">{errors.impact}</p>}
                   </div>
 
-                  {/* Row 4: References & Citations */}
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       4. References and Citations <span className="text-red-400">*</span>
                     </label>
-                    <textarea
-                      value={references}
-                      onChange={(e) => setReferences(e.target.value)}
-                      placeholder="Paste links (e.g., https://...) or cite your sources here..."
-                      rows={2}
-                      className={`${inputCls('references')} font-mono resize-y custom-scrollbar`}
-                    />
+                    <textarea value={references} onChange={(e) => setReferences(e.target.value)} placeholder="Paste links (e.g., https://...) or cite your sources here..." rows={2} className={`${inputCls('references')} font-mono resize-y custom-scrollbar`} />
                     {errors.references && <p className="mt-1 text-xs text-red-500">{errors.references}</p>}
                   </div>
 
-                  {/* Row 5: Diagram / Visual Attachment */}
-                  <div>
+                  <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800">
                     <label className="flex items-center gap-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                      <ImagePlus className="w-3.5 h-3.5 text-sky-500" />
                       5. Diagram / Visual Attachment <span className="text-zinc-400 font-normal">(Optional)</span>
                     </label>
-                    <input
-                      type="url"
-                      value={diagramUrl}
-                      onChange={(e) => setDiagramUrl(e.target.value)}
-                      placeholder="Paste image URL (e.g., https://i.imgur.com/example.png)"
-                      className={inputCls('diagramUrl')}
-                    />
-                    <div className="mt-2 flex items-start gap-2 px-3 py-2.5 rounded-lg bg-amber-50 dark:bg-amber-500/5 border border-amber-200/60 dark:border-amber-500/20">
-                      <span className="text-amber-500 text-sm flex-shrink-0 mt-px">&#9888;&#65039;</span>
-                      <p className="text-[11px] leading-relaxed text-amber-700 dark:text-amber-400/90">
-                        Supported file types: .png, .jpg, .jpeg, .svg (Max size: 5MB). Ensure text in diagrams is highly legible to preserve UI layout responsiveness.
-                      </p>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <ImagePlus className="h-4 w-4 text-zinc-400" />
+                      </div>
+                      <input type="url" value={diagramUrl} onChange={(e) => setDiagramUrl(e.target.value)} placeholder="Paste image URL (e.g., https://imgur.com/...)" className={`${inputCls('diagramUrl')} pl-10`} />
                     </div>
+                    <p className="mt-2 text-[10px] text-amber-600 dark:text-amber-500 font-medium">⚠️ Supported file types: .png, .jpg, .jpeg, .svg (Max size: 5MB). Ensure text in diagrams is highly legible to preserve UI layout responsiveness.</p>
                   </div>
 
                 </div>
@@ -471,7 +393,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           </div>
         </div>
 
-        {/* Footer */}
         <div className="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex items-center justify-between flex-shrink-0">
           <button type="button" onClick={() => { reset(); onClose(); }} className="text-sm font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors">Cancel</button>
           <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg transition-all text-zinc-900 bg-amber-400 hover:bg-amber-500 shadow-amber-500/20 disabled:opacity-60">
