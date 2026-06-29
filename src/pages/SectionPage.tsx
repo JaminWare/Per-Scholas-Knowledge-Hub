@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ArticleRenderer from '../components/ArticleRenderer';
+import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import type { Article } from '../types/database';
 import contentMap from '../data/contentMap';
 import {
@@ -311,7 +312,7 @@ function AppletSkeleton() {
 }
 
 // ── Open slot placeholder capsule ────────────────────────
-function OpenSlotPlaceholder({ domain, context }: { domain: string; context: string }) {
+function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string; context: string; onContribute: () => void }) {
   return (
     <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20`}>
       <div
@@ -346,13 +347,14 @@ function OpenSlotPlaceholder({ domain, context }: { domain: string; context: str
         <p className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-100/60 dark:bg-amber-500/10 rounded-lg px-2.5 py-2 border border-amber-200/60 dark:border-amber-500/15">
           💡 This slot is open! Submit your research via the portal below to claim this applet.
         </p>
-        <Link
-          to="/"
+        <button
+          type="button"
+          onClick={onContribute}
           className="mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-amber-500/10 hover:bg-amber-500 text-amber-700 dark:text-amber-400 hover:text-white border-amber-500/20 hover:border-amber-500"
         >
           Submit a Contribution
           <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
+        </button>
       </div>
     </div>
   );
@@ -363,10 +365,12 @@ function CurriculumDashboard({
   articles,
   isLoading,
   context,
+  onContribute,
 }: {
   articles: ArticleWithContributor[];
   isLoading: boolean;
   context: string;
+  onContribute: () => void;
 }) {
   const allMappedDomains = CURRICULUM_TRACKS.flatMap((t) => [...t.domains]);
   const uncategorized = articles.filter(
@@ -404,7 +408,7 @@ function CurriculumDashboard({
                 ) : domainArticles.length > 0 ? (
                   domainArticles.map((a) => <AppletCard key={a.id} article={a} />)
                 ) : (
-                  <OpenSlotPlaceholder domain={domain} context={context} />
+                  <OpenSlotPlaceholder domain={domain} context={context} onContribute={onContribute} />
                 )}
               </div>
             </div>
@@ -473,13 +477,14 @@ function CurriculumDashboard({
 }
 
 // ── Main SectionPage ──────────────────────────────────────
-export default function SectionPage({ refreshKey = 0 }: { refreshKey?: number }) {
+export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?: number; onRefresh?: () => void }) {
   const location = useLocation();
   const navigate = useNavigate();
   const slug = location.pathname.replace(/^\//, '').replace(/\/$/, '');
 
   const [dbArticles, setDbArticles] = useState<ArticleWithContributor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const meta = sectionMeta[slug];
   const Icon = meta?.icon ?? BookOpen;
@@ -603,11 +608,18 @@ export default function SectionPage({ refreshKey = 0 }: { refreshKey?: number })
           )}
           <h1 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">{displayTitle}</h1>
         </div>
+        <button
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+          className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-zinc-900 text-sm font-bold shadow-md shadow-amber-500/20 transition-all"
+        >
+          Submit a Contribution
+        </button>
       </div>
 
       {/* Three-track curriculum dashboards or flat scroll row */}
       {dashboardContext ? (
-        <CurriculumDashboard articles={dbArticles} isLoading={isLoading} context={dashboardContext} />
+        <CurriculumDashboard articles={dbArticles} isLoading={isLoading} context={dashboardContext} onContribute={() => setIsModalOpen(true)} />
       ) : isLoading ? (
         <div className={SCROLL_TRACK}>
           {[...Array(4)].map((_, i) => <AppletSkeleton key={i} />)}
@@ -619,6 +631,14 @@ export default function SectionPage({ refreshKey = 0 }: { refreshKey?: number })
       ) : (
         <ComingSoonPanel />
       )}
+
+      <ContributorSubmissionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmitted={() => {
+          if (typeof onRefresh === 'function') onRefresh();
+        }}
+      />
     </div>
   );
 }
