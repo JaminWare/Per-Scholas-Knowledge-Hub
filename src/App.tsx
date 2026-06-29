@@ -8,6 +8,7 @@ import ArticlePage from './pages/ArticlePage';
 import SectionPage from './pages/SectionPage';
 import ComingSoonPage from './pages/ComingSoonPage';
 import RecognitionPage from './pages/RecognitionPage';
+import AdminControlPage from './pages/AdminControlPage';
 import { PanelLeftOpen, PanelLeftClose, Sun, Moon } from 'lucide-react';
 
 function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | null> }) {
@@ -94,6 +95,11 @@ function AppContent() {
 }
 
 function App() {
+  // Admin portal intercept — accessible at /cohort-admin (literal pathname)
+  if (window.location.pathname === '/cohort-admin') {
+    return <AdminControlPage />;
+  }
+
   return (
     <ThemeProvider>
       <Router>
