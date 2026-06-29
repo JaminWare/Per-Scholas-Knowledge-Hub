@@ -190,17 +190,17 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Widget 1 — Contribute Placard (opens modal) */}
           <button
             onClick={() => setModalOpen(true)}
-            className="w-full text-left flex-shrink-0 min-h-[160px] bg-gradient-to-r from-amber-50 to-orange-50 dark:from-zinc-800 dark:to-zinc-900 border border-amber-200 dark:border-zinc-700/60 rounded-xl p-5 cursor-pointer hover:shadow-lg hover:shadow-amber-500/10 hover:border-amber-300 dark:hover:border-amber-700/50 transition-all duration-200 group"
+            className="w-full text-left flex-shrink-0 min-h-[160px] h-auto bg-gradient-to-r from-amber-50 to-orange-50 dark:from-zinc-800 dark:to-zinc-900 border border-amber-200 dark:border-zinc-700/60 rounded-xl px-5 py-4 cursor-pointer hover:shadow-lg hover:shadow-amber-500/10 hover:border-amber-300 dark:hover:border-amber-700/50 transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-amber-100 dark:bg-amber-500/15 flex-shrink-0 group-hover:bg-amber-200 dark:group-hover:bg-amber-500/25 transition-colors">
                 <UploadCloud className="w-7 h-7 text-amber-500" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-base font-bold tracking-tight text-zinc-800 dark:text-zinc-100 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors duration-200">
+                <p className="text-base font-bold whitespace-normal break-words tracking-normal leading-relaxed text-zinc-800 dark:text-zinc-100 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors duration-200">
                   Contribute to the Hub
                 </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                <p className="text-xs whitespace-normal break-words leading-relaxed text-zinc-500 dark:text-zinc-400 mt-0.5">
                   Submit new articles, references, or lab notes
                 </p>
               </div>
@@ -211,17 +211,17 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Widget 2 — View Detailed Portfolios emblem */}
           <Link
             to="/recognition"
-            className="block w-full flex-shrink-0 min-h-[160px] bg-gradient-to-r from-sky-50 to-slate-50 dark:from-zinc-800 dark:to-zinc-900 border border-sky-200 dark:border-zinc-700/60 rounded-xl p-5 hover:shadow-lg hover:shadow-sky-500/10 hover:border-sky-300 dark:hover:border-sky-700/60 transition-all duration-200 group"
+            className="block w-full flex-shrink-0 min-h-[160px] h-auto bg-gradient-to-r from-sky-50 to-slate-50 dark:from-zinc-800 dark:to-zinc-900 border border-sky-200 dark:border-zinc-700/60 rounded-xl px-5 py-4 hover:shadow-lg hover:shadow-sky-500/10 hover:border-sky-300 dark:hover:border-sky-700/60 transition-all duration-200 group"
           >
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-sky-100 dark:bg-sky-500/15 flex-shrink-0">
                 <Users className="w-7 h-7 text-sky-500" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-base font-bold tracking-tight text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors duration-200">
+                <p className="text-base font-bold whitespace-normal break-words tracking-normal leading-relaxed text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors duration-200">
                   View Detailed Portfolios →
                 </p>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                <p className="text-xs whitespace-normal break-words leading-relaxed text-zinc-500 dark:text-zinc-400 mt-0.5">
                   Explore full contributor portfolios
                 </p>
               </div>

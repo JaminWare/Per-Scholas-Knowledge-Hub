@@ -66,14 +66,14 @@ const MASTER_CATEGORIES = [
 function getFilteredCategories(type: SubmissionType) {
   switch (type) {
     case 'Article':
+      return MASTER_CATEGORIES.filter((c) => c.label === 'Study Tips').map(c => ({ ...c, label: 'General' }));
     case 'Study Tip':
       return MASTER_CATEGORIES.filter((c) => c.label === 'Study Tips');
     case 'Diagram':
-      return MASTER_CATEGORIES.filter((c) => c.label === 'Diagrams');
     case 'Quick Reference':
-      return MASTER_CATEGORIES.filter((c) => c.label === 'Quick References');
-    case 'Resource Link':
       return MASTER_CATEGORIES;
+    case 'Resource Link':
+      return MASTER_CATEGORIES.map(c => ({ ...c, label: 'General' }));
   }
 }
 
@@ -257,7 +257,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/60 dark:bg-black/70 backdrop-blur-sm" onClick={() => { reset(); onClose(); }} />
+      <div className="absolute inset-0 bg-zinc-950/65 dark:bg-zinc-300/20 backdrop-blur-sm" onClick={() => { reset(); onClose(); }} />
       <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[90vh]">
 
         {/* Header */}
