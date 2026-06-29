@@ -13,7 +13,7 @@ import {
 
 const LS_KEY = 'lkb_submissions';
 
-type QuickType = 'Article' | 'Resource Link' | 'Support Ticket' | 'Study Tip' | 'Diagram' | 'Quick Reference';
+type QuickType = 'Article' | 'Resource Link' | 'Study Tip' | 'Diagram' | 'Quick Reference';
 
 const researchArticles = [
   {
@@ -356,7 +356,6 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
             >
               <option value="Article">Article</option>
               <option value="Resource Link">Resource Link</option>
-              <option value="Support Ticket">Support Ticket</option>
               <option value="Study Tip">Study Tip</option>
               <option value="Diagram">Diagram</option>
               <option value="Quick Reference">Quick Reference</option>

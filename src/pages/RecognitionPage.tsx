@@ -50,7 +50,6 @@ function BadgeTag({ badge }: { badge: string }) {
 function categoryLabel(s: NewSubmission): string {
   if (s.submission_type === 'Article')        return 'Authored Articles';
   if (s.submission_type === 'Resource Link')  return 'Resource Links';
-  if (s.submission_type === 'Support Ticket') return 'Support Tickets';
   if (s.badge === 'Diagram Architect')        return 'Diagrams';
   if (s.badge === 'Reference Author')         return 'Quick References';
   if (s.badge === 'Playbook Engineer')        return 'Prompt Playbooks';

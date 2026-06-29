@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Award, Plus, BookOpen, Zap, Ticket, Link2, Star, Crown } from 'lucide-react';
+import { Award, Plus, BookOpen, Zap, Link2, Star, Crown } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { loadLocalSubmissions, type NewSubmission } from './ContributorSubmissionModal';
 
@@ -45,7 +45,6 @@ interface ContributorGroup {
 
 function categorizeLabel(item: ContributionItem): string {
   const type = item.submission_type;
-  if (type === 'Support Ticket') return 'Logged Support Tickets';
   if (type === 'Article')        return 'Authored Articles';
   if (type === 'Resource Link')  return 'Resource Links';
   if (item.badge === 'Diagram Architect') return 'Diagrams';
@@ -55,13 +54,12 @@ function categorizeLabel(item: ContributionItem): string {
 }
 
 const LABEL_ICON: Record<string, React.ReactNode> = {
-  'Authored Articles':      <BookOpen className="w-3 h-3" />,
-  'Quick References':       <Zap className="w-3 h-3" />,
-  'Shared Tips':            <Zap className="w-3 h-3" />,
-  'Diagrams':               <Zap className="w-3 h-3" />,
-  'Prompt Playbooks':       <Zap className="w-3 h-3" />,
-  'Resource Links':         <Link2 className="w-3 h-3" />,
-  'Logged Support Tickets': <Ticket className="w-3 h-3" />,
+  'Authored Articles': <BookOpen className="w-3 h-3" />,
+  'Quick References':  <Zap className="w-3 h-3" />,
+  'Shared Tips':       <Zap className="w-3 h-3" />,
+  'Diagrams':          <Zap className="w-3 h-3" />,
+  'Prompt Playbooks':  <Zap className="w-3 h-3" />,
+  'Resource Links':    <Link2 className="w-3 h-3" />,
 };
 
 function buildStatEntries(contributions: ContributionItem[]): { label: string; count: number }[] {

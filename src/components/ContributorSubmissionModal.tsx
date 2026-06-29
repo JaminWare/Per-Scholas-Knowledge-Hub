@@ -1,7 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import {
-  X, Send, Loader2, ChevronDown, Tag, Image, FileText, Link2,
-  CheckCircle, XCircle,
+  X, Send, Loader2, ChevronDown, ChevronLeft, Tag,
+  FileText, Link2, BookOpen, Zap, GitBranch,
+  AlertCircle, CheckCircle, XCircle,
+  HeartPulse, Link as LinkIcon,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -18,12 +20,15 @@ const PROFANITY_PATTERN = new RegExp(
 );
 
 // ── Submission types ──────────────────────────────────────────────────────────
-const SUBMISSION_TYPES = [
-  { value: 'Article',        label: 'Article',       icon: FileText, desc: 'A full research or study piece' },
-  { value: 'Resource Link',  label: 'Resource Link', icon: Link2,    desc: 'A curated external link or tip' },
-] as const;
+type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Quick Reference' | 'Resource Link';
 
-type SubmissionType = typeof SUBMISSION_TYPES[number]['value'];
+const SUBMISSION_TYPES = [
+  { value: 'Article'        as SubmissionType, label: 'Article',        icon: FileText  },
+  { value: 'Study Tip'      as SubmissionType, label: 'Study Tip',      icon: BookOpen  },
+  { value: 'Diagram'        as SubmissionType, label: 'Diagram',        icon: GitBranch },
+  { value: 'Quick Reference'as SubmissionType, label: 'Quick Ref',      icon: Zap       },
+  { value: 'Resource Link'  as SubmissionType, label: 'Resource Link',  icon: Link2     },
+];
 
 const MASTER_CATEGORIES = [
   { label: 'Study Tips',      badge: 'Core 1 Expert',     sub: [
@@ -60,59 +65,11 @@ const MASTER_CATEGORIES = [
   ]},
 ];
 
-// ── Content templates (keyed by master category) ─────────────────────────────
-const CONTENT_TEMPLATES: Record<string, string> = {
-  'Study Tips': `## 🔬 CompTIA A+ Technical Core
-- **Core Concept Definition:** [What is the absolute textbook definition of this topic/protocol? Why does CompTIA care about it?]
-- **Operational Diagnostics:** [How does a technician check if this component or service is running properly? What CLI commands, tools, or physical configurations are used?]
-
-## 🏥 Healthcare IT Integration & Clinical Context
-- **EHR & Medical Device Interface:** [How does this specific technology interface with clinic workstations, hospital networks, or Electronic Health Records (EHR) environments?]
-- **Provider & Patient Impact:** [Why does a healthcare provider, nurse, or clinical specialist care about this system staying online? How does a failure here delay patient care or disrupt clinical workflows?]
-- **Regulatory Compliance Framework:** [What specific HIPAA security rule, administrative safeguard, or device encryption protocol applies to managing this system safely?]
-
-## 🔗 Verifiable Domain Sources
-- Trusted Reference Link: https://`,
-
-  'Diagrams': `## 🗺️ Visual Framework & Infrastructure Flow
-- **Data Pathway Directions:** [Where does traffic enter this diagram, and where does it terminate? Map the path from user desktop to back-end server storage arrays.]
-- **Boundary Controls:** [Where are the firewall rules, network segmentation points, or access control parameters located along this visual track?]
-
-## 🏥 Healthcare IT Integration & Clinical Context
-- **Clinical Workflow Mapping:** [How does this precise infrastructure layout keep hospital systems running smoothly? What medical systems (e.g., PACS imaging, HL7 telemetry feeds) run across these specific connection lines?]
-- **Data Protection Controls:** [How does this topology isolate private patient health data (PHI) from public networks to preserve absolute HIPAA data security compliance?]
-
-## 🔗 Architecture References
-- Blueprint Reference Link: https://`,
-
-  'Quick References': `## ⚡ Rapid Field Reference Matrix
-- **Command Flags & Key Mappings:** [What are the essential command line parameters, port values, or configuration arguments a tech needs on demand?]
-- **Symptom vs Remediation Action Plan:** [If Symptom X happens, what is the immediate Step 1 and Step 2 fix to resolve it under pressure?]
-
-## 🏥 Healthcare IT Integration & Clinical Context
-- **Clinical Support Utility:** [How does having this fast reference guide protect hospital operations? How does applying this rapid fix prevent clinic device downtime or secure patient health records during an active tech support ticket?]
-
-## 🔗 Trusted Cheat Sheet Sources
-- Blueprint Reference Link: https://`,
-
-  'Prompt Playbook': `## 🔬 CompTIA A+ Technical Core
-- **Core Concept Definition:** [What is the absolute textbook definition of this topic/protocol? Why does CompTIA care about it?]
-- **Operational Diagnostics:** [How does a technician check if this component or service is running properly? What CLI commands, tools, or physical configurations are used?]
-
-## 🏥 Healthcare IT Integration & Clinical Context
-- **EHR & Medical Device Interface:** [How does this specific technology interface with clinic workstations, hospital networks, or Electronic Health Records (EHR) environments?]
-- **Provider & Patient Impact:** [Why does a healthcare provider, nurse, or clinical specialist care about this system staying online? How does a failure here delay patient care or disrupt clinical workflows?]
-- **Regulatory Compliance Framework:** [What specific HIPAA security rule, administrative safeguard, or device encryption protocol applies to managing this system safely?]
-
-## 🔗 Verifiable Domain Sources
-- Trusted Reference Link: https://`,
-};
-
 function getBadge(masterCategory: string): string {
   return MASTER_CATEGORIES.find((c) => c.label === masterCategory)?.badge ?? 'Cohort Contributor';
 }
 
-// ── Checklist rules ───────────────────────────────────────────────────────────
+// ── Checklist rules (Article only) ───────────────────────────────────────────
 const HEALTHCARE_KEYWORDS = [
   'patient', 'clinic', 'hospital', 'ehr', 'hipaa', 'provider',
   'clinical', 'medical', 'care',
@@ -129,13 +86,13 @@ const CHECKLIST_RULES: ChecklistRule[] = [
   {
     id: 'depth',
     label: '100-word minimum depth',
-    hint: 'Add more detail — aim for at least 100 words.',
+    hint: 'Add more detail across both fields — aim for at least 100 words combined.',
     test: (t) => t.trim().split(/\s+/).filter(Boolean).length >= 100,
   },
   {
     id: 'healthcare',
     label: 'Healthcare relevance (2+ keywords)',
-    hint: 'Mention at least two healthcare terms (e.g., EHR, HIPAA, patient).',
+    hint: 'Mention at least two healthcare terms (e.g., EHR, HIPAA, patient) in the Healthcare Impact field.',
     test: (t) => {
       const lower = t.toLowerCase();
       return HEALTHCARE_KEYWORDS.filter((kw) => lower.includes(kw)).length >= 2;
@@ -144,13 +101,13 @@ const CHECKLIST_RULES: ChecklistRule[] = [
   {
     id: 'citation',
     label: 'Reference URL included',
-    hint: 'Paste a reference URL (must start with https://).',
+    hint: 'Provide a valid https:// URL in the reference field below.',
     test: (t) => /https?:\/\//.test(t),
   },
   {
     id: 'structure',
-    label: 'Structured formatting (bullets or paragraphs)',
-    hint: 'Add bullet points (* or -) or break your text into separate paragraphs.',
+    label: 'Structured formatting',
+    hint: 'Use bullet points (* or -) or break content into separate paragraphs.',
     test: (t) => /(^\s*[-*] |\n\n)/m.test(t),
   },
 ];
@@ -159,7 +116,20 @@ function evaluateChecklist(text: string): Record<string, boolean> {
   return Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, r.test(text)]));
 }
 
-// ── Formatted content wrapper ─────────────────────────────────────────────────
+// ── Content assembly ──────────────────────────────────────────────────────────
+function assembleContent(coreConcept: string, healthcareImpact: string, referenceUrl: string): string {
+  return [
+    '## 🔬 Core Technical Concept',
+    coreConcept.trim(),
+    '',
+    '## 🏥 Healthcare IT & Clinical Impact',
+    healthcareImpact.trim(),
+    '',
+    '## 🔗 Verifiable Source',
+    `- ${referenceUrl.trim()}`,
+  ].join('\n');
+}
+
 function buildFormattedContent(params: {
   authorName: string;
   masterCat: string;
@@ -265,22 +235,21 @@ interface Props {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh }: Props) {
-  const [submissionType, setSubmissionType] = useState<SubmissionType>('Article');
-  const [masterCat, setMasterCat]           = useState('Study Tips');
-  const [subTrack, setSubTrack]             = useState('');
-  const [fullName, setFullName]             = useState('');
-  const [title, setTitle]                   = useState('');
-  const [mediaLink, setMediaLink]           = useState('');
-  const [content, setContent]               = useState('');
-  const [errors, setErrors]                 = useState<Record<string, string>>({});
-  const [formError, setFormError]           = useState('');
-  const [isSubmitting, setIsSubmitting]     = useState(false);
+  const [step,             setStep]             = useState<1 | 2>(1);
+  const [submissionType,   setSubmissionType]   = useState<SubmissionType>('Article');
+  const [masterCat,        setMasterCat]        = useState('Study Tips');
+  const [subTrack,         setSubTrack]         = useState('');
+  const [fullName,         setFullName]         = useState('');
+  const [title,            setTitle]            = useState('');
+  const [coreConcept,      setCoreConcept]      = useState('');
+  const [healthcareImpact, setHealthcareImpact] = useState('');
+  const [referenceUrl,     setReferenceUrl]     = useState('');
+  const [errors,           setErrors]           = useState<Record<string, string>>({});
+  const [formError,        setFormError]        = useState('');
+  const [isSubmitting,     setIsSubmitting]     = useState(false);
   const [checklistResults, setChecklistResults] = useState<Record<string, boolean>>(
     Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false]))
   );
-
-  const firstInputRef        = useRef<HTMLInputElement>(null);
-  const lastInjectedTemplate = useRef('');
 
   const isResourceLink = submissionType === 'Resource Link';
   const isArticle      = submissionType === 'Article';
@@ -288,102 +257,97 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const autoBadge      = masterCat ? getBadge(masterCat) : null;
   const trackValue     = subTrack || masterCat;
 
-  const allChecksPassed = isResourceLink
-    ? /^https?:\/\/.+/.test(content.trim())
-    : Object.values(checklistResults).every(Boolean);
+  const allChecksPassed = isArticle
+    ? Object.values(checklistResults).every(Boolean)
+    : true;
 
-  // Live checklist evaluation
+  // Live checklist evaluation for Article type
   useEffect(() => {
-    if (!isResourceLink) setChecklistResults(evaluateChecklist(content));
-  }, [content, isResourceLink]);
+    if (!isArticle) return;
+    const assembled = assembleContent(coreConcept, healthcareImpact, referenceUrl);
+    setChecklistResults(evaluateChecklist(assembled));
+  }, [coreConcept, healthcareImpact, referenceUrl, isArticle]);
 
-  // Focus + keyboard
+  // Reset sub-track when category changes
+  useEffect(() => { setSubTrack(''); }, [masterCat]);
+
+  // Reset content fields when submission type changes
+  useEffect(() => {
+    setCoreConcept(''); setHealthcareImpact(''); setReferenceUrl('');
+    setErrors({}); setFormError('');
+    setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
+  }, [submissionType]);
+
+  // Keyboard + scroll lock
   useEffect(() => {
     if (!isOpen) return;
-    setTimeout(() => firstInputRef.current?.focus(), 50);
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
   }, [isOpen, onClose]);
 
-  // Body scroll lock
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  // Clear sub-track when category changes
-  useEffect(() => { setSubTrack(''); }, [masterCat]);
-
-  // Reset content/errors when type switches
-  useEffect(() => {
-    setSubTrack('');
-    setTitle(''); setContent(''); setErrors({}); setFormError('');
-    lastInjectedTemplate.current = '';
-    setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
-  }, [submissionType]);
-
-  // Eager template injection — fires on open, category change, or type change.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => {
-    if (isOpen && submissionType !== 'Resource Link' && masterCat) {
-      const template = CONTENT_TEMPLATES[masterCat];
-      if (template && (content.trim() === '' || content.trim() === lastInjectedTemplate.current.trim())) {
-        setContent(template);
-        lastInjectedTemplate.current = template;
-      }
-    }
-  }, [isOpen, masterCat, submissionType]);
-
-  const validate = () => {
-    const e: Record<string, string> = {};
-    if (!fullName.trim()) e.fullName = 'Name or Discord handle is required.';
-    if (!masterCat)       e.masterCat = 'Please select a master category.';
-    if (!title.trim())    e.title = 'Title is required.';
-    if (isResourceLink) {
-      if (!/^https?:\/\/.+/.test(content.trim()))
-        e.content = 'Please enter a valid https:// URL.';
-    } else {
-      if (content.trim().length < 20)
-        e.content = 'Content must be at least 20 characters.';
-    }
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
-
   const reset = () => {
+    setStep(1);
     setSubmissionType('Article');
     setMasterCat('Study Tips');
     setSubTrack('');
     setFullName('');
     setTitle('');
-    setMediaLink('');
-    setContent('');
+    setCoreConcept('');
+    setHealthcareImpact('');
+    setReferenceUrl('');
     setErrors({});
     setFormError('');
-    lastInjectedTemplate.current = '';
     setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleNext = () => {
+    const e: Record<string, string> = {};
+    if (!fullName.trim()) e.fullName = 'Name or Discord handle is required.';
+    if (!title.trim())    e.title    = 'Contribution title is required.';
+    setErrors(e);
+    if (Object.keys(e).length > 0) return;
     setFormError('');
+    setStep(2);
+  };
 
-    if (PROFANITY_PATTERN.test(title) || PROFANITY_PATTERN.test(content)) {
-      setFormError(
-        'Submission contains restricted language. Please align your contribution with professional healthcare and academic standards.'
-      );
+  const handleAssembleAndSubmit = async () => {
+    const e: Record<string, string> = {};
+    if (isResourceLink) {
+      if (!/^https?:\/\/.+/.test(referenceUrl.trim()))
+        e.referenceUrl = 'Please enter a valid https:// URL.';
+    } else {
+      if (coreConcept.trim().length < 50)
+        e.coreConcept = 'Please add more detail (aim for at least a few sentences).';
+      if (healthcareImpact.trim().length < 20)
+        e.healthcareImpact = 'Please explain how this relates to Healthcare IT.';
+      if (!/^https?:\/\/.+/.test(referenceUrl.trim()))
+        e.referenceUrl = 'Please provide a valid https:// reference URL.';
+    }
+    setErrors(e);
+    if (Object.keys(e).length > 0) return;
+
+    if (PROFANITY_PATTERN.test(title) || PROFANITY_PATTERN.test(coreConcept) || PROFANITY_PATTERN.test(healthcareImpact)) {
+      setFormError('Submission contains restricted language. Please align your contribution with professional healthcare and academic standards.');
       return;
     }
 
-    if (!validate()) return;
-    if (!isResourceLink && isArticle && !allChecksPassed) return;
+    if (isArticle && !allChecksPassed) return;
 
     setIsSubmitting(true);
     const badge = getBadge(masterCat);
 
+    const rawContent = isResourceLink
+      ? referenceUrl.trim()
+      : assembleContent(coreConcept, healthcareImpact, referenceUrl);
+
     const formattedContent = !isResourceLink
-      ? buildFormattedContent({ authorName: fullName.trim(), masterCat, trackValue, rawContent: content.trim() })
+      ? buildFormattedContent({ authorName: fullName.trim(), masterCat, trackValue, rawContent })
       : null;
 
     try {
@@ -394,7 +358,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           track: trackValue,
           badge,
           title: title.trim(),
-          content: content.trim(),
+          content: rawContent,
           submission_type: submissionType,
           formatted_content: formattedContent,
           is_approved: false,
@@ -407,7 +371,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         ...(data as NewSubmission),
         badge,
         submission_type: submissionType,
-        media_link: mediaLink.trim() || undefined,
       };
       saveLocalSubmission(sub);
 
@@ -423,11 +386,10 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         id: `local-${Date.now()}`,
         full_name: fullName.trim(),
         track: trackValue,
-        badge: getBadge(masterCat),
+        badge,
         title: title.trim(),
-        content: content.trim(),
+        content: rawContent,
         submission_type: submissionType,
-        media_link: mediaLink.trim() || undefined,
         created_at: new Date().toISOString(),
       };
       saveLocalSubmission(local);
@@ -442,269 +404,310 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   if (!isOpen) return null;
 
   const inputCls = (field: string) =>
-    `w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm transition-all ${
-      errors[field] ? 'border-red-400 dark:border-red-500/60' : 'border-zinc-300 dark:border-zinc-700'
+    `w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 text-sm transition-all ${
+      errors[field] ? 'border-red-400 dark:border-red-500/60' : 'border-zinc-200 dark:border-zinc-800'
     }`;
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/60 dark:bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-lg bg-zinc-50 dark:bg-zinc-800 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
 
-        <div className="px-6 pt-6 pb-4 border-b border-zinc-100 dark:border-zinc-800">
-          <div className="flex items-start justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Submit Your Contribution</h2>
-              <p className="text-sm text-zinc-500 mt-1">Share an article, study tip, diagram, quick reference, or resource link.</p>
+      <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[90vh]">
+
+        {/* ── Header ─────────────────────────────────────────────────────────── */}
+        <div className="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex items-center justify-between flex-shrink-0">
+          <div>
+            <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Contribute to the Hub</h2>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
+              Step {step} of 2 — {step === 1 ? 'Categorization' : 'Knowledge Extraction'}
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex gap-1.5">
+              <span className={`w-2 h-2 rounded-full transition-colors ${step >= 1 ? 'bg-sky-500' : 'bg-zinc-300 dark:bg-zinc-700'}`} />
+              <span className={`w-2 h-2 rounded-full transition-colors ${step >= 2 ? 'bg-sky-500' : 'bg-zinc-300 dark:bg-zinc-700'}`} />
             </div>
-            <button onClick={onClose} className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors">
+            <button
+              onClick={() => { reset(); onClose(); }}
+              className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+            >
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
+        {/* ── Form error banner ───────────────────────────────────────────────── */}
         {formError && (
-          <div className="mx-6 mt-4 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30">
+          <div className="mx-6 mt-4 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 flex items-start gap-2.5 flex-shrink-0">
+            <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
             <p className="text-sm text-red-600 dark:text-red-400 leading-snug">{formError}</p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4 max-h-[70vh] overflow-y-auto">
+        {/* ── Scrollable body ─────────────────────────────────────────────────── */}
+        <div className="px-6 py-5 overflow-y-auto flex-1">
 
-          {/* Full name */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-              Full Name / Discord Handle <span className="text-red-400">*</span>
-            </label>
-            <input
-              ref={firstInputRef}
-              type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="e.g. Jane Smith or @jsmith_rtt23"
-              className={inputCls('fullName')}
-            />
-            {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
-          </div>
-
-          {/* Submission type */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-              Submission Type <span className="text-red-400">*</span>
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              {SUBMISSION_TYPES.map((t) => {
-                const Icon = t.icon;
-                const active = submissionType === t.value;
-                return (
-                  <button
-                    key={t.value}
-                    type="button"
-                    onClick={() => setSubmissionType(t.value)}
-                    className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-all ${
-                      active
-                        ? 'border-sky-400 bg-sky-50 dark:bg-sky-500/10 text-sky-700 dark:text-sky-400'
-                        : 'border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600'
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span className="text-xs font-semibold leading-tight">{t.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Master category */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-              Master Category <span className="text-red-400">*</span>
-            </label>
-            <div className="relative">
-              <select
-                value={masterCat}
-                onChange={(e) => setMasterCat(e.target.value)}
-                className={`${inputCls('masterCat')} appearance-none`}
-              >
-                <option value="" disabled>Select a category…</option>
-                {MASTER_CATEGORIES.map((c) => (
-                  <option key={c.label} value={c.label}>{c.label}</option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
-            </div>
-            {errors.masterCat && <p className="mt-1 text-xs text-red-500">{errors.masterCat}</p>}
-            {autoBadge && (
-              <div className="mt-2 flex items-center gap-2">
-                <Tag className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
-                <span className="text-xs text-zinc-500">
-                  You will earn:{' '}
-                  <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-100 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400">
-                    [{autoBadge}]
-                  </span>
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Sub-track — scrollable wrapper */}
-          {selectedCat && selectedCat.sub.length > 0 && (
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-                Specific Domain / Sub-track <span className="text-zinc-400 font-normal">(optional)</span>
-              </label>
-              <div className="relative max-h-56 overflow-y-auto">
-                <select
-                  value={subTrack}
-                  onChange={(e) => setSubTrack(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-800 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm appearance-none"
-                >
-                  <option value="">All {selectedCat.label} (general)</option>
-                  {selectedCat.sub.map((s) => <option key={s} value={s}>{s}</option>)}
-                </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
-              </div>
-            </div>
-          )}
-
-          {/* Title */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-              Contribution Title <span className="text-red-400">*</span>
-            </label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Fix Boot Camp Audio Driver on Windows 11"
-              className={inputCls('title')}
-            />
-            {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
-          </div>
-
-          {/* Media link */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-              <span className="flex items-center gap-1.5">
-                <Image className="w-3.5 h-3.5 text-zinc-400" />
-                Media / Diagram Embed Link
-                <span className="text-zinc-400 font-normal">(optional)</span>
-              </span>
-            </label>
-            <input
-              type="url"
-              value={mediaLink}
-              onChange={(e) => setMediaLink(e.target.value)}
-              placeholder="https://… (image URL, Mermaid diagram link, Canvas pin, etc.)"
-              className="w-full px-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-zinc-800 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm"
-            />
-            <p className="text-xs text-zinc-400 mt-1">Supports image URLs, Mermaid diagram links, or direct asset embed URLs.</p>
-          </div>
-
-          {/* Content — URL input for Resource Link, textarea for everything else */}
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5">
-              {isResourceLink ? 'Resource URL' : 'Contribution Content'}{' '}
-              <span className="text-red-400">*</span>
-            </label>
-
-            {isResourceLink ? (
-              <input
-                type="url"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="https://… (paste the resource URL)"
-                className={inputCls('content')}
-              />
-            ) : (
-              <>
-                <textarea
-                  rows={12}
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="Describe your tip, troubleshooting steps, prompt syntax, diagram description, or reference notes."
-                  className={`${inputCls('content')} resize-none font-mono text-xs leading-relaxed`}
+          {/* ── STEP 1 — Categorization ─────────────────────────────────────── */}
+          {step === 1 && (
+            <div className="space-y-5">
+              {/* Full Name */}
+              <div>
+                <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                  Full Name / Discord Handle <span className="text-red-400">*</span>
+                </label>
+                <input
+                  autoFocus
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="e.g. Jane Smith or @jsmith_rtt23"
+                  className={inputCls('fullName')}
                 />
-                {lastInjectedTemplate.current && content.trim() !== '' && (
-                  <p className="mt-1 text-[11px] text-sky-500 dark:text-sky-400 italic">
-                    Template pre-loaded — replace the placeholder text with your actual content.
-                  </p>
-                )}
-              </>
-            )}
+                {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
+              </div>
 
-            <div className="flex items-center justify-between mt-1">
-              {errors.content
-                ? <p className="text-xs text-red-500">{errors.content}</p>
-                : <span />}
-              {!isResourceLink && (
-                <span className="text-xs text-zinc-400">{content.length} chars</span>
-              )}
-            </div>
-
-            {/* Publication Checklist (non-Resource Link only) */}
-            {isArticle && (
-              <div className="mt-3 rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
-                <div className="px-3 py-2 bg-zinc-100 dark:bg-zinc-700/60 border-b border-zinc-200 dark:border-zinc-700">
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
-                    Publication Checklist
-                  </p>
-                </div>
-                <div className="divide-y divide-zinc-100 dark:divide-zinc-700/50">
-                  {CHECKLIST_RULES.map((rule) => {
-                    const passed = checklistResults[rule.id];
+              {/* Submission Type */}
+              <div>
+                <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+                  Contribution Type <span className="text-red-400">*</span>
+                </label>
+                <div className="grid grid-cols-5 gap-2">
+                  {SUBMISSION_TYPES.map((t) => {
+                    const Icon = t.icon;
+                    const active = submissionType === t.value;
                     return (
-                      <div key={rule.id} className="flex items-start gap-3 px-3 py-2.5">
-                        {passed
-                          ? <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-                          : <XCircle    className="w-4 h-4 text-rose-500   flex-shrink-0 mt-0.5" />
-                        }
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-xs font-medium leading-tight ${
-                            passed
-                              ? 'text-zinc-700 dark:text-zinc-300'
-                              : 'text-rose-600 dark:text-rose-400'
-                          }`}>
-                            {rule.label}
-                          </p>
-                          {!passed && (
-                            <p className="text-[11px] text-rose-400 dark:text-rose-400/80 mt-0.5 leading-snug">
-                              {rule.hint}
-                            </p>
-                          )}
-                        </div>
-                      </div>
+                      <button
+                        key={t.value}
+                        type="button"
+                        onClick={() => setSubmissionType(t.value)}
+                        className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-all ${
+                          active
+                            ? 'bg-sky-500 border-sky-500 text-white shadow-md shadow-sky-500/20'
+                            : 'bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-sky-300 dark:hover:border-sky-700'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span className="text-[11px] font-semibold leading-tight">{t.label}</span>
+                      </button>
                     );
                   })}
                 </div>
               </div>
-            )}
-          </div>
 
-          <div className="flex items-center gap-3 pt-1">
+              {/* Master Category */}
+              <div>
+                <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                  Curriculum Track <span className="text-red-400">*</span>
+                </label>
+                <div className="relative">
+                  <select
+                    value={masterCat}
+                    onChange={(e) => setMasterCat(e.target.value)}
+                    className={`${inputCls('masterCat')} appearance-none`}
+                  >
+                    {MASTER_CATEGORIES.map((c) => (
+                      <option key={c.label} value={c.label}>{c.label}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+                </div>
+                {autoBadge && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <Tag className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
+                    <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                      You will earn:{' '}
+                      <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-100 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                        [{autoBadge}]
+                      </span>
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Sub-track (optional) */}
+              {selectedCat && selectedCat.sub.length > 0 && (
+                <div>
+                  <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                    Domain / Sub-track{' '}
+                    <span className="text-zinc-400 dark:text-zinc-500 font-normal text-xs">(optional)</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={subTrack}
+                      onChange={(e) => setSubTrack(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500/40 text-sm appearance-none"
+                    >
+                      <option value="">All {selectedCat.label} (general)</option>
+                      {selectedCat.sub.map((s) => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+                  </div>
+                </div>
+              )}
+
+              {/* Title */}
+              <div>
+                <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                  Contribution Title <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="e.g. TCP/IP Protocol Suite & Healthcare Network Architecture"
+                  className={inputCls('title')}
+                />
+                {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
+              </div>
+            </div>
+          )}
+
+          {/* ── STEP 2 — Knowledge Extraction ──────────────────────────────── */}
+          {step === 2 && (
+            <div className="space-y-5">
+              {/* Content fields (not for Resource Link) */}
+              {!isResourceLink && (
+                <>
+                  <div>
+                    <label className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                      <BookOpen className="w-4 h-4 text-sky-500" />
+                      Core Concept <span className="text-red-400">*</span>
+                    </label>
+                    <textarea
+                      rows={5}
+                      value={coreConcept}
+                      onChange={(e) => setCoreConcept(e.target.value)}
+                      placeholder="Explain the topic. What is it, how does it work, and why does CompTIA care about it? Include any relevant CLI commands, protocols, or configurations."
+                      className={`${inputCls('coreConcept')} resize-none`}
+                    />
+                    <div className="flex items-center justify-between mt-1">
+                      {errors.coreConcept
+                        ? <p className="text-xs text-red-500">{errors.coreConcept}</p>
+                        : <span />}
+                      <span className="text-xs text-zinc-400">{coreConcept.split(/\s+/).filter(Boolean).length} words</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                      <HeartPulse className="w-4 h-4 text-amber-500" />
+                      Healthcare IT Impact <span className="text-red-400">*</span>
+                    </label>
+                    <textarea
+                      rows={4}
+                      value={healthcareImpact}
+                      onChange={(e) => setHealthcareImpact(e.target.value)}
+                      placeholder="Why does a medical clinic or hospital care about this? How does it affect patient care, EHR systems, or HIPAA compliance?"
+                      className={`${inputCls('healthcareImpact')} resize-none`}
+                    />
+                    {errors.healthcareImpact && <p className="mt-1 text-xs text-red-500">{errors.healthcareImpact}</p>}
+                  </div>
+                </>
+              )}
+
+              {/* Reference / Resource URL */}
+              <div>
+                <label className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                  <LinkIcon className="w-4 h-4 text-emerald-500" />
+                  {isResourceLink ? 'Resource URL' : 'Verifiable Reference URL'}{' '}
+                  <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="url"
+                  value={referenceUrl}
+                  onChange={(e) => setReferenceUrl(e.target.value)}
+                  placeholder="https://…"
+                  className={`${inputCls('referenceUrl')} focus:ring-emerald-500/40`}
+                />
+                {errors.referenceUrl && <p className="mt-1 text-xs text-red-500">{errors.referenceUrl}</p>}
+              </div>
+
+              {/* Article: Publication Checklist */}
+              {isArticle && (
+                <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+                  <div className="px-3 py-2 bg-zinc-100 dark:bg-zinc-800/60 border-b border-zinc-200 dark:border-zinc-800">
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+                      Publication Checklist
+                    </p>
+                  </div>
+                  <div className="divide-y divide-zinc-100 dark:divide-zinc-800/50">
+                    {CHECKLIST_RULES.map((rule) => {
+                      const passed = checklistResults[rule.id];
+                      return (
+                        <div key={rule.id} className="flex items-start gap-3 px-3 py-2.5">
+                          {passed
+                            ? <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                            : <XCircle    className="w-4 h-4 text-rose-500   flex-shrink-0 mt-0.5" />
+                          }
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-xs font-medium leading-tight ${
+                              passed ? 'text-zinc-700 dark:text-zinc-300' : 'text-rose-600 dark:text-rose-400'
+                            }`}>
+                              {rule.label}
+                            </p>
+                            {!passed && (
+                              <p className="text-[11px] text-rose-400 dark:text-rose-400/80 mt-0.5 leading-snug">
+                                {rule.hint}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* ── Footer ─────────────────────────────────────────────────────────── */}
+        <div className="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex items-center justify-between flex-shrink-0">
+          {step === 2 ? (
             <button
-              type="button" onClick={onClose}
-              className="flex-1 px-4 py-2.5 rounded-xl border border-zinc-300 dark:border-zinc-600 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-sm font-medium transition-colors"
+              type="button"
+              onClick={() => { setErrors({}); setFormError(''); setStep(1); }}
+              className="flex items-center gap-1.5 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" /> Back
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => { reset(); onClose(); }}
+              className="text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
             >
               Cancel
             </button>
+          )}
+
+          {step === 1 ? (
             <button
-              type="submit"
-              disabled={isSubmitting || (!isResourceLink && isArticle && !allChecksPassed)}
-              title={!isResourceLink && isArticle && !allChecksPassed ? 'Complete all checklist requirements to publish.' : undefined}
-              className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors shadow-lg text-white ${
-                !isResourceLink && isArticle && !allChecksPassed
+              type="button"
+              onClick={handleNext}
+              className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg hover:bg-zinc-700 dark:hover:bg-zinc-200 transition-all"
+            >
+              Next Step →
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleAssembleAndSubmit}
+              disabled={isSubmitting || (isArticle && !allChecksPassed)}
+              title={isArticle && !allChecksPassed ? 'Complete all checklist requirements to publish.' : undefined}
+              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg transition-all text-white ${
+                isArticle && !allChecksPassed
                   ? 'bg-zinc-400 dark:bg-zinc-600 cursor-not-allowed opacity-60'
-                  : 'bg-sky-500 hover:bg-sky-600 shadow-sky-500/20 disabled:opacity-60'
+                  : 'bg-sky-500 hover:bg-sky-400 shadow-sky-500/20 disabled:opacity-60'
               }`}
             >
               {isSubmitting
-                ? <Loader2 className="w-4 h-4 animate-spin" />
-                : <Send className="w-4 h-4" />}
-              {isSubmitting ? 'Submitting…' : 'Claim My Badge'}
+                ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting…</>
+                : <><Send className="w-4 h-4" /> Claim My Badge</>
+              }
             </button>
-          </div>
-        </form>
+          )}
+        </div>
       </div>
     </div>
   );
