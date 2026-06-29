@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import {
-  X, Send, Loader2, ChevronDown, ChevronLeft, Tag,
+  X, Send, Loader2, ChevronDown, Tag,
   FileText, Link2, BookOpen, Zap, GitBranch,
   AlertCircle, CheckCircle, XCircle,
   Link as LinkIcon,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { type NewSubmission, loadLocalSubmissions, saveLocalSubmission } from '../utils/submissions';
+import { type NewSubmission, saveLocalSubmission } from '../utils/submissions';
 
 // ── Profanity filter ──────────────────────────────────────────────────────────
 const PROFANITY_PATTERN = new RegExp(
@@ -22,11 +22,11 @@ const PROFANITY_PATTERN = new RegExp(
 type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Quick Reference' | 'Resource Link';
 
 const SUBMISSION_TYPES = [
-  { value: 'Article'         as SubmissionType, label: 'Article',        icon: FileText  },
-  { value: 'Study Tip'       as SubmissionType, label: 'Study Tip',      icon: BookOpen  },
-  { value: 'Diagram'         as SubmissionType, label: 'Diagram',        icon: GitBranch },
-  { value: 'Quick Reference' as SubmissionType, label: 'Quick Ref',      icon: Zap       },
-  { value: 'Resource Link'   as SubmissionType, label: 'Resource Link',  icon: Link2     },
+  { value: 'Article'         as SubmissionType, label: 'Article',       icon: FileText  },
+  { value: 'Study Tip'       as SubmissionType, label: 'Study Tip',     icon: BookOpen  },
+  { value: 'Diagram'         as SubmissionType, label: 'Diagram',       icon: GitBranch },
+  { value: 'Quick Reference' as SubmissionType, label: 'Quick Ref',     icon: Zap       },
+  { value: 'Resource Link'   as SubmissionType, label: 'Resource Link', icon: Link2     },
 ];
 
 const MASTER_CATEGORIES = [
@@ -85,13 +85,13 @@ const CHECKLIST_RULES: ChecklistRule[] = [
   {
     id: 'depth',
     label: '100-word minimum depth',
-    hint: 'Add more detail across both fields — aim for at least 100 words combined.',
+    hint: 'Add more detail — aim for at least 100 words.',
     test: (t) => t.trim().split(/\s+/).filter(Boolean).length >= 100,
   },
   {
     id: 'healthcare',
     label: 'Healthcare relevance (2+ keywords)',
-    hint: 'Mention at least two healthcare terms (e.g., EHR, HIPAA, patient) in the Healthcare Impact field.',
+    hint: 'Mention at least two healthcare terms (e.g., EHR, HIPAA, patient).',
     test: (t) => {
       const lower = t.toLowerCase();
       return HEALTHCARE_KEYWORDS.filter((kw) => lower.includes(kw)).length >= 2;
@@ -100,13 +100,13 @@ const CHECKLIST_RULES: ChecklistRule[] = [
   {
     id: 'citation',
     label: 'Reference URL included',
-    hint: 'Provide a valid https:// URL in the reference field below.',
+    hint: 'Provide a valid https:// URL in the reference section.',
     test: (t) => /https?:\/\//.test(t),
   },
   {
     id: 'structure',
     label: 'Structured formatting',
-    hint: 'Use bullet points (* or -) or break content into separate paragraphs.',
+    hint: 'Use bullet points (* or -) or separate paragraphs.',
     test: (t) => /(^\s*[-*] |\n\n)/m.test(t),
   },
 ];
@@ -118,9 +118,9 @@ function evaluateChecklist(text: string): Record<string, boolean> {
 // ── Content templates (keyed by submission type) ─────────────────────────────
 const CONTENT_TEMPLATES: Record<string, string> = {
   'Article': `## 🔬 Core Concept Definition\n[What is the absolute textbook definition of this topic?]\n\n## 🏥 Healthcare IT Integration & Clinical Context\n[How does this interface with clinical workstations or impact patient care?]\n\n## 🔗 Verifiable Domain Sources\n[Paste trusted reference link: https://]`,
-  'Study Tip': `## 💡 Quick Study Hack\n[Explain the mnemonic or trick to remember this concept]\n\n## 🏥 Clinical Scenario\n[Give an example of how this appears in a hospital IT setting]\n\n## 🔗 Reference\n[Source link: https://]`,
-  'Diagram': `## 🗺️ Visual Framework\n[Describe the data pathway or topology]\n\n## 🏥 Clinical Workflow Mapping\n[What medical systems run across these lines?]\n\n## 🔗 Architecture Link\n[Reference link: https://]`,
-  'Quick Reference': `## ⚡ Rapid Field Matrix\n[List command flags or port numbers]\n\n## 🏥 Remediation Plan\n[Immediate fix to prevent clinical downtime]\n\n## 🔗 Source\n[Reference link: https://]`,
+  'Study Tip': `## 💡 Quick Study Hack\n[Explain the mnemonic or trick to remember this concept]\n\n## 🏥 Clinical Scenario\n[Give an example of how this appears in a hospital IT setting]\n\n## 🔗 Reference\n[Source link]`,
+  'Diagram': `## 🗺️ Visual Framework\n[Describe the data pathway or topology]\n\n## 🏥 Clinical Workflow Mapping\n[What medical systems run across these lines?]\n\n## 🔗 Architecture Link\n[Reference link]`,
+  'Quick Reference': `## ⚡ Rapid Field Matrix\n[List command flags or port numbers]\n\n## 🏥 Remediation Plan\n[Immediate fix to prevent clinical downtime]`,
 };
 
 function buildFormattedContent(params: {
@@ -204,7 +204,6 @@ interface Props {
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh }: Props) {
-  const [step,             setStep]             = useState<1 | 2>(1);
   const [submissionType,   setSubmissionType]   = useState<SubmissionType>('Article');
   const [masterCat,        setMasterCat]        = useState('Study Tips');
   const [subTrack,         setSubTrack]         = useState('');
@@ -226,31 +225,32 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const autoBadge      = masterCat ? getBadge(masterCat) : null;
   const trackValue     = subTrack || masterCat;
 
-  const allChecksPassed = isArticle
-    ? Object.values(checklistResults).every(Boolean)
-    : true;
-
   // Reset sub-track when category changes
   useEffect(() => { setSubTrack(''); }, [masterCat]);
 
-  // Bulletproof Template Injection
+  // Template injection
   useEffect(() => {
-    if (!isOpen || isResourceLink) {
-      if (isResourceLink) { setContent(''); setErrors({}); setFormError(''); }
-      return;
+    if (isOpen && submissionType && submissionType !== 'Resource Link') {
+      const template = CONTENT_TEMPLATES[submissionType] || '';
+      if (content.trim() === '' || content.trim() === lastInjectedTemplate.current.trim()) {
+        setContent(template);
+        lastInjectedTemplate.current = template;
+      }
+    } else if (submissionType === 'Resource Link') {
+      if (content.trim() === lastInjectedTemplate.current.trim()) {
+        setContent('');
+        lastInjectedTemplate.current = '';
+      }
     }
-    const template = CONTENT_TEMPLATES[submissionType] ?? '';
-    
-    // Only inject if the field is perfectly blank, or if it exactly matches the last template we pushed.
-    if (content.trim() === '' || content.trim() === lastInjectedTemplate.current.trim()) {
-      setContent(template);
-      lastInjectedTemplate.current = template;
-    }
-    
-    setErrors({}); 
+  }, [isOpen, submissionType]);
+
+  // Clear form errors on open
+  useEffect(() => {
+    if (!isOpen) return;
+    setErrors({});
     setFormError('');
     setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
-  }, [isOpen, submissionType, isResourceLink]);
+  }, [isOpen]);
 
   // Live checklist evaluation for Article type
   useEffect(() => {
@@ -272,7 +272,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   }, [isOpen]);
 
   const reset = () => {
-    setStep(1);
     setSubmissionType('Article');
     setMasterCat('Study Tips');
     setSubTrack('');
@@ -285,18 +284,10 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setChecklistResults(Object.fromEntries(CHECKLIST_RULES.map((r) => [r.id, false])));
   };
 
-  const handleNext = () => {
+  const handleSubmit = async () => {
     const e: Record<string, string> = {};
     if (!fullName.trim()) e.fullName = 'Name or Discord handle is required.';
     if (!title.trim())    e.title    = 'Contribution title is required.';
-    setErrors(e);
-    if (Object.keys(e).length > 0) return;
-    setFormError('');
-    setStep(2);
-  };
-
-  const handleAssembleAndSubmit = async () => {
-    const e: Record<string, string> = {};
     if (isResourceLink) {
       if (!/^https?:\/\/.+/.test(content.trim()))
         e.content = 'Please enter a valid https:// URL.';
@@ -311,8 +302,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       setFormError('Submission contains restricted language. Please align your contribution with professional healthcare and academic standards.');
       return;
     }
-
-    if (isArticle && !allChecksPassed) return;
 
     setIsSubmitting(true);
     const badge = getBadge(masterCat);
@@ -354,7 +343,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       reset();
       onClose();
     } catch {
-      // Fallback for local preview if database isn't connected
       const local: NewSubmission = {
         id: `local-${Date.now()}`,
         full_name: fullName.trim(),
@@ -392,21 +380,15 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           <div>
             <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Contribute to the Hub</h2>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
-              Step {step} of 2 — {step === 1 ? 'Categorization' : 'Knowledge Extraction'}
+              Share your knowledge with the cohort
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="flex gap-1.5">
-              <span className={`w-2 h-2 rounded-full transition-colors ${step >= 1 ? 'bg-sky-500' : 'bg-zinc-300 dark:bg-zinc-700'}`} />
-              <span className={`w-2 h-2 rounded-full transition-colors ${step >= 2 ? 'bg-sky-500' : 'bg-zinc-300 dark:bg-zinc-700'}`} />
-            </div>
-            <button
-              onClick={() => { reset(); onClose(); }}
-              className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+          <button
+            onClick={() => { reset(); onClose(); }}
+            className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
         {/* ── Form error banner ───────────────────────────────────────────────── */}
@@ -419,248 +401,217 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
         {/* ── Scrollable body ─────────────────────────────────────────────────── */}
         <div className="px-6 py-5 overflow-y-auto flex-1 custom-scrollbar">
+          <div className="space-y-5">
 
-          {/* ── STEP 1 — Categorization ─────────────────────────────────────── */}
-          {step === 1 && (
-            <div className="space-y-5">
-              {/* Full Name */}
-              <div>
-                <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
-                  Full Name / Discord Handle <span className="text-red-400">*</span>
-                </label>
-                <input
-                  autoFocus
-                  type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="e.g. Jane Smith or @jsmith_rtt23"
-                  className={inputCls('fullName')}
-                />
-                {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
+            {/* Full Name */}
+            <div>
+              <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                Full Name / Discord Handle <span className="text-red-400">*</span>
+              </label>
+              <input
+                autoFocus
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="e.g. Jane Smith or @jsmith_rtt23"
+                className={inputCls('fullName')}
+              />
+              {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
+            </div>
+
+            {/* Submission Type */}
+            <div>
+              <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+                Contribution Type <span className="text-red-400">*</span>
+              </label>
+              <div className="grid grid-cols-5 gap-2">
+                {SUBMISSION_TYPES.map((t) => {
+                  const Icon = t.icon;
+                  const active = submissionType === t.value;
+                  return (
+                    <button
+                      key={t.value}
+                      type="button"
+                      onClick={() => setSubmissionType(t.value)}
+                      className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-all ${
+                        active
+                          ? 'bg-sky-500 border-sky-500 text-white shadow-md shadow-sky-500/20'
+                          : 'bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-sky-300 dark:hover:border-sky-700'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span className="text-[11px] font-semibold leading-tight">{t.label}</span>
+                    </button>
+                  );
+                })}
               </div>
+            </div>
 
-              {/* Submission Type */}
-              <div>
-                <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-                  Contribution Type <span className="text-red-400">*</span>
-                </label>
-                <div className="grid grid-cols-5 gap-2">
-                  {SUBMISSION_TYPES.map((t) => {
-                    const Icon = t.icon;
-                    const active = submissionType === t.value;
-                    return (
-                      <button
-                        key={t.value}
-                        type="button"
-                        onClick={() => setSubmissionType(t.value)}
-                        className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-all ${
-                          active
-                            ? 'bg-sky-500 border-sky-500 text-white shadow-md shadow-sky-500/20'
-                            : 'bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-sky-300 dark:hover:border-sky-700'
-                        }`}
-                      >
-                        <Icon className="w-4 h-4" />
-                        <span className="text-[11px] font-semibold leading-tight">{t.label}</span>
-                      </button>
-                    );
-                  })}
+            {/* Master Category */}
+            <div>
+              <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                Curriculum Track <span className="text-red-400">*</span>
+              </label>
+              <div className="relative">
+                <select
+                  value={masterCat}
+                  onChange={(e) => setMasterCat(e.target.value)}
+                  className={`${inputCls('masterCat')} appearance-none`}
+                >
+                  {MASTER_CATEGORIES.map((c) => (
+                    <option key={c.label} value={c.label}>{c.label}</option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
+              </div>
+              {autoBadge && (
+                <div className="mt-2 flex items-center gap-2">
+                  <Tag className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                    You will earn:{' '}
+                    <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-100 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400">
+                      [{autoBadge}]
+                    </span>
+                  </span>
                 </div>
-              </div>
+              )}
+            </div>
 
-              {/* Master Category */}
+            {/* Sub-track (optional) */}
+            {selectedCat && selectedCat.sub.length > 0 && (
               <div>
                 <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
-                  Curriculum Track <span className="text-red-400">*</span>
+                  Domain / Sub-track{' '}
+                  <span className="text-zinc-400 dark:text-zinc-500 font-normal text-xs">(optional)</span>
                 </label>
                 <div className="relative">
                   <select
-                    value={masterCat}
-                    onChange={(e) => setMasterCat(e.target.value)}
-                    className={`${inputCls('masterCat')} appearance-none`}
+                    value={subTrack}
+                    onChange={(e) => setSubTrack(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500/40 text-sm appearance-none"
                   >
-                    {MASTER_CATEGORIES.map((c) => (
-                      <option key={c.label} value={c.label}>{c.label}</option>
-                    ))}
+                    <option value="">All {selectedCat.label} (general)</option>
+                    {selectedCat.sub.map((s) => <option key={s} value={s}>{s}</option>)}
                   </select>
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
                 </div>
-                {autoBadge && (
-                  <div className="mt-2 flex items-center gap-2">
-                    <Tag className="w-3.5 h-3.5 text-sky-500 dark:text-sky-400" />
-                    <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                      You will earn:{' '}
-                      <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-100 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400">
-                        [{autoBadge}]
-                      </span>
-                    </span>
-                  </div>
-                )}
               </div>
+            )}
 
-              {/* Sub-track (optional) */}
-              {selectedCat && selectedCat.sub.length > 0 && (
-                <div>
-                  <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
-                    Domain / Sub-track{' '}
-                    <span className="text-zinc-400 dark:text-zinc-500 font-normal text-xs">(optional)</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      value={subTrack}
-                      onChange={(e) => setSubTrack(e.target.value)}
-                      className="w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500/40 text-sm appearance-none"
-                    >
-                      <option value="">All {selectedCat.label} (general)</option>
-                      {selectedCat.sub.map((s) => <option key={s} value={s}>{s}</option>)}
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 pointer-events-none" />
-                  </div>
-                </div>
-              )}
+            {/* Title */}
+            <div>
+              <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                Contribution Title <span className="text-red-400">*</span>
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. TCP/IP Protocol Suite & Healthcare Network Architecture"
+                className={inputCls('title')}
+              />
+              {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
+            </div>
 
-              {/* Title */}
+            {/* Content */}
+            {isResourceLink ? (
               <div>
-                <label className="block text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
-                  Contribution Title <span className="text-red-400">*</span>
+                <label className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                  <LinkIcon className="w-4 h-4 text-emerald-500" />
+                  Resource URL <span className="text-red-400">*</span>
                 </label>
                 <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="e.g. TCP/IP Protocol Suite & Healthcare Network Architecture"
-                  className={inputCls('title')}
+                  type="url"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="https://…"
+                  className={`${inputCls('content')} focus:ring-emerald-500/40`}
                 />
-                {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
+                {errors.content && <p className="mt-1 text-xs text-red-500">{errors.content}</p>}
               </div>
-            </div>
-          )}
-
-          {/* ── STEP 2 — Knowledge Extraction ──────────────────────────────── */}
-          {step === 2 && (
-            <div className="space-y-5">
-              {isResourceLink ? (
-                <div>
-                  <label className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
-                    <LinkIcon className="w-4 h-4 text-emerald-500" />
-                    Resource URL <span className="text-red-400">*</span>
-                  </label>
-                  <input
-                    type="url"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    placeholder="https://…"
-                    className={`${inputCls('content')} focus:ring-emerald-500/40`}
-                  />
-                  {errors.content && <p className="mt-1 text-xs text-red-500">{errors.content}</p>}
-                </div>
-              ) : (
-                <div>
-                  <label className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
-                    <BookOpen className="w-4 h-4 text-sky-500" />
-                    Contribution Body <span className="text-red-400">*</span>
-                  </label>
+            ) : (
+              <div>
+                <label className="flex items-center gap-2 text-sm font-semibold text-zinc-900 dark:text-zinc-100 mb-1.5">
+                  <BookOpen className="w-4 h-4 text-sky-500" />
+                  Contribution Body <span className="text-red-400">*</span>
+                </label>
+                <div className="relative">
                   <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     placeholder="Brief description or excerpt..."
-                    rows={10}
-                    className={`${inputCls('content')} resize-none font-mono leading-relaxed custom-scrollbar`}
+                    rows={12}
+                    className="w-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-sm font-mono leading-relaxed focus:ring-2 focus:ring-sky-500/50 outline-none transition-all resize-y custom-scrollbar"
                   />
-                  <div className="flex items-center justify-between mt-1">
-                    {errors.content
-                      ? <p className="text-xs text-red-500">{errors.content}</p>
-                      : <p className="text-xs italic text-sky-600 dark:text-sky-400">Template pre-loaded — replace the bracketed text with your actual research.</p>
-                    }
-                    <span className="text-xs text-zinc-400 ml-2 flex-shrink-0">{content.split(/\s+/).filter(Boolean).length} words</span>
-                  </div>
+                  <p className="mt-2 text-xs italic text-sky-600 dark:text-sky-400">
+                    Template pre-loaded — replace the bracketed text with your actual research.
+                  </p>
                 </div>
-              )}
+                {errors.content && <p className="mt-1 text-xs text-red-500">{errors.content}</p>}
+                <p className="mt-1 text-xs text-zinc-400 text-right">{content.split(/\s+/).filter(Boolean).length} words</p>
+              </div>
+            )}
 
-              {/* Article: Publication Checklist */}
-              {isArticle && (
-                <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
-                  <div className="px-3 py-2 bg-zinc-100 dark:bg-zinc-800/60 border-b border-zinc-200 dark:border-zinc-800">
-                    <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
-                      Publication Checklist
-                    </p>
-                  </div>
-                  <div className="divide-y divide-zinc-100 dark:divide-zinc-800/50">
-                    {CHECKLIST_RULES.map((rule) => {
-                      const passed = checklistResults[rule.id];
-                      return (
-                        <div key={rule.id} className="flex items-start gap-3 px-3 py-2.5">
-                          {passed
-                            ? <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
-                            : <XCircle    className="w-4 h-4 text-rose-500   flex-shrink-0 mt-0.5" />
-                          }
-                          <div className="flex-1 min-w-0">
-                            <p className={`text-xs font-medium leading-tight ${
-                              passed ? 'text-zinc-700 dark:text-zinc-300' : 'text-rose-600 dark:text-rose-400'
-                            }`}>
-                              {rule.label}
-                            </p>
-                            {!passed && (
-                              <p className="text-[11px] text-rose-400 dark:text-rose-400/80 mt-0.5 leading-snug">
-                                {rule.hint}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+            {/* Article: Publication Checklist */}
+            {isArticle && (
+              <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 overflow-hidden">
+                <div className="px-3 py-2 bg-zinc-100 dark:bg-zinc-800/60 border-b border-zinc-200 dark:border-zinc-800">
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+                    Publication Checklist
+                  </p>
                 </div>
-              )}
-            </div>
-          )}
+                <div className="divide-y divide-zinc-100 dark:divide-zinc-800/50">
+                  {CHECKLIST_RULES.map((rule) => {
+                    const passed = checklistResults[rule.id];
+                    return (
+                      <div key={rule.id} className="flex items-start gap-3 px-3 py-2.5">
+                        {passed
+                          ? <CheckCircle className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                          : <XCircle    className="w-4 h-4 text-rose-500   flex-shrink-0 mt-0.5" />
+                        }
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-xs font-medium leading-tight ${
+                            passed ? 'text-zinc-700 dark:text-zinc-300' : 'text-rose-600 dark:text-rose-400'
+                          }`}>
+                            {rule.label}
+                          </p>
+                          {!passed && (
+                            <p className="text-[11px] text-rose-400 dark:text-rose-400/80 mt-0.5 leading-snug">
+                              {rule.hint}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+          </div>
         </div>
 
         {/* ── Footer ─────────────────────────────────────────────────────────── */}
         <div className="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex items-center justify-between flex-shrink-0">
-          {step === 2 ? (
-            <button
-              type="button"
-              onClick={() => { setErrors({}); setFormError(''); setStep(1); }}
-              className="flex items-center gap-1.5 text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" /> Back
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => { reset(); onClose(); }}
-              className="text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
-            >
-              Cancel
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => { reset(); onClose(); }}
+            className="text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors"
+          >
+            Cancel
+          </button>
 
-          {step === 1 ? (
-            <button
-              type="button"
-              onClick={handleNext}
-              className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg hover:bg-zinc-700 dark:hover:bg-zinc-200 transition-all"
-            >
-              Next Step →
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={handleAssembleAndSubmit}
-              disabled={isSubmitting || (isArticle && !allChecksPassed)}
-              title={isArticle && !allChecksPassed ? 'Complete all checklist requirements to publish.' : undefined}
-              className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg transition-all text-white ${
-                isArticle && !allChecksPassed
-                  ? 'bg-zinc-400 dark:bg-zinc-600 cursor-not-allowed opacity-60'
-                  : 'bg-sky-500 hover:bg-sky-400 shadow-sky-500/20 disabled:opacity-60'
-              }`}
-            >
-              {isSubmitting
-                ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting…</>
-                : <><Send className="w-4 h-4" /> Claim My Badge</>
-              }
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg transition-all text-white bg-amber-500 hover:bg-amber-400 shadow-amber-500/20 disabled:opacity-60"
+          >
+            {isSubmitting
+              ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting…</>
+              : <><Send className="w-4 h-4" /> Submit Your Contribution</>
+            }
+          </button>
         </div>
       </div>
     </div>
