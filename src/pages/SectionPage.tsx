@@ -300,7 +300,13 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
   >
     Read Article
   </button>
-)}
+        )}
+      </div>
+    );
+}
+
+// ── Skeleton ──────────────────────────────────────────────
+function AppletSkeleton() {
 
 // ── Skeleton ──────────────────────────────────────────────
 function AppletSkeleton() {
