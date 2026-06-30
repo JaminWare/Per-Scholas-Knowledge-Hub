@@ -61,7 +61,9 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         const approvedSubs = (approvedSubsRes.data ?? []).map((s: any) => ({
           id: s.id,
           title: s.title,
-          slug: `submission-${s.id}`,
+          slug: s.title
+            ? s.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+            : `submission-${s.id}`,
           section_id: null,
           content: s.content ?? '',
           formatted_content: s.formatted_content ?? null,
@@ -78,8 +80,8 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           updated_at: s.created_at,
         })) as Article[];
 
-        const existingIds = new Set(dbArticles.map((a) => a.id));
-        const merged = [...dbArticles, ...approvedSubs.filter((s) => !existingIds.has(s.id))];
+        const existingTitles = new Set(dbArticles.map((a) => (a.title ?? '').toLowerCase().trim()));
+        const merged = [...dbArticles, ...approvedSubs.filter((s) => !existingTitles.has((s.title ?? '').toLowerCase().trim()))];
         merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         setRecentArticles(merged.slice(0, 8));
       } catch (error) {

@@ -580,7 +580,9 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         const approvedSubs: ArticleWithContributor[] = (approvedSubsRes.data ?? []).map((s: any) => ({
           id: s.id,
           title: s.title,
-          slug: `submission-${s.id}`,
+          slug: s.title
+            ? s.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+            : `submission-${s.id}`,
           section_id: null,
           content: s.content ?? '',
           formatted_content: s.formatted_content ?? null,
@@ -598,8 +600,8 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
           updated_at: s.created_at,
         }));
 
-        const existingIds = new Set(articles.map((a) => a.id));
-        const merged = [...articles, ...approvedSubs.filter((s) => !existingIds.has(s.id))];
+        const existingTitles = new Set(articles.map((a) => (a.title ?? '').toLowerCase().trim()));
+        const merged = [...articles, ...approvedSubs.filter((s) => !existingTitles.has((s.title ?? '').toLowerCase().trim()))];
         setDbArticles(merged);
       } catch (e) {
         console.error(e);
