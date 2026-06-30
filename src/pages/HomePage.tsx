@@ -82,7 +82,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
               </div>
               <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
                 Per Scholas — Learners Knowledge Base
-                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-sky-300 mt-1">
+                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-sky-400 mt-1">
                   AI-Enabled Healthcare IT
                 </span>
               </h1>
