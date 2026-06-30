@@ -355,6 +355,9 @@ function AdminPanel() {
       .eq('id', id);
     if (approveError) throw approveError;
 
+    // Clear from UI immediately — submission is now marked approved in DB
+    setSubmissions((prev) => prev.filter((s) => s.id !== id));
+
     // Step 2: try to overwrite a matching [OPEN SLOT] article (exact-then-fuzzy)
     const { data: sampleRows } = await supabase
       .from('articles')
@@ -423,8 +426,6 @@ function AdminPanel() {
       if (insertError) throw insertError;
     }
 
-    // Remove from local state instantly
-    setSubmissions((prev) => prev.filter((s) => s.id !== id));
     flashSuccess(`"${cleanedTitle || sub.title}" approved and published successfully.`);
   };
 

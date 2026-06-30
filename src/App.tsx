@@ -59,7 +59,7 @@ function AppContent() {
       )}
       {/* ── Sidebar ─────────────────────────────────── */}
       <div
-        className={`flex-shrink-0 border-r border-slate-800/80 dark:border-zinc-300 h-full overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`flex-shrink-0 border-r border-slate-800/80 dark:border-slate-600 h-full overflow-hidden transition-all duration-300 ease-in-out ${
           sidebarOpen ? 'w-72' : 'w-0'
         }`}
       >

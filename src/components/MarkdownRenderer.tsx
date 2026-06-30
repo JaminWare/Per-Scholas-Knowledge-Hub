@@ -284,8 +284,8 @@ export default function MarkdownRenderer({ content }: Props) {
             );
           case 'table':
             return (
-              <div key={idx} className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700 my-6">
-                <table className="min-w-full text-sm border-collapse">
+              <div key={idx} className="block w-full overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700 my-6">
+                <table className="min-w-full w-full text-sm border-collapse table-fixed">
                   <thead>
                     <tr className="bg-zinc-200/60 dark:bg-zinc-800/60">
                       {block.headers.map((header, hIdx) => (
@@ -299,7 +299,7 @@ export default function MarkdownRenderer({ content }: Props) {
                     {block.rows.map((row, rIdx) => (
                       <tr key={rIdx} className="border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/30 transition-colors">
                         {row.map((cell, cIdx) => (
-                          <td key={cIdx} className="px-4 py-3 align-top text-zinc-600 dark:text-zinc-400">
+                          <td key={cIdx} className="px-4 py-3 align-top text-left whitespace-normal break-words text-zinc-600 dark:text-zinc-400">
                             {renderInline(cell)}
                           </td>
                         ))}
