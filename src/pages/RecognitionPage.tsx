@@ -327,7 +327,7 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
 
 // ── Founder card (accordion + dropdown) ──────────────────
 
-function FounderCard() {
+function FounderCard({ resourceLinks }: { resourceLinks: { title: string; slug: string; url: string }[] }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -343,7 +343,7 @@ function FounderCard() {
   }, [dropdownOpen]);
 
   return (
-    <div className="rounded-xl border border-sky-300/60 dark:border-amber-500/30 overflow-visible bg-sky-50/90 dark:bg-zinc-700/80 shadow-sm shadow-amber-500/5">
+    <div className="founder-glow rounded-xl border border-amber-400/50 dark:border-amber-400/40 overflow-visible bg-sky-50/90 dark:bg-zinc-700/80 shadow-[0_0_15px_rgba(245,158,11,0.15)] dark:shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] dark:hover:shadow-[0_0_25px_rgba(245,158,11,0.45)] transition-shadow duration-500">
       {/* Header */}
       <div className="flex items-center gap-3 px-5 py-4 border-b border-sky-100 dark:border-amber-500/15">
         <Crown className="w-5 h-5 text-amber-500 flex-shrink-0" />
@@ -359,20 +359,25 @@ function FounderCard() {
             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-100/60 text-amber-950 dark:bg-zinc-800/80 dark:text-zinc-100">
               {JAMIN_ARTICLES.length} Authored Articles
             </span>
+            {resourceLinks.length > 0 && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-100/60 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                {resourceLinks.length} Resource Link{resourceLinks.length !== 1 ? 's' : ''}
+              </span>
+            )}
           </div>
         </div>
       </div>
 
       {/* Body — dropdown navigation */}
       <div className="px-5 py-4 overflow-visible">
-        <p className="font-mono text-[9px] uppercase tracking-widest text-amber-500/70 dark:text-amber-600 mb-2">Navigate to Article</p>
+        <p className="font-mono text-[9px] uppercase tracking-widest text-amber-500/70 dark:text-amber-600 mb-2">Navigate to Content</p>
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={(e) => { e.stopPropagation(); setDropdownOpen((p) => !p); }}
             className="w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg bg-amber-50 dark:bg-sky-950/30 border border-amber-200 dark:border-sky-800/60 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:border-amber-400/60 dark:hover:border-amber-500/40 transition-all"
           >
             <span className="font-mono text-xs text-amber-700 dark:text-amber-400">
-              {JAMIN_ARTICLES.length} articles — select to navigate
+              {JAMIN_ARTICLES.length + resourceLinks.length} items — select to navigate
             </span>
             <ChevronDown className={`w-4 h-4 text-amber-400 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
           </button>
@@ -398,6 +403,25 @@ function FounderCard() {
                   </div>
                 </div>
               ))}
+              {resourceLinks.length > 0 && (
+                <div>
+                  <span className={SECTION_HDR}>Resource Links</span>
+                  <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
+                    {resourceLinks.map((rl) => (
+                      <Link
+                        key={rl.slug}
+                        to={`/article/${rl.slug}`}
+                        onClick={() => setDropdownOpen(false)}
+                        className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:border-emerald-400 hover:bg-emerald-500/10 transition-all group"
+                      >
+                        <Link2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                        <span className="text-sm text-zinc-800 dark:text-zinc-100 group-hover:text-emerald-600 dark:group-hover:text-emerald-300 truncate">{rl.title}</span>
+                        <ChevronRight className="w-3 h-3 text-zinc-400 dark:text-zinc-600 group-hover:text-emerald-400 flex-shrink-0 ml-auto" />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -413,6 +437,7 @@ export default function RecognitionPage() {
   const [submissions,     setSubmissions]     = useState<NewSubmission[]>([]);
   const [openContributor, setOpenContributor] = useState<string | null>(null);
   const [modalOpen,       setModalOpen]       = useState(false);
+  const [founderLinks,    setFounderLinks]    = useState<{ title: string; slug: string; url: string }[]>([]);
 
   useEffect(() => {
     const local = loadLocalSubmissions();
@@ -446,6 +471,12 @@ export default function RecognitionPage() {
         submission_type: a.submission_type ?? 'Article',
         created_at: '',
       }));
+
+      // Extract Jamin Ware's Resource Links for Founder dropdown
+      const jaminLinks = (articleData ?? [])
+        .filter((a: any) => a.author_name?.toLowerCase() === 'jamin ware' && a.submission_type === 'Resource Link')
+        .map((a: any) => ({ title: a.title, slug: a.slug, url: '' }));
+      setFounderLinks(jaminLinks);
 
       // Merge local + submissions + articles, deduplicate by title
       const allEntries: NewSubmission[] = [];
@@ -511,11 +542,11 @@ export default function RecognitionPage() {
       </button>
 
       {/* Hero banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-amber-950 border border-zinc-700/50 p-8">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-amber-950 border border-zinc-700/50 p-6">
         <div className="absolute top-0 right-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-400/5 rounded-full blur-2xl pointer-events-none" />
         <div className="relative">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3 mb-3">
             <div className="p-2.5 rounded-xl bg-amber-500/20 border border-amber-500/30">
               <Award className="w-6 h-6 text-amber-400" />
             </div>
@@ -523,14 +554,14 @@ export default function RecognitionPage() {
               Per Scholas — 2026-RTT-23
             </span>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-3">
+          <h1 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-2">
             Cohort 2026-RTT-23 Wall of Fame
           </h1>
           <p className="text-zinc-300 max-w-xl leading-relaxed text-sm">
             Celebrating every learner who has contributed research, documentation, and knowledge to the
             AI-Enabled Healthcare IT collective. Click any profile to explore their full portfolio.
           </p>
-          <div className="mt-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/20 text-xs font-semibold text-amber-400">
+          <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/20 text-xs font-semibold text-amber-400">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
             {totalContributors} contributor{totalContributors !== 1 ? 's' : ''} recognized
           </div>
@@ -543,7 +574,7 @@ export default function RecognitionPage() {
           <Star className="w-4 h-4 text-amber-500" />
           <h2 className="text-sm font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">Founder</h2>
         </div>
-        <FounderCard />
+        <FounderCard resourceLinks={founderLinks} />
       </section>
 
       {/* Community section */}
