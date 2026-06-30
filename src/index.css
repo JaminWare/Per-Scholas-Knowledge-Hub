@@ -54,7 +54,7 @@
 
   /* ── Cards ── */
   html.dark .card {
-    @apply bg-[#1e2840] rounded-xl border border-slate-800/80 shadow-sm hover:shadow-md hover:border-slate-600 transition-all duration-200;
+    @apply bg-slate-700 rounded-xl border border-slate-600/60 shadow-sm hover:shadow-md hover:border-slate-500 transition-all duration-200;
   }
 
   html:not(.dark) .card {

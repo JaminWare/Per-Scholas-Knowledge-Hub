@@ -36,6 +36,10 @@ function slugify(text: string): string {
     .slice(0, 80);
 }
 
+function sanitizeTitle(raw: string): string {
+  return raw.replace(/^\s*\[(OPEN SLOT|sample)\]\s*/i, '').trim();
+}
+
 function deriveExcerpt(content: string): string {
   const clean = content.replace(/^#+.+$/gm, '').replace(/[#*`_>]/g, '').trim();
   return clean.slice(0, 200).trim();
@@ -50,7 +54,7 @@ async function findSectionIdByTrack(track: string): Promise<string | null> {
   else if (trackLower.includes('diagram')) slugHint = 'diagrams';
   else if (trackLower.includes('quick ref')) slugHint = 'quick-references';
   else if (trackLower.includes('prompt')) slugHint = 'azari-prompt-playbook';
-  if (!slugHint) return null;
+  if (!slugHint) slugHint = 'quick-references';
   const { data } = await supabase.from('sections').select('id').eq('slug', slugHint).maybeSingle();
   return (data as { id: string } | null)?.id ?? null;
 }
@@ -209,7 +213,7 @@ function SubmissionCard({
       {/* Header */}
       <div className="flex items-start gap-4 p-5">
         <div className={`p-2.5 rounded-lg flex-shrink-0 ${
-          isResource ? 'bg-emerald-500/10 text-emerald-400' : 'bg-sky-500/10 text-sky-400'
+          isResource ? 'bg-teal-500/10 text-teal-400' : 'bg-sky-500/10 text-sky-400'
         }`}>
           <TypeIcon type={sub.submission_type} />
         </div>
@@ -231,7 +235,7 @@ function SubmissionCard({
               </div>
             </div>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0 ${
-              isResource ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-sky-500/10 text-sky-400 border border-sky-500/20'
+              isResource ? 'bg-teal-500/10 text-teal-400 border border-teal-500/20' : 'bg-sky-500/10 text-sky-400 border border-sky-500/20'
             }`}>
               {sub.submission_type}
             </span>
@@ -282,7 +286,7 @@ function SubmissionCard({
         <button
           onClick={handleApprove}
           disabled={approving || deleting}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white text-xs font-bold transition-all shadow-md shadow-emerald-500/20 disabled:opacity-50"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-white text-xs font-bold transition-all shadow-md shadow-teal-500/20 disabled:opacity-50"
         >
           {approving
             ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Approving…</>
@@ -342,6 +346,8 @@ function AdminPanel() {
     const sub = submissions.find((s) => s.id === id);
     if (!sub) return;
 
+    const cleanedTitle = sanitizeTitle(sub.title);
+
     // Step 1: mark submission approved
     const { error: approveError } = await supabase
       .from('submissions')
@@ -349,31 +355,40 @@ function AdminPanel() {
       .eq('id', id);
     if (approveError) throw approveError;
 
-    // Step 2: try to overwrite a matching [OPEN SLOT] article
+    // Step 2: try to overwrite a matching [OPEN SLOT] article (exact-then-fuzzy)
     const { data: sampleRows } = await supabase
       .from('articles')
       .select('id, title, study_category')
-      .or('title.ilike.%[Sample]%,title.ilike.%[OPEN SLOT]%')
+      .eq('is_sample', true)
       .order('created_at', { ascending: true })
-      .limit(30);
+      .limit(50);
 
     const trackLower = sub.track.toLowerCase();
-    const sampleMatch = (sampleRows ?? []).find((a) => {
+
+    // Exact match first
+    let sampleMatch = (sampleRows ?? []).find((a) => {
       if (!a.study_category) return false;
-      const cat = (a.study_category as string).toLowerCase();
-      return trackLower.includes(cat) || cat.includes(trackLower);
+      return (a.study_category as string).toLowerCase() === trackLower;
     });
+
+    // Fuzzy fallback (substring inclusion)
+    if (!sampleMatch) {
+      sampleMatch = (sampleRows ?? []).find((a) => {
+        if (!a.study_category) return false;
+        const cat = (a.study_category as string).toLowerCase();
+        return trackLower.includes(cat) || cat.includes(trackLower);
+      });
+    }
 
     const publishContent = sub.formatted_content ?? sub.content;
 
     if (sampleMatch) {
       // Overwrite the placeholder slot
-      const cleanTitle = (sampleMatch.title as string).replace(/^\s*\[(sample|OPEN SLOT)\]\s*/i, '').trim();
       const isResourceLink = sub.submission_type === 'Resource Link';
       const { error: updateError } = await supabase
         .from('articles')
         .update({
-          title: sub.title || cleanTitle,
+          title: cleanedTitle || sub.title,
           content: publishContent,
           study_category: sub.track,
           is_sample: false,
@@ -386,7 +401,7 @@ function AdminPanel() {
       if (updateError) throw updateError;
     } else {
       // Step 3: INSERT a brand-new article row
-      const baseSlug = slugify(sub.title || `contribution-${Date.now()}`);
+      const baseSlug = slugify(cleanedTitle || `contribution-${Date.now()}`);
       const uniqueSlug = await ensureUniqueSlug(baseSlug);
       const sectionId = await findSectionIdByTrack(sub.track);
       const isResourceLink = sub.submission_type === 'Resource Link';
@@ -394,7 +409,7 @@ function AdminPanel() {
       const { error: insertError } = await supabase
         .from('articles')
         .insert({
-          title: sub.title,
+          title: cleanedTitle || sub.title,
           slug: uniqueSlug,
           content: publishContent,
           study_category: sub.track,
@@ -410,7 +425,7 @@ function AdminPanel() {
 
     // Remove from local state instantly
     setSubmissions((prev) => prev.filter((s) => s.id !== id));
-    flashSuccess(`"${sub.title}" approved and published successfully.`);
+    flashSuccess(`"${cleanedTitle || sub.title}" approved and published successfully.`);
   };
 
   const handleDelete = async (id: string) => {
@@ -455,7 +470,7 @@ function AdminPanel() {
 
         {/* Success toast */}
         {successMessage && (
-          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-sm font-medium">
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-teal-500/10 border border-teal-500/25 text-teal-400 text-sm font-medium">
             <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
             {successMessage}
           </div>
@@ -498,7 +513,7 @@ function AdminPanel() {
         ) : submissions.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
             <div className="w-16 h-16 rounded-2xl bg-zinc-800/60 border border-zinc-700 flex items-center justify-center mb-4">
-              <CheckCircle2 className="w-8 h-8 text-emerald-500" />
+              <CheckCircle2 className="w-8 h-8 text-teal-500" />
             </div>
             <h3 className="text-base font-semibold text-zinc-300">All caught up!</h3>
             <p className="text-sm text-zinc-600 mt-1 max-w-xs">

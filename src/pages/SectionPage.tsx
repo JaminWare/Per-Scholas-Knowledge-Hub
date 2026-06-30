@@ -139,7 +139,7 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
   const navigate = useNavigate();
   if (minimal) {
     return (
-      <div className={`${CARD_WIDTH} flex flex-col items-center justify-center gap-3 p-8 bg-white/80 dark:bg-zinc-700/50 border border-dashed border-zinc-300 dark:border-zinc-600 rounded-xl text-center`}>
+      <div className={`${CARD_WIDTH} flex flex-col items-center justify-center gap-3 p-8 bg-white/80 dark:bg-slate-700/60 border border-dashed border-zinc-300 dark:border-slate-600 rounded-xl text-center`}>
         <Construction className="w-7 h-7 text-amber-400" />
         <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
           This module is currently being built or undergoing moderation review. Check back shortly!
@@ -190,8 +190,8 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
   return (
     <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
       isSample
-        ? 'bg-zinc-100/60 dark:bg-[#2C3E50]/80 border-blue-200/60 dark:border-blue-500/20 hover:border-blue-400/70 dark:hover:border-blue-400/50 hover:shadow-[0_0_0_1.5px_rgba(96,165,250,0.5),0_4px_16px_rgba(96,165,250,0.08)]'
-        : 'bg-white dark:bg-zinc-700 border-slate-200 dark:border-zinc-600 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
+        ? 'bg-zinc-100/60 dark:bg-[#334155] border-blue-200/60 dark:border-blue-500/20 hover:border-blue-400/70 dark:hover:border-blue-400/50 hover:shadow-[0_0_0_1.5px_rgba(96,165,250,0.5),0_4px_16px_rgba(96,165,250,0.08)]'
+        : 'bg-white dark:bg-slate-700 border-slate-200 dark:border-slate-600 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
     }`}>
       <div
         className={`flex items-center justify-between px-3 py-1.5 ${
@@ -287,7 +287,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
 
 function AppletSkeleton() {
   return (
-    <div className={`${CARD_WIDTH} bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 rounded-xl p-5 animate-pulse`}>
+    <div className={`${CARD_WIDTH} bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-5 animate-pulse`}>
       <div className="flex items-start gap-3 mb-4">
         <div className="w-10 h-10 rounded-xl bg-zinc-200 dark:bg-zinc-800 flex-shrink-0" />
         <div className="flex-1 space-y-2">
@@ -306,7 +306,7 @@ function AppletSkeleton() {
 
 function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string; context: string; onContribute: () => void }) {
   return (
-    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-zinc-100/60 dark:bg-[#2C3E50]/80 border-blue-200/60 dark:border-blue-500/20`}>
+    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-zinc-100/60 dark:bg-[#334155] border-blue-200/60 dark:border-blue-500/20`}>
       <div
         className="flex items-center justify-between px-3 py-1.5 bg-zinc-800 dark:bg-zinc-900/80"
         style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
@@ -564,7 +564,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
           </div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 rounded-xl p-6 md:p-8">
+        <div className="bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl p-6 md:p-8">
           <ArticleRenderer blocks={localContent.content} />
         </div>
 
