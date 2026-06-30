@@ -687,45 +687,25 @@ export default function ArticlePage() {
         ) : isTCPIPArticle ? (
           <TCPIPArticleContent />
         ) : effectiveIsSample ? (
-          <div className="max-w-2xl mx-auto text-center my-12">
-            <div className="bg-white dark:bg-zinc-700/40 border border-dashed border-zinc-400 dark:border-zinc-600 rounded-lg p-8">
-              <div className="flex justify-center mb-5">
-                <UploadCloud className="w-10 h-10 text-sky-500" />
+          <div className="max-w-2xl mx-auto text-center my-16">
+            <div className="relative rounded-2xl border-2 border-dashed border-blue-300 dark:border-blue-500/30 bg-blue-50/40 dark:bg-zinc-800/60 p-10">
+              <div className="flex justify-center mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-sky-400 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                  <UploadCloud className="w-8 h-8 text-white" />
+                </div>
               </div>
-              <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-3">
-                Active Curriculum Research Slot
+              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
+                Claim this Open Slot
               </h2>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
-                To encourage active recall, hands-on lab replication, and peer-to-peer research, the content for this domain applet is left completely open for the cohort.
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-lg mx-auto mb-8">
+                This curriculum endpoint is currently open for peer review and documentation. Submit your verified research, definitions, or script matrices to populate this hub node!
               </p>
-
-              <div className="mt-2 mb-6 text-left">
-                <p className="font-semibold text-sm text-zinc-900 dark:text-zinc-100 mb-3">
-                  Research Pointers &amp; Getting Started
-                </p>
-                <ul className="space-y-2 text-xs text-zinc-700 dark:text-zinc-300">
-                  {[
-                    { icon: '🎯', label: 'Identify the Core Concept', detail: 'Look up how this topic fits into your current module objectives. Focus on defining what it is and why it matters to an IT or Healthcare professional.' },
-                    { icon: '🔍', label: 'Explore it Practically', detail: 'Try interacting with the concept directly. Open a command shell, check your system settings, or sketch out the basic step-by-step data workflow on paper.' },
-                    { icon: '📝', label: 'Summarize the Key Facts', detail: 'Break down the most essential points. Aim to capture the core definitions, common troubleshooting commands, port numbers, or compliance rules a peer would need to study.' },
-                    { icon: '🔗', label: 'Gather Reliable References', detail: "Find at least two trusted, official documentation links (such as Microsoft Learn, Cisco, CompTIA, or healthcare standard bodies) to place in your article's footer." },
-                  ].map(({ icon, label, detail }) => (
-                    <li key={label} className="flex gap-3 items-start rounded-md bg-zinc-50 dark:bg-zinc-800/50 px-3 py-2">
-                      <span className="flex-shrink-0 text-sm leading-[1.4]">{icon}</span>
-                      <span>
-                        <span className="font-semibold text-zinc-800 dark:text-zinc-200">{label}: </span>
-                        {detail}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
               <button
                 onClick={() => setModalOpen(true)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-semibold transition-colors"
+                className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold shadow-[0_0_20px_rgba(96,165,250,0.4)] hover:shadow-[0_0_30px_rgba(96,165,250,0.6)] transition-all"
               >
-                Submit your contribution
+                <UploadCloud className="w-4.5 h-4.5" />
+                Submit your Contribution
               </button>
             </div>
           </div>

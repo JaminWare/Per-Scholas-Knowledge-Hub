@@ -139,9 +139,9 @@ export default function Sidebar({ onToggle }: SidebarProps) {
   });
 
   return (
-    <div className="flex flex-col h-full bg-zinc-900 dark:bg-white border-r border-zinc-800 dark:border-zinc-200">
+    <div className="flex flex-col h-full bg-zinc-900 dark:bg-zinc-100 border-r border-zinc-800 dark:border-zinc-300">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 dark:border-zinc-200 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 dark:border-zinc-300 flex-shrink-0">
         <Link to="/" className="flex items-center gap-2.5 flex-1 min-w-0">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
             <BookOpen className="w-[18px] h-[18px] text-white" />
@@ -183,7 +183,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
               className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border ${trackBorder[track.color]} bg-zinc-700/60 hover:bg-zinc-700 dark:bg-zinc-100 dark:hover:bg-zinc-200 transition-colors mb-1`}
             >
               <div className="flex-1 text-left min-w-0">
-                <p className="text-[11px] font-semibold text-zinc-100 dark:text-zinc-900 uppercase tracking-wider truncate">
+                <p className="text-[11px] font-semibold text-zinc-100 dark:text-zinc-800 uppercase tracking-wider truncate">
                   {track.label}
                 </p>
                 <p className={`text-[10px] font-medium mt-0.5 ${trackText[track.color]}`}>
