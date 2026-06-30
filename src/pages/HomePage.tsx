@@ -5,6 +5,7 @@ import ArticleCard from '../components/ArticleCard';
 import UniqueHacksGrid from '../components/UniqueHacksGrid';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import { type NewSubmission } from '../utils/submissions';
+import { normalizeCategory } from '../utils/normalizeCategory';
 import SuccessToast from '../components/SuccessToast';
 import type { Article } from '../types/database';
 import {
@@ -57,7 +58,10 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         ]);
         if (featuredRes.data) setFeaturedArticles(featuredRes.data);
 
-        const dbArticles = recentRes.data ?? [];
+        const dbArticles = (recentRes.data ?? []).map((a: any) => ({
+          ...a,
+          study_category: normalizeCategory(a.study_category ?? '', a.title ?? ''),
+        }));
         const approvedSubs = (approvedSubsRes.data ?? []).map((s: any) => ({
           id: s.id,
           title: s.title,
@@ -72,7 +76,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           tags: s.badge ? [s.badge] : [],
           is_featured: false,
           is_sample: false,
-          study_category: s.track ?? null,
+          study_category: normalizeCategory(s.track ?? '', s.title ?? ''),
           source_file: null,
           author_name: s.full_name ?? null,
           submission_type: s.submission_type ?? null,

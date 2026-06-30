@@ -38,6 +38,14 @@ function deriveTierBadge(count: number): string {
   return 'Cohort Contributor';
 }
 
+function getDomainName(urlString: string): string {
+  try {
+    return new URL(urlString).hostname.replace('www.', '');
+  } catch {
+    return 'Resource Link';
+  }
+}
+
 // ── Dynamic pluralization ────────────────────────────────
 
 const PLURAL_MAP: Record<string, string> = {
@@ -271,7 +279,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
                               {icon}
                               <span className="text-sm text-zinc-800 dark:text-zinc-100 truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-300">{s.title}</span>
                               <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
-                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500">{itemType}</span>
+                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500">{getDomainName(s.content || '')}</span>
                                 <ChevronRight className="w-3 h-3 text-zinc-400 dark:text-zinc-600 group-hover:text-emerald-400" />
                               </span>
                             </a>

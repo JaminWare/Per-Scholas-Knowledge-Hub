@@ -6,6 +6,7 @@ import ContributorSubmissionModal from '../components/ContributorSubmissionModal
 import type { Article } from '../types/database';
 import contentMap from '../data/contentMap';
 import { extractReferences } from '../utils/extractReferences';
+import { normalizeCategory } from '../utils/normalizeCategory';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, FileText, Sparkles, Layout, Laptop, Monitor, Database,
@@ -580,7 +581,10 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         else query = query.ilike('slug', `${slug}/%`);
         const { data } = await query;
 
-        const articles = (data as ArticleWithContributor[]) || [];
+        const articles = ((data as ArticleWithContributor[]) || []).map((a) => ({
+          ...a,
+          study_category: normalizeCategory(a.study_category ?? '', a.title ?? ''),
+        }));
         const approvedSubs: ArticleWithContributor[] = (approvedSubsRes.data ?? []).map((s: any) => ({
           id: s.id,
           title: s.title,
@@ -595,7 +599,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
           tags: s.badge ? [s.badge] : [],
           is_featured: false,
           is_sample: false,
-          study_category: s.track ?? null,
+          study_category: normalizeCategory(s.track ?? '', s.title ?? ''),
           source_file: null,
           author_name: s.full_name ?? null,
           author: s.full_name ?? null,
