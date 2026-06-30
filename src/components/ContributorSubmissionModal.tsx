@@ -81,42 +81,99 @@ function getBadge(trackName: string): string {
   return 'Core 1 Expert';
 }
 
-function extractUrls(text: string): string[] {
-  const urlRegex = /https?:\/\/[^\s)>\]]+/g;
-  const matches = text.match(urlRegex);
-  return matches ? [...new Set(matches)] : [];
-}
-
 function autoLinkUrls(text: string): string {
   return text.replace(/(?<!\]\()https?:\/\/[^\s)>\]]+/g, (url) => `[${url}](${url})`);
 }
 
-function buildFormattedContent(authorName: string, trackValue: string, rawContent: string): string {
-  const trimmed = rawContent.trim();
-  const urls = extractUrls(trimmed);
-  const referencesBlock = urls.length > 0
-    ? urls.map((url) => `- [${url}](${url})`).join('\n')
-    : '- *No external references provided.*';
+const STRUCTURED_LINE = /^\s*[-*•]\s|^\s*\d+[.)]\s|^\s*[$>]\s/;
 
-  return [
-    `> 💡 **Community Contribution** | Research curated by **${authorName}** for track **${trackValue}**.`,
+function isStructuredBlock(text: string): boolean {
+  const lines = text.split('\n').filter((l) => l.trim());
+  if (lines.length < 2) return false;
+  const structuredCount = lines.filter((l) => STRUCTURED_LINE.test(l)).length;
+  return structuredCount / lines.length > 0.4;
+}
+
+function wrapInCodeFence(text: string): string {
+  return '```text\n' + text.trim() + '\n```';
+}
+
+function cleanReferences(raw: string): string {
+  const lines = raw.split('\n').map((l) => l.trim()).filter(Boolean);
+  if (lines.length === 0) return '- *No external references provided.*';
+
+  return lines.map((line) => {
+    const alreadyLinked = /\[.+\]\(.+\)/.test(line);
+    if (alreadyLinked) {
+      return line.startsWith('-') || line.startsWith('*') ? line : `- ${line}`;
+    }
+    const urlMatch = line.match(/https?:\/\/[^\s)>\]]+/);
+    if (urlMatch) {
+      let cleanedUrl = urlMatch[0];
+      try {
+        const u = new URL(cleanedUrl);
+        const tracking = ['utm_source','utm_medium','utm_campaign','utm_content','utm_term','si','feature','ref','t','list'];
+        tracking.forEach((p) => u.searchParams.delete(p));
+        cleanedUrl = u.toString().replace(/\/+$/, '');
+      } catch { /* keep original */ }
+      const domain = cleanedUrl.replace(/^https?:\/\/(www\.)?/, '').split('/')[0];
+      const path = cleanedUrl.replace(/^https?:\/\/(www\.)?[^/]+/, '').replace(/\/+$/, '');
+      const label = path ? `${domain}${path}` : domain;
+      return `- [${label}](${cleanedUrl})`;
+    }
+    return `- ${line}`;
+  }).join('\n');
+}
+
+function buildFormattedContent(
+  authorName: string,
+  trackValue: string,
+  type: SubmissionType,
+  descriptionText: string,
+  relevanceText: string,
+  healthcareText: string,
+  referencesText: string,
+  diagramUrl?: string,
+): string {
+  const desc = descriptionText.trim();
+  const relevance = relevanceText.trim();
+  const healthcare = healthcareText.trim();
+
+  const descriptionBlock = isStructuredBlock(desc)
+    ? wrapInCodeFence(desc)
+    : autoLinkUrls(desc);
+
+  const relevanceBlock = isStructuredBlock(relevance)
+    ? wrapInCodeFence(relevance)
+    : autoLinkUrls(relevance);
+
+  const healthcareCallout = `> \u{1F3E5} **Clinical Workflow Impact:** ${healthcare}`;
+
+  const referencesBlock = cleanReferences(referencesText);
+
+  const sections: string[] = [
+    `> \u{1F4A1} **Community Contribution** | Research curated by **${authorName}** for track **${trackValue}**.`,
     '',
-    '## 🔬 Guided Description',
+    '\u{1F52C} Guided Description'.replace('\u{1F52C}', '## \u{1F52C}'),
     '',
-    autoLinkUrls(trimmed),
-    '',
-    '## ⚡ CompTIA A+ Relevance',
-    '',
-    'This contribution aligns with CompTIA A+ exam objectives by reinforcing foundational concepts tested across Core 1 and Core 2 domains — including hardware, networking, operating systems, security, and operational procedures.',
-    '',
-    '## 🏥 Healthcare IT Integration',
-    '',
-    'This research directly supports professionals working within healthcare IT environments. The concepts covered relate to real-world clinical and administrative workflows — from EHR system configurations to HIPAA-compliant security postures.',
-    '',
-    '## 🔗 References & Citations',
-    '',
-    referencesBlock,
-  ].join('\n');
+  ];
+
+  if (type === 'Quick Reference') {
+    sections.push(wrapInCodeFence(desc));
+  } else {
+    sections.push(descriptionBlock);
+  }
+
+  sections.push('', '## \u{26A1} CompTIA A+ Relevance', '', relevanceBlock);
+  sections.push('', '## \u{1F3E5} Healthcare IT Integration', '', healthcareCallout);
+
+  if (diagramUrl) {
+    sections.push('', '## \u{1F5FA}\u{FE0F} Visual Architecture', '', `![Diagram](${diagramUrl})`);
+  }
+
+  sections.push('', '## \u{1F517} References & Citations', '', referencesBlock);
+
+  return sections.join('\n');
 }
 
 async function trySampleSlotOverwrite(trackValue: string, submissionId: string, formattedContent: string, onRefresh?: () => void) {
@@ -134,7 +191,7 @@ async function trySampleSlotOverwrite(trackValue: string, submissionId: string, 
     if (!targetArticle) return;
     const cleanTitle = (targetArticle.title as string).replace(/^\s*\[sample\]\s*/i, '').trim();
 
-    await supabase.from('articles').update({ title: cleanTitle, content: formattedContent, is_sample: false, is_featured: false }).eq('id', targetArticle.id);
+    await supabase.from('articles').update({ title: cleanTitle, content: formattedContent, formatted_content: formattedContent, is_sample: false, is_featured: false }).eq('id', targetArticle.id);
     await supabase.from('submissions').update({ is_approved: true }).eq('id', submissionId);
     onRefresh?.();
   } catch (err) {
@@ -199,12 +256,15 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   const assembleContent = () => {
     if (isResourceLink) return resourceUrl.trim();
-    let md = `## 🔬 Guided Description\n${concept.trim()}`;
-    md += `\n\n## ⚡ CompTIA A+ Relevance\n${aPlusRelevance.trim()}`;
-    md += `\n\n## 🏥 Healthcare IT Integration\n${impact.trim()}`;
-    md += `\n\n## 🔗 References & Citations\n${references.trim()}`;
+    const descBlock = submissionType === 'Quick Reference' || isStructuredBlock(concept)
+      ? wrapInCodeFence(concept.trim())
+      : concept.trim();
+    let md = `## \u{1F52C} Guided Description\n\n${descBlock}`;
+    md += `\n\n## \u{26A1} CompTIA A+ Relevance\n\n${aPlusRelevance.trim()}`;
+    md += `\n\n## \u{1F3E5} Healthcare IT Integration\n\n> \u{1F3E5} **Clinical Workflow Impact:** ${impact.trim()}`;
+    md += `\n\n## \u{1F517} References & Citations\n\n${cleanReferences(references)}`;
     if (diagramUrl.trim()) {
-      md += `\n\n## 🗺️ Visual Architecture\n![Diagram](${diagramUrl.trim()})`;
+      md += `\n\n## \u{1F5FA}\u{FE0F} Visual Architecture\n\n![Diagram](${diagramUrl.trim()})`;
     }
     return md;
   };
@@ -264,7 +324,11 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       // Non-blocking: if the duplicate check fails, allow submission to proceed
     }
 
-    const formattedContent = !isResourceLink ? buildFormattedContent(fullName.trim(), track, rawContent) : null;
+    const formattedContent = !isResourceLink ? buildFormattedContent(
+      fullName.trim(), track, submissionType,
+      concept.trim(), aPlusRelevance.trim(), impact.trim(), references.trim(),
+      diagramUrl.trim() || undefined,
+    ) : null;
 
     const insertPayload = {
       full_name: fullName.trim(), track, badge: autoBadge, title: title.trim(), content: rawContent, submission_type: submissionType, formatted_content: formattedContent, is_approved: false,

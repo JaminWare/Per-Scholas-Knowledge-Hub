@@ -556,7 +556,7 @@ export default function ArticlePage() {
 
   const strictlyIsSample = /\[\s*(sample|OPEN SLOT)\s*\]/i.test(article?.title ?? '');
   const isSample = strictlyIsSample || article.is_sample === true;
-  const markdownContent = articleContentMap[article.slug] ?? article.content;
+  const markdownContent = articleContentMap[article.slug] ?? article.formatted_content ?? article.content;
   const authorName = deriveAuthorName(contributor, article);
   const trackLabel = deriveTrackLabel(article);
   const authorInitial = authorName.charAt(0).toUpperCase();

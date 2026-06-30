@@ -24,6 +24,7 @@ export interface Article {
   slug: string;
   section_id: string | null;
   content: string;
+  formatted_content?: string | null;
   excerpt: string | null;
   contributor_id: string | null;
   tags: string[];
