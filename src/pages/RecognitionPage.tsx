@@ -63,6 +63,7 @@ const TYPE_PILL_COLORS: Record<string, { base: string; founder: string }> = {
   'Diagram':        { base: 'bg-blue-500/10 text-blue-700 dark:text-blue-400', founder: 'bg-blue-500/10 text-blue-700 dark:text-blue-400' },
   'Study Tip':      { base: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400', founder: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400' },
   'Quick Reference': { base: 'bg-amber-500/10 text-amber-700 dark:text-amber-400', founder: 'bg-amber-500/10 text-amber-700 dark:text-amber-400' },
+  'Prompt Playbook': { base: 'bg-teal-500/10 text-teal-700 dark:text-teal-400', founder: 'bg-teal-500/10 text-teal-700 dark:text-teal-400' },
 };
 
 const DEFAULT_PILL_COLOR = { base: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400', founder: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400' };
@@ -250,7 +251,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
                       {items.map((s) => {
                         const itemType = s.submission_type ?? 'Article';
                         const isResourceLink = itemType === 'Resource Link';
-                        const isInternalNav = itemType === 'Article' || itemType === 'Study Tip' || itemType === 'Quick Reference' || itemType === 'Diagram';
+                        const isInternalNav = itemType === 'Article' || itemType === 'Study Tip' || itemType === 'Quick Reference' || itemType === 'Diagram' || itemType === 'Prompt Playbook';
                         const icon = isResourceLink
                           ? <Link2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
                           : itemType === 'Article'

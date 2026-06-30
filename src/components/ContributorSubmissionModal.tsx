@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import {
   X, Send, Loader2, ChevronDown, Tag,
   FileText, Link2, BookOpen, Zap, GitBranch,
-  AlertCircle, Link as LinkIcon, ImagePlus, CheckCircle2
+  AlertCircle, Link as LinkIcon, ImagePlus, CheckCircle2, Sparkles
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type NewSubmission, saveLocalSubmission } from '../utils/submissions';
 import { normalizeUrl } from '../utils/normalizeUrl';
 
-type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Quick Reference' | 'Resource Link';
+type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Quick Reference' | 'Resource Link' | 'Prompt Playbook';
 
 const PROFANITY_PATTERN = new RegExp(
   ['fuck','shit','bitch','asshole','bastard','cunt','damn','piss','cock','dick','pussy','whore','slut','retard','nigger','faggot','kike','spic','chink','wetback'].join('|'),
@@ -21,6 +21,7 @@ const SUBMISSION_TYPES = [
   { value: 'Diagram' as SubmissionType, label: 'Diagram', icon: GitBranch },
   { value: 'Quick Reference' as SubmissionType, label: 'Quick Ref', icon: Zap },
   { value: 'Resource Link' as SubmissionType, label: 'Resource Link', icon: Link2 },
+  { value: 'Prompt Playbook' as SubmissionType, label: 'Playbook', icon: Sparkles },
 ];
 
 const MASTER_CATEGORIES = [
@@ -69,6 +70,8 @@ function getFilteredCategories(type: SubmissionType) {
       return MASTER_CATEGORIES;
     case 'Resource Link':
       return MASTER_CATEGORIES.map(c => ({ ...c, label: 'General' }));
+    case 'Prompt Playbook':
+      return MASTER_CATEGORIES.filter((c) => c.label === 'Prompt Playbook');
   }
 }
 

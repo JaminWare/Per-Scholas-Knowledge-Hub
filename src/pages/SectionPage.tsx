@@ -381,13 +381,13 @@ function CurriculumDashboard({
     }
     if (context === 'Study Tips') {
       const type = (a.submission_type ?? '').toLowerCase();
-      return type !== 'resource link';
+      return a.is_sample || type === 'article' || type === 'study tip' || type === '';
     }
     if (context === 'Diagram') {
       return a.is_sample || (a.submission_type ?? '').toLowerCase() === 'diagram';
     }
     if (context === 'Prompt') {
-      return a.is_sample || (a.submission_type ?? '').toLowerCase().includes('prompt');
+      return a.is_sample || (a.submission_type ?? '').toLowerCase() === 'prompt playbook';
     }
     return true;
   };
@@ -439,8 +439,10 @@ function CurriculumDashboard({
   }, [articles, referenceCards, context]);
 
   const uncategorized = useMemo(() => {
+    const normalizedDomains = allMappedDomains.map((d) => d.toLowerCase().trim());
     const filtered = allArticles.filter((a) => {
-      if (allMappedDomains.includes(a.study_category || '')) return false;
+      const cat = (a.study_category || '').toLowerCase().trim();
+      if (normalizedDomains.includes(cat)) return false;
       return isVisibleInContext(a);
     });
     return shuffle(filtered);
@@ -450,7 +452,9 @@ function CurriculumDashboard({
     return (
       <div className="space-y-8">
         {domains.map((domain) => {
-          const domainArticles = allArticles.filter((a) => a.study_category === domain && isVisibleInContext(a));
+          const domainArticles = allArticles.filter((a) =>
+            (a.study_category ?? '').toLowerCase().trim() === domain.toLowerCase().trim() && isVisibleInContext(a)
+          );
           return (
             <div key={domain}>
               <div className="flex items-center gap-2 mb-3">
