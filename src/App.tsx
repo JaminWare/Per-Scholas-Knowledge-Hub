@@ -28,10 +28,10 @@ function AppContent() {
   const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-200 dark:bg-[#1e2538] text-zinc-800 dark:text-zinc-100">
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-200 dark:bg-[#1a2035] text-zinc-800 dark:text-slate-200">
       {/* ── Sidebar ─────────────────────────────────── */}
       <div
-        className={`flex-shrink-0 border-r border-zinc-700 h-full overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`flex-shrink-0 border-r border-slate-800/80 h-full overflow-hidden transition-all duration-300 ease-in-out ${
           sidebarOpen ? 'w-72' : 'w-0'
         }`}
       >
@@ -43,7 +43,7 @@ function AppContent() {
       {/* ── Main area ───────────────────────────────── */}
       <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
         {/* Sticky header — always dark charcoal in both modes */}
-        <header className="flex-shrink-0 z-30 bg-zinc-800/95 dark:bg-[#1e2538]/90 backdrop-blur-lg border-b border-zinc-700/80 dark:border-zinc-600">
+        <header className="flex-shrink-0 z-30 bg-zinc-800/95 dark:bg-[#1a2035]/90 backdrop-blur-lg border-b border-zinc-700/80 dark:border-slate-800/80">
           <div className="flex items-center gap-3 px-4 py-3">
             <button
               onClick={() => setSidebarOpen((v) => !v)}
@@ -83,7 +83,7 @@ function AppContent() {
         </main>
 
         {/* Footer */}
-        <footer className="flex-shrink-0 border-t border-zinc-700/40 dark:border-zinc-600 py-3 px-5">
+        <footer className="flex-shrink-0 border-t border-zinc-700/40 dark:border-slate-800/80 py-3 px-5">
           <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-zinc-500 dark:text-zinc-500">
             <p>Per Scholas — Learners Knowledge Base: AI-Enabled Healthcare IT</p>
             <p>Pioneering Cohort 2026-RTT-23</p>

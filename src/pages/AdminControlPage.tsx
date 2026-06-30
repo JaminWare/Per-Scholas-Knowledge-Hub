@@ -250,9 +250,22 @@ function SubmissionCard({
           {expanded ? 'Hide content preview' : 'Show content preview'}
         </button>
         {expanded && (
-          <pre className="mt-2 p-3 bg-zinc-950 rounded-lg text-[11px] text-zinc-400 font-mono whitespace-pre-wrap break-all max-h-48 overflow-y-auto border border-zinc-800">
-            {sub.content}
-          </pre>
+          isResource ? (
+            <div className="mt-2 p-3 bg-zinc-950 rounded-lg border border-zinc-800">
+              <a
+                href={sub.content}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sky-500 hover:underline break-all font-mono text-xs"
+              >
+                {sub.content}
+              </a>
+            </div>
+          ) : (
+            <pre className="mt-2 p-3 bg-zinc-950 rounded-lg text-[11px] text-zinc-400 font-mono whitespace-pre-wrap break-all max-h-48 overflow-y-auto border border-zinc-800">
+              {sub.content}
+            </pre>
+          )
         )}
       </div>
 
@@ -356,6 +369,7 @@ function AdminPanel() {
     if (sampleMatch) {
       // Overwrite the placeholder slot
       const cleanTitle = (sampleMatch.title as string).replace(/^\s*\[sample\]\s*/i, '').trim();
+      const isResourceLink = sub.submission_type === 'Resource Link';
       const { error: updateError } = await supabase
         .from('articles')
         .update({
@@ -364,7 +378,8 @@ function AdminPanel() {
           study_category: sub.track,
           is_sample: false,
           is_featured: false,
-          excerpt: deriveExcerpt(publishContent),
+          submission_type: sub.submission_type,
+          excerpt: isResourceLink ? `Contributed by ${sub.full_name}` : deriveExcerpt(publishContent),
           updated_at: new Date().toISOString(),
         })
         .eq('id', sampleMatch.id);
@@ -374,6 +389,7 @@ function AdminPanel() {
       const baseSlug = slugify(sub.title || `contribution-${Date.now()}`);
       const uniqueSlug = await ensureUniqueSlug(baseSlug);
       const sectionId = await findSectionIdByTrack(sub.track);
+      const isResourceLink = sub.submission_type === 'Resource Link';
 
       const { error: insertError } = await supabase
         .from('articles')
@@ -385,7 +401,8 @@ function AdminPanel() {
           section_id: sectionId,
           is_sample: false,
           is_featured: false,
-          excerpt: deriveExcerpt(publishContent),
+          submission_type: sub.submission_type,
+          excerpt: isResourceLink ? `Contributed by ${sub.full_name}` : deriveExcerpt(publishContent),
           tags: [],
         });
       if (insertError) throw insertError;
