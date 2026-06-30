@@ -96,7 +96,7 @@ function buildFormattedContent(authorName: string, trackValue: string, rawConten
 
 async function trySampleSlotOverwrite(trackValue: string, submissionId: string, formattedContent: string, onRefresh?: () => void) {
   try {
-    const { data: sampleArticles } = await supabase.from('articles').select('id, title, study_category').ilike('title', '%[Sample]%').order('created_at', { ascending: true }).limit(20);
+    const { data: sampleArticles } = await supabase.from('articles').select('id, title, study_category').or('title.ilike.%[Sample]%,title.ilike.%[OPEN SLOT]%').order('created_at', { ascending: true }).limit(20);
     if (!sampleArticles || sampleArticles.length === 0) return;
 
     const trackLower = trackValue.toLowerCase();

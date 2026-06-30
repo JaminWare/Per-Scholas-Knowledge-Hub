@@ -211,9 +211,9 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
         </div>
         <span className={`text-[9px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wide flex-shrink-0 ${
           isSample
-            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20'
+            ? 'bg-blue-500/20 text-blue-400 border border-blue-500/20'
             : 'bg-sky-500/15 text-sky-400 border border-sky-500/20'
-        }`} style={isSample ? { textShadow: '0 0 8px rgba(52,211,153,0.8)' } : undefined}>
+        }`} style={isSample ? { textShadow: '0 0 8px rgba(96,165,250,0.8)' } : undefined}>
           {isSample ? '[OPEN SLOT]' : '[Verified Peer Build]'}
         </span>
       </div>
@@ -313,7 +313,7 @@ function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
           <span className="text-[10px] font-mono text-zinc-500 truncate max-w-[120px]">open-slot</span>
         </div>
-        <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wider flex-shrink-0 bg-emerald-500/20 text-emerald-400 border border-emerald-500/20" style={{ textShadow: '0 0 8px rgba(52,211,153,0.8)' }}>
+        <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wider flex-shrink-0 bg-blue-500/20 text-blue-400 border border-blue-500/20" style={{ textShadow: '0 0 8px rgba(96,165,250,0.8)' }}>
           [OPEN SLOT]
         </span>
       </div>
@@ -327,10 +327,10 @@ function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string
               {domain} — {context}
             </h3>
             <div className="flex items-center gap-1.5 mt-1">
-              <div className="w-4 h-4 rounded bg-gradient-to-br from-emerald-400 to-emerald-500 flex items-center justify-center flex-shrink-0">
+              <div className="w-4 h-4 rounded bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center flex-shrink-0">
                 <span className="text-white text-[8px] font-bold">?</span>
               </div>
-              <span className="text-[11px] text-emerald-500 dark:text-emerald-400 truncate font-mono font-bold tracking-wider" style={{ textShadow: '0 0 6px rgba(52,211,153,0.6)' }}>[OPEN SLOT]</span>
+              <span className="text-[11px] text-blue-500 dark:text-blue-400 truncate font-mono font-bold tracking-wider" style={{ textShadow: '0 0 6px rgba(96,165,250,0.6)' }}>[OPEN SLOT]</span>
             </div>
           </div>
         </div>

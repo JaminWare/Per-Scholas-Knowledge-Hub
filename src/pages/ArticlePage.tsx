@@ -70,7 +70,7 @@ function slugToSampleTitle(slug: string): string {
     .replace(/^(core1|core2|healthcare)-/, '')
     .replace(/-/g, ' ')
     .replace(/\b\w/g, (c) => c.toUpperCase());
-  return `[Sample] ${stripped}`;
+  return `[OPEN SLOT] ${stripped}`;
 }
 
 function deriveTrackLabel(article: Article): string {
@@ -553,7 +553,7 @@ export default function ArticlePage() {
     );
   }
 
-  const strictlyIsSample = /\[\s*sample\s*\]/i.test(article?.title ?? '');
+  const strictlyIsSample = /\[\s*(sample|OPEN SLOT)\s*\]/i.test(article?.title ?? '');
   const isSample = strictlyIsSample || article.is_sample === true;
   const markdownContent = articleContentMap[article.slug] ?? article.content;
   const authorName = deriveAuthorName(contributor, article);
@@ -629,7 +629,7 @@ export default function ArticlePage() {
           {/* Author row */}
           <div className="flex flex-wrap items-center gap-3">
             {isSample ? (
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-emerald-500/40 text-xs font-bold tracking-wider text-emerald-400 bg-emerald-500/10" style={{ textShadow: '0 0 8px rgba(52,211,153,0.8)' }}>
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-blue-500/40 text-xs font-bold tracking-wider text-blue-400 bg-blue-500/10" style={{ textShadow: '0 0 8px rgba(96,165,250,0.8)' }}>
                 [OPEN SLOT]
               </span>
             ) : (

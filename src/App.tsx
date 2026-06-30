@@ -46,7 +46,7 @@ function AppContent() {
       {/* Light mode cursor orb */}
       {theme === 'light' && (
         <div
-          className="pointer-events-none fixed z-[9999] w-5 h-5 rounded-full bg-emerald-400/40 blur-sm -translate-x-1/2 -translate-y-1/2"
+          className="pointer-events-none fixed z-[9999] w-8 h-8 rounded-full bg-blue-400/50 blur-sm -translate-x-1/2 -translate-y-1/2"
           style={{ left: mousePos.x, top: mousePos.y }}
         />
       )}

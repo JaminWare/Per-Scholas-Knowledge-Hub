@@ -349,11 +349,11 @@ function AdminPanel() {
       .eq('id', id);
     if (approveError) throw approveError;
 
-    // Step 2: try to overwrite a matching [Sample] article
+    // Step 2: try to overwrite a matching [OPEN SLOT] article
     const { data: sampleRows } = await supabase
       .from('articles')
       .select('id, title, study_category')
-      .ilike('title', '%[Sample]%')
+      .or('title.ilike.%[Sample]%,title.ilike.%[OPEN SLOT]%')
       .order('created_at', { ascending: true })
       .limit(30);
 
