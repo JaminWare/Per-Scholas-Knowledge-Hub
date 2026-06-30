@@ -31,6 +31,7 @@ export interface Article {
   is_sample: boolean;
   study_category: string | null;
   source_file: string | null;
+  author_name: string | null;
   created_at: string;
   updated_at: string;
   contributor?: Contributor;

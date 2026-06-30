@@ -397,6 +397,7 @@ function AdminPanel() {
           is_sample: false,
           is_featured: false,
           submission_type: sub.submission_type,
+          author_name: sub.full_name,
           excerpt: isResourceLink ? `Contributed by ${sub.full_name}` : deriveExcerpt(publishContent),
           updated_at: new Date().toISOString(),
         })
@@ -420,6 +421,7 @@ function AdminPanel() {
           is_sample: false,
           is_featured: false,
           submission_type: sub.submission_type,
+          author_name: sub.full_name,
           excerpt: isResourceLink ? `Contributed by ${sub.full_name}` : deriveExcerpt(publishContent),
           tags: [],
         });
@@ -432,7 +434,10 @@ function AdminPanel() {
   const handleDelete = async (id: string) => {
     const sub = submissions.find((s) => s.id === id);
     const { error } = await supabase.from('submissions').delete().eq('id', id);
-    if (error) throw error;
+    if (error) {
+      console.error('Database deletion failed:', error.message);
+      throw new Error('Failed to delete from database. Please check Supabase RLS policies.');
+    }
     setSubmissions((prev) => prev.filter((s) => s.id !== id));
     flashSuccess(`"${sub?.title ?? 'Submission'}" rejected and removed.`);
   };

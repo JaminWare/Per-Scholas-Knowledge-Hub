@@ -363,23 +363,65 @@ export default function RecognitionPage() {
     if (local.length > 0) setSubmissions(local);
 
     async function fetchFromSupabase() {
-      const { data } = await supabase
+      // Fetch approved submissions
+      const { data: subData } = await supabase
         .from('submissions')
         .select('*')
+        .eq('is_approved', true)
         .order('created_at', { ascending: false })
         .limit(200);
-      if (data && data.length > 0) {
-        setSubmissions((prev) => {
-          const localOnly = prev.filter((s) => s.id.startsWith('local-'));
-          const merged = [...localOnly, ...(data as NewSubmission[])];
-          const seen = new Set<string>();
-          return merged.filter((s) => {
-            if (seen.has(s.id)) return false;
-            seen.add(s.id);
-            return true;
-          });
-        });
+
+      // Fetch published articles with an author_name (dynamically synced)
+      const { data: articleData } = await supabase
+        .from('articles')
+        .select('id, title, slug, author_name, study_category, submission_type')
+        .eq('is_sample', false)
+        .not('author_name', 'is', null)
+        .limit(200);
+
+      // Convert articles into submission-compatible shapes
+      const articleEntries: NewSubmission[] = (articleData ?? []).map((a: any) => ({
+        id: `art-${a.id}`,
+        full_name: a.author_name,
+        track: a.study_category ?? '',
+        badge: 'Cohort Contributor',
+        title: a.title,
+        content: '',
+        submission_type: a.submission_type ?? 'Article',
+        created_at: '',
+      }));
+
+      // Merge local + submissions + articles, deduplicate by title
+      const allEntries: NewSubmission[] = [];
+      const seenTitles = new Set<string>();
+
+      // Articles take priority (these are the published source of truth)
+      for (const entry of articleEntries) {
+        const titleKey = entry.title.trim().toLowerCase();
+        if (!seenTitles.has(titleKey)) {
+          seenTitles.add(titleKey);
+          allEntries.push(entry);
+        }
       }
+
+      // Then approved submissions (for items not yet reflected in articles)
+      for (const entry of (subData as NewSubmission[]) ?? []) {
+        const titleKey = entry.title.trim().toLowerCase();
+        if (!seenTitles.has(titleKey)) {
+          seenTitles.add(titleKey);
+          allEntries.push(entry);
+        }
+      }
+
+      // Finally merge with local-only entries
+      const localOnly = local.filter((s) => s.id.startsWith('local-'));
+      const merged = [...localOnly, ...allEntries];
+      const seen = new Set<string>();
+      setSubmissions(merged.filter((s) => {
+        if (seen.has(s.id)) return false;
+        seen.add(s.id);
+        return true;
+      }));
     }
     fetchFromSupabase();
   }, []);
