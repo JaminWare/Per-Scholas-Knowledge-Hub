@@ -527,7 +527,6 @@ export default function RecognitionPage() {
   }
   const communityGroups = Array.from(groupMap.values());
   const newestName = submissions.find((s) => s.full_name.toLowerCase() !== 'jamin ware')?.full_name.trim() ?? null;
-  const totalContributors = 1 + communityGroups.length;
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -542,30 +541,22 @@ export default function RecognitionPage() {
       </button>
 
       {/* Hero banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-amber-950 border border-zinc-700/50 p-6">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-amber-400/5 rounded-full blur-2xl pointer-events-none" />
-        <div className="relative">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2.5 rounded-xl bg-amber-500/20 border border-amber-500/30">
-              <Award className="w-6 h-6 text-amber-400" />
-            </div>
-            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
-              Per Scholas — 2026-RTT-23
-            </span>
+      <div className="rounded-2xl border p-6 bg-zinc-800 border-zinc-700/50 dark:bg-white/10 dark:backdrop-blur-lg dark:border-white/15">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="p-2.5 rounded-xl bg-sky-500/20 border border-sky-500/30">
+            <Award className="w-6 h-6 text-sky-400" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-2">
-            Cohort 2026-RTT-23 Wall of Fame
-          </h1>
-          <p className="text-zinc-300 max-w-xl leading-relaxed text-sm">
-            Celebrating every learner who has contributed research, documentation, and knowledge to the
-            AI-Enabled Healthcare IT collective. Click any profile to explore their full portfolio.
-          </p>
-          <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-500/15 border border-amber-500/20 text-xs font-semibold text-amber-400">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-            {totalContributors} contributor{totalContributors !== 1 ? 's' : ''} recognized
-          </div>
+          <span className="text-xs font-bold text-sky-400 uppercase tracking-widest">
+            Per Scholas — 2026-RTT-23
+          </span>
         </div>
+        <h1 className="text-3xl md:text-4xl font-bold text-sky-400 drop-shadow-[0_0_12px_rgba(56,189,248,0.75)] mb-2">
+          Cohort 2026-RTT-23 Wall of Fame
+        </h1>
+        <p className="text-zinc-300 dark:text-sky-200/70 max-w-xl leading-relaxed text-sm">
+          Celebrating every learner who has contributed research, documentation, and knowledge to the
+          AI-Enabled Healthcare IT collective. Click any profile to explore their full portfolio.
+        </p>
       </div>
 
       {/* Founder section */}

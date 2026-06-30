@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { normalizeUrl } from '../utils/normalizeUrl';
 import {
   Lock, ShieldCheck, CheckCircle2, Trash2, Loader2,
   AlertCircle, Eye, EyeOff, RefreshCw, FileText, Link2,
@@ -241,6 +242,33 @@ function SubmissionCard({
   const [deleting, setDeleting] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [actionError, setActionError] = useState('');
+  const [isDuplicate, setIsDuplicate] = useState(false);
+
+  useEffect(() => {
+    async function checkDuplicate() {
+      try {
+        if (sub.submission_type === 'Resource Link') {
+          const normalized = normalizeUrl(sub.content ?? '');
+          const { data } = await supabase
+            .from('articles')
+            .select('content')
+            .eq('submission_type', 'Resource Link')
+            .eq('is_sample', false);
+          if ((data ?? []).some((row) => normalizeUrl(row.content ?? '') === normalized)) {
+            setIsDuplicate(true);
+          }
+        } else {
+          const { data } = await supabase
+            .from('articles')
+            .select('id')
+            .ilike('title', sub.title)
+            .eq('is_sample', false);
+          if ((data ?? []).length > 0) setIsDuplicate(true);
+        }
+      } catch { /* non-blocking */ }
+    }
+    checkDuplicate();
+  }, [sub.id]);
 
   const handleApprove = async () => {
     setApproving(true);
@@ -281,6 +309,11 @@ function SubmissionCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-3 flex-wrap">
             <div className="min-w-0">
+              {isDuplicate && (
+                <span className="inline-block mb-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-red-500/15 text-red-400 border border-red-500/30 animate-pulse">
+                  DUPLICATE DETECTED
+                </span>
+              )}
               <h3 className="font-semibold text-zinc-100 text-sm leading-snug">{sub.title}</h3>
               <div className="flex flex-wrap items-center gap-2 mt-1.5">
                 <span className="flex items-center gap-1 text-[11px] text-zinc-400">
