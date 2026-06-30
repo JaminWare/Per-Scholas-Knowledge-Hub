@@ -103,15 +103,6 @@ const TRACK_COLORS = {
   cyan: { header: 'text-cyan-600 dark:text-cyan-400', icon: 'bg-cyan-500/10 text-cyan-500', domainHeader: 'text-cyan-500 dark:text-cyan-400' },
 };
 
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
 const DASHBOARD_CONTEXTS: Record<string, string> = {
   'study-tips':            'Study Tips',
   'diagrams':              'Diagram',
@@ -374,8 +365,6 @@ function CurriculumDashboard({
   context: string;
   onContribute: () => void;
 }) {
-  const allMappedDomains = CURRICULUM_TRACKS.flatMap((t) => [...t.domains]);
-
   const isVisibleInContext = (a: ArticleWithContributor) => {
     if (context === 'Quick Reference') {
       return a.is_sample || (a.submission_type ?? '').toLowerCase() === 'quick reference' || (a.submission_type ?? '').toLowerCase() === 'resource link';
@@ -439,16 +428,6 @@ function CurriculumDashboard({
     return [...articles, ...newRefs];
   }, [articles, referenceCards, context]);
 
-  const uncategorized = useMemo(() => {
-    const normalizedDomains = allMappedDomains.map((d) => d.toLowerCase().trim());
-    const filtered = allArticles.filter((a) => {
-      const cat = (a.study_category || '').toLowerCase().trim();
-      if (normalizedDomains.includes(cat)) return false;
-      return isVisibleInContext(a);
-    });
-    return shuffle(filtered);
-  }, [allArticles]);
-
   function TrackDomains({ domains, colors }: { domains: readonly string[]; colors: { domainHeader: string } }) {
     return (
       <div className="space-y-8">
@@ -489,29 +468,6 @@ function CurriculumDashboard({
 
   return (
     <div className="space-y-10">
-      {/* General References row — always visible for Quick Reference context */}
-      {!isLoading && (context === 'Quick Reference' || uncategorized.length > 0) && (
-        <section>
-          <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-slate-100 dark:bg-zinc-700">
-              <Lightbulb className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
-            </div>
-            <h2 className="text-base font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-              General
-            </h2>
-          </div>
-          <div className={SCROLL_TRACK}>
-            {uncategorized.length > 0 ? (
-              uncategorized.map((a) => <AppletCard key={a.id} article={a} />)
-            ) : (
-              <div className="w-full flex items-center justify-center py-6 px-4">
-                <p className="text-sm text-zinc-500 dark:text-zinc-500 italic">No active repository links in this segment yet.</p>
-              </div>
-            )}
-          </div>
-        </section>
-      )}
-
       <div className="grid grid-cols-2 gap-6 items-start min-w-[640px] md:min-w-0 overflow-x-auto md:overflow-x-visible">
         <section className="min-w-[300px]">
           <div className={`flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700`}>

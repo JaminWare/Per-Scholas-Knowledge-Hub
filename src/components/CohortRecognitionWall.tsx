@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Award, Plus, BookOpen, Zap, Link2, Star, Crown } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { loadLocalSubmissions, type NewSubmission } from '../utils/submissions';
+import { type NewSubmission } from '../utils/submissions';
 
 interface Props {
   newSubmission: NewSubmission | null;
@@ -172,9 +172,6 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
   const [submissions, setSubmissions] = useState<NewSubmission[]>([]);
 
   useEffect(() => {
-    const local = loadLocalSubmissions();
-    if (local.length > 0) setSubmissions(local);
-
     async function loadFromSupabase() {
       const { data: subData } = await supabase
         .from('submissions')
@@ -214,10 +211,7 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
         if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
       }
 
-      const localOnly = local.filter((s) => s.id.startsWith('local-'));
-      const merged = [...localOnly, ...allEntries];
-      const seen = new Set<string>();
-      setSubmissions(merged.filter((s) => { if (seen.has(s.id)) return false; seen.add(s.id); return true; }));
+      setSubmissions(allEntries);
     }
     loadFromSupabase();
   }, []);

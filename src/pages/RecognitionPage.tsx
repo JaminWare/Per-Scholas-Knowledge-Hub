@@ -5,7 +5,7 @@ import {
   Zap, Star, Crown, Link2, UploadCloud,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { loadLocalSubmissions, type NewSubmission } from '../utils/submissions';
+import { type NewSubmission } from '../utils/submissions';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 
 // ── Badge colour map ──────────────────────────────────────
@@ -351,8 +351,6 @@ export default function RecognitionPage() {
   const [newestName, setNewestName] = useState<string | null>(null);
 
   useEffect(() => {
-    const local = loadLocalSubmissions();
-
     async function fetchFromSupabase() {
       const { data: subData } = await supabase
         .from('submissions')
@@ -395,13 +393,6 @@ export default function RecognitionPage() {
         if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
       }
       for (const entry of submissionEntries) {
-        const key = entry.title.trim().toLowerCase();
-        if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
-      }
-
-      // Add local-only submissions
-      const localOnly = local.filter((s) => s.id.startsWith('local-'));
-      for (const entry of localOnly) {
         const key = entry.title.trim().toLowerCase();
         if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
       }

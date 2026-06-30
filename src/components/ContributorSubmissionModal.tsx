@@ -5,7 +5,7 @@ import {
   AlertCircle, Link as LinkIcon, ImagePlus, CheckCircle2, Sparkles
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { type NewSubmission, saveLocalSubmission } from '../utils/submissions';
+import { type NewSubmission } from '../utils/submissions';
 import { normalizeUrl } from '../utils/normalizeUrl';
 
 type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Quick Reference' | 'Resource Link' | 'Prompt Playbook';
@@ -330,7 +330,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       }
 
       const sub: NewSubmission = { ...(data as NewSubmission), badge: autoBadge, submission_type: submissionType };
-      saveLocalSubmission(sub);
 
       onSubmitted(sub);
       setIsSuccess(true);
