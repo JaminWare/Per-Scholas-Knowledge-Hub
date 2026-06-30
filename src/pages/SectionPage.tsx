@@ -285,12 +285,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
           }`}
         >
           {article.submission_type === 'Resource Link' ? (
-  <a 
-    href={article.content} 
-    target="_blank" 
-    rel="noopener noreferrer" 
-    className="w-full mt-4 py-2 flex items-center justify-center gap-2 text-sm font-bold rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:hover:bg-emerald-500/20 transition-colors"
-  >
+  
     View Resource ↗
   </a>
 ) : (
