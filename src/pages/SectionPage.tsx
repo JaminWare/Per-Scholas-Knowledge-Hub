@@ -59,7 +59,6 @@ const KNOWN_AUTHORS: Record<string, string> = {
   'ai-prompt-engineering-healthcare': 'Jamin Ware',
 };
 
-// ── Shared three-track curriculum map ────────────────────
 const CURRICULUM_TRACKS = [
   {
     track: 'CompTIA A+ Core 1',
@@ -102,7 +101,6 @@ const TRACK_COLORS = {
   cyan: { header: 'text-cyan-600 dark:text-cyan-400', icon: 'bg-cyan-500/10 text-cyan-500', domainHeader: 'text-cyan-500 dark:text-cyan-400' },
 };
 
-// Dashboard slugs → display context label
 const DASHBOARD_CONTEXTS: Record<string, string> = {
   'study-tips':            'Study Tips',
   'diagrams':              'Diagram',
@@ -110,9 +108,7 @@ const DASHBOARD_CONTEXTS: Record<string, string> = {
   'azari-prompt-playbook': 'Prompt',
 };
 
-// Horizontal scroll track container
 const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-track]:bg-transparent';
-// Fixed card width for snapping
 const CARD_WIDTH = 'w-[280px] sm:w-[320px] md:w-[350px] shrink-0 snap-start';
 
 function CopyLinkButton({ slug }: { slug: string }) {
@@ -139,7 +135,6 @@ function CopyLinkButton({ slug }: { slug: string }) {
   );
 }
 
-// ── Coming Soon inline panel ──────────────────────────────
 function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
   const navigate = useNavigate();
   if (minimal) {
@@ -163,10 +158,6 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
           This module is currently being built or undergoing moderation review by our Cohort Leaders. Check back shortly!
         </p>
       </div>
-      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-xs font-medium text-amber-700 dark:text-amber-400">
-        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
-        Under active development — 2026-RTT-23
-      </div>
       <button
         onClick={() => navigate(-1)}
         className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 text-sm font-medium transition-all"
@@ -178,7 +169,6 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
   );
 }
 
-// ── Applet Card — Lab Capsule Format ─────────────────────
 type ArticleWithContributor = Article & { contributor?: { name: string } | null };
 
 function AppletCard({ article }: { article: ArticleWithContributor }) {
@@ -197,8 +187,6 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
         ? 'bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20 hover:border-amber-400/70 dark:hover:border-amber-400/50 hover:shadow-[0_0_0_1.5px_rgba(251,191,36,0.5),0_4px_16px_rgba(251,191,36,0.08)]'
         : 'bg-white dark:bg-zinc-700 border-slate-200 dark:border-zinc-600 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
     }`}>
-
-      {/* ── Terminal Header Strip ── */}
       <div
         className={`flex items-center justify-between px-3 py-1.5 ${
           isSample ? 'bg-zinc-800 dark:bg-zinc-900/80' : 'bg-zinc-800 dark:bg-zinc-900'
@@ -212,7 +200,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
             <span className="text-[11px] font-mono font-bold text-sky-400 select-none">{`</>`}</span>
           )}
           <span className="text-[10px] font-mono text-zinc-500 truncate max-w-[120px]">
-            {article.slug.split('/').pop()}
+            {article.slug?.split('/').pop() || 'resource'}
           </span>
         </div>
         <span className={`text-[9px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wide flex-shrink-0 ${
@@ -224,7 +212,6 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
         </span>
       </div>
 
-      {/* ── Card Body ── */}
       <div className="flex flex-col gap-3 p-4 flex-1">
         <div className="flex items-start gap-3">
           <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${
@@ -239,14 +226,8 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
                 : 'text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400'
             }`}>
               {article.title}
-              <p className="text-xs font-medium text-zinc-500 mt-1">Curated by {article.author}</p>
+              <p className="text-xs font-medium text-zinc-500 mt-1">Curated by {article.author || authorName}</p>
             </h3>
-            <div className="flex items-center gap-1.5 mt-1">
-              <div className="w-4 h-4 rounded bg-gradient-to-br from-zinc-400 to-zinc-500 flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-[8px] font-bold">{authorInitial}</span>
-              </div>
-              <span className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">{authorName}</span>
-            </div>
           </div>
         </div>
 
@@ -254,7 +235,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
           <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 flex-1 leading-relaxed">{article.excerpt}</p>
         )}
 
-        {article.tags.length > 0 && (
+        {article.tags?.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {article.tags.slice(0, 3).map((tag) => (
               <span key={tag} className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-300/60 dark:border-zinc-700/60">
@@ -270,45 +251,32 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
           </p>
         )}
 
-        {toolsPreview && (
-          <div className="opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-200 text-[10px] font-mono text-emerald-700 dark:text-emerald-400 bg-zinc-900/6 dark:bg-zinc-900/60 px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 truncate">
-            {toolsPreview}
-          </div>
-        )}
-
-        <Link
-          to={`/article/${article.slug}`}
-          className={`mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border ${
-            isSample
-              ? 'bg-amber-500/10 hover:bg-amber-500 text-amber-700 dark:text-amber-400 hover:text-white border-amber-500/20 hover:border-amber-500'
-              : 'bg-sky-500/10 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 hover:shadow-md hover:shadow-sky-500/20'
-          }`}
-        >
-       {article.submission_type === 'Resource Link' ? (
+        {article.submission_type === 'Resource Link' ? (
           <a 
             href={article.content} 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="w-full mt-4 py-2 flex items-center justify-center gap-2 text-sm font-bold rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:hover:bg-emerald-500/20 transition-colors"
+            className="mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-emerald-50/50 hover:bg-emerald-500 text-emerald-600 dark:text-emerald-400 hover:text-white border-emerald-500/20 hover:border-emerald-500 hover:shadow-md hover:shadow-emerald-500/20"
           >
             View Resource ↗
           </a>
         ) : (
-          <button 
-            onClick={() => setSelectedArticle(article)} 
-            className="w-full mt-4 py-2 flex items-center justify-center gap-2 text-sm font-bold rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 dark:bg-sky-500/10 dark:text-sky-400 dark:hover:bg-sky-500/20 transition-colors"
+          <Link
+            to={`/article/${article.slug}`}
+            className={`mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border ${
+              isSample
+                ? 'bg-amber-500/10 hover:bg-amber-500 text-amber-700 dark:text-amber-400 hover:text-white border-amber-500/20 hover:border-amber-500'
+                : 'bg-sky-500/10 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 hover:shadow-md hover:shadow-sky-500/20'
+            }`}
           >
             Read Article
-          </button>
-        )}   
+          </Link>
+        )}
       </div>
-    );
+    </div>
+  );
 }
 
-// ── Skeleton ──────────────────────────────────────────────
-function AppletSkeleton() {
-
-// ── Skeleton ──────────────────────────────────────────────
 function AppletSkeleton() {
   return (
     <div className={`${CARD_WIDTH} bg-white dark:bg-zinc-700 border border-slate-200 dark:border-zinc-600 rounded-xl p-5 animate-pulse`}>
@@ -328,7 +296,6 @@ function AppletSkeleton() {
   );
 }
 
-// ── Open slot placeholder capsule ────────────────────────
 function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string; context: string; onContribute: () => void }) {
   return (
     <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20`}>
@@ -377,7 +344,6 @@ function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string
   );
 }
 
-// ── Curriculum dashboard — three-track horizontal layout ─
 function CurriculumDashboard({
   articles,
   isLoading,
@@ -390,36 +356,27 @@ function CurriculumDashboard({
   onContribute: () => void;
 }) {
   const allMappedDomains = CURRICULUM_TRACKS.flatMap((t) => [...t.domains]);
-  const trackArticles = articles.filter(a => {
-  // 1. Must match the curriculum track slot
-  const matchesTrack = a.study_category === domain.title;
-  if (!matchesTrack) return false;
 
-  // 2. If we are on the Quick References page, ONLY show Quick Refs and Resource Links
-  if (pageTitle === 'Quick References') {
-    return a.submission_type === 'Quick Reference' || a.submission_type === 'Resource Link';
-  }
-  
-  // 3. If we are on the Study Tips page, hide Resource Links so they don't bleed over
-  if (pageTitle === 'Study Tips') {
-    return a.submission_type !== 'Resource Link';
-  }
+  const isVisibleInContext = (a: ArticleWithContributor) => {
+    if (context === 'Quick Reference') {
+      return a.submission_type === 'Quick Reference' || a.submission_type === 'Resource Link';
+    }
+    if (context === 'Study Tips') {
+      return a.submission_type !== 'Resource Link';
+    }
+    return true;
+  };
 
-  return true;
-});
+  const uncategorized = articles.filter((a) => {
+    if (allMappedDomains.includes(a.study_category || '')) return false;
+    return isVisibleInContext(a);
+  });
 
-  // Helper: render domain rows for a single track
-  function TrackDomains({
-    domains,
-    colors,
-  }: {
-    domains: readonly string[];
-    colors: { domainHeader: string };
-  }) {
+  function TrackDomains({ domains, colors }: { domains: readonly string[]; colors: { domainHeader: string } }) {
     return (
       <div className="space-y-8">
         {domains.map((domain) => {
-          const domainArticles = articles.filter((a) => a.study_category === domain);
+          const domainArticles = articles.filter((a) => a.study_category === domain && isVisibleInContext(a));
           return (
             <div key={domain}>
               <div className="flex items-center gap-2 mb-3">
@@ -453,7 +410,6 @@ function CurriculumDashboard({
 
   return (
     <div className="space-y-10">
-      {/* 1. General / uncategorized — rendered first */}
       {!isLoading && uncategorized.length > 0 && (
         <section>
           <div className="flex items-center gap-2.5 mb-4">
@@ -468,9 +424,7 @@ function CurriculumDashboard({
         </section>
       )}
 
-      {/* 2. Core 1 + Core 2 — side-by-side columns */}
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
-        {/* Core 1 */}
         <section>
           <div className={`flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700`}>
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[core1.color].icon}`}>
@@ -481,7 +435,6 @@ function CurriculumDashboard({
           <TrackDomains domains={core1.domains} colors={TRACK_COLORS[core1.color]} />
         </section>
 
-        {/* Core 2 */}
         <section>
           <div className={`flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700`}>
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[core2.color].icon}`}>
@@ -493,7 +446,6 @@ function CurriculumDashboard({
         </section>
       </div>
 
-      {/* 3. Advanced Healthcare IT — full width */}
       <section>
         <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
           <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[healthcare.color].icon}`}>
@@ -507,7 +459,6 @@ function CurriculumDashboard({
   );
 }
 
-// ── Main SectionPage ──────────────────────────────────────
 export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?: number; onRefresh?: () => void }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -547,7 +498,6 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
     fetchArticles();
   }, [slug, refreshKey]);
 
-  // ── Rich local wiki article ──────────────────────────────
   if (localContent && !isDomainSection) {
     const roleColor = roleColors[localContent.contributorRole ?? ''] ?? 'bg-zinc-800 text-zinc-400';
     return (
@@ -613,7 +563,6 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
     );
   }
 
-  // ── Applet Dashboard ─────────────────────────────────────
   const displayTitle = meta?.title ?? (slug?.replace(/[-/]/g, ' ') ?? 'Articles');
 
   return (
@@ -628,7 +577,6 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         </button>
       )}
 
-      {/* Section header — article count subtitle removed */}
       <div className="flex items-center gap-4 pb-6 border-b border-zinc-300 dark:border-zinc-800">
         <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
           <Icon className="w-7 h-7 text-white" />
@@ -648,7 +596,6 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         </button>
       </div>
 
-      {/* Three-track curriculum dashboards or flat scroll row */}
       {dashboardContext ? (
         <CurriculumDashboard articles={dbArticles} isLoading={isLoading} context={dashboardContext} onContribute={() => setIsModalOpen(true)} />
       ) : isLoading ? (
