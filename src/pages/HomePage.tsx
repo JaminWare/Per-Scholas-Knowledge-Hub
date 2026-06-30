@@ -170,7 +170,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
               </div>
             ) : recentArticles.length > 0 ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {recentArticles.map((article) => (
+                {recentArticles.filter((a) => a.title !== '[OPEN SLOT]').map((article) => (
                   <ArticleCard key={article.id} article={article} />
                 ))}
               </div>
@@ -186,6 +186,11 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
         {/* ── Right sidebar control console ─────────────────── */}
         <aside className="lg:col-span-1 space-y-4 mt-6 lg:mt-28">
+
+          {/* Pulsing arrow drawing attention to submission CTA */}
+          <div className="flex justify-center py-2">
+            <ArrowDown className="animate-bounce text-blue-400 w-10 h-10 drop-shadow-[0_0_8px_rgba(96,165,250,0.6)]" />
+          </div>
 
           {/* Widget 1 — Contribute Placard (opens modal) */}
           <button
@@ -207,11 +212,6 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
               <ChevronRight className="w-5 h-5 text-zinc-300 dark:text-zinc-600 group-hover:text-blue-400 transition-colors flex-shrink-0" />
             </div>
           </button>
-
-          {/* Pulsing arrow pointing to submission entry */}
-          <div className="flex justify-center py-2">
-            <ArrowDown className="animate-bounce text-blue-400 w-10 h-10 drop-shadow-[0_0_8px_rgba(96,165,250,0.6)]" />
-          </div>
 
           {/* Widget 2 — View Detailed Portfolios emblem */}
           <Link

@@ -8,7 +8,7 @@ import contentMap from '../data/contentMap';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, FileText, Sparkles, Layout, Laptop, Monitor, Database,
-  Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight,
+  Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight, ArrowDown,
   Construction,
 } from 'lucide-react';
 
@@ -339,6 +339,9 @@ function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string
         <p className="text-[11px] text-blue-600 dark:text-blue-400 bg-blue-100/60 dark:bg-blue-500/10 rounded-lg px-2.5 py-2 border border-blue-200/60 dark:border-blue-500/15" style={{ textShadow: '0 0 6px rgba(96,165,250,0.4)' }}>
           This slot is open! Submit your research via the portal below to claim this applet.
         </p>
+        <div className="flex justify-center pt-1">
+          <ArrowDown className="animate-bounce text-blue-400 w-5 h-5 drop-shadow-[0_0_6px_rgba(96,165,250,0.6)]" />
+        </div>
         <button
           type="button"
           onClick={onContribute}
@@ -604,13 +607,16 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
           )}
           <h1 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">{displayTitle}</h1>
         </div>
-        <button
-          type="button"
-          onClick={() => setIsModalOpen(true)}
-          className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-400 hover:bg-blue-500 text-zinc-900 text-sm font-bold shadow-[0_0_15px_rgba(96,165,250,0.3)] hover:shadow-[0_0_25px_rgba(96,165,250,0.5)] transition-all"
-        >
-          Submit a Contribution
-        </button>
+        <div className="flex flex-col items-center gap-1 flex-shrink-0">
+          <ArrowDown className="animate-bounce text-blue-400 w-6 h-6 drop-shadow-[0_0_6px_rgba(96,165,250,0.6)]" />
+          <button
+            type="button"
+            onClick={() => setIsModalOpen(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-400 hover:bg-blue-500 text-zinc-900 text-sm font-bold shadow-[0_0_15px_rgba(96,165,250,0.3)] hover:shadow-[0_0_25px_rgba(96,165,250,0.5)] transition-all"
+          >
+            Submit a Contribution
+          </button>
+        </div>
       </div>
 
       {dashboardContext ? (

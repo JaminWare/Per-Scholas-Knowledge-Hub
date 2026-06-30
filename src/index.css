@@ -32,17 +32,17 @@
 }
 
 @layer components {
-  /* ── Sidebar items — dark mode ── */
+  /* ── Sidebar items — dark mode (sidebar is light in dark mode) ── */
   html.dark .sidebar-item {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200;
-    @apply text-zinc-400 hover:bg-sky-500/10 hover:text-sky-400;
+    @apply text-zinc-600 hover:bg-sky-500/10 hover:text-sky-600;
   }
 
   html.dark .sidebar-item.active {
-    @apply bg-sky-500/15 text-sky-400;
+    @apply bg-sky-500/10 text-sky-600;
   }
 
-  /* ── Sidebar items — light mode (sidebar is always dark charcoal) ── */
+  /* ── Sidebar items — light mode (sidebar is dark charcoal) ── */
   html:not(.dark) .sidebar-item {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200;
     @apply text-zinc-100 hover:bg-zinc-700/60 hover:text-sky-400;

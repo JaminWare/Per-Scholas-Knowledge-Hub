@@ -2,10 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
-  Zap, Star, Home, Crown, Link2,
+  Zap, Star, Crown, Link2, UploadCloud,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { loadLocalSubmissions, type NewSubmission } from '../utils/submissions';
+import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 
 // ── Static Founder data ───────────────────────────────────
 
@@ -355,6 +356,7 @@ export default function RecognitionPage() {
   const navigate = useNavigate();
   const [submissions,     setSubmissions]     = useState<NewSubmission[]>([]);
   const [openContributor, setOpenContributor] = useState<string | null>(null);
+  const [modalOpen,       setModalOpen]       = useState(false);
 
   useEffect(() => {
     const local = loadLocalSubmissions();
@@ -476,16 +478,22 @@ export default function RecognitionPage() {
             <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
               No community submissions yet. Be the first to contribute!
             </p>
-            <Link
-              to="/"
+            <button
+              onClick={() => setModalOpen(true)}
               className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium transition-colors"
             >
-              <Home className="w-4 h-4" />
+              <UploadCloud className="w-4 h-4" />
               Submit Your Contribution
-            </Link>
+            </button>
           </div>
         )}
       </section>
+
+      <ContributorSubmissionModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmitted={() => setModalOpen(false)}
+      />
 
     </div>
   );
