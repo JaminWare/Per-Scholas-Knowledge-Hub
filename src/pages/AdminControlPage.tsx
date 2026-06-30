@@ -415,8 +415,6 @@ function AdminPanel() {
       .eq('id', id);
     if (approveError) throw approveError;
 
-    setSubmissions((prev) => prev.filter((s) => s.id !== id));
-
     // Step 2: resolve the target section dynamically
     const targetSectionId = await resolveSectionId(sub.track);
 
@@ -449,7 +447,7 @@ function AdminPanel() {
         .update({
           title: cleanedTitle || sub.title,
           slug: uniqueSlug,
-          content: publishContent,
+          content: publishContent || '',
           study_category: resolveStudyCategory(sub.track),
           section_id: targetSectionId,
           is_sample: false,
@@ -471,7 +469,7 @@ function AdminPanel() {
         .insert({
           title: cleanedTitle || sub.title,
           slug: uniqueSlug,
-          content: publishContent,
+          content: publishContent || '',
           study_category: resolveStudyCategory(sub.track),
           section_id: targetSectionId,
           is_sample: false,
@@ -484,6 +482,7 @@ function AdminPanel() {
       if (insertError) throw insertError;
     }
 
+    setSubmissions((prev) => prev.filter((s) => s.id !== id));
     flashSuccess(`"${cleanedTitle || sub.title}" approved and published successfully.`);
   };
 
