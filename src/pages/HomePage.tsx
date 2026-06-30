@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
 import UniqueHacksGrid from '../components/UniqueHacksGrid';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import { type NewSubmission } from '../utils/submissions';
-import { normalizeCategory } from '../utils/normalizeCategory';
+import { useArticles } from '../hooks/useArticles';
 import SuccessToast from '../components/SuccessToast';
 import type { Article } from '../types/database';
 import {
@@ -42,60 +42,22 @@ const researchArticles = [
 
 export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
   const [featuredArticles, setFeaturedArticles] = useState<Article[]>([]);
-  const [recentArticles,   setRecentArticles]   = useState<Article[]>([]);
-  const [isLoading,        setIsLoading]         = useState(true);
+  const { articles: allArticles, isLoading } = useArticles();
   const [modalOpen,        setModalOpen]         = useState(false);
   const [toastVisible,     setToastVisible]      = useState(false);
   const [toastMessage,     setToastMessage]      = useState('');
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const [featuredRes, recentRes, approvedSubsRes] = await Promise.all([
-          supabase.from('articles').select('*, contributor:contributors(*)').eq('is_featured', true).limit(3),
-          supabase.from('articles').select('*, contributor:contributors(*)').eq('is_sample', false).order('created_at', { ascending: false }).limit(6),
-          supabase.from('submissions').select('*').eq('is_approved', true).order('created_at', { ascending: false }).limit(6),
-        ]);
-        if (featuredRes.data) setFeaturedArticles(featuredRes.data);
-
-        const dbArticles = (recentRes.data ?? []).map((a: any) => ({
-          ...a,
-          study_category: normalizeCategory(a.study_category ?? '', a.title ?? ''),
-        }));
-        const approvedSubs = (approvedSubsRes.data ?? []).map((s: any) => ({
-          id: s.id,
-          title: s.title,
-          slug: s.title
-            ? s.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-            : `submission-${s.id}`,
-          section_id: null,
-          content: s.content ?? '',
-          formatted_content: s.formatted_content ?? null,
-          excerpt: `Contributed by ${s.full_name}`,
-          contributor_id: null,
-          tags: s.badge ? [s.badge] : [],
-          is_featured: false,
-          is_sample: false,
-          study_category: normalizeCategory(s.track ?? '', s.title ?? ''),
-          source_file: null,
-          author_name: s.full_name ?? null,
-          submission_type: s.submission_type ?? null,
-          created_at: s.created_at,
-          updated_at: s.created_at,
-        })) as Article[];
-
-        const existingTitles = new Set(dbArticles.map((a) => (a.title ?? '').toLowerCase().trim()));
-        const merged = [...dbArticles, ...approvedSubs.filter((s) => !existingTitles.has((s.title ?? '').toLowerCase().trim()))];
-        merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-        setRecentArticles(merged.slice(0, 8));
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchData();
+    supabase.from('articles').select('*, contributor:contributors(*)').eq('is_featured', true).limit(3)
+      .then(({ data }) => { if (data) setFeaturedArticles(data); });
   }, []);
+
+  const recentArticles = useMemo(() => {
+    return allArticles
+      .filter((a) => !a.is_sample && a.title !== '[OPEN SLOT]')
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      .slice(0, 8);
+  }, [allArticles]);
 
   const handleSubmitted = (submission: NewSubmission) => {
     setToastMessage(`${submission.full_name} — "${submission.title}" added to the wall!`);
@@ -202,7 +164,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
               </div>
             ) : recentArticles.length > 0 ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {recentArticles.filter((a) => a.title !== '[OPEN SLOT]').map((article) => (
+                {recentArticles.map((article) => (
                   <ArticleCard key={article.id} article={article} />
                 ))}
               </div>

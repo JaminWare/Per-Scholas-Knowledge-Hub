@@ -1,12 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
 import ArticleRenderer from '../components/ArticleRenderer';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
-import type { Article } from '../types/database';
 import contentMap from '../data/contentMap';
 import { extractReferences } from '../utils/extractReferences';
-import { normalizeCategory } from '../utils/normalizeCategory';
+import { useArticles, type ArticleWithContributor } from '../hooks/useArticles';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, FileText, Sparkles, Layout, Laptop, Monitor, Database,
@@ -61,6 +59,21 @@ const KNOWN_AUTHORS: Record<string, string> = {
   'ai-prompt-engineering-healthcare': 'Jamin Ware',
 };
 
+const CANONICAL_DOMAINS: Record<string, string> = {
+  'Domain 1.0 — Mobile Devices': 'CompTIA A+ Core 1 — Domain 1.0 (Mobile Devices)',
+  'Domain 2.0 — Networking': 'CompTIA A+ Core 1 — Domain 2.0 (Networking)',
+  'Domain 3.0 — Hardware': 'CompTIA A+ Core 1 — Domain 3.0 (Hardware)',
+  'Domain 4.0 — Virtualization & Cloud': 'CompTIA A+ Core 1 — Domain 4.0 (Cloud)',
+  'Domain 5.0 — Hardware & Network Troubleshooting': 'CompTIA A+ Core 1 — Domain 5.0 (Troubleshooting)',
+  'Domain 1.0 — Operating Systems': 'CompTIA A+ Core 2 — Domain 1.0 (Operating Systems)',
+  'Domain 2.0 — Security': 'CompTIA A+ Core 2 — Domain 2.0 (Security)',
+  'Domain 3.0 — Software Troubleshooting': 'CompTIA A+ Core 2 — Domain 3.0 (Software Troubleshooting)',
+  'Domain 4.0 — Operational Procedures': 'CompTIA A+ Core 2 — Domain 4.0 (Operational Procedures)',
+  'EHR Architecture': 'Advanced Healthcare IT — EHR Architecture',
+  'HIPAA Data Security': 'Advanced Healthcare IT — HIPAA Data Security',
+  'Clinical Workflows': 'Advanced Healthcare IT — Clinical Workflows',
+};
+
 const CURRICULUM_TRACKS = [
   {
     track: 'CompTIA A+ Core 1',
@@ -97,19 +110,20 @@ const CURRICULUM_TRACKS = [
   },
 ] as const;
 
-const CANONICAL_DOMAINS: Record<string, string> = {
-  'Domain 1.0 — Mobile Devices': 'CompTIA A+ Core 1 — Domain 1.0 (Mobile Devices)',
-  'Domain 2.0 — Networking': 'CompTIA A+ Core 1 — Domain 2.0 (Networking)',
-  'Domain 3.0 — Hardware': 'CompTIA A+ Core 1 — Domain 3.0 (Hardware)',
-  'Domain 4.0 — Virtualization & Cloud': 'CompTIA A+ Core 1 — Domain 4.0 (Cloud)',
-  'Domain 5.0 — Hardware & Network Troubleshooting': 'CompTIA A+ Core 1 — Domain 5.0 (Troubleshooting)',
-  'Domain 1.0 — Operating Systems': 'CompTIA A+ Core 2 — Domain 1.0 (Operating Systems)',
-  'Domain 2.0 — Security': 'CompTIA A+ Core 2 — Domain 2.0 (Security)',
-  'Domain 3.0 — Software Troubleshooting': 'CompTIA A+ Core 2 — Domain 3.0 (Software Troubleshooting)',
-  'Domain 4.0 — Operational Procedures': 'CompTIA A+ Core 2 — Domain 4.0 (Operational Procedures)',
-  'EHR Architecture': 'Advanced Healthcare IT — EHR Architecture',
-  'HIPAA Data Security': 'Advanced Healthcare IT — HIPAA Data Security',
-  'Clinical Workflows': 'Advanced Healthcare IT — Clinical Workflows',
+const SLUG_TO_DOMAIN: Record<string, { domain: string; trackIndex: number }> = {
+  'core1-mobile':          { domain: 'Domain 1.0 — Mobile Devices', trackIndex: 0 },
+  'core1-networking':      { domain: 'Domain 2.0 — Networking', trackIndex: 0 },
+  'core1-hardware':        { domain: 'Domain 3.0 — Hardware', trackIndex: 0 },
+  'core1-cloud':           { domain: 'Domain 4.0 — Virtualization & Cloud', trackIndex: 0 },
+  'core1-virtualization':  { domain: 'Domain 4.0 — Virtualization & Cloud', trackIndex: 0 },
+  'core1-troubleshooting': { domain: 'Domain 5.0 — Hardware & Network Troubleshooting', trackIndex: 0 },
+  'core2-os':              { domain: 'Domain 1.0 — Operating Systems', trackIndex: 1 },
+  'core2-security':        { domain: 'Domain 2.0 — Security', trackIndex: 1 },
+  'core2-software':        { domain: 'Domain 3.0 — Software Troubleshooting', trackIndex: 1 },
+  'core2-operations':      { domain: 'Domain 4.0 — Operational Procedures', trackIndex: 1 },
+  'healthcare-ehr':        { domain: 'EHR Architecture', trackIndex: 2 },
+  'healthcare-hipaa':      { domain: 'HIPAA Data Security', trackIndex: 2 },
+  'healthcare-clinical':   { domain: 'Clinical Workflows', trackIndex: 2 },
 };
 
 const TRACK_COLORS = {
@@ -186,8 +200,6 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
   );
 }
 
-type ArticleWithContributor = Article & { contributor?: { name: string } | null };
-
 function parseAuthorFromExcerpt(excerpt: string | null | undefined): string | null {
   if (!excerpt?.startsWith('Contributed by ')) return null;
   return excerpt.replace('Contributed by ', '').trim() || null;
@@ -199,10 +211,6 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
     ?? KNOWN_AUTHORS[article.slug]
     ?? parseAuthorFromExcerpt(article.excerpt)
     ?? (isSample ? '[OPEN SLOT]' : 'Knowledge Base');
-  const authorInitial = authorName.charAt(0).toUpperCase();
-  const toolsPreview = article.tags.length > 0
-    ? `$ Tools: ${article.tags.slice(0, 3).join(' · ')}`
-    : null;
 
   return (
     <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
@@ -277,10 +285,10 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
         )}
 
         {article.submission_type === 'Resource Link' ? (
-          <a 
-            href={article.content} 
-            target="_blank" 
-            rel="noopener noreferrer" 
+          <a
+            href={article.content}
+            target="_blank"
+            rel="noopener noreferrer"
             className="mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-blue-50/50 hover:bg-blue-500 text-blue-600 dark:text-blue-400 hover:text-white border-blue-500/20 hover:border-blue-500 hover:shadow-[0_0_15px_rgba(96,165,250,0.3)]"
           >
             View Resource ↗
@@ -369,16 +377,67 @@ function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string
   );
 }
 
-function CurriculumDashboard({
+function TrackDomains({
+  domains,
+  colors,
   articles,
   isLoading,
   context,
   onContribute,
 }: {
+  domains: readonly string[];
+  colors: { domainHeader: string };
   articles: ArticleWithContributor[];
   isLoading: boolean;
   context: string;
   onContribute: () => void;
+}) {
+  return (
+    <div className="space-y-8">
+      {domains.map((domain) => {
+        const canonicalTarget = CANONICAL_DOMAINS[domain] || domain;
+        const domainArticles = articles.filter((a) => a.study_category === canonicalTarget);
+        return (
+          <div key={domain}>
+            <div className="flex items-center gap-2 mb-3">
+              <h3 className={`text-sm font-bold ${colors.domainHeader}`}>{domain}</h3>
+              {!isLoading && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700">
+                  {domainArticles.length}
+                </span>
+              )}
+            </div>
+            <div className={SCROLL_TRACK}>
+              {isLoading ? (
+                <>
+                  <AppletSkeleton />
+                  <AppletSkeleton />
+                </>
+              ) : domainArticles.length > 0 ? (
+                domainArticles.map((a) => <AppletCard key={a.id} article={a} />)
+              ) : (
+                <OpenSlotPlaceholder domain={domain} context={context} onContribute={onContribute} />
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function CurriculumDashboard({
+  articles,
+  isLoading,
+  context,
+  onContribute,
+  focusDomain,
+}: {
+  articles: ArticleWithContributor[];
+  isLoading: boolean;
+  context: string;
+  onContribute: () => void;
+  focusDomain?: { domain: string; trackIndex: number };
 }) {
   const isVisibleInContext = (a: ArticleWithContributor) => {
     if (context === 'Quick Reference') {
@@ -434,49 +493,30 @@ function CurriculumDashboard({
     return cards;
   }, [articles, context]);
 
-  const allArticles = useMemo(() => {
-    if (context !== 'Quick Reference' || referenceCards.length === 0) return articles;
-    const existingUrls = new Set(
-      articles.filter((a) => (a.submission_type ?? '').toLowerCase() === 'resource link').map((a) => a.content?.trim())
-    );
-    const newRefs = referenceCards.filter((r) => !existingUrls.has(r.content?.trim()));
-    return [...articles, ...newRefs];
+  const visibleArticles = useMemo(() => {
+    let base = articles;
+    if (context === 'Quick Reference' && referenceCards.length > 0) {
+      const existingUrls = new Set(
+        articles.filter((a) => (a.submission_type ?? '').toLowerCase() === 'resource link').map((a) => a.content?.trim())
+      );
+      const newRefs = referenceCards.filter((r) => !existingUrls.has(r.content?.trim()));
+      base = [...articles, ...newRefs];
+    }
+    return base.filter(isVisibleInContext);
   }, [articles, referenceCards, context]);
 
-  function TrackDomains({ domains, colors }: { domains: readonly string[]; colors: { domainHeader: string } }) {
+  if (focusDomain) {
+    const track = CURRICULUM_TRACKS[focusDomain.trackIndex];
+    const colors = TRACK_COLORS[track.color];
     return (
-      <div className="space-y-8">
-        {domains.map((domain) => {
-          const canonicalTarget = CANONICAL_DOMAINS[domain] || domain;
-          const domainArticles = allArticles.filter((a) =>
-            a.study_category === canonicalTarget && isVisibleInContext(a)
-          );
-          return (
-            <div key={domain}>
-              <div className="flex items-center gap-2 mb-3">
-                <h3 className={`text-sm font-bold ${colors.domainHeader}`}>{domain}</h3>
-                {!isLoading && (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700">
-                    {domainArticles.length}
-                  </span>
-                )}
-              </div>
-              <div className={SCROLL_TRACK}>
-                {isLoading ? (
-                  <>
-                    <AppletSkeleton />
-                    <AppletSkeleton />
-                  </>
-                ) : domainArticles.length > 0 ? (
-                  domainArticles.map((a) => <AppletCard key={a.id} article={a} />)
-                ) : (
-                  <OpenSlotPlaceholder domain={domain} context={context} onContribute={onContribute} />
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <TrackDomains
+        domains={[focusDomain.domain]}
+        colors={colors}
+        articles={visibleArticles}
+        isLoading={isLoading}
+        context={context}
+        onContribute={onContribute}
+      />
     );
   }
 
@@ -486,23 +526,37 @@ function CurriculumDashboard({
     <div className="space-y-10">
       <div className="grid grid-cols-2 gap-6 items-start min-w-[640px] md:min-w-0 overflow-x-auto md:overflow-x-visible">
         <section className="min-w-[300px]">
-          <div className={`flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700`}>
+          <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[core1.color].icon}`}>
               <core1.icon className="w-4 h-4" />
             </div>
             <h2 className={`text-base font-bold uppercase tracking-widest ${TRACK_COLORS[core1.color].header}`}>{core1.track}</h2>
           </div>
-          <TrackDomains domains={core1.domains} colors={TRACK_COLORS[core1.color]} />
+          <TrackDomains
+            domains={core1.domains}
+            colors={TRACK_COLORS[core1.color]}
+            articles={visibleArticles}
+            isLoading={isLoading}
+            context={context}
+            onContribute={onContribute}
+          />
         </section>
 
         <section className="min-w-[300px]">
-          <div className={`flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700`}>
+          <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[core2.color].icon}`}>
               <core2.icon className="w-4 h-4" />
             </div>
             <h2 className={`text-base font-bold uppercase tracking-widest ${TRACK_COLORS[core2.color].header}`}>{core2.track}</h2>
           </div>
-          <TrackDomains domains={core2.domains} colors={TRACK_COLORS[core2.color]} />
+          <TrackDomains
+            domains={core2.domains}
+            colors={TRACK_COLORS[core2.color]}
+            articles={visibleArticles}
+            isLoading={isLoading}
+            context={context}
+            onContribute={onContribute}
+          />
         </section>
       </div>
 
@@ -513,7 +567,14 @@ function CurriculumDashboard({
           </div>
           <h2 className={`text-base font-bold uppercase tracking-widest ${TRACK_COLORS[healthcare.color].header}`}>{healthcare.track}</h2>
         </div>
-        <TrackDomains domains={healthcare.domains} colors={TRACK_COLORS[healthcare.color]} />
+        <TrackDomains
+          domains={healthcare.domains}
+          colors={TRACK_COLORS[healthcare.color]}
+          articles={visibleArticles}
+          isLoading={isLoading}
+          context={context}
+          onContribute={onContribute}
+        />
       </section>
     </div>
   );
@@ -524,8 +585,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const navigate = useNavigate();
   const slug = location.pathname.replace(/^\//, '').replace(/\/$/, '');
 
-  const [dbArticles, setDbArticles] = useState<ArticleWithContributor[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { articles: allArticles, isLoading } = useArticles(refreshKey);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const meta = sectionMeta[slug];
@@ -534,63 +594,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const isSubPage = slug.includes('/') || (meta?.track !== undefined);
   const isDomainSection = meta?.track !== undefined && !slug.includes('/');
   const dashboardContext = DASHBOARD_CONTEXTS[slug];
-
-  useEffect(() => {
-    async function fetchArticles() {
-      if (!slug) { setIsLoading(false); return; }
-      try {
-        const [sectionRes, approvedSubsRes] = await Promise.all([
-          supabase.from('sections').select('id').eq('slug', slug).maybeSingle(),
-          supabase.from('submissions').select('*').eq('is_approved', true),
-        ]);
-
-        const section = sectionRes.data;
-        let query = supabase
-          .from('articles')
-          .select('*, contributor:contributors(name)')
-          .order('created_at', { ascending: true });
-        if (section?.id) query = query.eq('section_id', section.id);
-        else query = query.ilike('slug', `${slug}/%`);
-        const { data } = await query;
-
-        const articles = ((data as ArticleWithContributor[]) || []).map((a) => ({
-          ...a,
-          study_category: normalizeCategory(a.study_category ?? '', a.title ?? ''),
-        }));
-        const approvedSubs: ArticleWithContributor[] = (approvedSubsRes.data ?? []).map((s: any) => ({
-          id: s.id,
-          title: s.title,
-          slug: s.title
-            ? s.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-            : `submission-${s.id}`,
-          section_id: null,
-          content: s.content ?? '',
-          formatted_content: s.formatted_content ?? null,
-          excerpt: `Contributed by ${s.full_name}`,
-          contributor_id: null,
-          tags: s.badge ? [s.badge] : [],
-          is_featured: false,
-          is_sample: false,
-          study_category: normalizeCategory(s.track ?? '', s.title ?? ''),
-          source_file: null,
-          author_name: s.full_name ?? null,
-          author: s.full_name ?? null,
-          submission_type: s.submission_type ?? null,
-          created_at: s.created_at,
-          updated_at: s.created_at,
-        }));
-
-        const existingTitles = new Set(articles.map((a) => (a.title ?? '').toLowerCase().trim()));
-        const merged = [...articles, ...approvedSubs.filter((s) => !existingTitles.has((s.title ?? '').toLowerCase().trim()))];
-        setDbArticles(merged);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-    fetchArticles();
-  }, [slug, refreshKey]);
+  const domainInfo = SLUG_TO_DOMAIN[slug];
 
   if (localContent && !isDomainSection) {
     const roleColor = roleColors[localContent.contributorRole ?? ''] ?? 'bg-zinc-800 text-zinc-400';
@@ -645,11 +649,14 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
           <ArticleRenderer blocks={localContent.content} />
         </div>
 
-        {!isLoading && dbArticles.length > 0 && (
+        {!isLoading && allArticles.length > 0 && (
           <div className="mt-10">
             <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-4">More in this section</h2>
             <div className={SCROLL_TRACK}>
-              {dbArticles.map((a) => <AppletCard key={a.id} article={a} />)}
+              {allArticles.filter(a => {
+                const canonicalTarget = CANONICAL_DOMAINS[meta?.title ?? ''] || meta?.title;
+                return a.study_category === canonicalTarget;
+              }).map((a) => <AppletCard key={a.id} article={a} />)}
             </div>
           </div>
         )}
@@ -694,14 +701,27 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
       </div>
 
       {dashboardContext ? (
-        <CurriculumDashboard articles={dbArticles} isLoading={isLoading} context={dashboardContext} onContribute={() => setIsModalOpen(true)} />
+        <CurriculumDashboard
+          articles={allArticles}
+          isLoading={isLoading}
+          context={dashboardContext}
+          onContribute={() => setIsModalOpen(true)}
+        />
+      ) : domainInfo ? (
+        <CurriculumDashboard
+          articles={allArticles}
+          isLoading={isLoading}
+          context="Study Tips"
+          onContribute={() => setIsModalOpen(true)}
+          focusDomain={domainInfo}
+        />
       ) : isLoading ? (
         <div className={SCROLL_TRACK}>
           {[...Array(4)].map((_, i) => <AppletSkeleton key={i} />)}
         </div>
-      ) : dbArticles.length > 0 ? (
+      ) : allArticles.length > 0 ? (
         <div className={SCROLL_TRACK}>
-          {dbArticles.map((a) => <AppletCard key={a.id} article={a} />)}
+          {allArticles.map((a) => <AppletCard key={a.id} article={a} />)}
         </div>
       ) : (
         <ComingSoonPanel />
