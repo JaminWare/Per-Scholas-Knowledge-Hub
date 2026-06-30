@@ -35,6 +35,8 @@ const badgeColors: Record<string, string> = {
   'Reference Author':    'bg-amber-500/10 text-amber-600 dark:text-amber-400',
   'Playbook Engineer':   'bg-violet-500/10 text-violet-600 dark:text-violet-400',
   'Cohort Contributor':  'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400',
+  'Domain Expert':       'bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-400/30',
+  'Master Architect':    'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-400/30',
 };
 
 function BadgeTag({ badge }: { badge: string }) {
@@ -44,6 +46,32 @@ function BadgeTag({ badge }: { badge: string }) {
       [{badge}]
     </span>
   );
+}
+
+function deriveTierBadge(count: number): string {
+  if (count >= 5) return 'Master Architect';
+  if (count >= 3) return 'Domain Expert';
+  return 'Cohort Contributor';
+}
+
+interface CategoryBreakdown {
+  articles: number;
+  links: number;
+  refs: number;
+  diagrams: number;
+  tips: number;
+}
+
+function countByCategory(submissions: NewSubmission[]): CategoryBreakdown {
+  let articles = 0, links = 0, refs = 0, diagrams = 0, tips = 0;
+  for (const s of submissions) {
+    if (s.submission_type === 'Article') articles++;
+    else if (s.submission_type === 'Resource Link') links++;
+    else if (s.badge === 'Reference Author') refs++;
+    else if (s.badge === 'Diagram Architect') diagrams++;
+    else tips++;
+  }
+  return { articles, links, refs, diagrams, tips };
 }
 
 // ── Categorise a community submission ─────────────────────
@@ -121,6 +149,8 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
   const initial = group.name.charAt(0).toUpperCase();
   const totalCount = group.submissions.length;
   const articleSubmissions = group.submissions.filter((s) => s.submission_type === 'Article');
+  const tierBadge = deriveTierBadge(totalCount);
+  const breakdown = countByCategory(group.submissions);
 
   // Dropdown panel local state
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -164,6 +194,7 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="font-semibold text-zinc-900 dark:text-zinc-100 text-sm">{group.name}</span>
+            {tierBadge !== group.topBadge && <BadgeTag badge={tierBadge} />}
             <BadgeTag badge={group.topBadge} />
             {isNew && (
               <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold bg-sky-500 text-white rounded-full">
@@ -175,6 +206,31 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-sky-100/70 text-sky-900 dark:bg-zinc-800/80 dark:text-zinc-100">
               {totalCount} contribution{totalCount !== 1 ? 's' : ''}
             </span>
+            {breakdown.articles > 0 && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-sky-500/10 text-sky-700 dark:text-sky-400">
+                {breakdown.articles} Article{breakdown.articles !== 1 ? 's' : ''}
+              </span>
+            )}
+            {breakdown.links > 0 && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
+                {breakdown.links} Link{breakdown.links !== 1 ? 's' : ''}
+              </span>
+            )}
+            {breakdown.refs > 0 && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400">
+                {breakdown.refs} Ref{breakdown.refs !== 1 ? 's' : ''}
+              </span>
+            )}
+            {breakdown.diagrams > 0 && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-blue-500/10 text-blue-700 dark:text-blue-400">
+                {breakdown.diagrams} Diagram{breakdown.diagrams !== 1 ? 's' : ''}
+              </span>
+            )}
+            {breakdown.tips > 0 && (
+              <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400">
+                {breakdown.tips} Tip{breakdown.tips !== 1 ? 's' : ''}
+              </span>
+            )}
           </div>
         </div>
         {isOpen

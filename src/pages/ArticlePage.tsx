@@ -84,6 +84,7 @@ function deriveTrackLabel(article: Article): string {
 
 function deriveAuthorName(contributor: Contributor | null, article: Article): string {
   if (contributor?.name) return contributor.name;
+  if (article.author_name) return article.author_name;
   if (FOUNDER_SLUGS.has(article.slug)) return 'Jamin Ware';
   const featuredSlugs = ['firewall-basics', 'command-documentation', 'snap-in', 'intro-healthcare-it-security', 'cloud-computing-healthcare', 'ai-prompt-engineering-healthcare'];
   if (featuredSlugs.includes(article.slug)) return 'Jamin Ware';
@@ -708,6 +709,29 @@ export default function ArticlePage() {
                 Submit your Contribution
               </button>
             </div>
+          </div>
+        ) : article.submission_type === 'Resource Link' ? (
+          <div className="space-y-6">
+            {markdownContent && markdownContent.trim() && (
+              <MarkdownRenderer content={markdownContent} />
+            )}
+            <a
+              href={article.content}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-4 rounded-xl border border-zinc-700 bg-zinc-800/60 p-5 hover:border-sky-500/50 hover:shadow-lg hover:shadow-sky-500/10 transition-all duration-200"
+            >
+              <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-sky-500/15 border border-sky-500/25 flex items-center justify-center group-hover:bg-sky-500/25 transition-colors">
+                <ExternalLink className="w-5 h-5 text-sky-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs text-zinc-400 mb-1 font-medium">Open External Resource</p>
+                <p className="font-mono text-sm text-sky-400 truncate group-hover:text-sky-300 transition-colors">
+                  {article.content}
+                </p>
+              </div>
+              <ExternalLink className="w-4 h-4 text-zinc-500 group-hover:text-sky-400 flex-shrink-0 transition-colors" />
+            </a>
           </div>
         ) : (
           <MarkdownRenderer content={markdownContent} />

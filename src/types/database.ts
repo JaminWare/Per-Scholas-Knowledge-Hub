@@ -32,6 +32,7 @@ export interface Article {
   study_category: string | null;
   source_file: string | null;
   author_name: string | null;
+  submission_type?: string | null;
   created_at: string;
   updated_at: string;
   contributor?: Contributor;

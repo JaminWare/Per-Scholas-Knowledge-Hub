@@ -23,7 +23,7 @@
   }
 
   html.dark body {
-    @apply bg-[#1a2332] text-slate-200;
+    @apply bg-[#1e2530] text-slate-200;
   }
 
   html:not(.dark) body {
