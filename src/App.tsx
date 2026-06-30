@@ -59,7 +59,7 @@ function AppContent() {
       )}
       {/* ── Sidebar ─────────────────────────────────── */}
       <div
-        className={`flex-shrink-0 border-r border-slate-800/80 dark:border-slate-600 h-full overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`flex-shrink-0 border-r border-zinc-800 dark:border-slate-700 h-full overflow-hidden transition-all duration-300 ease-in-out ${
           sidebarOpen ? 'w-72' : 'w-0'
         }`}
       >
@@ -71,7 +71,7 @@ function AppContent() {
       {/* ── Main area ───────────────────────────────── */}
       <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
         {/* Sticky header — always dark charcoal in both modes */}
-        <header className="flex-shrink-0 z-30 bg-zinc-800/95 dark:bg-[#1e2738]/90 backdrop-blur-lg border-b border-zinc-700/80 dark:border-slate-800/80">
+        <header className="flex-shrink-0 z-30 bg-zinc-800/95 dark:bg-[#1e2738]/90 backdrop-blur-lg border-b border-zinc-200 dark:border-slate-700">
           <div className="flex items-center gap-3 px-4 py-3">
             <button
               onClick={() => setSidebarOpen((v) => !v)}

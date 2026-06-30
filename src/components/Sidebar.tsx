@@ -139,9 +139,9 @@ export default function Sidebar({ onToggle }: SidebarProps) {
   });
 
   return (
-    <div className="flex flex-col h-full bg-zinc-900 dark:bg-slate-700 border-r border-zinc-800 dark:border-slate-600">
+    <div className="flex flex-col h-full bg-zinc-900 dark:bg-slate-700 border-r border-zinc-800 dark:border-slate-700">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 dark:border-slate-600 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 dark:border-slate-700 flex-shrink-0">
         <Link to="/" className="flex items-center gap-2.5 flex-1 min-w-0">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
             <BookOpen className="w-[18px] h-[18px] text-white" />
