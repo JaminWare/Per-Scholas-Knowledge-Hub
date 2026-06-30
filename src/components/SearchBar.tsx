@@ -108,49 +108,49 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
           onChange={(e) => { setQuery(e.target.value); setIsOpen(true); }}
           onFocus={() => setIsOpen(true)}
           placeholder="Search articles, domains..."
-          className="w-full pl-12 pr-20 py-2.5 rounded-xl bg-zinc-200 dark:bg-zinc-800 border border-zinc-400 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all text-sm"
+          className="w-full pl-12 pr-20 py-2.5 rounded-xl bg-zinc-200 dark:bg-white border border-zinc-400 dark:border-zinc-300 text-zinc-900 dark:text-zinc-900 placeholder-zinc-400 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all text-sm"
         />
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
           {query && (
             <button
               onClick={() => { setQuery(''); inputRef.current?.focus(); }}
-              className="p-1.5 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"
+              className="p-1.5 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-200 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-600 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           )}
-          <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-300 dark:bg-zinc-700 text-zinc-400 dark:text-zinc-500 text-xs font-medium">
+          <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-300 dark:bg-zinc-200 text-zinc-400 dark:text-zinc-600 text-xs font-medium">
             <span>⌘</span><span>K</span>
           </div>
         </div>
       </div>
 
       {isOpen && query.trim().length >= 2 && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-zinc-100 dark:bg-zinc-700 rounded-xl border border-zinc-300 dark:border-zinc-600 shadow-xl shadow-zinc-900/10 dark:shadow-black/20 overflow-hidden z-50">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-zinc-100 dark:bg-white rounded-xl border border-zinc-300 dark:border-zinc-200 shadow-xl shadow-zinc-900/10 dark:shadow-black/20 overflow-hidden z-50">
           {isLoading ? (
             <div className="flex items-center justify-center gap-2 py-8 text-zinc-400 dark:text-zinc-500">
               <Loader2 className="w-5 h-5 animate-spin" />
               <span>Searching...</span>
             </div>
           ) : results.length > 0 ? (
-            <ul className="divide-y divide-zinc-200 dark:divide-zinc-600">
+            <ul className="divide-y divide-zinc-200 dark:divide-zinc-200">
               {results.map((result) => (
                 <li key={`${result.type}-${result.id}`}>
                   <button
                     onClick={() => handleSelect(result)}
-                    className="w-full flex items-start gap-3 px-4 py-3 hover:bg-zinc-200 dark:hover:bg-zinc-600/50 transition-colors text-left"
+                    className="w-full flex items-start gap-3 px-4 py-3 hover:bg-zinc-200 dark:hover:bg-zinc-100 transition-colors text-left"
                   >
                     <div className={`mt-0.5 p-1.5 rounded-lg ${
                       result.type === 'article'
-                        ? 'bg-sky-100 dark:bg-sky-900/30'
-                        : 'bg-zinc-200 dark:bg-zinc-600'
+                        ? 'bg-sky-100 dark:bg-sky-100'
+                        : 'bg-zinc-200 dark:bg-zinc-200'
                     }`}>
                       {result.type === 'article'
                         ? <FileText className="w-4 h-4 text-sky-600 dark:text-sky-400" />
                         : <Folder className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-zinc-900 dark:text-zinc-100 truncate">{result.title}</p>
+                      <p className="font-medium text-zinc-900 dark:text-zinc-900 truncate">{result.title}</p>
                       {result.excerpt && (
                         <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-1 mt-0.5">{result.excerpt}</p>
                       )}

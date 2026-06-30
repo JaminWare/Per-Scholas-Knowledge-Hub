@@ -22,17 +22,17 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
         to={articlePath}
         className="group relative block overflow-hidden rounded-2xl bg-gradient-to-br from-sky-500 to-sky-400 p-1 shadow-xl shadow-sky-500/10"
       >
-        <div className="relative h-full bg-white dark:bg-zinc-800/90 rounded-xl p-6">
+        <div className="relative h-full bg-white dark:bg-white rounded-xl p-6">
           <div className="absolute top-4 right-4">
-            <span className="px-2 py-1 text-xs font-medium bg-sky-100/70 dark:bg-sky-900/30 text-sky-800 dark:text-sky-400 rounded-full">
+            <span className="px-2 py-1 text-xs font-medium bg-sky-100/70 dark:bg-sky-100 text-sky-800 dark:text-sky-700 rounded-full">
               Featured
             </span>
           </div>
-          <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 mt-2 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors pr-20">
+          <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-900 mt-2 group-hover:text-sky-600 dark:group-hover:text-sky-500 transition-colors pr-20">
             {article.title}
           </h3>
           {article.excerpt && (
-            <p className="mt-3 text-zinc-600 dark:text-zinc-400 line-clamp-2">{article.excerpt}</p>
+            <p className="mt-3 text-zinc-600 dark:text-zinc-600 line-clamp-2">{article.excerpt}</p>
           )}
           <div className="mt-4 flex items-center justify-between">
             <div className="flex items-center gap-2 text-zinc-400 dark:text-zinc-500 text-sm">
