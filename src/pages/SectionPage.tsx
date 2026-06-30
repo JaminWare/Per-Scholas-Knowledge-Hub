@@ -239,6 +239,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
                 : 'text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400'
             }`}>
               {article.title}
+              <p className="text-xs font-medium text-zinc-500 mt-1">Curated by {article.author}</p>
             </h3>
             <div className="flex items-center gap-1.5 mt-1">
               <div className="w-4 h-4 rounded bg-gradient-to-br from-zinc-400 to-zinc-500 flex items-center justify-center flex-shrink-0">
@@ -283,13 +284,23 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
               : 'bg-sky-500/10 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 hover:shadow-md hover:shadow-sky-500/20'
           }`}
         >
-          Read Article
-          <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
-      </div>
-    </div>
-  );
-}
+          {article.submission_type === 'Resource Link' ? (
+  <a 
+    href={article.content} 
+    target="_blank" 
+    rel="noopener noreferrer" 
+    className="w-full mt-4 py-2 flex items-center justify-center gap-2 text-sm font-bold rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:hover:bg-emerald-500/20 transition-colors"
+  >
+    View Resource ↗
+  </a>
+) : (
+  <button 
+    onClick={() => setSelectedArticle(article)} 
+    className="w-full mt-4 py-2 flex items-center justify-center gap-2 text-sm font-bold rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 dark:bg-sky-500/10 dark:text-sky-400 dark:hover:bg-sky-500/20 transition-colors"
+  >
+    Read Article
+  </button>
+)}
 
 // ── Skeleton ──────────────────────────────────────────────
 function AppletSkeleton() {
