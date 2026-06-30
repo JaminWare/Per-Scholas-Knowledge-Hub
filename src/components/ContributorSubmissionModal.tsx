@@ -242,12 +242,22 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
     const formattedContent = !isResourceLink ? buildFormattedContent(fullName.trim(), track, rawContent) : null;
 
-    try {
-      const { data, error } = await supabase.from('submissions').insert({
-        full_name: fullName.trim(), track, badge: autoBadge, title: title.trim(), content: rawContent, submission_type: submissionType, formatted_content: formattedContent, is_approved: false,
-      }).select().single();
+    const insertPayload = {
+      full_name: fullName.trim(), track, badge: autoBadge, title: title.trim(), content: rawContent, submission_type: submissionType, formatted_content: formattedContent, is_approved: false,
+    };
+    console.log('[TRACER] ATTEMPTING INSERT WITH PAYLOAD:', insertPayload);
 
-      if (error) throw error;
+    try {
+      const { data, error } = await supabase.from('submissions').insert(insertPayload).select().single();
+
+      console.log('[TRACER] SUPABASE INSERT RESPONSE:', { data, error });
+
+      if (error) {
+        setFormError('Database Error: ' + error.message);
+        setIsSubmitting(false);
+        return;
+      }
+
       const sub: NewSubmission = { ...(data as NewSubmission), badge: autoBadge, submission_type: submissionType };
       saveLocalSubmission(sub);
 
@@ -257,15 +267,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       onSubmitted(sub);
       setIsSuccess(true);
     } catch (err: any) {
-      console.error('[Database Ingestion Failure]', err);
-      alert(`Database Error: ${err?.message || JSON.stringify(err)} \n\nFalling back to local cache storage.`);
-
-      const local: NewSubmission = {
-        id: `local-${Date.now()}`, full_name: fullName.trim(), track, badge: autoBadge, title: title.trim(), content: rawContent, submission_type: submissionType, created_at: new Date().toISOString(),
-      };
-      saveLocalSubmission(local);
-      onSubmitted(local);
-      setIsSuccess(true);
+      console.error('[TRACER] Database Ingestion Failure:', err);
+      setFormError('Database Error: ' + (err?.message || JSON.stringify(err)));
     } finally {
       setIsSubmitting(false);
     }

@@ -419,6 +419,7 @@ function AdminPanel() {
         .select('*')
         .eq('is_approved', false)
         .order('created_at', { ascending: false });
+      console.log('[TRACER] ADMIN FETCH RESULT:', { data, error, count: data?.length ?? 0 });
       if (error) throw error;
       setSubmissions((data as PendingSubmission[]) ?? []);
     } catch (err) {
