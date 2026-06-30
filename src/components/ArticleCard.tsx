@@ -53,11 +53,11 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
       to={articlePath}
       className="group card p-5 hover:border-sky-400/40 dark:hover:border-sky-500/40"
     >
-      <h3 className="font-semibold text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
+      <h3 className="font-semibold text-zinc-800 dark:text-zinc-900 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
         {article.title}
       </h3>
       {article.excerpt && (
-        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">{article.excerpt}</p>
+        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-700 line-clamp-2">{article.excerpt}</p>
       )}
       <div className="mt-4 flex items-center justify-between">
         <div className="flex items-center gap-2 text-zinc-400 dark:text-zinc-500 text-xs">
@@ -66,8 +66,8 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
         </div>
         {article.tags.length > 0 && (
           <div className="flex items-center gap-1">
-            <Tag className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-400" />
-            <span className="text-xs text-zinc-500 dark:text-zinc-400">{article.tags[0]}</span>
+            <Tag className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-600" />
+            <span className="text-xs text-zinc-500 dark:text-zinc-600">{article.tags[0]}</span>
           </div>
         )}
       </div>

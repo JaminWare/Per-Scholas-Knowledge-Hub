@@ -104,7 +104,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Featured Articles */}
           {featuredArticles.length > 0 && (
             <section>
-              <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100 mb-6">Featured Articles</h2>
+              <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-900 mb-6">Featured Articles</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {featuredArticles.map((article) => (
                   <ArticleCard key={article.id} article={article} featured />
@@ -119,8 +119,8 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Research Articles */}
           <section>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Research Articles</h2>
-              <span className="text-xs text-zinc-600 dark:text-zinc-500 font-medium px-2.5 py-1 rounded-full bg-zinc-200 dark:bg-zinc-800">
+              <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-900">Research Articles</h2>
+              <span className="text-xs text-zinc-600 dark:text-zinc-700 font-medium px-2.5 py-1 rounded-full bg-zinc-200 dark:bg-zinc-100">
                 Cohort 2026-RTT-23
               </span>
             </div>
@@ -136,12 +136,12 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                     <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${r.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-105 transition-transform`}>
                       <Icon className="w-5 h-5 text-white" />
                     </div>
-                    <h3 className="font-semibold text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-snug">
+                    <h3 className="font-semibold text-zinc-800 dark:text-zinc-900 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-snug">
                       {r.title}
                     </h3>
-                    <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">{r.excerpt}</p>
+                    <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-700 line-clamp-2">{r.excerpt}</p>
                     <div className="mt-4 flex items-center justify-between">
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700">
                         {r.tag}
                       </span>
                       <span className="flex items-center gap-1 text-sky-600 dark:text-sky-400 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
@@ -157,14 +157,14 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Recent Articles */}
           <section>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Recent Articles</h2>
+              <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-900">Recent Articles</h2>
             </div>
             {isLoading ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(6)].map((_, i) => (
                   <div key={i} className="card p-5 animate-pulse">
-                    <div className="h-5 bg-zinc-200 dark:bg-zinc-800 rounded w-3/4" />
-                    <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full mt-3" />
+                    <div className="h-5 bg-zinc-200 dark:bg-zinc-200 rounded w-3/4" />
+                    <div className="h-4 bg-zinc-200 dark:bg-zinc-200 rounded w-full mt-3" />
                   </div>
                 ))}
               </div>

@@ -228,12 +228,12 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
           <div className="flex-1 min-w-0">
             <h3 className={`font-semibold text-sm leading-snug line-clamp-2 transition-colors ${
               isSample
-                ? 'text-blue-800 dark:text-blue-300 group-hover:text-blue-600 dark:group-hover:text-blue-300'
-                : 'text-zinc-800 dark:text-zinc-900 group-hover:text-sky-600 dark:group-hover:text-sky-400'
+                ? 'text-blue-800 dark:text-blue-700 group-hover:text-blue-600 dark:group-hover:text-blue-600'
+                : 'text-zinc-800 dark:text-black group-hover:text-sky-600 dark:group-hover:text-sky-500'
             }`}>
               {article.title}
               {!isSample && (
-                <p className="text-xs font-medium text-zinc-500 mt-1">Curated by {article.author || authorName}</p>
+                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-600 mt-1">Curated by {article.author || authorName}</p>
               )}
             </h3>
           </div>
@@ -254,7 +254,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
         )}
 
         {isSample && (
-          <p className="text-[11px] text-blue-600 dark:text-blue-400 bg-blue-100/60 dark:bg-blue-500/10 rounded-lg px-2.5 py-2 border border-blue-200/60 dark:border-blue-500/15" style={{ textShadow: '0 0 6px rgba(96,165,250,0.4)' }}>
+          <p className="text-[11px] text-blue-600 dark:text-blue-600 bg-blue-100/60 dark:bg-blue-50 rounded-lg px-2.5 py-2 border border-blue-200/60 dark:border-blue-200" style={{ textShadow: '0 0 6px rgba(96,165,250,0.4)' }}>
             This slot is open! Submit your research via the portal below to claim this applet.
           </p>
         )}
@@ -325,18 +325,18 @@ function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string
             <Lightbulb className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-sm leading-snug text-blue-800 dark:text-blue-300">
+            <h3 className="font-semibold text-sm leading-snug text-blue-800 dark:text-blue-700">
               {domain} — {context}
             </h3>
             <div className="flex items-center gap-1.5 mt-1">
               <div className="w-4 h-4 rounded bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center flex-shrink-0">
                 <span className="text-white text-[8px] font-bold">?</span>
               </div>
-              <span className="text-[11px] text-blue-500 dark:text-blue-400 truncate font-mono font-bold tracking-wider" style={{ textShadow: '0 0 6px rgba(96,165,250,0.6)' }}>[OPEN SLOT]</span>
+              <span className="text-[11px] text-blue-500 dark:text-blue-600 truncate font-mono font-bold tracking-wider" style={{ textShadow: '0 0 6px rgba(96,165,250,0.6)' }}>[OPEN SLOT]</span>
             </div>
           </div>
         </div>
-        <p className="text-[11px] text-blue-600 dark:text-blue-400 bg-blue-100/60 dark:bg-blue-500/10 rounded-lg px-2.5 py-2 border border-blue-200/60 dark:border-blue-500/15" style={{ textShadow: '0 0 6px rgba(96,165,250,0.4)' }}>
+        <p className="text-[11px] text-blue-600 dark:text-blue-600 bg-blue-100/60 dark:bg-blue-50 rounded-lg px-2.5 py-2 border border-blue-200/60 dark:border-blue-200" style={{ textShadow: '0 0 6px rgba(96,165,250,0.4)' }}>
           This slot is open! Submit your research via the portal below to claim this applet.
         </p>
         <div className="flex justify-center pt-1">

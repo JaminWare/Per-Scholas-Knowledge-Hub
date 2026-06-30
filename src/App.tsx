@@ -87,7 +87,11 @@ function AppContent() {
             </div>
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-zinc-700 text-zinc-400 hover:bg-zinc-600 hover:text-sky-400 transition-colors flex-shrink-0"
+              className={`p-2.5 rounded-full flex-shrink-0 transition-all duration-300 hover:rotate-12 ${
+                theme === 'dark'
+                  ? 'bg-zinc-700 text-amber-300 hover:bg-amber-500/10 hover:text-amber-400 shadow-md shadow-amber-500/10'
+                  : 'bg-zinc-200 text-sky-600 hover:bg-sky-500/10 hover:text-sky-500 shadow-md shadow-sky-500/10'
+              }`}
               title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {theme === 'dark'
