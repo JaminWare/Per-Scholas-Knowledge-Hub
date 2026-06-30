@@ -190,7 +190,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
   return (
     <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
       isSample
-        ? 'bg-blue-50/50 dark:bg-blue-500/5 border-blue-200/60 dark:border-blue-500/20 hover:border-blue-400/70 dark:hover:border-blue-400/50 hover:shadow-[0_0_0_1.5px_rgba(96,165,250,0.5),0_4px_16px_rgba(96,165,250,0.08)]'
+        ? 'bg-zinc-100/60 dark:bg-[#2C3E50]/80 border-blue-200/60 dark:border-blue-500/20 hover:border-blue-400/70 dark:hover:border-blue-400/50 hover:shadow-[0_0_0_1.5px_rgba(96,165,250,0.5),0_4px_16px_rgba(96,165,250,0.08)]'
         : 'bg-white dark:bg-zinc-700 border-slate-200 dark:border-zinc-600 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
     }`}>
       <div
@@ -232,16 +232,18 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
                 : 'text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400'
             }`}>
               {article.title}
-              <p className="text-xs font-medium text-zinc-500 mt-1">Curated by {article.author || authorName}</p>
+              {!isSample && (
+                <p className="text-xs font-medium text-zinc-500 mt-1">Curated by {article.author || authorName}</p>
+              )}
             </h3>
           </div>
         </div>
 
-        {article.excerpt && (
+        {!isSample && article.excerpt && (
           <p className="text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 flex-1 leading-relaxed">{article.excerpt}</p>
         )}
 
-        {article.tags?.length > 0 && (
+        {!isSample && article.tags?.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {article.tags.slice(0, 3).map((tag) => (
               <span key={tag} className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-300/60 dark:border-zinc-700/60">
@@ -304,7 +306,7 @@ function AppletSkeleton() {
 
 function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string; context: string; onContribute: () => void }) {
   return (
-    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-blue-50/50 dark:bg-blue-500/5 border-blue-200/60 dark:border-blue-500/20`}>
+    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-zinc-100/60 dark:bg-[#2C3E50]/80 border-blue-200/60 dark:border-blue-500/20`}>
       <div
         className="flex items-center justify-between px-3 py-1.5 bg-zinc-800 dark:bg-zinc-900/80"
         style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
@@ -365,7 +367,7 @@ function CurriculumDashboard({
 
   const isVisibleInContext = (a: ArticleWithContributor) => {
     if (context === 'Quick Reference') {
-      return a.submission_type === 'Quick Reference' || a.submission_type === 'Resource Link';
+      return a.is_sample || a.submission_type === 'Quick Reference' || a.submission_type === 'Resource Link';
     }
     if (context === 'Study Tips') {
       return a.submission_type !== 'Resource Link';

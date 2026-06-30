@@ -368,7 +368,7 @@ function AdminPanel() {
 
     if (sampleMatch) {
       // Overwrite the placeholder slot
-      const cleanTitle = (sampleMatch.title as string).replace(/^\s*\[sample\]\s*/i, '').trim();
+      const cleanTitle = (sampleMatch.title as string).replace(/^\s*\[(sample|OPEN SLOT)\]\s*/i, '').trim();
       const isResourceLink = sub.submission_type === 'Resource Link';
       const { error: updateError } = await supabase
         .from('articles')
