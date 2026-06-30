@@ -72,8 +72,8 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         <div className="lg:col-span-2 xl:col-span-3 space-y-10">
 
           {/* Hero */}
-          <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-sky-950 dark:from-zinc-950 dark:via-zinc-900 dark:to-sky-950 border border-zinc-200 dark:border-zinc-800 p-8 md:p-12">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+          <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-sky-950 dark:from-zinc-950 dark:via-zinc-900 dark:to-sky-950 border border-sky-500/10 dark:border-zinc-800 p-8 md:p-12">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/10 rounded-full blur-2xl pointer-events-none" />
             <div className="relative">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 text-sm font-medium mb-6">
