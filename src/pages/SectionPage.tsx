@@ -44,7 +44,7 @@ const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ c
 };
 
 const roleColors: Record<string, string> = {
-  'Core 1 Expert':       'bg-emerald-500/10 text-emerald-400',
+  'Core 1 Expert':       'bg-blue-500/10 text-blue-400',
   'Core 2 Expert':       'bg-teal-500/10 text-teal-400',
   'HealthIT Specialist': 'bg-cyan-500/10 text-cyan-400',
   'AI Prompt Engineer':  'bg-purple-500/10 text-purple-400',
