@@ -630,7 +630,7 @@ export default function ArticlePage() {
           {/* Author row */}
           <div className="flex flex-wrap items-center gap-3">
             {isSample ? (
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-blue-500/40 text-xs font-bold tracking-wider text-blue-400 bg-blue-500/10" style={{ textShadow: '0 0 8px rgba(96,165,250,0.8)' }}>
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-sky-500/40 text-xs font-bold tracking-wider text-sky-400 bg-sky-500/10" style={{ textShadow: '0 0 8px rgba(56,189,248,0.8)' }}>
                 [OPEN SLOT]
               </span>
             ) : (
@@ -689,9 +689,9 @@ export default function ArticlePage() {
           <TCPIPArticleContent />
         ) : effectiveIsSample ? (
           <div className="max-w-2xl mx-auto text-center my-16">
-            <div className="relative rounded-2xl border-2 border-dashed border-blue-300 dark:border-blue-500/30 bg-blue-50/40 dark:bg-zinc-800/60 p-10">
+            <div className="relative rounded-2xl border-2 border-dashed border-sky-300 dark:border-sky-500/30 bg-sky-50/40 dark:bg-zinc-800/60 p-10">
               <div className="flex justify-center mb-6">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-sky-400 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20">
                   <UploadCloud className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -703,7 +703,7 @@ export default function ArticlePage() {
               </p>
               <button
                 onClick={() => setModalOpen(true)}
-                className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold shadow-[0_0_20px_rgba(96,165,250,0.4)] hover:shadow-[0_0_30px_rgba(96,165,250,0.6)] transition-all"
+                className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-sm font-bold shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all"
               >
                 <UploadCloud className="w-4.5 h-4.5" />
                 Submit your Contribution

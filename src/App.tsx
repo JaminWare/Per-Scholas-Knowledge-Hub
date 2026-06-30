@@ -41,7 +41,7 @@ function AppContent() {
       {/* Dark mode spotlight glow */}
       <div
         className="pointer-events-none fixed inset-0 z-0 opacity-0 dark:opacity-100 transition-opacity duration-300"
-        style={{ background: `radial-gradient(600px at ${mousePos.x} ${mousePos.y}, rgba(147,197,253,0.06), transparent 80%)` }}
+        style={{ background: `radial-gradient(600px at ${mousePos.x} ${mousePos.y}, rgba(56,189,248,0.06), transparent 80%)` }}
       />
       {/* Dark mode cursor orb — white glow */}
       {theme === 'dark' && (
@@ -53,7 +53,7 @@ function AppContent() {
       {/* Light mode cursor orb — soft blue */}
       {theme === 'light' && (
         <div
-          className="pointer-events-none fixed z-[9999] w-8 h-8 rounded-full bg-blue-400/50 blur-sm -translate-x-1/2 -translate-y-1/2"
+          className="pointer-events-none fixed z-[9999] w-8 h-8 rounded-full bg-sky-400/50 blur-sm -translate-x-1/2 -translate-y-1/2"
           style={{ left: mousePos.x, top: mousePos.y }}
         />
       )}

@@ -27,8 +27,8 @@ const tiles: QuickLaunchTile[] = [
     description: 'Ports, protocols, OSI model & TCP/IP deep dives',
     icon: Network,
     route: '/core1-networking',
-    accentClass: 'hover:border-teal-400/50 dark:hover:border-teal-500/40',
-    iconBg: 'bg-gradient-to-br from-teal-500 to-teal-400 shadow-teal-500/20',
+    accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
+    iconBg: 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20',
   },
   {
     id: 'healthcare',
@@ -36,8 +36,8 @@ const tiles: QuickLaunchTile[] = [
     description: 'Clinical workflows, EHR devices & lab troubleshooting scenarios',
     icon: HeartPulse,
     route: '/healthcare-clinical',
-    accentClass: 'hover:border-cyan-400/50 dark:hover:border-cyan-500/40',
-    iconBg: 'bg-gradient-to-br from-cyan-500 to-cyan-400 shadow-cyan-500/20',
+    accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
+    iconBg: 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20',
   },
   {
     id: 'prompts',
