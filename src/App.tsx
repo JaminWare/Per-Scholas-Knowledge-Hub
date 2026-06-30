@@ -26,9 +26,30 @@ function AppContent() {
   const mainRef = useRef<HTMLElement>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
+  const [mousePos, setMousePos] = useState({ x: '50%', y: '50%' });
+
+  useEffect(() => {
+    function handleMouseMove(e: MouseEvent) {
+      setMousePos({ x: `${e.clientX}px`, y: `${e.clientY}px` });
+    }
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-200 dark:bg-[#282f44] text-zinc-800 dark:text-slate-200">
+    <div className={`flex h-screen w-screen overflow-hidden bg-slate-200 dark:bg-[#282f44] text-zinc-800 dark:text-slate-200 ${theme === 'light' ? 'cursor-none' : ''}`}>
+      {/* Dark mode spotlight glow */}
+      <div
+        className="pointer-events-none fixed inset-0 z-0 opacity-0 dark:opacity-100 transition-opacity duration-300"
+        style={{ background: `radial-gradient(600px at ${mousePos.x} ${mousePos.y}, rgba(52,211,153,0.08), transparent 80%)` }}
+      />
+      {/* Light mode cursor orb */}
+      {theme === 'light' && (
+        <div
+          className="pointer-events-none fixed z-[9999] w-5 h-5 rounded-full bg-emerald-400/40 blur-sm -translate-x-1/2 -translate-y-1/2"
+          style={{ left: mousePos.x, top: mousePos.y }}
+        />
+      )}
       {/* ── Sidebar ─────────────────────────────────── */}
       <div
         className={`flex-shrink-0 border-r border-slate-800/80 h-full overflow-hidden transition-all duration-300 ease-in-out ${

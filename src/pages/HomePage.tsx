@@ -190,21 +190,21 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Widget 1 — Contribute Placard (opens modal) */}
           <button
             onClick={() => setModalOpen(true)}
-            className="w-full min-w-[260px] flex flex-row items-center justify-start text-left p-6 min-h-[160px] h-auto bg-gradient-to-r from-amber-50 to-orange-50 dark:from-zinc-800 dark:to-zinc-900 border border-amber-200 dark:border-zinc-700/60 rounded-xl cursor-pointer hover:shadow-lg hover:shadow-amber-500/10 hover:border-amber-300 dark:hover:border-amber-700/50 transition-all duration-200 group"
+            className="w-full min-w-[260px] flex flex-row items-center justify-start text-left p-6 min-h-[160px] h-auto bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-zinc-800 dark:to-zinc-900 border border-emerald-200 dark:border-zinc-700/60 rounded-xl cursor-pointer shadow-[0_0_15px_rgba(52,211,153,0.3)] hover:shadow-[0_0_25px_rgba(52,211,153,0.5)] hover:border-emerald-300 dark:hover:border-emerald-700/50 transition-all duration-200 group"
           >
             <div className="flex items-center gap-4 w-full">
-              <div className="p-3 rounded-xl bg-amber-100 dark:bg-amber-500/15 flex-shrink-0 group-hover:bg-amber-200 dark:group-hover:bg-amber-500/25 transition-colors">
-                <UploadCloud className="w-7 h-7 text-amber-500" />
+              <div className="p-3 rounded-xl bg-emerald-100 dark:bg-emerald-500/15 flex-shrink-0 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-500/25 transition-colors">
+                <UploadCloud className="w-7 h-7 text-emerald-500" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-base font-bold whitespace-normal break-words tracking-normal leading-relaxed text-zinc-800 dark:text-zinc-100 group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors duration-200">
+                <p className="text-base font-bold whitespace-normal break-words tracking-normal leading-relaxed text-zinc-800 dark:text-zinc-100 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors duration-200">
                   Contribute to the Hub
                 </p>
                 <p className="text-xs whitespace-normal break-words leading-relaxed text-zinc-500 dark:text-zinc-400 mt-0.5">
                   Submit new articles, references, or lab notes
                 </p>
               </div>
-              <ChevronRight className="w-5 h-5 text-zinc-300 dark:text-zinc-600 group-hover:text-amber-400 transition-colors flex-shrink-0" />
+              <ChevronRight className="w-5 h-5 text-zinc-300 dark:text-zinc-600 group-hover:text-emerald-400 transition-colors flex-shrink-0" />
             </div>
           </button>
 

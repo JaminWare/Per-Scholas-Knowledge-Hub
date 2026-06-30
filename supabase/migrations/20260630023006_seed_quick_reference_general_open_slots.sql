@@ -1,0 +1,6 @@
+INSERT INTO articles (title, slug, content, section_id, is_sample, is_featured, tags, excerpt, study_category)
+VALUES
+  ('[Sample] Standard Lab Operating Procedures', 'standard-lab-operating-procedures', 'This is a placeholder for a community-contributed article about standard lab operating procedures.', 'cb931a5f-3dd7-4244-b0eb-3e298ab03c6e', true, false, '{}', 'Quick reference for standardized lab workflows and safety protocols.', NULL),
+  ('[Sample] Hardware Lifecycle Chart', 'hardware-lifecycle-chart', 'This is a placeholder for a community-contributed article about hardware lifecycle management.', 'cb931a5f-3dd7-4244-b0eb-3e298ab03c6e', true, false, '{}', 'Visual lifecycle map covering procurement through decommissioning.', NULL),
+  ('[Sample] Basic Network Troubleshooting Flow', 'basic-network-troubleshooting-flow', 'This is a placeholder for a community-contributed article about basic network troubleshooting.', 'cb931a5f-3dd7-4244-b0eb-3e298ab03c6e', true, false, '{}', 'Step-by-step decision tree for diagnosing common network issues.', NULL)
+ON CONFLICT (slug) DO NOTHING;

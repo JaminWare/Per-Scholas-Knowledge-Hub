@@ -181,7 +181,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
   const authorName = (article.contributor as { name: string } | null)?.name
     ?? KNOWN_AUTHORS[article.slug]
     ?? parseAuthorFromExcerpt(article.excerpt)
-    ?? (isSample ? '[Sample Learner]' : 'Knowledge Base');
+    ?? (isSample ? '[OPEN SLOT]' : 'Knowledge Base');
   const authorInitial = authorName.charAt(0).toUpperCase();
   const toolsPreview = article.tags.length > 0
     ? `$ Tools: ${article.tags.slice(0, 3).join(' · ')}`
@@ -190,7 +190,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
   return (
     <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
       isSample
-        ? 'bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20 hover:border-amber-400/70 dark:hover:border-amber-400/50 hover:shadow-[0_0_0_1.5px_rgba(251,191,36,0.5),0_4px_16px_rgba(251,191,36,0.08)]'
+        ? 'bg-emerald-50/50 dark:bg-emerald-500/5 border-emerald-200/60 dark:border-emerald-500/20 hover:border-emerald-400/70 dark:hover:border-emerald-400/50 hover:shadow-[0_0_0_1.5px_rgba(52,211,153,0.5),0_4px_16px_rgba(52,211,153,0.08)]'
         : 'bg-white dark:bg-zinc-700 border-slate-200 dark:border-zinc-600 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
     }`}>
       <div
@@ -211,24 +211,24 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
         </div>
         <span className={`text-[9px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wide flex-shrink-0 ${
           isSample
-            ? 'bg-amber-500/20 text-amber-400 border border-amber-500/20'
+            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20'
             : 'bg-sky-500/15 text-sky-400 border border-sky-500/20'
-        }`}>
-          {isSample ? '[Lab Documentation]' : '[Verified Peer Build]'}
+        }`} style={isSample ? { textShadow: '0 0 8px rgba(52,211,153,0.8)' } : undefined}>
+          {isSample ? '[OPEN SLOT]' : '[Verified Peer Build]'}
         </span>
       </div>
 
       <div className="flex flex-col gap-3 p-4 flex-1">
         <div className="flex items-start gap-3">
           <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${
-            isSample ? 'bg-gradient-to-br from-amber-400 to-amber-500 shadow-amber-500/20' : 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20'
+            isSample ? 'bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-emerald-500/20' : 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20'
           }`}>
             <BookOpen className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className={`font-semibold text-sm leading-snug line-clamp-2 transition-colors ${
               isSample
-                ? 'text-amber-800 dark:text-amber-300 group-hover:text-amber-600 dark:group-hover:text-amber-300'
+                ? 'text-emerald-800 dark:text-emerald-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-300'
                 : 'text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400'
             }`}>
               {article.title}
@@ -252,8 +252,8 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
         )}
 
         {isSample && (
-          <p className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-100/60 dark:bg-amber-500/10 rounded-lg px-2.5 py-2 border border-amber-200/60 dark:border-amber-500/15">
-            💡 This slot is open! Submit your research via the portal below to claim this applet.
+          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 bg-emerald-100/60 dark:bg-emerald-500/10 rounded-lg px-2.5 py-2 border border-emerald-200/60 dark:border-emerald-500/15" style={{ textShadow: '0 0 6px rgba(52,211,153,0.4)' }}>
+            This slot is open! Submit your research via the portal below to claim this applet.
           </p>
         )}
 
@@ -271,7 +271,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
             to={`/article/${article.slug}`}
             className={`mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border ${
               isSample
-                ? 'bg-amber-500/10 hover:bg-amber-500 text-amber-700 dark:text-amber-400 hover:text-white border-amber-500/20 hover:border-amber-500'
+                ? 'bg-emerald-500/10 hover:bg-emerald-500 text-emerald-700 dark:text-emerald-400 hover:text-white border-emerald-500/20 hover:border-emerald-500 hover:shadow-[0_0_15px_rgba(52,211,153,0.4)]'
                 : 'bg-sky-500/10 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 hover:shadow-md hover:shadow-sky-500/20'
             }`}
           >
@@ -304,7 +304,7 @@ function AppletSkeleton() {
 
 function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string; context: string; onContribute: () => void }) {
   return (
-    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-amber-50/50 dark:bg-amber-500/5 border-amber-200/60 dark:border-amber-500/20`}>
+    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-emerald-50/50 dark:bg-emerald-500/5 border-emerald-200/60 dark:border-emerald-500/20`}>
       <div
         className="flex items-center justify-between px-3 py-1.5 bg-zinc-800 dark:bg-zinc-900/80"
         style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
@@ -313,34 +313,34 @@ function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
           <span className="text-[10px] font-mono text-zinc-500 truncate max-w-[120px]">open-slot</span>
         </div>
-        <span className="text-[9px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wide flex-shrink-0 bg-amber-500/20 text-amber-400 border border-amber-500/20">
-          [Lab Documentation]
+        <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wider flex-shrink-0 bg-emerald-500/20 text-emerald-400 border border-emerald-500/20" style={{ textShadow: '0 0 8px rgba(52,211,153,0.8)' }}>
+          [OPEN SLOT]
         </span>
       </div>
       <div className="flex flex-col gap-3 p-4 flex-1">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md bg-gradient-to-br from-amber-400 to-amber-500 shadow-amber-500/20">
+          <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-emerald-500/20">
             <Lightbulb className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-sm leading-snug text-amber-800 dark:text-amber-300">
+            <h3 className="font-semibold text-sm leading-snug text-emerald-800 dark:text-emerald-300">
               {domain} — {context}
             </h3>
             <div className="flex items-center gap-1.5 mt-1">
-              <div className="w-4 h-4 rounded bg-gradient-to-br from-zinc-400 to-zinc-500 flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-[8px] font-bold">S</span>
+              <div className="w-4 h-4 rounded bg-gradient-to-br from-emerald-400 to-emerald-500 flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-[8px] font-bold">?</span>
               </div>
-              <span className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate font-mono">[Sample Learner]</span>
+              <span className="text-[11px] text-emerald-500 dark:text-emerald-400 truncate font-mono font-bold tracking-wider" style={{ textShadow: '0 0 6px rgba(52,211,153,0.6)' }}>[OPEN SLOT]</span>
             </div>
           </div>
         </div>
-        <p className="text-[11px] text-amber-600 dark:text-amber-400 bg-amber-100/60 dark:bg-amber-500/10 rounded-lg px-2.5 py-2 border border-amber-200/60 dark:border-amber-500/15">
-          💡 This slot is open! Submit your research via the portal below to claim this applet.
+        <p className="text-[11px] text-emerald-600 dark:text-emerald-400 bg-emerald-100/60 dark:bg-emerald-500/10 rounded-lg px-2.5 py-2 border border-emerald-200/60 dark:border-emerald-500/15" style={{ textShadow: '0 0 6px rgba(52,211,153,0.4)' }}>
+          This slot is open! Submit your research via the portal below to claim this applet.
         </p>
         <button
           type="button"
           onClick={onContribute}
-          className="mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-amber-500/10 hover:bg-amber-500 text-amber-700 dark:text-amber-400 hover:text-white border-amber-500/20 hover:border-amber-500"
+          className="mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-emerald-500/10 hover:bg-emerald-500 text-emerald-700 dark:text-emerald-400 hover:text-white border-emerald-500/20 hover:border-emerald-500 shadow-[0_0_15px_rgba(52,211,153,0.3)] hover:shadow-[0_0_25px_rgba(52,211,153,0.5)]"
         >
           Submit a Contribution
           <ArrowRight className="w-3.5 h-3.5" />
@@ -424,7 +424,7 @@ function CurriculumDashboard({
               <Lightbulb className="w-4 h-4 text-zinc-500 dark:text-zinc-400" />
             </div>
             <h2 className="text-base font-bold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
-              {context === 'Quick Reference' ? 'General References' : 'General'}
+              General
             </h2>
           </div>
           <div className={SCROLL_TRACK}>
@@ -605,7 +605,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
-          className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-zinc-900 text-sm font-bold shadow-md shadow-amber-500/20 transition-all"
+          className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-400 hover:bg-emerald-500 text-zinc-900 text-sm font-bold shadow-[0_0_15px_rgba(52,211,153,0.3)] hover:shadow-[0_0_25px_rgba(52,211,153,0.5)] transition-all"
         >
           Submit a Contribution
         </button>

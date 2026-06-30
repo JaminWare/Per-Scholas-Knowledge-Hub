@@ -93,7 +93,7 @@ function groupArticlesByTrack(articles: ArticleEntry[]): Map<string, ArticleEntr
   return map;
 }
 
-const SECTION_HDR = 'bg-zinc-800/60 text-zinc-400 font-mono text-[10px] uppercase tracking-wider border-y border-zinc-800 px-3 py-1 block first:border-t-0';
+const SECTION_HDR = 'bg-zinc-100/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 font-mono text-[10px] uppercase tracking-wider border-y border-zinc-200 dark:border-zinc-800 px-3 py-1 block first:border-t-0';
 
 // ── Community contributor card (dropdown only) ────────────
 

@@ -629,8 +629,8 @@ export default function ArticlePage() {
           {/* Author row */}
           <div className="flex flex-wrap items-center gap-3">
             {isSample ? (
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-lg border border-dashed border-zinc-500/60 text-xs font-semibold text-zinc-400 bg-zinc-800/40">
-                [Sample Learner — Open Slot]
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-emerald-500/40 text-xs font-bold tracking-wider text-emerald-400 bg-emerald-500/10" style={{ textShadow: '0 0 8px rgba(52,211,153,0.8)' }}>
+                [OPEN SLOT]
               </span>
             ) : (
               <>
