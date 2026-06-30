@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ArticleRenderer from '../components/ArticleRenderer';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import type { Article } from '../types/database';
 import contentMap from '../data/contentMap';
+import { extractReferences } from '../utils/extractReferences';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, FileText, Sparkles, Layout, Laptop, Monitor, Database,
@@ -100,6 +101,15 @@ const TRACK_COLORS = {
   teal: { header: 'text-teal-600 dark:text-teal-400', icon: 'bg-teal-500/10 text-teal-500', domainHeader: 'text-teal-500 dark:text-teal-400' },
   cyan: { header: 'text-cyan-600 dark:text-cyan-400', icon: 'bg-cyan-500/10 text-cyan-500', domainHeader: 'text-cyan-500 dark:text-cyan-400' },
 };
+
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 const DASHBOARD_CONTEXTS: Record<string, string> = {
   'study-tips':            'Study Tips',
@@ -373,19 +383,74 @@ function CurriculumDashboard({
       const type = (a.submission_type ?? '').toLowerCase();
       return type !== 'resource link';
     }
+    if (context === 'Diagram') {
+      return a.is_sample || (a.submission_type ?? '').toLowerCase() === 'diagram';
+    }
+    if (context === 'Prompt') {
+      return a.is_sample || (a.submission_type ?? '').toLowerCase().includes('prompt');
+    }
     return true;
   };
 
-  const uncategorized = articles.filter((a) => {
-    if (allMappedDomains.includes(a.study_category || '')) return false;
-    return isVisibleInContext(a);
-  });
+  const referenceCards = useMemo<ArticleWithContributor[]>(() => {
+    if (context !== 'Quick Reference') return [];
+    const nonQrArticles = articles.filter((a) => {
+      const type = (a.submission_type ?? '').toLowerCase();
+      return type !== 'quick reference' && type !== 'resource link' && !a.is_sample;
+    });
+    const cards: ArticleWithContributor[] = [];
+    const seenUrls = new Set<string>();
+    for (const article of nonQrArticles) {
+      const refs = extractReferences(article.formatted_content ?? article.content);
+      for (const ref of refs) {
+        if (seenUrls.has(ref.url)) continue;
+        seenUrls.add(ref.url);
+        cards.push({
+          id: `ref-${ref.url}`,
+          title: ref.label,
+          slug: `ref-${encodeURIComponent(ref.url)}`,
+          section_id: null,
+          content: ref.url,
+          formatted_content: null,
+          excerpt: `Extracted from: ${article.title}`,
+          contributor_id: null,
+          tags: [],
+          is_featured: false,
+          is_sample: false,
+          study_category: article.study_category,
+          source_file: null,
+          author_name: article.author_name ?? null,
+          submission_type: 'Resource Link',
+          created_at: article.created_at,
+          updated_at: article.created_at,
+        });
+      }
+    }
+    return cards;
+  }, [articles, context]);
+
+  const allArticles = useMemo(() => {
+    if (context !== 'Quick Reference' || referenceCards.length === 0) return articles;
+    const existingUrls = new Set(
+      articles.filter((a) => (a.submission_type ?? '').toLowerCase() === 'resource link').map((a) => a.content?.trim())
+    );
+    const newRefs = referenceCards.filter((r) => !existingUrls.has(r.content?.trim()));
+    return [...articles, ...newRefs];
+  }, [articles, referenceCards, context]);
+
+  const uncategorized = useMemo(() => {
+    const filtered = allArticles.filter((a) => {
+      if (allMappedDomains.includes(a.study_category || '')) return false;
+      return isVisibleInContext(a);
+    });
+    return shuffle(filtered);
+  }, [allArticles]);
 
   function TrackDomains({ domains, colors }: { domains: readonly string[]; colors: { domainHeader: string } }) {
     return (
       <div className="space-y-8">
         {domains.map((domain) => {
-          const domainArticles = articles.filter((a) => a.study_category === domain && isVisibleInContext(a));
+          const domainArticles = allArticles.filter((a) => a.study_category === domain && isVisibleInContext(a));
           return (
             <div key={domain}>
               <div className="flex items-center gap-2 mb-3">
@@ -497,8 +562,12 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
     async function fetchArticles() {
       if (!slug) { setIsLoading(false); return; }
       try {
-        const { data: section } = await supabase
-          .from('sections').select('id').eq('slug', slug).maybeSingle();
+        const [sectionRes, approvedSubsRes] = await Promise.all([
+          supabase.from('sections').select('id').eq('slug', slug).maybeSingle(),
+          supabase.from('submissions').select('*').eq('is_approved', true),
+        ]);
+
+        const section = sectionRes.data;
         let query = supabase
           .from('articles')
           .select('*, contributor:contributors(name)')
@@ -506,7 +575,32 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         if (section?.id) query = query.eq('section_id', section.id);
         else query = query.ilike('slug', `${slug}/%`);
         const { data } = await query;
-        setDbArticles((data as ArticleWithContributor[]) || []);
+
+        const articles = (data as ArticleWithContributor[]) || [];
+        const approvedSubs: ArticleWithContributor[] = (approvedSubsRes.data ?? []).map((s: any) => ({
+          id: s.id,
+          title: s.title,
+          slug: `submission-${s.id}`,
+          section_id: null,
+          content: s.content ?? '',
+          formatted_content: s.formatted_content ?? null,
+          excerpt: `Contributed by ${s.full_name}`,
+          contributor_id: null,
+          tags: s.badge ? [s.badge] : [],
+          is_featured: false,
+          is_sample: false,
+          study_category: s.track ?? null,
+          source_file: null,
+          author_name: s.full_name ?? null,
+          author: s.full_name ?? null,
+          submission_type: s.submission_type ?? null,
+          created_at: s.created_at,
+          updated_at: s.created_at,
+        }));
+
+        const existingIds = new Set(articles.map((a) => a.id));
+        const merged = [...articles, ...approvedSubs.filter((s) => !existingIds.has(s.id))];
+        setDbArticles(merged);
       } catch (e) {
         console.error(e);
       } finally {

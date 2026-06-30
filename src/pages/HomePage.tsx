@@ -50,12 +50,38 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [featuredRes, recentRes] = await Promise.all([
+        const [featuredRes, recentRes, approvedSubsRes] = await Promise.all([
           supabase.from('articles').select('*, contributor:contributors(*)').eq('is_featured', true).limit(3),
           supabase.from('articles').select('*, contributor:contributors(*)').eq('is_sample', false).order('created_at', { ascending: false }).limit(6),
+          supabase.from('submissions').select('*').eq('is_approved', true).order('created_at', { ascending: false }).limit(6),
         ]);
         if (featuredRes.data) setFeaturedArticles(featuredRes.data);
-        if (recentRes.data)   setRecentArticles(recentRes.data);
+
+        const dbArticles = recentRes.data ?? [];
+        const approvedSubs = (approvedSubsRes.data ?? []).map((s: any) => ({
+          id: s.id,
+          title: s.title,
+          slug: `submission-${s.id}`,
+          section_id: null,
+          content: s.content ?? '',
+          formatted_content: s.formatted_content ?? null,
+          excerpt: `Contributed by ${s.full_name}`,
+          contributor_id: null,
+          tags: s.badge ? [s.badge] : [],
+          is_featured: false,
+          is_sample: false,
+          study_category: s.track ?? null,
+          source_file: null,
+          author_name: s.full_name ?? null,
+          submission_type: s.submission_type ?? null,
+          created_at: s.created_at,
+          updated_at: s.created_at,
+        })) as Article[];
+
+        const existingIds = new Set(dbArticles.map((a) => a.id));
+        const merged = [...dbArticles, ...approvedSubs.filter((s) => !existingIds.has(s.id))];
+        merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        setRecentArticles(merged.slice(0, 8));
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
