@@ -541,7 +541,7 @@ export default function RecognitionPage() {
       </button>
 
       {/* Hero banner */}
-      <div className="rounded-2xl border p-6 bg-zinc-800 border-zinc-700/50 dark:bg-zinc-50 dark:border-zinc-200">
+      <div className="rounded-2xl border p-6 bg-zinc-800 border-zinc-700/50 dark:bg-black dark:border-zinc-800">
         <div className="flex items-center gap-3 mb-3">
           <div className="p-2.5 rounded-xl bg-sky-500/20 border border-sky-500/30">
             <Award className="w-6 h-6 text-sky-400" />
@@ -553,7 +553,7 @@ export default function RecognitionPage() {
         <h1 className="text-3xl md:text-4xl font-bold text-sky-400 drop-shadow-[0_0_12px_rgba(56,189,248,0.75)] mb-2">
           Cohort 2026-RTT-23 Wall of Fame
         </h1>
-        <p className="text-zinc-300 dark:text-zinc-600 max-w-xl leading-relaxed text-sm">
+        <p className="text-zinc-300 dark:text-zinc-300 max-w-xl leading-relaxed text-sm">
           Celebrating every learner who has contributed research, documentation, and knowledge to the
           AI-Enabled Healthcare IT collective. Click any profile to explore their full portfolio.
         </p>
