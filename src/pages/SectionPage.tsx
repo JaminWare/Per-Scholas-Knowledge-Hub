@@ -190,7 +190,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
   return (
     <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
       isSample
-        ? 'bg-emerald-50/50 dark:bg-emerald-500/5 border-emerald-200/60 dark:border-emerald-500/20 hover:border-emerald-400/70 dark:hover:border-emerald-400/50 hover:shadow-[0_0_0_1.5px_rgba(52,211,153,0.5),0_4px_16px_rgba(52,211,153,0.08)]'
+        ? 'bg-blue-50/50 dark:bg-blue-500/5 border-blue-200/60 dark:border-blue-500/20 hover:border-blue-400/70 dark:hover:border-blue-400/50 hover:shadow-[0_0_0_1.5px_rgba(96,165,250,0.5),0_4px_16px_rgba(96,165,250,0.08)]'
         : 'bg-white dark:bg-zinc-700 border-slate-200 dark:border-zinc-600 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
     }`}>
       <div
@@ -201,7 +201,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
       >
         <div className="flex items-center gap-2">
           {isSample ? (
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse flex-shrink-0" />
           ) : (
             <span className="text-[11px] font-mono font-bold text-sky-400 select-none">{`</>`}</span>
           )}
@@ -221,14 +221,14 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
       <div className="flex flex-col gap-3 p-4 flex-1">
         <div className="flex items-start gap-3">
           <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${
-            isSample ? 'bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-emerald-500/20' : 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20'
+            isSample ? 'bg-gradient-to-br from-blue-400 to-blue-500 shadow-blue-500/20' : 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20'
           }`}>
             <BookOpen className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className={`font-semibold text-sm leading-snug line-clamp-2 transition-colors ${
               isSample
-                ? 'text-emerald-800 dark:text-emerald-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-300'
+                ? 'text-blue-800 dark:text-blue-300 group-hover:text-blue-600 dark:group-hover:text-blue-300'
                 : 'text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400'
             }`}>
               {article.title}
@@ -252,7 +252,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
         )}
 
         {isSample && (
-          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 bg-emerald-100/60 dark:bg-emerald-500/10 rounded-lg px-2.5 py-2 border border-emerald-200/60 dark:border-emerald-500/15" style={{ textShadow: '0 0 6px rgba(52,211,153,0.4)' }}>
+          <p className="text-[11px] text-blue-600 dark:text-blue-400 bg-blue-100/60 dark:bg-blue-500/10 rounded-lg px-2.5 py-2 border border-blue-200/60 dark:border-blue-500/15" style={{ textShadow: '0 0 6px rgba(96,165,250,0.4)' }}>
             This slot is open! Submit your research via the portal below to claim this applet.
           </p>
         )}
@@ -262,7 +262,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
             href={article.content} 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-emerald-50/50 hover:bg-emerald-500 text-emerald-600 dark:text-emerald-400 hover:text-white border-emerald-500/20 hover:border-emerald-500 hover:shadow-md hover:shadow-emerald-500/20"
+            className="mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-blue-50/50 hover:bg-blue-500 text-blue-600 dark:text-blue-400 hover:text-white border-blue-500/20 hover:border-blue-500 hover:shadow-[0_0_15px_rgba(96,165,250,0.3)]"
           >
             View Resource ↗
           </a>
@@ -271,7 +271,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
             to={`/article/${article.slug}`}
             className={`mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border ${
               isSample
-                ? 'bg-emerald-500/10 hover:bg-emerald-500 text-emerald-700 dark:text-emerald-400 hover:text-white border-emerald-500/20 hover:border-emerald-500 hover:shadow-[0_0_15px_rgba(52,211,153,0.4)]'
+                ? 'bg-blue-500/10 hover:bg-blue-500 text-blue-700 dark:text-blue-400 hover:text-white border-blue-500/20 hover:border-blue-500 hover:shadow-[0_0_15px_rgba(96,165,250,0.4)]'
                 : 'bg-sky-500/10 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 hover:shadow-md hover:shadow-sky-500/20'
             }`}
           >
@@ -304,13 +304,13 @@ function AppletSkeleton() {
 
 function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string; context: string; onContribute: () => void }) {
   return (
-    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-emerald-50/50 dark:bg-emerald-500/5 border-emerald-200/60 dark:border-emerald-500/20`}>
+    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-blue-50/50 dark:bg-blue-500/5 border-blue-200/60 dark:border-blue-500/20`}>
       <div
         className="flex items-center justify-between px-3 py-1.5 bg-zinc-800 dark:bg-zinc-900/80"
         style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
       >
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse flex-shrink-0" />
+          <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse flex-shrink-0" />
           <span className="text-[10px] font-mono text-zinc-500 truncate max-w-[120px]">open-slot</span>
         </div>
         <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wider flex-shrink-0 bg-blue-500/20 text-blue-400 border border-blue-500/20" style={{ textShadow: '0 0 8px rgba(96,165,250,0.8)' }}>
@@ -319,11 +319,11 @@ function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string
       </div>
       <div className="flex flex-col gap-3 p-4 flex-1">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-emerald-500/20">
+          <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md bg-gradient-to-br from-blue-400 to-blue-500 shadow-blue-500/20">
             <Lightbulb className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-sm leading-snug text-emerald-800 dark:text-emerald-300">
+            <h3 className="font-semibold text-sm leading-snug text-blue-800 dark:text-blue-300">
               {domain} — {context}
             </h3>
             <div className="flex items-center gap-1.5 mt-1">
@@ -334,13 +334,13 @@ function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string
             </div>
           </div>
         </div>
-        <p className="text-[11px] text-emerald-600 dark:text-emerald-400 bg-emerald-100/60 dark:bg-emerald-500/10 rounded-lg px-2.5 py-2 border border-emerald-200/60 dark:border-emerald-500/15" style={{ textShadow: '0 0 6px rgba(52,211,153,0.4)' }}>
+        <p className="text-[11px] text-blue-600 dark:text-blue-400 bg-blue-100/60 dark:bg-blue-500/10 rounded-lg px-2.5 py-2 border border-blue-200/60 dark:border-blue-500/15" style={{ textShadow: '0 0 6px rgba(96,165,250,0.4)' }}>
           This slot is open! Submit your research via the portal below to claim this applet.
         </p>
         <button
           type="button"
           onClick={onContribute}
-          className="mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-emerald-500/10 hover:bg-emerald-500 text-emerald-700 dark:text-emerald-400 hover:text-white border-emerald-500/20 hover:border-emerald-500 shadow-[0_0_15px_rgba(52,211,153,0.3)] hover:shadow-[0_0_25px_rgba(52,211,153,0.5)]"
+          className="mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-blue-500/10 hover:bg-blue-500 text-blue-700 dark:text-blue-400 hover:text-white border-blue-500/20 hover:border-blue-500 shadow-[0_0_15px_rgba(96,165,250,0.3)] hover:shadow-[0_0_25px_rgba(96,165,250,0.5)]"
         >
           Submit a Contribution
           <ArrowRight className="w-3.5 h-3.5" />
@@ -605,7 +605,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         <button
           type="button"
           onClick={() => setIsModalOpen(true)}
-          className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-400 hover:bg-emerald-500 text-zinc-900 text-sm font-bold shadow-[0_0_15px_rgba(52,211,153,0.3)] hover:shadow-[0_0_25px_rgba(52,211,153,0.5)] transition-all"
+          className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-400 hover:bg-blue-500 text-zinc-900 text-sm font-bold shadow-[0_0_15px_rgba(96,165,250,0.3)] hover:shadow-[0_0_25px_rgba(96,165,250,0.5)] transition-all"
         >
           Submit a Contribution
         </button>
