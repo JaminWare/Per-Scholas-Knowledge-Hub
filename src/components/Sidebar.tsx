@@ -75,18 +75,18 @@ const tracks: TrackSection[] = [
 
 const trackBorder = {
   sky:  'border-sky-500/30',
-  teal: 'border-teal-500/30',
-  cyan: 'border-cyan-500/30',
+  teal: 'border-sky-500/30',
+  cyan: 'border-sky-500/30',
 };
 const trackBadge = {
   sky:  'bg-sky-500/10 text-sky-400',
-  teal: 'bg-teal-500/10 text-teal-400',
-  cyan: 'bg-cyan-500/10 text-cyan-400',
+  teal: 'bg-sky-500/10 text-sky-400',
+  cyan: 'bg-sky-500/10 text-sky-400',
 };
 const trackText = {
   sky:  'text-sky-400',
-  teal: 'text-teal-400',
-  cyan: 'text-cyan-400',
+  teal: 'text-sky-400',
+  cyan: 'text-sky-400',
 };
 
 // ─── Flat nav link ────────────────────────────────────────

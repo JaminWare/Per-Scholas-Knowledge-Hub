@@ -19,7 +19,7 @@ const researchArticles = [
     title: 'The Role of Firewalls in Modern Network Security',
     excerpt: 'A comprehensive breakdown of Windows Defender Firewall, inbound/outbound rule strategies, and defense-in-depth posture.',
     icon: Shield,
-    color: 'from-sky-500 to-cyan-400',
+    color: 'from-sky-500 to-sky-400',
     tag: 'Network Security',
   },
   {
@@ -35,7 +35,7 @@ const researchArticles = [
     title: 'Microsoft Management Console (MMC) Snap-ins',
     excerpt: 'Deep-dive into Task Scheduler, Performance Monitor, and Group Policy Editor — with real-world administrative use cases.',
     icon: Monitor,
-    color: 'from-blue-500 to-sky-400',
+    color: 'from-sky-500 to-sky-400',
     tag: 'Windows Administration',
   },
 ];
@@ -183,27 +183,27 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
           {/* Pulsing arrow drawing attention to submission CTA */}
           <div className="flex justify-center py-2">
-            <ArrowDown className="animate-bounce text-blue-400 w-10 h-10 drop-shadow-[0_0_8px_rgba(96,165,250,0.6)]" />
+            <ArrowDown className="animate-bounce text-sky-400 w-10 h-10 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)]" />
           </div>
 
           {/* Widget 1 — Contribute Placard (opens modal) */}
           <button
             onClick={() => setModalOpen(true)}
-            className="w-full min-w-[260px] flex flex-row items-center justify-start text-left p-6 min-h-[160px] h-auto bg-gradient-to-r from-blue-50 to-sky-50 dark:from-zinc-800 dark:to-zinc-900 border border-blue-200 dark:border-zinc-700/60 rounded-xl cursor-pointer shadow-[0_0_15px_rgba(96,165,250,0.3)] hover:shadow-[0_0_25px_rgba(96,165,250,0.5)] hover:border-blue-300 dark:hover:border-blue-700/50 transition-all duration-200 group"
+            className="w-full min-w-[260px] flex flex-row items-center justify-start text-left p-6 min-h-[160px] h-auto bg-gradient-to-r from-sky-50 to-sky-50 dark:from-zinc-800 dark:to-zinc-900 border border-sky-200 dark:border-zinc-700/60 rounded-xl cursor-pointer shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] hover:border-sky-300 dark:hover:border-sky-700/50 transition-all duration-200 group"
           >
             <div className="flex items-center gap-4 w-full">
-              <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-500/15 flex-shrink-0 group-hover:bg-blue-200 dark:group-hover:bg-blue-500/25 transition-colors">
-                <UploadCloud className="w-7 h-7 text-blue-500" />
+              <div className="p-3 rounded-xl bg-sky-100 dark:bg-sky-500/15 flex-shrink-0 group-hover:bg-sky-200 dark:group-hover:bg-sky-500/25 transition-colors">
+                <UploadCloud className="w-7 h-7 text-sky-500" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-base font-bold whitespace-normal break-words tracking-normal leading-relaxed text-zinc-800 dark:text-zinc-100 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors duration-200">
+                <p className="text-base font-bold whitespace-normal break-words tracking-normal leading-relaxed text-zinc-800 dark:text-zinc-100 group-hover:text-sky-700 dark:group-hover:text-sky-400 transition-colors duration-200">
                   Contribute to the Hub
                 </p>
                 <p className="text-xs whitespace-normal break-words leading-relaxed text-zinc-500 dark:text-zinc-400 mt-0.5">
                   Submit new articles, references, or lab notes
                 </p>
               </div>
-              <ChevronRight className="w-5 h-5 text-zinc-300 dark:text-zinc-600 group-hover:text-blue-400 transition-colors flex-shrink-0" />
+              <ChevronRight className="w-5 h-5 text-zinc-300 dark:text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0" />
             </div>
           </button>
 

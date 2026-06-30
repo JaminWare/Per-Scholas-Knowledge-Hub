@@ -13,11 +13,11 @@ import ContributorSubmissionModal from '../components/ContributorSubmissionModal
 const badgeColors: Record<string, string> = {
   'Founder':             'bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20',
   'Core 1 Expert':       'bg-sky-500/10 text-sky-600 dark:text-sky-400',
-  'Core 2 Expert':       'bg-teal-500/10 text-teal-600 dark:text-teal-400',
-  'HealthIT Specialist': 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
-  'Diagram Architect':   'bg-blue-500/10 text-blue-600 dark:text-blue-400',
+  'Core 2 Expert':       'bg-sky-500/10 text-sky-600 dark:text-sky-400',
+  'HealthIT Specialist': 'bg-sky-500/10 text-sky-600 dark:text-sky-400',
+  'Diagram Architect':   'bg-sky-500/10 text-sky-600 dark:text-sky-400',
   'Reference Author':    'bg-amber-500/10 text-amber-600 dark:text-amber-400',
-  'Playbook Engineer':   'bg-violet-500/10 text-violet-600 dark:text-violet-400',
+  'Playbook Engineer':   'bg-sky-500/10 text-sky-600 dark:text-sky-400',
   'Cohort Contributor':  'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400',
   'Domain Expert':       'bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-400/30',
   'Master Architect':    'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-400/30',
@@ -67,11 +67,11 @@ function pluralizeType(type: string, count: number): string {
 
 const TYPE_PILL_COLORS: Record<string, { base: string; founder: string }> = {
   'Article':        { base: 'bg-sky-500/10 text-sky-700 dark:text-sky-400', founder: 'bg-amber-100/60 text-amber-950 dark:bg-zinc-800/80 dark:text-zinc-100' },
-  'Resource Link':  { base: 'bg-emerald-100/60 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', founder: 'bg-emerald-100/60 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' },
-  'Diagram':        { base: 'bg-blue-500/10 text-blue-700 dark:text-blue-400', founder: 'bg-blue-500/10 text-blue-700 dark:text-blue-400' },
-  'Study Tip':      { base: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400', founder: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400' },
-  'Quick Reference': { base: 'bg-amber-500/10 text-amber-700 dark:text-amber-400', founder: 'bg-amber-500/10 text-amber-700 dark:text-amber-400' },
-  'Prompt Playbook': { base: 'bg-teal-500/10 text-teal-700 dark:text-teal-400', founder: 'bg-teal-500/10 text-teal-700 dark:text-teal-400' },
+  'Resource Link':  { base: 'bg-sky-500/15 text-sky-700 dark:text-sky-400', founder: 'bg-sky-500/15 text-sky-700 dark:text-sky-400' },
+  'Diagram':        { base: 'bg-sky-500/10 text-sky-700 dark:text-sky-400', founder: 'bg-sky-500/10 text-sky-700 dark:text-sky-400' },
+  'Study Tip':      { base: 'bg-sky-500/5 text-sky-700 dark:text-sky-400', founder: 'bg-sky-500/5 text-sky-700 dark:text-sky-400' },
+  'Quick Reference': { base: 'bg-sky-500/10 text-sky-700 dark:text-sky-400', founder: 'bg-sky-500/10 text-sky-700 dark:text-sky-400' },
+  'Prompt Playbook': { base: 'bg-sky-500/10 text-sky-700 dark:text-sky-400', founder: 'bg-sky-500/10 text-sky-700 dark:text-sky-400' },
 };
 
 const DEFAULT_PILL_COLOR = { base: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400', founder: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400' };
@@ -261,7 +261,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
                         const isResourceLink = itemType === 'Resource Link';
                         const isInternalNav = itemType === 'Article' || itemType === 'Study Tip' || itemType === 'Quick Reference' || itemType === 'Diagram' || itemType === 'Prompt Playbook';
                         const icon = isResourceLink
-                          ? <Link2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                          ? <Link2 className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
                           : itemType === 'Article'
                             ? <BookOpen className={`w-3.5 h-3.5 flex-shrink-0 ${isFounder ? 'text-amber-500' : 'text-sky-500'}`} />
                             : <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />;
@@ -274,13 +274,13 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={() => setDropdownOpen(false)}
-                              className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-emerald-500/10 hover:border-emerald-400 transition-all group"
+                              className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/10 hover:border-sky-400 transition-all group"
                             >
                               {icon}
-                              <span className="text-sm text-zinc-800 dark:text-zinc-100 truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-300">{s.title}</span>
+                              <span className="text-sm text-zinc-800 dark:text-zinc-100 truncate group-hover:text-sky-600 dark:group-hover:text-sky-300">{s.title}</span>
                               <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
-                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500">{getDomainName(s.content || '')}</span>
-                                <ChevronRight className="w-3 h-3 text-zinc-400 dark:text-zinc-600 group-hover:text-emerald-400" />
+                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{getDomainName(s.content || '')}</span>
+                                <ChevronRight className="w-3 h-3 text-zinc-400 dark:text-zinc-600 group-hover:text-sky-400" />
                               </span>
                             </a>
                           );
