@@ -200,7 +200,7 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl bg-slate-900/95 dark:bg-[#1a233a]/95 border border-slate-700/60 shadow-2xl backdrop-blur-md overflow-hidden max-h-64 overflow-y-auto">
+              <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl bg-[#f0f4f8]/95 dark:bg-slate-300/15 border border-sky-200/60 dark:border-slate-500/20 shadow-lg dark:shadow-2xl backdrop-blur-md overflow-hidden max-h-64 overflow-y-auto">
                 {Array.from(groupSubmissionsByTrack(group.submissions).entries()).map(([bucket, items]) => {
                   const articles = items.filter((s) => s.submission_type === 'Article');
                   const resourceLinks = items.filter((s) => s.submission_type === 'Resource Link');
@@ -208,7 +208,7 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
                   return (
                   <div key={bucket}>
                     <span className={SECTION_HDR}>{bucket}</span>
-                    <div className="divide-y divide-zinc-800">
+                    <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
                       {articles.map((s) => {
                         const slug = buildSlugFromTitle(s.title);
                         return (
@@ -219,8 +219,8 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
                             className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:border-sky-500 hover:bg-sky-500/15 transition-all group"
                           >
                             <BookOpen className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
-                            <span className="text-sm text-zinc-100 group-hover:text-sky-300 truncate">{s.title}</span>
-                            <ChevronRight className="w-3 h-3 text-zinc-600 group-hover:text-sky-500 flex-shrink-0 ml-auto" />
+                            <span className="text-sm text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-300 truncate">{s.title}</span>
+                            <ChevronRight className="w-3 h-3 text-zinc-400 dark:text-zinc-600 group-hover:text-sky-500 flex-shrink-0 ml-auto" />
                           </Link>
                         );
                       })}
@@ -230,7 +230,7 @@ function CommunityCard({ group, isNew, isOpen, onToggle }: {
                           className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
                         >
                           <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />
-                          <span className="text-sm text-zinc-300 truncate">{s.title}</span>
+                          <span className="text-sm text-zinc-700 dark:text-zinc-300 truncate">{s.title}</span>
                           <span className="ml-auto text-[10px] font-mono text-sky-500 flex-shrink-0">{categoryLabel(s)}</span>
                         </div>
                       ))}
@@ -321,11 +321,11 @@ function FounderCard() {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl bg-slate-900/95 dark:bg-[#1a233a]/95 border border-slate-700/60 shadow-2xl backdrop-blur-md overflow-hidden max-h-64 overflow-y-auto">
+            <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl bg-[#f0f4f8]/95 dark:bg-slate-300/15 border border-sky-200/60 dark:border-slate-500/20 shadow-lg dark:shadow-2xl backdrop-blur-md overflow-hidden max-h-64 overflow-y-auto">
               {Array.from(groupArticlesByTrack(JAMIN_ARTICLES).entries()).map(([bucket, items]) => (
                 <div key={bucket}>
                   <span className={SECTION_HDR}>{bucket}</span>
-                  <div className="divide-y divide-zinc-800">
+                  <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
                     {items.map((a) => (
                       <Link
                         key={a.slug}
@@ -334,8 +334,8 @@ function FounderCard() {
                         className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:border-amber-400 hover:bg-sky-500/15 transition-all group"
                       >
                         <BookOpen className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
-                        <span className="text-sm text-zinc-100 group-hover:text-amber-300 truncate">{a.title}</span>
-                        <ChevronRight className="w-3 h-3 text-zinc-600 group-hover:text-amber-400 flex-shrink-0 ml-auto" />
+                        <span className="text-sm text-zinc-800 dark:text-zinc-100 group-hover:text-amber-600 dark:group-hover:text-amber-300 truncate">{a.title}</span>
+                        <ChevronRight className="w-3 h-3 text-zinc-400 dark:text-zinc-600 group-hover:text-amber-400 flex-shrink-0 ml-auto" />
                       </Link>
                     ))}
                   </div>

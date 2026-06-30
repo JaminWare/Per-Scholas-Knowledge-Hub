@@ -323,7 +323,7 @@ function AdminPanel() {
         .eq('is_approved', false)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      setSubmissions((data as PendingSubmission[]) ?? []);
+      setSubmissions(((data as PendingSubmission[]) ?? []).filter((s) => !s.is_approved));
     } catch (err) {
       setFetchError(err instanceof Error ? err.message : 'Failed to load submissions.');
     } finally {

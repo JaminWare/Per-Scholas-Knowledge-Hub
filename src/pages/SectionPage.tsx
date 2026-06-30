@@ -171,10 +171,16 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
 
 type ArticleWithContributor = Article & { contributor?: { name: string } | null };
 
+function parseAuthorFromExcerpt(excerpt: string | null | undefined): string | null {
+  if (!excerpt?.startsWith('Contributed by ')) return null;
+  return excerpt.replace('Contributed by ', '').trim() || null;
+}
+
 function AppletCard({ article }: { article: ArticleWithContributor }) {
   const isSample = article.is_sample;
   const authorName = (article.contributor as { name: string } | null)?.name
     ?? KNOWN_AUTHORS[article.slug]
+    ?? parseAuthorFromExcerpt(article.excerpt)
     ?? (isSample ? '[Sample Learner]' : 'Knowledge Base');
   const authorInitial = authorName.charAt(0).toUpperCase();
   const toolsPreview = article.tags.length > 0

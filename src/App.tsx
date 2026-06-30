@@ -28,7 +28,7 @@ function AppContent() {
   const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-200 dark:bg-[#1a2035] text-zinc-800 dark:text-slate-200">
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-200 dark:bg-[#282f44] text-zinc-800 dark:text-slate-200">
       {/* ── Sidebar ─────────────────────────────────── */}
       <div
         className={`flex-shrink-0 border-r border-slate-800/80 h-full overflow-hidden transition-all duration-300 ease-in-out ${
@@ -43,7 +43,7 @@ function AppContent() {
       {/* ── Main area ───────────────────────────────── */}
       <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
         {/* Sticky header — always dark charcoal in both modes */}
-        <header className="flex-shrink-0 z-30 bg-zinc-800/95 dark:bg-[#1a2035]/90 backdrop-blur-lg border-b border-zinc-700/80 dark:border-slate-800/80">
+        <header className="flex-shrink-0 z-30 bg-zinc-800/95 dark:bg-[#282f44]/90 backdrop-blur-lg border-b border-zinc-700/80 dark:border-slate-800/80">
           <div className="flex items-center gap-3 px-4 py-3">
             <button
               onClick={() => setSidebarOpen((v) => !v)}
