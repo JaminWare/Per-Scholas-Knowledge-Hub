@@ -176,29 +176,6 @@ function buildFormattedContent(
   return sections.join('\n');
 }
 
-async function trySampleSlotOverwrite(trackValue: string, submissionId: string, formattedContent: string, onRefresh?: () => void) {
-  try {
-    const { data: sampleArticles } = await supabase.from('articles').select('id, title, study_category').or('title.ilike.%[Sample]%,title.ilike.%[OPEN SLOT]%').order('created_at', { ascending: true }).limit(20);
-    if (!sampleArticles || sampleArticles.length === 0) return;
-
-    const trackLower = trackValue.toLowerCase();
-    const targetArticle = sampleArticles.find((a) => {
-      if (!a.study_category) return false;
-      const cat = (a.study_category as string).toLowerCase();
-      return trackLower.includes(cat) || cat.includes(trackLower);
-    }) ?? sampleArticles[0];
-
-    if (!targetArticle) return;
-    const cleanTitle = (targetArticle.title as string).replace(/^\s*\[sample\]\s*/i, '').trim();
-
-    await supabase.from('articles').update({ title: cleanTitle, content: formattedContent, formatted_content: formattedContent, is_sample: false, is_featured: false }).eq('id', targetArticle.id);
-    await supabase.from('submissions').update({ is_approved: true }).eq('id', submissionId);
-    onRefresh?.();
-  } catch (err) {
-    console.error('[trySampleSlotOverwrite]', err);
-  }
-}
-
 export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh }: { isOpen: boolean; onClose: () => void; onSubmitted: (s: NewSubmission) => void; onRefresh?: () => void; }) {
   const [fullName, setFullName] = useState('');
   const [submissionType, setSubmissionType] = useState<SubmissionType>('Article');
@@ -352,9 +329,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       const sub: NewSubmission = { ...(data as NewSubmission), badge: autoBadge, submission_type: submissionType };
       saveLocalSubmission(sub);
 
-      if (!isResourceLink && formattedContent) {
-        await trySampleSlotOverwrite(track, sub.id, formattedContent, onRefresh);
-      }
       onSubmitted(sub);
       setIsSuccess(true);
     } catch (err: any) {
