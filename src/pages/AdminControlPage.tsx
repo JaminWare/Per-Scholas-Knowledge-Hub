@@ -45,17 +45,56 @@ function deriveExcerpt(content: string): string {
   return clean.slice(0, 200).trim();
 }
 
-async function findSectionIdByTrack(track: string): Promise<string | null> {
-  const trackLower = track.toLowerCase();
-  let slugHint = '';
-  if (trackLower.includes('core 1')) slugHint = 'study-tips';
-  else if (trackLower.includes('core 2')) slugHint = 'study-tips';
-  else if (trackLower.includes('healthcare')) slugHint = 'study-tips';
-  else if (trackLower.includes('diagram')) slugHint = 'diagrams';
-  else if (trackLower.includes('quick ref')) slugHint = 'quick-references';
-  else if (trackLower.includes('prompt')) slugHint = 'azari-prompt-playbook';
-  if (!slugHint) slugHint = 'quick-references';
-  const { data } = await supabase.from('sections').select('id').eq('slug', slugHint).maybeSingle();
+// Prioritized keyword-to-slug resolution matrix (more specific rules first)
+const TRACK_RULES: { keywords: string[]; slug: string }[] = [
+  // Core 1 domains
+  { keywords: ['core 1', 'domain 1', 'mobile'],            slug: 'core1-mobile' },
+  { keywords: ['core 1', 'domain 2', 'networking'],        slug: 'core1-networking' },
+  { keywords: ['core 1', 'domain 3', 'hardware'],          slug: 'core1-hardware' },
+  { keywords: ['core 1', 'domain 4'],                      slug: 'core1-virtualization' },
+  { keywords: ['core 1', 'domain 5'],                      slug: 'core1-troubleshooting' },
+  // Core 1 keyword-only fallbacks (no domain number present)
+  { keywords: ['core 1', 'mobile'],                        slug: 'core1-mobile' },
+  { keywords: ['core 1', 'networking'],                    slug: 'core1-networking' },
+  { keywords: ['core 1', 'hardware'],                      slug: 'core1-hardware' },
+  { keywords: ['core 1', 'virtualization'],                slug: 'core1-virtualization' },
+  { keywords: ['core 1', 'cloud'],                         slug: 'core1-virtualization' },
+  { keywords: ['core 1', 'troubleshooting'],               slug: 'core1-troubleshooting' },
+  // Core 2 domains
+  { keywords: ['core 2', 'domain 1', 'operating'],         slug: 'core2-os' },
+  { keywords: ['core 2', 'domain 2', 'security'],          slug: 'core2-security' },
+  { keywords: ['core 2', 'domain 3', 'software'],          slug: 'core2-software' },
+  { keywords: ['core 2', 'domain 4', 'operational'],       slug: 'core2-operations' },
+  // Core 2 keyword-only fallbacks
+  { keywords: ['core 2', 'operating system'],              slug: 'core2-os' },
+  { keywords: ['core 2', 'security'],                      slug: 'core2-security' },
+  { keywords: ['core 2', 'software'],                      slug: 'core2-software' },
+  { keywords: ['core 2', 'operational'],                   slug: 'core2-operations' },
+  // Healthcare
+  { keywords: ['healthcare', 'ehr'],                       slug: 'healthcare-ehr' },
+  { keywords: ['healthcare', 'hipaa'],                     slug: 'healthcare-hipaa' },
+  { keywords: ['healthcare', 'clinical'],                  slug: 'healthcare-clinical' },
+  // Top-level categories
+  { keywords: ['diagram'],                                 slug: 'diagrams' },
+  { keywords: ['quick ref'],                               slug: 'quick-references' },
+  { keywords: ['prompt playbook'],                         slug: 'azari-prompt-playbook' },
+];
+
+function resolveCanonicalSlug(track: string): string {
+  const t = track.toLowerCase();
+  for (const rule of TRACK_RULES) {
+    if (rule.keywords.every((kw) => t.includes(kw))) return rule.slug;
+  }
+  return 'quick-references';
+}
+
+async function resolveSectionId(track: string): Promise<string | null> {
+  const slug = resolveCanonicalSlug(track);
+  const { data } = await supabase
+    .from('sections')
+    .select('id')
+    .eq('slug', slug)
+    .maybeSingle();
   return (data as { id: string } | null)?.id ?? null;
 }
 
@@ -355,60 +394,55 @@ function AdminPanel() {
       .eq('id', id);
     if (approveError) throw approveError;
 
-    // Clear from UI immediately — submission is now marked approved in DB
     setSubmissions((prev) => prev.filter((s) => s.id !== id));
 
-    // Step 2: try to overwrite a matching [OPEN SLOT] article (exact-then-fuzzy)
-    const { data: sampleRows } = await supabase
-      .from('articles')
-      .select('id, title, study_category')
-      .eq('is_sample', true)
-      .order('created_at', { ascending: true })
-      .limit(50);
+    // Step 2: resolve the target section dynamically
+    const targetSectionId = await resolveSectionId(sub.track);
 
-    const trackLower = sub.track.toLowerCase();
-
-    // Exact match first
-    let sampleMatch = (sampleRows ?? []).find((a) => {
-      if (!a.study_category) return false;
-      return (a.study_category as string).toLowerCase() === trackLower;
-    });
-
-    // Fuzzy fallback (substring inclusion)
-    if (!sampleMatch) {
-      sampleMatch = (sampleRows ?? []).find((a) => {
-        if (!a.study_category) return false;
-        const cat = (a.study_category as string).toLowerCase();
-        return trackLower.includes(cat) || cat.includes(trackLower);
-      });
+    // Step 3: find an open slot in the resolved section
+    let openSlot: { id: string } | null = null;
+    if (targetSectionId) {
+      const { data } = await supabase
+        .from('articles')
+        .select('id')
+        .eq('is_sample', true)
+        .eq('section_id', targetSectionId)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+      openSlot = data as { id: string } | null;
     }
 
     const publishContent = sub.formatted_content ?? sub.content;
+    const isResourceLink = sub.submission_type === 'Resource Link';
+    const excerpt = isResourceLink
+      ? `Contributed by ${sub.full_name}`
+      : deriveExcerpt(publishContent);
 
-    if (sampleMatch) {
+    if (openSlot) {
       // Overwrite the placeholder slot
-      const isResourceLink = sub.submission_type === 'Resource Link';
+      const baseSlug = slugify(cleanedTitle || `contribution-${Date.now()}`);
+      const uniqueSlug = await ensureUniqueSlug(baseSlug);
       const { error: updateError } = await supabase
         .from('articles')
         .update({
           title: cleanedTitle || sub.title,
+          slug: uniqueSlug,
           content: publishContent,
           study_category: sub.track,
           is_sample: false,
           is_featured: false,
           submission_type: sub.submission_type,
           author_name: sub.full_name,
-          excerpt: isResourceLink ? `Contributed by ${sub.full_name}` : deriveExcerpt(publishContent),
+          excerpt,
           updated_at: new Date().toISOString(),
         })
-        .eq('id', sampleMatch.id);
+        .eq('id', openSlot.id);
       if (updateError) throw updateError;
     } else {
-      // Step 3: INSERT a brand-new article row
+      // No open slot — insert a new article row
       const baseSlug = slugify(cleanedTitle || `contribution-${Date.now()}`);
       const uniqueSlug = await ensureUniqueSlug(baseSlug);
-      const sectionId = await findSectionIdByTrack(sub.track);
-      const isResourceLink = sub.submission_type === 'Resource Link';
 
       const { error: insertError } = await supabase
         .from('articles')
@@ -417,12 +451,12 @@ function AdminPanel() {
           slug: uniqueSlug,
           content: publishContent,
           study_category: sub.track,
-          section_id: sectionId,
+          section_id: targetSectionId,
           is_sample: false,
           is_featured: false,
           submission_type: sub.submission_type,
           author_name: sub.full_name,
-          excerpt: isResourceLink ? `Contributed by ${sub.full_name}` : deriveExcerpt(publishContent),
+          excerpt,
           tags: [],
         });
       if (insertError) throw insertError;
