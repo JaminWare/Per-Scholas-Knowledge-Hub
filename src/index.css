@@ -35,7 +35,7 @@
   /* ── Sidebar items — always on dark charcoal canvas ── */
   .sidebar-item {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200;
-    @apply text-zinc-400 hover:bg-sky-500/10 hover:text-sky-400;
+    @apply text-zinc-300 hover:bg-sky-500/10 hover:text-sky-400;
   }
 
   .sidebar-item.active {

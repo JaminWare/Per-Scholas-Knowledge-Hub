@@ -139,9 +139,9 @@ export default function Sidebar({ onToggle }: SidebarProps) {
   });
 
   return (
-    <div className="flex flex-col h-full bg-zinc-900 border-r border-zinc-800">
+    <div className="flex flex-col h-full bg-slate-700 border-r border-slate-600">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-600 flex-shrink-0">
         <Link to="/" className="flex items-center gap-2.5 flex-1 min-w-0">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
             <BookOpen className="w-[18px] h-[18px] text-white" />
@@ -155,7 +155,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         </Link>
         <button
           onClick={onToggle}
-          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700 transition-colors flex-shrink-0"
+          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-slate-600 transition-colors flex-shrink-0"
           title="Collapse sidebar"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -180,7 +180,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           <div key={track.id} className="pt-3">
             <button
               onClick={() => setOpenTracks((p) => ({ ...p, [track.id]: !p[track.id] }))}
-              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border ${trackBorder[track.color]} bg-zinc-800 hover:bg-zinc-700 transition-colors mb-1`}
+              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border ${trackBorder[track.color]} bg-slate-600 hover:bg-slate-500 transition-colors mb-1`}
             >
               <div className="flex-1 text-left min-w-0">
                 <p className="text-[11px] font-semibold text-zinc-100 uppercase tracking-wider truncate">
