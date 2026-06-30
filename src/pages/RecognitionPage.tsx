@@ -116,9 +116,9 @@ function groupItemsByTrack(items: PortfolioItem[]): Map<string, PortfolioItem[]>
     if (!map.has(bucket)) map.set(bucket, []);
     map.get(bucket)!.push(s);
   }
-  // Sort each bucket by created_at descending (newest first)
+  // Sort each bucket by created_at ascending (FIFO — oldest first)
   for (const [, val] of map) {
-    val.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
+    val.sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''));
   }
   // Sort map keys: known tracks first in order, then alphabetical, "Other" last
   const sorted = new Map<string, PortfolioItem[]>();
@@ -249,37 +249,50 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
                     <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
                       {items.map((s) => {
                         const itemType = s.submission_type ?? 'Article';
-                        const isNavigable = itemType === 'Article' || itemType === 'Resource Link';
-                        const icon = itemType === 'Resource Link'
+                        const isResourceLink = itemType === 'Resource Link';
+                        const isInternalNav = itemType === 'Article' || itemType === 'Study Tip' || itemType === 'Quick Reference' || itemType === 'Diagram';
+                        const icon = isResourceLink
                           ? <Link2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
                           : itemType === 'Article'
                             ? <BookOpen className={`w-3.5 h-3.5 flex-shrink-0 ${isFounder ? 'text-amber-500' : 'text-sky-500'}`} />
                             : <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />;
 
-                        if (isNavigable) {
+                        if (isResourceLink) {
+                          return (
+                            <a
+                              key={s.id}
+                              href={s.content || '#'}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={() => setDropdownOpen(false)}
+                              className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-emerald-500/10 hover:border-emerald-400 transition-all group"
+                            >
+                              {icon}
+                              <span className="text-sm text-zinc-800 dark:text-zinc-100 truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-300">{s.title}</span>
+                              <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
+                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500">{itemType}</span>
+                                <ChevronRight className="w-3 h-3 text-zinc-400 dark:text-zinc-600 group-hover:text-emerald-400" />
+                              </span>
+                            </a>
+                          );
+                        }
+
+                        if (isInternalNav) {
                           return (
                             <Link
                               key={s.id}
                               to={`/article/${s.slug || buildSlugFromTitle(s.title)}`}
                               onClick={() => setDropdownOpen(false)}
                               className={`flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/15 transition-all group ${
-                                itemType === 'Resource Link'
-                                  ? 'hover:border-emerald-400'
-                                  : isFounder ? 'hover:border-amber-400' : 'hover:border-sky-500'
+                                isFounder ? 'hover:border-amber-400' : 'hover:border-sky-500'
                               }`}
                             >
                               {icon}
                               <span className={`text-sm text-zinc-800 dark:text-zinc-100 truncate ${
-                                itemType === 'Resource Link'
-                                  ? 'group-hover:text-emerald-600 dark:group-hover:text-emerald-300'
-                                  : isFounder ? 'group-hover:text-amber-600 dark:group-hover:text-amber-300' : 'group-hover:text-sky-600 dark:group-hover:text-sky-300'
+                                isFounder ? 'group-hover:text-amber-600 dark:group-hover:text-amber-300' : 'group-hover:text-sky-600 dark:group-hover:text-sky-300'
                               }`}>{s.title}</span>
                               <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
-                                <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
-                                  itemType === 'Resource Link'
-                                    ? 'bg-emerald-500/10 text-emerald-500'
-                                    : 'bg-sky-500/10 text-sky-500'
-                                }`}>{itemType}</span>
+                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{itemType}</span>
                                 <ChevronRight className={`w-3 h-3 text-zinc-400 dark:text-zinc-600 ${
                                   isFounder ? 'group-hover:text-amber-400' : 'group-hover:text-sky-400'
                                 }`} />

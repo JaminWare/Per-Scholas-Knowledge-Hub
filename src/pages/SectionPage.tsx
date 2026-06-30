@@ -367,10 +367,11 @@ function CurriculumDashboard({
 
   const isVisibleInContext = (a: ArticleWithContributor) => {
     if (context === 'Quick Reference') {
-      return a.is_sample || a.submission_type === 'Quick Reference' || a.submission_type === 'Resource Link';
+      return a.is_sample || (a.submission_type ?? '').toLowerCase() === 'quick reference' || (a.submission_type ?? '').toLowerCase() === 'resource link';
     }
     if (context === 'Study Tips') {
-      return a.submission_type !== 'Resource Link';
+      const type = (a.submission_type ?? '').toLowerCase();
+      return type !== 'resource link';
     }
     return true;
   };
@@ -501,7 +502,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         let query = supabase
           .from('articles')
           .select('*, contributor:contributors(name)')
-          .order('created_at', { ascending: false });
+          .order('created_at', { ascending: true });
         if (section?.id) query = query.eq('section_id', section.id);
         else query = query.ilike('slug', `${slug}/%`);
         const { data } = await query;

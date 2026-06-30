@@ -1,5 +1,5 @@
-import { Fragment } from 'react';
-import { ExternalLink } from 'lucide-react';
+import { Fragment, useState } from 'react';
+import { ExternalLink, ImageOff } from 'lucide-react';
 import {
   FirewallNetworkSegmentationDiagram,
   FirewallPacketInspectionDiagram,
@@ -23,7 +23,8 @@ type Block =
   | { type: 'paragraph'; content: string }
   | { type: 'citations'; items: string[] }
   | { type: 'diagram'; id: string }
-  | { type: 'code_fence'; lang: string; code: string };
+  | { type: 'code_fence'; lang: string; code: string }
+  | { type: 'image'; src: string; alt: string };
 
 function parseInline(text: string): InlineToken[] {
   const tokens: InlineToken[] = [];
@@ -192,6 +193,10 @@ function parseBlocks(content: string): Block[] {
           pendingDiagramAfterTable = null;
         }
       }
+    } else if (/^!\[([^\]]*)\]\(([^)]+)\)/.test(trimmed)) {
+      const imgMatch = trimmed.match(/^!\[([^\]]*)\]\(([^)]+)\)/);
+      blocks.push({ type: 'image', alt: imgMatch![1], src: imgMatch![2] });
+      i++;
     } else {
       const paragraphLines: string[] = [];
       while (i < lines.length && lines[i].trim()) {
@@ -211,6 +216,26 @@ const diagramRegistry: Record<string, React.ComponentType<{ className?: string }
   'healthcare-cloud-hierarchy': HealthcareCloudHierarchyDiagram,
   'trace-pipeline': TRACEPromptPipelineDiagram,
 };
+
+function ImageBlock({ src, alt }: { src: string; alt: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) {
+    return (
+      <div className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 shadow-md max-h-[450px] overflow-hidden bg-gradient-to-br from-zinc-100 via-zinc-50 to-sky-50 dark:from-zinc-900 dark:via-zinc-800 dark:to-sky-950 flex flex-col items-center justify-center py-16 gap-3">
+        <ImageOff className="w-10 h-10 text-zinc-400 dark:text-zinc-600" />
+        <span className="text-sm text-zinc-500 dark:text-zinc-500 font-medium">Image unavailable</span>
+      </div>
+    );
+  }
+  return (
+    <img
+      src={src}
+      alt={alt}
+      onError={() => setFailed(true)}
+      className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 shadow-md max-h-[450px] object-cover"
+    />
+  );
+}
 
 interface Props {
   content: string;
@@ -330,6 +355,12 @@ export default function MarkdownRenderer({ content }: Props) {
               <p key={idx} className="text-zinc-600 dark:text-zinc-400 leading-7">
                 {renderInline(block.content)}
               </p>
+            );
+          case 'image':
+            return (
+              <div key={idx} className="my-4">
+                <ImageBlock src={block.src} alt={block.alt} />
+              </div>
             );
           default:
             return null;
