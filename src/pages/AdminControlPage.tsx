@@ -88,6 +88,27 @@ function resolveCanonicalSlug(track: string): string {
   return 'quick-references';
 }
 
+// Maps form track strings to the exact domain labels used by CurriculumDashboard filters
+const SLUG_TO_STUDY_CATEGORY: Record<string, string> = {
+  'core1-mobile':          'Domain 1.0 — Mobile Devices',
+  'core1-networking':      'Domain 2.0 — Networking',
+  'core1-hardware':        'Domain 3.0 — Hardware',
+  'core1-virtualization':  'Domain 4.0 — Virtualization & Cloud',
+  'core1-troubleshooting': 'Domain 5.0 — Hardware & Network Troubleshooting',
+  'core2-os':              'Domain 1.0 — Operating Systems',
+  'core2-security':        'Domain 2.0 — Security',
+  'core2-software':        'Domain 3.0 — Software Troubleshooting',
+  'core2-operations':      'Domain 4.0 — Operational Procedures',
+  'healthcare-ehr':        'EHR Architecture',
+  'healthcare-hipaa':      'HIPAA Data Security',
+  'healthcare-clinical':   'Clinical Workflows',
+};
+
+function resolveStudyCategory(track: string): string {
+  const slug = resolveCanonicalSlug(track);
+  return SLUG_TO_STUDY_CATEGORY[slug] ?? track;
+}
+
 async function resolveSectionId(track: string): Promise<string | null> {
   const slug = resolveCanonicalSlug(track);
   const { data } = await supabase
@@ -429,7 +450,8 @@ function AdminPanel() {
           title: cleanedTitle || sub.title,
           slug: uniqueSlug,
           content: publishContent,
-          study_category: sub.track,
+          study_category: resolveStudyCategory(sub.track),
+          section_id: targetSectionId,
           is_sample: false,
           is_featured: false,
           submission_type: sub.submission_type,
@@ -450,7 +472,7 @@ function AdminPanel() {
           title: cleanedTitle || sub.title,
           slug: uniqueSlug,
           content: publishContent,
-          study_category: sub.track,
+          study_category: resolveStudyCategory(sub.track),
           section_id: targetSectionId,
           is_sample: false,
           is_featured: false,

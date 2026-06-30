@@ -52,7 +52,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
       try {
         const [featuredRes, recentRes] = await Promise.all([
           supabase.from('articles').select('*, contributor:contributors(*)').eq('is_featured', true).limit(3),
-          supabase.from('articles').select('*, contributor:contributors(*)').order('created_at', { ascending: false }).limit(6),
+          supabase.from('articles').select('*, contributor:contributors(*)').eq('is_sample', false).order('created_at', { ascending: false }).limit(6),
         ]);
         if (featuredRes.data) setFeaturedArticles(featuredRes.data);
         if (recentRes.data)   setRecentArticles(recentRes.data);

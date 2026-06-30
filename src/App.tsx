@@ -37,7 +37,7 @@ function AppContent() {
   }, []);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-200 dark:bg-[#1e2738] text-zinc-800 dark:text-slate-200 cursor-none">
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-200 dark:bg-[#1a2332] text-zinc-800 dark:text-slate-200 cursor-none">
       {/* Dark mode spotlight glow */}
       <div
         className="pointer-events-none fixed inset-0 z-0 opacity-0 dark:opacity-100 transition-opacity duration-300"
@@ -71,7 +71,7 @@ function AppContent() {
       {/* ── Main area ───────────────────────────────── */}
       <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
         {/* Sticky header — always dark charcoal in both modes */}
-        <header className="flex-shrink-0 z-30 bg-zinc-800/95 dark:bg-[#1e2738]/90 backdrop-blur-lg border-b border-zinc-200 dark:border-slate-700">
+        <header className="flex-shrink-0 z-30 bg-zinc-800/95 dark:bg-[#1a2332]/90 backdrop-blur-lg border-b border-zinc-200 dark:border-slate-700">
           <div className="flex items-center gap-3 px-4 py-3">
             <button
               onClick={() => setSidebarOpen((v) => !v)}
