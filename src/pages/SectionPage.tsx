@@ -284,18 +284,23 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
               : 'bg-sky-500/10 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 hover:shadow-md hover:shadow-sky-500/20'
           }`}
         >
-          {article.submission_type === 'Resource Link' ? (
-  
-    View Resource ↗
-  </a>
-) : (
-  <button 
-    onClick={() => setSelectedArticle(article)} 
-    className="w-full mt-4 py-2 flex items-center justify-center gap-2 text-sm font-bold rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 dark:bg-sky-500/10 dark:text-sky-400 dark:hover:bg-sky-500/20 transition-colors"
-  >
-    Read Article
-  </button>
-        )}
+       {article.submission_type === 'Resource Link' ? (
+          <a 
+            href={article.content} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="w-full mt-4 py-2 flex items-center justify-center gap-2 text-sm font-bold rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:hover:bg-emerald-500/20 transition-colors"
+          >
+            View Resource ↗
+          </a>
+        ) : (
+          <button 
+            onClick={() => setSelectedArticle(article)} 
+            className="w-full mt-4 py-2 flex items-center justify-center gap-2 text-sm font-bold rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 dark:bg-sky-500/10 dark:text-sky-400 dark:hover:bg-sky-500/20 transition-colors"
+          >
+            Read Article
+          </button>
+        )}   
       </div>
     );
 }
