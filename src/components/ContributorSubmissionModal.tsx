@@ -81,17 +81,41 @@ function getBadge(trackName: string): string {
   return 'Core 1 Expert';
 }
 
+function extractUrls(text: string): string[] {
+  const urlRegex = /https?:\/\/[^\s)>\]]+/g;
+  const matches = text.match(urlRegex);
+  return matches ? [...new Set(matches)] : [];
+}
+
+function autoLinkUrls(text: string): string {
+  return text.replace(/(?<!\]\()https?:\/\/[^\s)>\]]+/g, (url) => `[${url}](${url})`);
+}
+
 function buildFormattedContent(authorName: string, trackValue: string, rawContent: string): string {
+  const trimmed = rawContent.trim();
+  const urls = extractUrls(trimmed);
+  const referencesBlock = urls.length > 0
+    ? urls.map((url) => `- [${url}](${url})`).join('\n')
+    : '- *No external references provided.*';
+
   return [
     `> 💡 **Community Contribution** | Research curated by **${authorName}** for track **${trackValue}**.`,
     '',
-    '## Executive Overview & Core Concepts',
+    '## 🔬 Guided Description',
     '',
-    rawContent.trim(),
+    autoLinkUrls(trimmed),
     '',
-    '## Healthcare IT Professional Relevance',
+    '## ⚡ CompTIA A+ Relevance',
+    '',
+    'This contribution aligns with CompTIA A+ exam objectives by reinforcing foundational concepts tested across Core 1 and Core 2 domains — including hardware, networking, operating systems, security, and operational procedures.',
+    '',
+    '## 🏥 Healthcare IT Integration',
     '',
     'This research directly supports professionals working within healthcare IT environments. The concepts covered relate to real-world clinical and administrative workflows — from EHR system configurations to HIPAA-compliant security postures.',
+    '',
+    '## 🔗 References & Citations',
+    '',
+    referencesBlock,
   ].join('\n');
 }
 

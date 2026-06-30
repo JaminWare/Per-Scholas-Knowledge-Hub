@@ -678,7 +678,7 @@ export default function ArticlePage() {
       </div>
 
       {/* ── Article body ─────────────────────────────────────── */}
-      <div className="bg-zinc-100 dark:bg-white border border-zinc-200 dark:border-zinc-200 rounded-xl p-6 md:p-8">
+      <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 md:p-8">
         {isNetworkTopologyArticle ? (
           <NetworkTopologyArticleDiagrams />
         ) : isOSIPDUArticle ? (

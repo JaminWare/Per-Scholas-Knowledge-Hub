@@ -197,19 +197,47 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
     if (local.length > 0) setSubmissions(local);
 
     async function loadFromSupabase() {
-      const { data } = await supabase
+      const { data: subData } = await supabase
         .from('submissions')
         .select('*')
+        .eq('is_approved', true)
         .order('created_at', { ascending: false })
         .limit(100);
-      if (data && data.length > 0) {
-        setSubmissions((prev) => {
-          const localOnly = prev.filter((s) => s.id.startsWith('local-'));
-          const merged = [...localOnly, ...(data as NewSubmission[])];
-          const seen = new Set<string>();
-          return merged.filter((s) => { if (seen.has(s.id)) return false; seen.add(s.id); return true; });
-        });
+
+      const { data: articleData } = await supabase
+        .from('articles')
+        .select('id, title, slug, author_name, study_category, submission_type')
+        .eq('is_sample', false)
+        .not('author_name', 'is', null)
+        .limit(200);
+
+      const articleEntries: NewSubmission[] = (articleData ?? []).map((a: any) => ({
+        id: `art-${a.id}`,
+        full_name: a.author_name,
+        track: a.study_category ?? '',
+        badge: 'Cohort Contributor',
+        title: a.title,
+        content: '',
+        submission_type: a.submission_type ?? 'Article',
+        created_at: '',
+      }));
+
+      const allEntries: NewSubmission[] = [];
+      const seenTitles = new Set<string>();
+
+      for (const entry of articleEntries) {
+        const key = entry.title.trim().toLowerCase();
+        if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
       }
+      for (const entry of (subData as NewSubmission[]) ?? []) {
+        const key = entry.title.trim().toLowerCase();
+        if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
+      }
+
+      const localOnly = local.filter((s) => s.id.startsWith('local-'));
+      const merged = [...localOnly, ...allEntries];
+      const seen = new Set<string>();
+      setSubmissions(merged.filter((s) => { if (seen.has(s.id)) return false; seen.add(s.id); return true; }));
     }
     loadFromSupabase();
   }, []);

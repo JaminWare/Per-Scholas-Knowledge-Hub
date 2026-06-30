@@ -190,8 +190,8 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
   return (
     <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
       isSample
-        ? 'bg-zinc-100/60 dark:bg-white border-blue-200/60 dark:border-zinc-200 hover:border-blue-400/70 dark:hover:border-blue-400/50 hover:shadow-[0_0_0_1.5px_rgba(96,165,250,0.5),0_4px_16px_rgba(96,165,250,0.08)]'
-        : 'bg-white dark:bg-white border-slate-200 dark:border-zinc-200 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
+        ? 'bg-zinc-100/60 dark:bg-zinc-900 border-blue-200/60 dark:border-zinc-800 hover:border-blue-400/70 dark:hover:border-blue-400/50 hover:shadow-[0_0_0_1.5px_rgba(96,165,250,0.5),0_4px_16px_rgba(96,165,250,0.08)]'
+        : 'bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
     }`}>
       <div
         className={`flex items-center justify-between px-3 py-1.5 ${
@@ -228,8 +228,8 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
           <div className="flex-1 min-w-0">
             <h3 className={`font-semibold text-sm leading-snug line-clamp-2 transition-colors ${
               isSample
-                ? 'text-blue-800 dark:text-blue-700 group-hover:text-blue-600 dark:group-hover:text-blue-600'
-                : 'text-zinc-800 dark:text-black group-hover:text-sky-600 dark:group-hover:text-sky-500'
+                ? 'text-blue-800 dark:text-blue-300 group-hover:text-blue-600 dark:group-hover:text-blue-400'
+                : 'text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400'
             }`}>
               {article.title}
               {!isSample && (
@@ -287,26 +287,26 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
 
 function AppletSkeleton() {
   return (
-    <div className={`${CARD_WIDTH} bg-white dark:bg-white border border-slate-200 dark:border-zinc-200 rounded-xl p-5 animate-pulse`}>
+    <div className={`${CARD_WIDTH} bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl p-5 animate-pulse`}>
       <div className="flex items-start gap-3 mb-4">
-        <div className="w-10 h-10 rounded-xl bg-zinc-200 dark:bg-zinc-200 flex-shrink-0" />
+        <div className="w-10 h-10 rounded-xl bg-zinc-200 dark:bg-zinc-700 flex-shrink-0" />
         <div className="flex-1 space-y-2">
-          <div className="h-4 bg-zinc-200 dark:bg-zinc-200 rounded w-3/4" />
-          <div className="h-3 bg-zinc-200 dark:bg-zinc-200 rounded w-1/3" />
+          <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-3/4" />
+          <div className="h-3 bg-zinc-200 dark:bg-zinc-700 rounded w-1/3" />
         </div>
       </div>
       <div className="space-y-2 mb-4">
-        <div className="h-3 bg-zinc-200 dark:bg-zinc-200 rounded w-full" />
-        <div className="h-3 bg-zinc-200 dark:bg-zinc-200 rounded w-5/6" />
+        <div className="h-3 bg-zinc-200 dark:bg-zinc-700 rounded w-full" />
+        <div className="h-3 bg-zinc-200 dark:bg-zinc-700 rounded w-5/6" />
       </div>
-      <div className="h-9 bg-zinc-200 dark:bg-zinc-200 rounded-lg" />
+      <div className="h-9 bg-zinc-200 dark:bg-zinc-700 rounded-lg" />
     </div>
   );
 }
 
 function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string; context: string; onContribute: () => void }) {
   return (
-    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-zinc-100/60 dark:bg-white border-blue-200/60 dark:border-zinc-200`}>
+    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-zinc-100/60 dark:bg-zinc-900 border-blue-200/60 dark:border-zinc-800`}>
       <div
         className="flex items-center justify-between px-3 py-1.5 bg-zinc-800 dark:bg-zinc-900/80"
         style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
@@ -325,18 +325,18 @@ function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string
             <Lightbulb className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-sm leading-snug text-blue-800 dark:text-blue-700">
+            <h3 className="font-semibold text-sm leading-snug text-blue-800 dark:text-blue-300">
               {domain} — {context}
             </h3>
             <div className="flex items-center gap-1.5 mt-1">
               <div className="w-4 h-4 rounded bg-gradient-to-br from-blue-400 to-blue-500 flex items-center justify-center flex-shrink-0">
                 <span className="text-white text-[8px] font-bold">?</span>
               </div>
-              <span className="text-[11px] text-blue-500 dark:text-blue-600 truncate font-mono font-bold tracking-wider" style={{ textShadow: '0 0 6px rgba(96,165,250,0.6)' }}>[OPEN SLOT]</span>
+              <span className="text-[11px] text-blue-500 dark:text-blue-400 truncate font-mono font-bold tracking-wider" style={{ textShadow: '0 0 6px rgba(96,165,250,0.6)' }}>[OPEN SLOT]</span>
             </div>
           </div>
         </div>
-        <p className="text-[11px] text-blue-600 dark:text-blue-600 bg-blue-100/60 dark:bg-blue-50 rounded-lg px-2.5 py-2 border border-blue-200/60 dark:border-blue-200" style={{ textShadow: '0 0 6px rgba(96,165,250,0.4)' }}>
+        <p className="text-[11px] text-blue-600 dark:text-blue-400 bg-blue-100/60 dark:bg-blue-500/10 rounded-lg px-2.5 py-2 border border-blue-200/60 dark:border-blue-500/20" style={{ textShadow: '0 0 6px rgba(96,165,250,0.4)' }}>
           This curriculum endpoint is currently open for peer review and documentation.
         </p>
         <button
@@ -564,7 +564,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
           </div>
         </div>
 
-        <div className="bg-white dark:bg-white border border-slate-200 dark:border-zinc-200 rounded-xl p-6 md:p-8">
+        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl p-6 md:p-8">
           <ArticleRenderer blocks={localContent.content} />
         </div>
 
