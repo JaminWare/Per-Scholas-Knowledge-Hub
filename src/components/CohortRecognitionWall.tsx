@@ -17,8 +17,6 @@ const badgeColors: Record<string, string> = {
   'Reference Author':    'bg-amber-500/10 text-amber-600 dark:text-amber-400',
   'Playbook Engineer':   'bg-violet-500/10 text-violet-600 dark:text-violet-400',
   'Cohort Contributor':  'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400',
-  'Domain Expert':       'bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-400/30',
-  'Master Architect':    'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-400/30',
 };
 
 function BadgeTag({ badge }: { badge: string }) {
@@ -30,58 +28,45 @@ function BadgeTag({ badge }: { badge: string }) {
   );
 }
 
-interface ContributionItem {
-  id: string;
-  title: string;
-  track: string;
-  badge: string;
-  submission_type?: string;
+// ── Dynamic pluralization ────────────────────────────────
+
+const PLURAL_MAP: Record<string, string> = {
+  'Article': 'Articles',
+  'Resource Link': 'Resource Links',
+  'Diagram': 'Diagrams',
+  'Study Tip': 'Study Tips',
+  'Quick Ref': 'Quick Refs',
+  'Quick Reference': 'Quick References',
+  'Prompt Playbook': 'Prompt Playbooks',
+};
+
+function pluralizeType(type: string, count: number): string {
+  if (count === 1) return type;
+  return PLURAL_MAP[type] ?? `${type}s`;
 }
+
+// ── Type pill colours (homepage variant) ─────────────────
+
+const TYPE_PILL_COLORS: Record<string, { base: string; founder: string }> = {
+  'Article':         { base: 'bg-sky-100/70 text-sky-900 dark:bg-zinc-800/80 dark:text-zinc-100', founder: 'bg-amber-100/60 text-amber-950 dark:bg-zinc-800/80 dark:text-zinc-100' },
+  'Resource Link':   { base: 'bg-emerald-100/70 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300', founder: 'bg-emerald-100/60 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300' },
+  'Diagram':         { base: 'bg-blue-100/70 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300', founder: 'bg-blue-100/60 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' },
+};
+
+const DEFAULT_PILL = { base: 'bg-zinc-100/80 text-zinc-600 dark:bg-zinc-800/80 dark:text-zinc-300', founder: 'bg-zinc-100/80 text-zinc-600 dark:bg-zinc-800/80 dark:text-zinc-300' };
+
+// ── Type icons for the mini icon row ─────────────────────
+
+const TYPE_ICON: Record<string, React.ReactNode> = {
+  'Article':        <BookOpen className="w-3 h-3" />,
+  'Resource Link':  <Link2 className="w-3 h-3" />,
+};
 
 interface ContributorGroup {
   name: string;
   topBadge: string;
-  contributions: ContributionItem[];
-}
-
-function categorizeLabel(item: ContributionItem): string {
-  const type = item.submission_type;
-  if (type === 'Article')        return 'Authored Articles';
-  if (type === 'Resource Link')  return 'Resource Links';
-  if (item.badge === 'Diagram Architect') return 'Diagrams';
-  if (item.track?.startsWith('Quick References') || item.badge === 'Reference Author') return 'Quick References';
-  if (item.badge === 'Playbook Engineer') return 'Prompt Playbooks';
-  return 'Shared Tips';
-}
-
-const LABEL_ICON: Record<string, React.ReactNode> = {
-  'Authored Articles': <BookOpen className="w-3 h-3" />,
-  'Quick References':  <Zap className="w-3 h-3" />,
-  'Shared Tips':       <Zap className="w-3 h-3" />,
-  'Diagrams':          <Zap className="w-3 h-3" />,
-  'Prompt Playbooks':  <Zap className="w-3 h-3" />,
-  'Resource Links':    <Link2 className="w-3 h-3" />,
-};
-
-function buildStatEntries(contributions: ContributionItem[]): { label: string; count: number }[] {
-  const counts: Record<string, number> = {};
-  for (const c of contributions) {
-    const label = categorizeLabel(c);
-    counts[label] = (counts[label] ?? 0) + 1;
-  }
-  return Object.entries(counts).map(([label, count]) => ({ label, count }));
-}
-
-function pluralize(count: number, label: string): string {
-  if (count === 1) {
-    if (label === 'Authored Articles') return 'Authored Article';
-    if (label === 'Resource Links') return 'Resource Link';
-    if (label === 'Quick References') return 'Quick Reference';
-    if (label === 'Prompt Playbooks') return 'Prompt Playbook';
-    if (label === 'Diagrams') return 'Diagram';
-    if (label === 'Shared Tips') return 'Shared Tip';
-  }
-  return label;
+  typeCounts: Record<string, number>;
+  totalCount: number;
 }
 
 function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
@@ -89,17 +74,13 @@ function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
   for (const s of submissions) {
     const key = s.full_name.trim().toLowerCase();
     if (!map.has(key)) {
-      map.set(key, { name: s.full_name.trim(), topBadge: s.badge || 'Cohort Contributor', contributions: [] });
+      map.set(key, { name: s.full_name.trim(), topBadge: s.badge || 'Cohort Contributor', typeCounts: {}, totalCount: 0 });
     }
     const group = map.get(key)!;
     if (s.badge && s.badge !== 'Cohort Contributor') group.topBadge = s.badge;
-    group.contributions.push({
-      id: s.id,
-      title: s.title,
-      track: s.track,
-      badge: s.badge || 'Cohort Contributor',
-      submission_type: s.submission_type,
-    });
+    const effectiveType = s.submission_type ?? 'Article';
+    group.typeCounts[effectiveType] = (group.typeCounts[effectiveType] ?? 0) + 1;
+    group.totalCount++;
   }
 
   // Override Jamin Ware's badge to Founder
@@ -107,7 +88,7 @@ function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
   if (jamin) jamin.topBadge = 'Founder';
 
   // Sort by contribution count descending
-  return Array.from(map.values()).sort((a, b) => b.contributions.length - a.contributions.length);
+  return Array.from(map.values()).sort((a, b) => b.totalCount - a.totalCount);
 }
 
 // ── Contributor Row ──────────────────────────────────────
@@ -115,7 +96,6 @@ function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
 function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boolean }) {
   const isFounder = group.topBadge === 'Founder';
   const initial = group.name.charAt(0).toUpperCase();
-  const statEntries = buildStatEntries(group.contributions);
 
   if (isFounder) {
     return (
@@ -132,14 +112,14 @@ function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boo
             <BadgeTag badge="Founder" />
           </div>
           <div className="flex flex-wrap gap-1 mt-1">
-            {statEntries.map(({ label, count }) => (
-              <span
-                key={label}
-                className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-100/60 text-amber-950 dark:bg-zinc-800/80 dark:text-zinc-100"
-              >
-                {count} {pluralize(count, label)}
-              </span>
-            ))}
+            {Object.entries(group.typeCounts).map(([type, count]) => {
+              const colors = TYPE_PILL_COLORS[type] ?? DEFAULT_PILL;
+              return (
+                <span key={type} className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${colors.founder}`}>
+                  {count} {pluralizeType(type, count)}
+                </span>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -166,20 +146,20 @@ function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boo
           )}
         </div>
         <div className="flex flex-wrap gap-1 mt-1">
-          {statEntries.map(({ label, count }) => (
-            <span
-              key={label}
-              className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-sky-100/70 text-sky-900 dark:bg-zinc-800/80 dark:text-zinc-100"
-            >
-              {count} {pluralize(count, label)}
-            </span>
-          ))}
+          {Object.entries(group.typeCounts).map(([type, count]) => {
+            const colors = TYPE_PILL_COLORS[type] ?? DEFAULT_PILL;
+            return (
+              <span key={type} className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${colors.base}`}>
+                {count} {pluralizeType(type, count)}
+              </span>
+            );
+          })}
         </div>
       </div>
       <div className="hidden sm:flex items-center gap-1 flex-shrink-0">
-        {Array.from(new Set(group.contributions.map(categorizeLabel))).map((label) => (
-          <span key={label} className="text-zinc-400 dark:text-zinc-600" title={label}>
-            {LABEL_ICON[label] ?? <Zap className="w-3 h-3" />}
+        {Object.keys(group.typeCounts).map((type) => (
+          <span key={type} className="text-zinc-400 dark:text-zinc-600" title={type}>
+            {TYPE_ICON[type] ?? <Zap className="w-3 h-3" />}
           </span>
         ))}
       </div>

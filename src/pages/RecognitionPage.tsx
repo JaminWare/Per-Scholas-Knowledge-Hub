@@ -38,14 +38,38 @@ function deriveTierBadge(count: number): string {
   return 'Cohort Contributor';
 }
 
+// ── Dynamic pluralization ────────────────────────────────
+
+const PLURAL_MAP: Record<string, string> = {
+  'Article': 'Articles',
+  'Resource Link': 'Resource Links',
+  'Diagram': 'Diagrams',
+  'Study Tip': 'Study Tips',
+  'Quick Ref': 'Quick Refs',
+  'Quick Reference': 'Quick References',
+  'Prompt Playbook': 'Prompt Playbooks',
+};
+
+function pluralizeType(type: string, count: number): string {
+  if (count === 1) return type;
+  return PLURAL_MAP[type] ?? `${type}s`;
+}
+
+// ── Type pill colour map ─────────────────────────────────
+
+const TYPE_PILL_COLORS: Record<string, { base: string; founder: string }> = {
+  'Article':        { base: 'bg-sky-500/10 text-sky-700 dark:text-sky-400', founder: 'bg-amber-100/60 text-amber-950 dark:bg-zinc-800/80 dark:text-zinc-100' },
+  'Resource Link':  { base: 'bg-emerald-100/60 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', founder: 'bg-emerald-100/60 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' },
+  'Diagram':        { base: 'bg-blue-500/10 text-blue-700 dark:text-blue-400', founder: 'bg-blue-500/10 text-blue-700 dark:text-blue-400' },
+  'Study Tip':      { base: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400', founder: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400' },
+  'Quick Reference': { base: 'bg-amber-500/10 text-amber-700 dark:text-amber-400', founder: 'bg-amber-500/10 text-amber-700 dark:text-amber-400' },
+};
+
+const DEFAULT_PILL_COLOR = { base: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400', founder: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400' };
+
 // ── Track resolution (single source of truth) ────────────
 
-const TRACK_ORDER = [
-  'CompTIA A+ Core 1',
-  'CompTIA A+ Core 2',
-  'Advanced Healthcare IT',
-  'Other Contributions',
-] as const;
+const KNOWN_TRACK_ORDER = ['CompTIA A+ Core 1', 'CompTIA A+ Core 2', 'Advanced Healthcare IT'];
 
 function resolveTrack(track: string, slug?: string): string {
   if (!track && slug) {
@@ -74,60 +98,40 @@ interface PortfolioItem extends NewSubmission {
   slug?: string;
 }
 
-// ── Contributor group ────────────────────────────────────
+// ── Contributor group with dynamic typeCounts ────────────
 
 interface ContributorGroup {
   name: string;
   topBadge: string;
   items: PortfolioItem[];
+  typeCounts: Record<string, number>;
 }
 
-// ── Metric breakdown ─────────────────────────────────────
-
-interface CategoryBreakdown {
-  articles: number;
-  links: number;
-  refs: number;
-  diagrams: number;
-  tips: number;
-}
-
-function countByCategory(items: PortfolioItem[]): CategoryBreakdown {
-  let articles = 0, links = 0, refs = 0, diagrams = 0, tips = 0;
-  for (const s of items) {
-    if (s.submission_type === 'Article') articles++;
-    else if (s.submission_type === 'Resource Link') links++;
-    else if (s.badge === 'Reference Author') refs++;
-    else if (s.badge === 'Diagram Architect') diagrams++;
-    else tips++;
-  }
-  return { articles, links, refs, diagrams, tips };
-}
-
-function categoryLabel(s: PortfolioItem): string {
-  if (s.submission_type === 'Article')        return 'Authored Articles';
-  if (s.submission_type === 'Resource Link')  return 'Resource Links';
-  if (s.badge === 'Diagram Architect')        return 'Diagrams';
-  if (s.badge === 'Reference Author')         return 'Quick References';
-  if (s.badge === 'Playbook Engineer')        return 'Prompt Playbooks';
-  return 'Shared Tips';
-}
-
-// ── Track grouping ────────────────────────────────────────
+// ── Dynamic track grouping (no hardcoded track list) ─────
 
 function groupItemsByTrack(items: PortfolioItem[]): Map<string, PortfolioItem[]> {
-  const map = new Map<string, PortfolioItem[]>(TRACK_ORDER.map((t) => [t, []]));
+  const map = new Map<string, PortfolioItem[]>();
   for (const s of items) {
     const bucket = resolveTrack(s.track ?? '', s.slug);
+    if (!map.has(bucket)) map.set(bucket, []);
     map.get(bucket)!.push(s);
   }
   // Sort each bucket by created_at descending (newest first)
   for (const [, val] of map) {
     val.sort((a, b) => (b.created_at || '').localeCompare(a.created_at || ''));
   }
-  // Drop empty buckets
-  for (const [key, val] of map) { if (val.length === 0) map.delete(key); }
-  return map;
+  // Sort map keys: known tracks first in order, then alphabetical, "Other" last
+  const sorted = new Map<string, PortfolioItem[]>();
+  for (const known of KNOWN_TRACK_ORDER) {
+    if (map.has(known)) { sorted.set(known, map.get(known)!); map.delete(known); }
+  }
+  const otherBucket = map.get('Other Contributions');
+  map.delete('Other Contributions');
+  for (const [key, val] of [...map.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
+    sorted.set(key, val);
+  }
+  if (otherBucket) sorted.set('Other Contributions', otherBucket);
+  return sorted;
 }
 
 const SECTION_HDR = 'bg-zinc-100/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 font-mono text-[10px] uppercase tracking-wider border-y border-zinc-200 dark:border-zinc-800 px-3 py-1 block first:border-t-0';
@@ -144,7 +148,6 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
   const initial = group.name.charAt(0).toUpperCase();
   const totalCount = group.items.length;
   const tierBadge = deriveTierBadge(totalCount);
-  const breakdown = countByCategory(group.items);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -200,33 +203,15 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
             )}
           </div>
           <div className="flex flex-wrap gap-1 mt-1">
-            {breakdown.articles > 0 && (
-              <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${
-                isFounder ? 'bg-amber-100/60 text-amber-950 dark:bg-zinc-800/80 dark:text-zinc-100' : 'bg-sky-500/10 text-sky-700 dark:text-sky-400'
-              }`}>
-                {breakdown.articles} Authored Article{breakdown.articles !== 1 ? 's' : ''}
-              </span>
-            )}
-            {breakdown.links > 0 && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-100/60 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
-                {breakdown.links} Resource Link{breakdown.links !== 1 ? 's' : ''}
-              </span>
-            )}
-            {breakdown.refs > 0 && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400">
-                {breakdown.refs} Reference{breakdown.refs !== 1 ? 's' : ''}
-              </span>
-            )}
-            {breakdown.diagrams > 0 && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-blue-500/10 text-blue-700 dark:text-blue-400">
-                {breakdown.diagrams} Diagram{breakdown.diagrams !== 1 ? 's' : ''}
-              </span>
-            )}
-            {breakdown.tips > 0 && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400">
-                {breakdown.tips} Tip{breakdown.tips !== 1 ? 's' : ''}
-              </span>
-            )}
+            {Object.entries(group.typeCounts).map(([type, count]) => {
+              const colors = TYPE_PILL_COLORS[type] ?? DEFAULT_PILL_COLOR;
+              const pillCls = isFounder ? colors.founder : colors.base;
+              return (
+                <span key={type} className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${pillCls}`}>
+                  {count} {pluralizeType(type, count)}
+                </span>
+              );
+            })}
           </div>
         </div>
         {isOpen
@@ -258,65 +243,65 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
 
             {dropdownOpen && (
               <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl bg-[#f0f4f8]/95 dark:bg-slate-300/15 border border-sky-200/60 dark:border-slate-500/20 shadow-lg dark:shadow-2xl backdrop-blur-md overflow-hidden max-h-64 overflow-y-auto">
-                {Array.from(groupItemsByTrack(group.items).entries()).map(([bucket, items]) => {
-                  const articles = items.filter((s) => s.submission_type === 'Article');
-                  const resourceLinks = items.filter((s) => s.submission_type === 'Resource Link');
-                  const others = items.filter((s) => s.submission_type !== 'Article' && s.submission_type !== 'Resource Link');
-                  return (
-                    <div key={bucket}>
-                      <span className={SECTION_HDR}>{bucket}</span>
-                      <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
-                        {articles.map((s) => (
-                          <Link
-                            key={s.id}
-                            to={`/article/${s.slug || buildSlugFromTitle(s.title)}`}
-                            onClick={() => setDropdownOpen(false)}
-                            className={`flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/15 transition-all group ${
-                              isFounder ? 'hover:border-amber-400' : 'hover:border-sky-500'
-                            }`}
-                          >
-                            <BookOpen className={`w-3.5 h-3.5 flex-shrink-0 ${isFounder ? 'text-amber-500' : 'text-sky-500'}`} />
-                            <span className={`text-sm text-zinc-800 dark:text-zinc-100 truncate ${
-                              isFounder ? 'group-hover:text-amber-600 dark:group-hover:text-amber-300' : 'group-hover:text-sky-600 dark:group-hover:text-sky-300'
-                            }`}>{s.title}</span>
-                            <ChevronRight className={`w-3 h-3 text-zinc-400 dark:text-zinc-600 flex-shrink-0 ml-auto ${
-                              isFounder ? 'group-hover:text-amber-400' : 'group-hover:text-sky-400'
-                            }`} />
-                          </Link>
-                        ))}
-                        {others.map((s) => (
+                {Array.from(groupItemsByTrack(group.items).entries()).map(([bucket, items]) => (
+                  <div key={bucket}>
+                    <span className={SECTION_HDR}>{bucket}</span>
+                    <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
+                      {items.map((s) => {
+                        const itemType = s.submission_type ?? 'Article';
+                        const isNavigable = itemType === 'Article' || itemType === 'Resource Link';
+                        const icon = itemType === 'Resource Link'
+                          ? <Link2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                          : itemType === 'Article'
+                            ? <BookOpen className={`w-3.5 h-3.5 flex-shrink-0 ${isFounder ? 'text-amber-500' : 'text-sky-500'}`} />
+                            : <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />;
+
+                        if (isNavigable) {
+                          return (
+                            <Link
+                              key={s.id}
+                              to={`/article/${s.slug || buildSlugFromTitle(s.title)}`}
+                              onClick={() => setDropdownOpen(false)}
+                              className={`flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/15 transition-all group ${
+                                itemType === 'Resource Link'
+                                  ? 'hover:border-emerald-400'
+                                  : isFounder ? 'hover:border-amber-400' : 'hover:border-sky-500'
+                              }`}
+                            >
+                              {icon}
+                              <span className={`text-sm text-zinc-800 dark:text-zinc-100 truncate ${
+                                itemType === 'Resource Link'
+                                  ? 'group-hover:text-emerald-600 dark:group-hover:text-emerald-300'
+                                  : isFounder ? 'group-hover:text-amber-600 dark:group-hover:text-amber-300' : 'group-hover:text-sky-600 dark:group-hover:text-sky-300'
+                              }`}>{s.title}</span>
+                              <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
+                                <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded ${
+                                  itemType === 'Resource Link'
+                                    ? 'bg-emerald-500/10 text-emerald-500'
+                                    : 'bg-sky-500/10 text-sky-500'
+                                }`}>{itemType}</span>
+                                <ChevronRight className={`w-3 h-3 text-zinc-400 dark:text-zinc-600 ${
+                                  isFounder ? 'group-hover:text-amber-400' : 'group-hover:text-sky-400'
+                                }`} />
+                              </span>
+                            </Link>
+                          );
+                        }
+
+                        return (
                           <div
                             key={s.id}
                             className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
                           >
-                            <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />
+                            {icon}
                             <span className="text-sm text-zinc-700 dark:text-zinc-300 truncate">{s.title}</span>
-                            <span className="ml-auto text-[10px] font-mono text-sky-500 flex-shrink-0">{categoryLabel(s)}</span>
+                            <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-200/80 dark:bg-zinc-800/60 text-zinc-500 flex-shrink-0">{itemType}</span>
                           </div>
-                        ))}
-                      </div>
-                      {resourceLinks.length > 0 && (
-                        <div className="mx-2 my-2">
-                          <span className="block px-2 py-1 text-[9px] font-bold uppercase tracking-widest text-emerald-500 dark:text-emerald-400">Resource Library</span>
-                          <div className="grid gap-1.5 mt-1">
-                            {resourceLinks.map((s) => (
-                              <Link
-                                key={s.id}
-                                to={`/article/${s.slug || buildSlugFromTitle(s.title)}`}
-                                onClick={() => setDropdownOpen(false)}
-                                className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 hover:border-emerald-400/40 hover:bg-emerald-500/15 transition-all group"
-                              >
-                                <Link2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
-                                <span className="text-xs text-emerald-800 dark:text-emerald-300 group-hover:text-emerald-600 dark:group-hover:text-emerald-200 truncate font-medium">{s.title}</span>
-                                <ChevronRight className="w-3 h-3 text-emerald-600 group-hover:text-emerald-400 flex-shrink-0 ml-auto" />
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                        );
+                      })}
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -399,15 +384,17 @@ export default function RecognitionPage() {
         if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
       }
 
-      // Group by author using reduce
+      // Group by author using reduce — build dynamic typeCounts
       const grouped = allEntries.reduce<Record<string, ContributorGroup>>((acc, item) => {
         const key = item.full_name.trim().toLowerCase();
         if (!acc[key]) {
-          acc[key] = { name: item.full_name.trim(), topBadge: 'Cohort Contributor', items: [] };
+          acc[key] = { name: item.full_name.trim(), topBadge: 'Cohort Contributor', items: [], typeCounts: {} };
         }
         const group = acc[key];
         if (item.badge && item.badge !== 'Cohort Contributor') group.topBadge = item.badge;
         group.items.push(item);
+        const effectiveType = item.submission_type ?? 'Article';
+        group.typeCounts[effectiveType] = (group.typeCounts[effectiveType] ?? 0) + 1;
         return acc;
       }, {});
 
