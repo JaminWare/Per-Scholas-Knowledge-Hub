@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   X, Send, Loader2, ChevronDown, Tag,
   FileText, Link2, BookOpen, Zap, GitBranch,
-  AlertCircle, Link as LinkIcon, ImagePlus
+  AlertCircle, Link as LinkIcon, ImagePlus, CheckCircle2
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type NewSubmission, saveLocalSubmission } from '../utils/submissions';
@@ -137,6 +137,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const isResourceLink = submissionType === 'Resource Link';
   const autoBadge = getBadge(track);
@@ -169,6 +170,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setErrors({});
     setFormError('');
     setIsTrackDropdownOpen(false);
+    setIsSuccess(false);
   };
 
   const assembleContent = () => {
@@ -253,19 +255,17 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         await trySampleSlotOverwrite(track, sub.id, formattedContent, onRefresh);
       }
       onSubmitted(sub);
-      reset();
-      onClose();
+      setIsSuccess(true);
     } catch (err: any) {
       console.error('[Database Ingestion Failure]', err);
       alert(`Database Error: ${err?.message || JSON.stringify(err)} \n\nFalling back to local cache storage.`);
-      
+
       const local: NewSubmission = {
         id: `local-${Date.now()}`, full_name: fullName.trim(), track, badge: autoBadge, title: title.trim(), content: rawContent, submission_type: submissionType, created_at: new Date().toISOString(),
       };
       saveLocalSubmission(local);
       onSubmitted(local);
-      reset();
-      onClose();
+      setIsSuccess(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -273,6 +273,34 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   if (!isOpen) return null;
   const inputCls = (field: string) => `w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/40 transition-all ${errors[field] ? 'border-red-400' : 'border-zinc-200 dark:border-zinc-800'}`;
+
+  if (isSuccess) {
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="absolute inset-0 bg-zinc-950/70 dark:bg-zinc-300/25 backdrop-blur-sm" onClick={() => { reset(); onClose(); }} />
+        <div className="relative w-full max-w-md bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden flex flex-col">
+          <div className="flex flex-col items-center text-center px-8 py-12">
+            <div className="w-20 h-20 rounded-full bg-emerald-500/10 border-2 border-emerald-500/30 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+              <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+            </div>
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-3">Contribution Submitted!</h2>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-sm">
+              Your resource has been sent to the curation queue for peer review and admin approval.
+            </p>
+          </div>
+          <div className="px-8 pb-8">
+            <button
+              type="button"
+              onClick={() => { reset(); onClose(); }}
+              className="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm transition-all shadow-lg shadow-emerald-500/20"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">

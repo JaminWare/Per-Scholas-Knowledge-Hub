@@ -255,7 +255,7 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
 
         {isSample && (
           <p className="text-[11px] text-blue-600 dark:text-blue-600 bg-blue-100/60 dark:bg-blue-50 rounded-lg px-2.5 py-2 border border-blue-200/60 dark:border-blue-200" style={{ textShadow: '0 0 6px rgba(96,165,250,0.4)' }}>
-            This slot is open! Submit your research via the portal below to claim this applet.
+            This curriculum endpoint is currently open for peer review and documentation.
           </p>
         )}
 
@@ -337,11 +337,8 @@ function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string
           </div>
         </div>
         <p className="text-[11px] text-blue-600 dark:text-blue-600 bg-blue-100/60 dark:bg-blue-50 rounded-lg px-2.5 py-2 border border-blue-200/60 dark:border-blue-200" style={{ textShadow: '0 0 6px rgba(96,165,250,0.4)' }}>
-          This slot is open! Submit your research via the portal below to claim this applet.
+          This curriculum endpoint is currently open for peer review and documentation.
         </p>
-        <div className="flex justify-center pt-1">
-          <ArrowDown className="animate-bounce text-blue-400 w-5 h-5 drop-shadow-[0_0_6px_rgba(96,165,250,0.6)]" />
-        </div>
         <button
           type="button"
           onClick={onContribute}
