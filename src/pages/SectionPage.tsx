@@ -97,6 +97,21 @@ const CURRICULUM_TRACKS = [
   },
 ] as const;
 
+const CANONICAL_DOMAINS: Record<string, string> = {
+  'Domain 1.0 — Mobile Devices': 'CompTIA A+ Core 1 — Domain 1.0 (Mobile Devices)',
+  'Domain 2.0 — Networking': 'CompTIA A+ Core 1 — Domain 2.0 (Networking)',
+  'Domain 3.0 — Hardware': 'CompTIA A+ Core 1 — Domain 3.0 (Hardware)',
+  'Domain 4.0 — Virtualization & Cloud': 'CompTIA A+ Core 1 — Domain 4.0 (Cloud)',
+  'Domain 5.0 — Hardware & Network Troubleshooting': 'CompTIA A+ Core 1 — Domain 5.0 (Troubleshooting)',
+  'Domain 1.0 — Operating Systems': 'CompTIA A+ Core 2 — Domain 1.0 (Operating Systems)',
+  'Domain 2.0 — Security': 'CompTIA A+ Core 2 — Domain 2.0 (Security)',
+  'Domain 3.0 — Software Troubleshooting': 'CompTIA A+ Core 2 — Domain 3.0 (Software Troubleshooting)',
+  'Domain 4.0 — Operational Procedures': 'CompTIA A+ Core 2 — Domain 4.0 (Operational Procedures)',
+  'EHR Architecture': 'Advanced Healthcare IT — EHR Architecture',
+  'HIPAA Data Security': 'Advanced Healthcare IT — HIPAA Data Security',
+  'Clinical Workflows': 'Advanced Healthcare IT — Clinical Workflows',
+};
+
 const TRACK_COLORS = {
   sky:  { header: 'text-sky-600 dark:text-sky-400',   icon: 'bg-sky-500/10 text-sky-500',   domainHeader: 'text-sky-500 dark:text-sky-400'  },
   teal: { header: 'text-teal-600 dark:text-teal-400', icon: 'bg-teal-500/10 text-teal-500', domainHeader: 'text-teal-500 dark:text-teal-400' },
@@ -432,8 +447,9 @@ function CurriculumDashboard({
     return (
       <div className="space-y-8">
         {domains.map((domain) => {
+          const canonicalTarget = CANONICAL_DOMAINS[domain] || domain;
           const domainArticles = allArticles.filter((a) =>
-            (a.study_category ?? '').toLowerCase().trim() === domain.toLowerCase().trim() && isVisibleInContext(a)
+            a.study_category === canonicalTarget && isVisibleInContext(a)
           );
           return (
             <div key={domain}>
