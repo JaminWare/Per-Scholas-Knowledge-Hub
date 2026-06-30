@@ -384,9 +384,23 @@ function CurriculumDashboard({
   onContribute: () => void;
 }) {
   const allMappedDomains = CURRICULUM_TRACKS.flatMap((t) => [...t.domains]);
-  const uncategorized = articles.filter(
-    (a) => !a.study_category || !allMappedDomains.includes(a.study_category),
-  );
+  const trackArticles = articles.filter(a => {
+  // 1. Must match the curriculum track slot
+  const matchesTrack = a.study_category === domain.title;
+  if (!matchesTrack) return false;
+
+  // 2. If we are on the Quick References page, ONLY show Quick Refs and Resource Links
+  if (pageTitle === 'Quick References') {
+    return a.submission_type === 'Quick Reference' || a.submission_type === 'Resource Link';
+  }
+  
+  // 3. If we are on the Study Tips page, hide Resource Links so they don't bleed over
+  if (pageTitle === 'Study Tips') {
+    return a.submission_type !== 'Resource Link';
+  }
+
+  return true;
+});
 
   // Helper: render domain rows for a single track
   function TrackDomains({
