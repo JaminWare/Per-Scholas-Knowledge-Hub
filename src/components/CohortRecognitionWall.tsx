@@ -17,6 +17,8 @@ const badgeColors: Record<string, string> = {
   'Reference Author':    'bg-amber-500/10 text-amber-600 dark:text-amber-400',
   'Playbook Engineer':   'bg-violet-500/10 text-violet-600 dark:text-violet-400',
   'Cohort Contributor':  'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400',
+  'Domain Expert':       'bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-400/30',
+  'Master Architect':    'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-400/30',
 };
 
 function BadgeTag({ badge }: { badge: string }) {
@@ -40,7 +42,6 @@ interface ContributorGroup {
   name: string;
   topBadge: string;
   contributions: ContributionItem[];
-  isPinned?: boolean;
 }
 
 function categorizeLabel(item: ContributionItem): string {
@@ -71,24 +72,17 @@ function buildStatEntries(contributions: ContributionItem[]): { label: string; c
   return Object.entries(counts).map(([label, count]) => ({ label, count }));
 }
 
-const JAMIN_CONTRIBUTIONS: ContributionItem[] = [
-  { id: 'jw-5',  title: 'Introduction to Healthcare IT Security',              track: 'Advanced Healthcare IT',      badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-6',  title: 'Cloud Computing in Healthcare',                       track: 'Advanced Healthcare IT',      badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-7',  title: 'AI Prompt Engineering for Healthcare',                track: 'AI Prompt Playbook',          badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-2',  title: 'The Role of Firewalls in Modern Network Security',    track: 'Networking & Security',       badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-3',  title: 'Command-Line Interface (CLI) Research',               track: 'Systems Administration',      badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-4',  title: 'Microsoft Management Console (MMC) Snap-ins',         track: 'Systems Administration',      badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-8',  title: 'Enterprise Three-Tier Network Topology Architecture', track: 'Diagrams',                    badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-9',  title: 'OSI Model Data Encapsulation & PDU Flow',             track: 'Diagrams',                    badge: 'Founder', submission_type: 'Article' },
-  { id: 'jw-10', title: 'TCP/IP Protocol Suite — Four-Layer Model, IPv4 vs. IPv6 & Packet Transmission', track: 'CompTIA A+ Core 1 — Networking', badge: 'Founder', submission_type: 'Article' },
-];
-
-const JAMIN_WARE: ContributorGroup = {
-  name: 'Jamin Ware',
-  topBadge: 'Founder',
-  isPinned: true,
-  contributions: JAMIN_CONTRIBUTIONS,
-};
+function pluralize(count: number, label: string): string {
+  if (count === 1) {
+    if (label === 'Authored Articles') return 'Authored Article';
+    if (label === 'Resource Links') return 'Resource Link';
+    if (label === 'Quick References') return 'Quick Reference';
+    if (label === 'Prompt Playbooks') return 'Prompt Playbook';
+    if (label === 'Diagrams') return 'Diagram';
+    if (label === 'Shared Tips') return 'Shared Tip';
+  }
+  return label;
+}
 
 function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
   const map = new Map<string, ContributorGroup>();
@@ -107,44 +101,50 @@ function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
       submission_type: s.submission_type,
     });
   }
-  return Array.from(map.values());
+
+  // Override Jamin Ware's badge to Founder
+  const jamin = map.get('jamin ware');
+  if (jamin) jamin.topBadge = 'Founder';
+
+  // Sort by contribution count descending
+  return Array.from(map.values()).sort((a, b) => b.contributions.length - a.contributions.length);
 }
 
-// ── Static Founder Row (pinned, sky-tinted bg, Crown above avatar) ──
-function FounderRow({ group }: { group: ContributorGroup }) {
-  const statEntries = buildStatEntries(group.contributions);
-  return (
-    <div className="flex items-center gap-3 px-5 py-4 bg-sky-50/90 dark:bg-zinc-700/80 rounded-xl border border-sky-300/60 dark:border-amber-500/30 shadow-sm shadow-amber-500/5">
-      <div className="flex flex-col items-center gap-1 flex-shrink-0">
-        <Crown className="w-4 h-4 text-amber-500" />
-        <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-amber-400 flex items-center justify-center font-bold text-white text-base shadow-md shadow-amber-500/20">
-          J
-        </div>
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-bold text-zinc-800 dark:text-zinc-100 text-sm">{group.name}</span>
-          <BadgeTag badge="Founder" />
-        </div>
-        <div className="flex flex-wrap gap-1 mt-1">
-          {statEntries.map(({ label, count }) => (
-            <span
-              key={label}
-              className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-100/60 text-amber-950 dark:bg-zinc-800/80 dark:text-zinc-100"
-            >
-              {count} {label}
-            </span>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+// ── Contributor Row ──────────────────────────────────────
 
-// ── Static Member Row (flat, no expand) ──────────────────
-function MemberRow({ group, isNew }: { group: ContributorGroup; isNew?: boolean }) {
+function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boolean }) {
+  const isFounder = group.topBadge === 'Founder';
   const initial = group.name.charAt(0).toUpperCase();
   const statEntries = buildStatEntries(group.contributions);
+
+  if (isFounder) {
+    return (
+      <div className="flex items-center gap-3 px-5 py-4 bg-sky-50/90 dark:bg-zinc-700/80 rounded-xl border border-sky-300/60 dark:border-amber-500/30 shadow-sm shadow-amber-500/5">
+        <div className="flex flex-col items-center gap-1 flex-shrink-0">
+          <Crown className="w-4 h-4 text-amber-500" />
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-amber-400 flex items-center justify-center font-bold text-white text-base shadow-md shadow-amber-500/20">
+            {initial}
+          </div>
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-bold text-zinc-800 dark:text-zinc-100 text-sm">{group.name}</span>
+            <BadgeTag badge="Founder" />
+          </div>
+          <div className="flex flex-wrap gap-1 mt-1">
+            {statEntries.map(({ label, count }) => (
+              <span
+                key={label}
+                className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-amber-100/60 text-amber-950 dark:bg-zinc-800/80 dark:text-zinc-100"
+              >
+                {count} {pluralize(count, label)}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`flex items-center gap-3 px-4 py-3 bg-white dark:bg-zinc-600 rounded-xl border ${
@@ -171,12 +171,11 @@ function MemberRow({ group, isNew }: { group: ContributorGroup; isNew?: boolean 
               key={label}
               className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-sky-100/70 text-sky-900 dark:bg-zinc-800/80 dark:text-zinc-100"
             >
-              {count} {label}
+              {count} {pluralize(count, label)}
             </span>
           ))}
         </div>
       </div>
-      {/* Per-category mini icons */}
       <div className="hidden sm:flex items-center gap-1 flex-shrink-0">
         {Array.from(new Set(group.contributions.map(categorizeLabel))).map((label) => (
           <span key={label} className="text-zinc-400 dark:text-zinc-600" title={label}>
@@ -206,9 +205,10 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
 
       const { data: articleData } = await supabase
         .from('articles')
-        .select('id, title, slug, author_name, study_category, submission_type')
+        .select('id, title, slug, author_name, study_category, submission_type, created_at')
         .eq('is_sample', false)
         .not('author_name', 'is', null)
+        .order('created_at', { ascending: false })
         .limit(200);
 
       const articleEntries: NewSubmission[] = (articleData ?? []).map((a: any) => ({
@@ -219,7 +219,7 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
         title: a.title,
         content: '',
         submission_type: a.submission_type ?? 'Article',
-        created_at: '',
+        created_at: a.created_at ?? '',
       }));
 
       const allEntries: NewSubmission[] = [];
@@ -250,14 +250,8 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
     });
   }, [newSubmission]);
 
-  const dynamicGroups = groupByName(submissions);
-  const newestName    = submissions[0]?.full_name?.trim() ?? null;
-  const communityGroups = dynamicGroups.filter((g) => g.name.toLowerCase() !== 'jamin ware');
-
-  const uniqueCount = new Set([
-    'jamin ware',
-    ...dynamicGroups.map((g) => g.name.toLowerCase()),
-  ]).size;
+  const allGroups = groupByName(submissions);
+  const newestName = submissions.find((s) => s.full_name?.trim().toLowerCase() !== 'jamin ware')?.full_name?.trim() ?? null;
 
   return (
     <section className="mt-12">
@@ -273,30 +267,20 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
           </div>
         </div>
         <span className="px-3 py-1 text-xs font-semibold bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-full">
-          {uniqueCount} contributor{uniqueCount !== 1 ? 's' : ''}
+          {allGroups.length} contributor{allGroups.length !== 1 ? 's' : ''}
         </span>
       </div>
 
-      {/* Pinned founder */}
-      <div className="mb-3">
-        <FounderRow group={JAMIN_WARE} />
-      </div>
-
-      {/* Community contributors */}
-      {communityGroups.length > 0 && (
-        <div className="mb-3">
-          <p className="text-[10px] font-bold text-zinc-400 dark:text-zinc-600 uppercase tracking-widest mb-2 px-1">
-            Community Contributors
-          </p>
-          <div className="space-y-2">
-            {communityGroups.map((group) => (
-              <MemberRow
-                key={group.name}
-                group={group}
-                isNew={group.name.trim() === newestName}
-              />
-            ))}
-          </div>
+      {/* All contributors sorted by contribution count */}
+      {allGroups.length > 0 && (
+        <div className="space-y-2 mb-3">
+          {allGroups.map((group) => (
+            <ContributorRow
+              key={group.name}
+              group={group}
+              isNew={group.name.trim() === newestName && group.topBadge !== 'Founder'}
+            />
+          ))}
         </div>
       )}
 
