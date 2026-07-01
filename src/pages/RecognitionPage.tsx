@@ -63,19 +63,6 @@ function pluralizeType(type: string, count: number): string {
   return PLURAL_MAP[type] ?? `${type}s`;
 }
 
-// ── Type pill colour map ─────────────────────────────────
-
-const TYPE_PILL_COLORS: Record<string, { base: string; founder: string }> = {
-  'Article':        { base: 'bg-sky-500/10 text-sky-700 dark:text-sky-400', founder: 'bg-amber-100/60 text-amber-950 dark:bg-zinc-800/80 dark:text-zinc-100' },
-  'Resource Link':  { base: 'bg-sky-500/15 text-sky-700 dark:text-sky-400', founder: 'bg-sky-500/15 text-sky-700 dark:text-sky-400' },
-  'Diagram':        { base: 'bg-sky-500/10 text-sky-700 dark:text-sky-400', founder: 'bg-sky-500/10 text-sky-700 dark:text-sky-400' },
-  'Study Tip':      { base: 'bg-sky-500/5 text-sky-700 dark:text-sky-400', founder: 'bg-sky-500/5 text-sky-700 dark:text-sky-400' },
-  'Quick Reference': { base: 'bg-sky-500/10 text-sky-700 dark:text-sky-400', founder: 'bg-sky-500/10 text-sky-700 dark:text-sky-400' },
-  'Prompt Playbook': { base: 'bg-sky-500/10 text-sky-700 dark:text-sky-400', founder: 'bg-sky-500/10 text-sky-700 dark:text-sky-400' },
-};
-
-const DEFAULT_PILL_COLOR = { base: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400', founder: 'bg-zinc-200/80 text-zinc-600 dark:bg-zinc-700/80 dark:text-zinc-400' };
-
 // ── Track resolution (single source of truth) ────────────
 
 const KNOWN_TRACK_ORDER = ['CompTIA A+ Core 1', 'CompTIA A+ Core 2', 'Advanced Healthcare IT'];
@@ -174,6 +161,17 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
 
   const categoryEntries = Object.entries(group.typeCounts).sort((a, b) => b[1] - a[1]);
 
+  const handleTabClick = (e: React.MouseEvent, type: string) => {
+    e.stopPropagation();
+    if (openCategory === type) {
+      setOpenCategory(null);
+      if (isOpen) onToggle();
+    } else {
+      setOpenCategory(type);
+      if (!isOpen) onToggle();
+    }
+  };
+
   return (
     <div className={`rounded-xl border overflow-hidden transition-all ${
       isFounder
@@ -184,155 +182,139 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
     }`}>
 
       {/* Header */}
-      <button
-        onClick={onToggle}
-        className="w-full flex items-center gap-3 px-5 py-4 text-left"
-      >
-        {isFounder && <Crown className="w-5 h-5 text-amber-500 flex-shrink-0" />}
-        <div className={`${isFounder ? 'w-12 h-12' : 'w-10 h-10'} rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white ${isFounder ? 'text-lg' : 'text-sm'} ${
-          isFounder
-            ? 'bg-gradient-to-br from-amber-500 to-amber-400 shadow-md shadow-amber-500/20'
-            : isNew
-              ? 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-md shadow-sky-500/20'
-              : 'bg-gradient-to-br from-zinc-500 to-zinc-400'
-        }`}>
-          {initial}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className={`${isFounder ? 'font-bold' : 'font-semibold'} text-zinc-900 dark:text-zinc-100 text-sm`}>{group.name}</span>
-            {!isFounder && tierBadge !== group.topBadge && <BadgeTag badge={tierBadge} />}
-            <BadgeTag badge={group.topBadge} />
-            {isNew && !isFounder && (
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold bg-sky-500 text-white rounded-full">
-                <Star className="w-2 h-2" /> NEW
-              </span>
-            )}
+      <div className="px-5 py-4">
+        <button
+          onClick={onToggle}
+          className="w-full flex items-center gap-3 text-left"
+        >
+          {isFounder && <Crown className="w-5 h-5 text-amber-500 flex-shrink-0" />}
+          <div className={`${isFounder ? 'w-12 h-12' : 'w-10 h-10'} rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white ${isFounder ? 'text-lg' : 'text-sm'} ${
+            isFounder
+              ? 'bg-gradient-to-br from-amber-500 to-amber-400 shadow-md shadow-amber-500/20'
+              : isNew
+                ? 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-md shadow-sky-500/20'
+                : 'bg-gradient-to-br from-zinc-500 to-zinc-400'
+          }`}>
+            {initial}
           </div>
-          <div className="flex flex-wrap gap-1 mt-1">
-            {Object.entries(group.typeCounts).map(([type, count]) => {
-              const colors = TYPE_PILL_COLORS[type] ?? DEFAULT_PILL_COLOR;
-              const pillCls = isFounder ? colors.founder : colors.base;
-              return (
-                <span key={type} className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${pillCls}`}>
-                  {count} {pluralizeType(type, count)}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className={`${isFounder ? 'font-bold' : 'font-semibold'} text-zinc-900 dark:text-zinc-100 text-sm`}>{group.name}</span>
+              {!isFounder && tierBadge !== group.topBadge && <BadgeTag badge={tierBadge} />}
+              <BadgeTag badge={group.topBadge} />
+              {isNew && !isFounder && (
+                <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold bg-sky-500 text-white rounded-full">
+                  <Star className="w-2 h-2" /> NEW
                 </span>
-              );
-            })}
+              )}
+            </div>
           </div>
-        </div>
-        {isOpen
-          ? <ChevronDown className="w-4 h-4 text-zinc-400 flex-shrink-0" />
-          : <ChevronRight className="w-4 h-4 text-zinc-400 flex-shrink-0" />
-        }
-      </button>
+          {isOpen
+            ? <ChevronDown className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+            : <ChevronRight className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+          }
+        </button>
 
-      {/* Expanded: horizontal tab pills + content panel */}
-      {isOpen && (
-        <div className={`border-t ${isFounder ? 'border-sky-100 dark:border-amber-500/15' : 'border-sky-100 dark:border-zinc-600'} px-5 py-4`}>
-          <p className={`font-mono text-[9px] uppercase tracking-widest mb-3 ${
-            isFounder ? 'text-amber-500/70 dark:text-amber-600' : 'text-sky-400 dark:text-sky-600'
-          }`}>Navigate to Content</p>
-
-          {/* Horizontal tab pills */}
-          <div className="flex flex-wrap gap-2 md:gap-3 mb-4">
-            {categoryEntries.map(([type, count]) => {
-              const isActive = openCategory === type;
-              return (
-                <button
-                  key={type}
-                  onClick={(e) => { e.stopPropagation(); setOpenCategory(isActive ? null : type); }}
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm font-medium transition-colors duration-200 ${
-                    isActive
-                      ? (isFounder
-                          ? 'bg-amber-500/20 border-amber-500/50 text-amber-400'
-                          : 'bg-sky-500/20 border-sky-500/50 text-sky-400')
-                      : 'bg-zinc-800/50 border-zinc-700/50 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
-                  }`}
-                >
-                  {getCategoryIcon(type, isFounder)}
-                  {pluralizeType(type, count)} ({count})
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Active category content panel */}
-          {openCategory && (() => {
-            const categoryItems = group.items.filter((i) => (i.submission_type ?? 'Article') === openCategory);
-            const trackGroups = groupItemsByTrack(categoryItems);
+        {/* Interactive category tab pills */}
+        <div className="flex flex-wrap gap-2 md:gap-3 mt-3">
+          {categoryEntries.map(([type, count]) => {
+            const isActive = openCategory === type;
             return (
-              <div className="bg-zinc-100/80 dark:bg-zinc-900/50 rounded-lg p-2 border border-zinc-200/60 dark:border-zinc-800/50 max-h-56 overflow-y-auto">
-                {Array.from(trackGroups.entries()).map(([bucket, items]) => (
-                  <div key={bucket}>
-                    {trackGroups.size > 1 && <span className={SECTION_HDR}>{bucket}</span>}
-                    <div className="divide-y divide-zinc-200/60 dark:divide-zinc-800">
-                      {items.map((s) => {
-                        const itemType = s.submission_type ?? 'Article';
-                        const isResourceLink = itemType === 'Resource Link';
-                        const isInternalNav = itemType === 'Article' || itemType === 'Study Tip' || itemType === 'Quick Reference' || itemType === 'Diagram' || itemType === 'Prompt Playbook';
+              <button
+                key={type}
+                onClick={(e) => handleTabClick(e, type)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm font-medium transition-colors duration-200 ${
+                  isActive
+                    ? (isFounder
+                        ? 'bg-amber-100 border-amber-300 text-amber-800 dark:bg-amber-500/20 dark:border-amber-500/50 dark:text-amber-400'
+                        : 'bg-sky-100 border-sky-300 text-sky-800 dark:bg-sky-500/20 dark:border-sky-500/50 dark:text-sky-400')
+                    : 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200 hover:text-slate-900 dark:bg-zinc-800/50 dark:border-zinc-700/50 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-zinc-200'
+                }`}
+              >
+                {getCategoryIcon(type, isFounder)}
+                {pluralizeType(type, count)} ({count})
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-                        if (isResourceLink) {
-                          return (
-                            <a
-                              key={s.id}
-                              href={s.content || '#'}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/10 hover:border-sky-400 transition-all group"
-                            >
-                              <Link2 className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
-                              <span className="text-sm text-zinc-800 dark:text-zinc-100 truncate group-hover:text-sky-600 dark:group-hover:text-sky-300">{s.title}</span>
-                              <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
-                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{getDomainName(s.content || '')}</span>
-                                <ChevronRight className="w-3 h-3 text-zinc-400 dark:text-zinc-600 group-hover:text-sky-400" />
-                              </span>
-                            </a>
-                          );
-                        }
+      {/* Expanded content panel */}
+      {isOpen && openCategory && (() => {
+        const categoryItems = group.items.filter((i) => (i.submission_type ?? 'Article') === openCategory);
+        const trackGroups = groupItemsByTrack(categoryItems);
+        return (
+          <div className={`border-t ${isFounder ? 'border-sky-100 dark:border-amber-500/15' : 'border-zinc-200 dark:border-zinc-600'} px-5 py-4`}>
+            <div className="bg-slate-50 dark:bg-zinc-900/50 rounded-lg p-2 border border-slate-200 dark:border-zinc-800/50 max-h-56 overflow-y-auto">
+              {Array.from(trackGroups.entries()).map(([bucket, items]) => (
+                <div key={bucket}>
+                  {trackGroups.size > 1 && <span className={SECTION_HDR}>{bucket}</span>}
+                  <div className="divide-y divide-slate-200 dark:divide-zinc-800">
+                    {items.map((s) => {
+                      const itemType = s.submission_type ?? 'Article';
+                      const isResourceLink = itemType === 'Resource Link';
+                      const isInternalNav = itemType === 'Article' || itemType === 'Study Tip' || itemType === 'Quick Reference' || itemType === 'Diagram' || itemType === 'Prompt Playbook';
 
-                        if (isInternalNav) {
-                          return (
-                            <Link
-                              key={s.id}
-                              to={`/article/${s.slug || buildSlugFromTitle(s.title)}`}
-                              className={`flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/15 transition-all group ${
-                                isFounder ? 'hover:border-amber-400' : 'hover:border-sky-500'
-                              }`}
-                            >
-                              {getCategoryIcon(itemType, isFounder)}
-                              <span className={`text-sm text-zinc-800 dark:text-zinc-100 truncate ${
-                                isFounder ? 'group-hover:text-amber-600 dark:group-hover:text-amber-300' : 'group-hover:text-sky-600 dark:group-hover:text-sky-300'
-                              }`}>{s.title}</span>
-                              <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
-                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{itemType}</span>
-                                <ChevronRight className={`w-3 h-3 text-zinc-400 dark:text-zinc-600 ${
-                                  isFounder ? 'group-hover:text-amber-400' : 'group-hover:text-sky-400'
-                                }`} />
-                              </span>
-                            </Link>
-                          );
-                        }
-
+                      if (isResourceLink) {
                         return (
-                          <div
+                          <a
                             key={s.id}
-                            className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
+                            href={s.content || '#'}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/10 hover:border-sky-400 transition-all group"
+                          >
+                            <Link2 className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
+                            <span className="text-sm text-slate-800 dark:text-zinc-100 truncate group-hover:text-sky-600 dark:group-hover:text-sky-300">{s.title}</span>
+                            <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{getDomainName(s.content || '')}</span>
+                              <ChevronRight className="w-3 h-3 text-slate-400 dark:text-zinc-600 group-hover:text-sky-400" />
+                            </span>
+                          </a>
+                        );
+                      }
+
+                      if (isInternalNav) {
+                        return (
+                          <Link
+                            key={s.id}
+                            to={`/article/${s.slug || buildSlugFromTitle(s.title)}`}
+                            className={`flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/15 transition-all group ${
+                              isFounder ? 'hover:border-amber-400' : 'hover:border-sky-500'
+                            }`}
                           >
                             {getCategoryIcon(itemType, isFounder)}
-                            <span className="text-sm text-zinc-700 dark:text-zinc-300 truncate">{s.title}</span>
-                            <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-200/80 dark:bg-zinc-800/60 text-zinc-500 flex-shrink-0">{itemType}</span>
-                          </div>
+                            <span className={`text-sm text-slate-800 dark:text-zinc-100 truncate ${
+                              isFounder ? 'group-hover:text-amber-600 dark:group-hover:text-amber-300' : 'group-hover:text-sky-600 dark:group-hover:text-sky-300'
+                            }`}>{s.title}</span>
+                            <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{itemType}</span>
+                              <ChevronRight className={`w-3 h-3 text-slate-400 dark:text-zinc-600 ${
+                                isFounder ? 'group-hover:text-amber-400' : 'group-hover:text-sky-400'
+                              }`} />
+                            </span>
+                          </Link>
                         );
-                      })}
-                    </div>
+                      }
+
+                      return (
+                        <div
+                          key={s.id}
+                          className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
+                        >
+                          {getCategoryIcon(itemType, isFounder)}
+                          <span className="text-sm text-slate-700 dark:text-zinc-300 truncate">{s.title}</span>
+                          <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-200 dark:bg-zinc-800/60 text-slate-600 dark:text-zinc-500 flex-shrink-0">{itemType}</span>
+                        </div>
+                      );
+                    })}
                   </div>
-                ))}
-              </div>
-            );
-          })()}
-        </div>
-      )}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
