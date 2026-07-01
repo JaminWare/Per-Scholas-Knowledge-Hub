@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
@@ -145,6 +145,14 @@ function groupItemsByTrack(items: PortfolioItem[]): Map<string, PortfolioItem[]>
 
 const SECTION_HDR = 'bg-zinc-100/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 font-mono text-[10px] uppercase tracking-wider border-y border-zinc-200 dark:border-zinc-800 px-3 py-1 block first:border-t-0';
 
+// ── Category icon helper ─────────────────────────────────
+
+function getCategoryIcon(type: string, isFounder: boolean) {
+  if (type === 'Resource Link') return <Link2 className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />;
+  if (type === 'Article') return <BookOpen className={`w-3.5 h-3.5 flex-shrink-0 ${isFounder ? 'text-amber-500' : 'text-sky-500'}`} />;
+  return <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />;
+}
+
 // ── Unified Contributor Card ─────────────────────────────
 
 function ContributorCard({ group, isNew, isOpen, onToggle }: {
@@ -158,26 +166,16 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
   const totalCount = group.items.length;
   const tierBadge = deriveTierBadge(totalCount);
 
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!dropdownOpen) return;
-    function handleOutsideClick(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setDropdownOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, [dropdownOpen]);
-
-  useEffect(() => {
-    if (!isOpen) setDropdownOpen(false);
+    if (!isOpen) setOpenCategory(null);
   }, [isOpen]);
 
+  const categoryEntries = Object.entries(group.typeCounts).sort((a, b) => b[1] - a[1]);
+
   return (
-    <div className={`rounded-xl border overflow-visible transition-all ${
+    <div className={`rounded-xl border overflow-hidden transition-all ${
       isFounder
         ? 'border-amber-400/50 dark:border-amber-400/40 bg-sky-50/90 dark:bg-zinc-700/80 shadow-[0_0_15px_rgba(245,158,11,0.15)] dark:shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] dark:hover:shadow-[0_0_25px_rgba(245,158,11,0.45)] transition-shadow duration-500'
         : isOpen
@@ -229,103 +227,115 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
         }
       </button>
 
-      {/* Dropdown panel */}
+      {/* Expanded category accordions */}
       {isOpen && (
-        <div className={`border-t ${isFounder ? 'border-sky-100 dark:border-amber-500/15' : 'border-sky-100 dark:border-zinc-600'} px-5 py-4 overflow-visible`}>
-          <p className={`font-mono text-[9px] uppercase tracking-widest mb-2 ${
+        <div className={`border-t ${isFounder ? 'border-sky-100 dark:border-amber-500/15' : 'border-sky-100 dark:border-zinc-600'} px-5 py-4`}>
+          <p className={`font-mono text-[9px] uppercase tracking-widest mb-3 ${
             isFounder ? 'text-amber-500/70 dark:text-amber-600' : 'text-sky-400 dark:text-sky-600'
           }`}>Navigate to Content</p>
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={(e) => { e.stopPropagation(); setDropdownOpen((p) => !p); }}
-              className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-sm font-medium text-zinc-900 dark:text-zinc-100 transition-all ${
-                isFounder
-                  ? 'bg-amber-50 dark:bg-sky-950/30 border border-amber-200 dark:border-sky-800/60 hover:border-amber-400/60 dark:hover:border-amber-500/40'
-                  : 'bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60 hover:border-sky-400 dark:hover:border-sky-600'
-              }`}
-            >
-              <span className={`font-mono text-xs ${isFounder ? 'text-amber-700 dark:text-amber-400' : 'text-sky-700 dark:text-sky-400'}`}>
-                {totalCount} item{totalCount !== 1 ? 's' : ''} — select to navigate
-              </span>
-              <ChevronDown className={`w-4 h-4 transition-transform ${isFounder ? 'text-amber-400' : 'text-sky-400'} ${dropdownOpen ? 'rotate-180' : ''}`} />
-            </button>
 
-            {dropdownOpen && (
-              <div className="absolute left-0 right-0 top-full mt-1.5 z-[60] rounded-xl bg-[#f0f4f8]/95 dark:bg-slate-300/15 border border-sky-200/60 dark:border-slate-500/20 shadow-lg dark:shadow-2xl backdrop-blur-md overflow-hidden max-h-64 overflow-y-auto">
-                {Array.from(groupItemsByTrack(group.items).entries()).map(([bucket, items]) => (
-                  <div key={bucket}>
-                    <span className={SECTION_HDR}>{bucket}</span>
-                    <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
-                      {items.map((s) => {
-                        const itemType = s.submission_type ?? 'Article';
-                        const isResourceLink = itemType === 'Resource Link';
-                        const isInternalNav = itemType === 'Article' || itemType === 'Study Tip' || itemType === 'Quick Reference' || itemType === 'Diagram' || itemType === 'Prompt Playbook';
-                        const icon = isResourceLink
-                          ? <Link2 className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
-                          : itemType === 'Article'
-                            ? <BookOpen className={`w-3.5 h-3.5 flex-shrink-0 ${isFounder ? 'text-amber-500' : 'text-sky-500'}`} />
-                            : <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />;
+          <div className="space-y-2">
+            {categoryEntries.map(([type, count]) => {
+              const isExpanded = openCategory === type;
+              const categoryItems = group.items.filter((i) => (i.submission_type ?? 'Article') === type);
+              const trackGroups = groupItemsByTrack(categoryItems);
 
-                        if (isResourceLink) {
-                          return (
-                            <a
-                              key={s.id}
-                              href={s.content || '#'}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={() => setDropdownOpen(false)}
-                              className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/10 hover:border-sky-400 transition-all group"
-                            >
-                              {icon}
-                              <span className="text-sm text-zinc-800 dark:text-zinc-100 truncate group-hover:text-sky-600 dark:group-hover:text-sky-300">{s.title}</span>
-                              <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
-                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{getDomainName(s.content || '')}</span>
-                                <ChevronRight className="w-3 h-3 text-zinc-400 dark:text-zinc-600 group-hover:text-sky-400" />
-                              </span>
-                            </a>
-                          );
-                        }
+              return (
+                <div key={type} className="rounded-lg border border-sky-500/10 dark:border-zinc-600/60 overflow-hidden">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); setOpenCategory(isExpanded ? null : type); }}
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 text-left transition-all duration-200 ${
+                      isExpanded
+                        ? 'bg-zinc-100 dark:bg-zinc-800/80'
+                        : 'bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-700/60'
+                    }`}
+                  >
+                    {getCategoryIcon(type, isFounder)}
+                    <span className={`text-sm font-medium transition-colors duration-200 ${
+                      isExpanded
+                        ? (isFounder ? 'text-amber-600 dark:text-amber-400' : 'text-sky-600 dark:text-sky-400')
+                        : 'text-zinc-800 dark:text-zinc-200 hover:text-sky-600 dark:hover:text-sky-400'
+                    }`}>
+                      {pluralizeType(type, count)} ({count})
+                    </span>
+                    {isExpanded
+                      ? <ChevronDown className={`w-3.5 h-3.5 ml-auto flex-shrink-0 ${isFounder ? 'text-amber-400' : 'text-sky-400'}`} />
+                      : <ChevronRight className="w-3.5 h-3.5 ml-auto flex-shrink-0 text-zinc-400" />
+                    }
+                  </button>
 
-                        if (isInternalNav) {
-                          return (
-                            <Link
-                              key={s.id}
-                              to={`/article/${s.slug || buildSlugFromTitle(s.title)}`}
-                              onClick={() => setDropdownOpen(false)}
-                              className={`flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/15 transition-all group ${
-                                isFounder ? 'hover:border-amber-400' : 'hover:border-sky-500'
-                              }`}
-                            >
-                              {icon}
-                              <span className={`text-sm text-zinc-800 dark:text-zinc-100 truncate ${
-                                isFounder ? 'group-hover:text-amber-600 dark:group-hover:text-amber-300' : 'group-hover:text-sky-600 dark:group-hover:text-sky-300'
-                              }`}>{s.title}</span>
-                              <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
-                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{itemType}</span>
-                                <ChevronRight className={`w-3 h-3 text-zinc-400 dark:text-zinc-600 ${
-                                  isFounder ? 'group-hover:text-amber-400' : 'group-hover:text-sky-400'
-                                }`} />
-                              </span>
-                            </Link>
-                          );
-                        }
+                  {isExpanded && (
+                    <div className="max-h-56 overflow-y-auto border-t border-zinc-200/60 dark:border-zinc-700/60">
+                      {Array.from(trackGroups.entries()).map(([bucket, items]) => (
+                        <div key={bucket}>
+                          {trackGroups.size > 1 && <span className={SECTION_HDR}>{bucket}</span>}
+                          <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
+                            {items.map((s) => {
+                              const itemType = s.submission_type ?? 'Article';
+                              const isResourceLink = itemType === 'Resource Link';
+                              const isInternalNav = itemType === 'Article' || itemType === 'Study Tip' || itemType === 'Quick Reference' || itemType === 'Diagram' || itemType === 'Prompt Playbook';
 
-                        return (
-                          <div
-                            key={s.id}
-                            className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
-                          >
-                            {icon}
-                            <span className="text-sm text-zinc-700 dark:text-zinc-300 truncate">{s.title}</span>
-                            <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-200/80 dark:bg-zinc-800/60 text-zinc-500 flex-shrink-0">{itemType}</span>
+                              if (isResourceLink) {
+                                return (
+                                  <a
+                                    key={s.id}
+                                    href={s.content || '#'}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/10 hover:border-sky-400 transition-all group"
+                                  >
+                                    <Link2 className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
+                                    <span className="text-sm text-zinc-800 dark:text-zinc-100 truncate group-hover:text-sky-600 dark:group-hover:text-sky-300">{s.title}</span>
+                                    <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
+                                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{getDomainName(s.content || '')}</span>
+                                      <ChevronRight className="w-3 h-3 text-zinc-400 dark:text-zinc-600 group-hover:text-sky-400" />
+                                    </span>
+                                  </a>
+                                );
+                              }
+
+                              if (isInternalNav) {
+                                return (
+                                  <Link
+                                    key={s.id}
+                                    to={`/article/${s.slug || buildSlugFromTitle(s.title)}`}
+                                    className={`flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/15 transition-all group ${
+                                      isFounder ? 'hover:border-amber-400' : 'hover:border-sky-500'
+                                    }`}
+                                  >
+                                    {getCategoryIcon(itemType, isFounder)}
+                                    <span className={`text-sm text-zinc-800 dark:text-zinc-100 truncate ${
+                                      isFounder ? 'group-hover:text-amber-600 dark:group-hover:text-amber-300' : 'group-hover:text-sky-600 dark:group-hover:text-sky-300'
+                                    }`}>{s.title}</span>
+                                    <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
+                                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{itemType}</span>
+                                      <ChevronRight className={`w-3 h-3 text-zinc-400 dark:text-zinc-600 ${
+                                        isFounder ? 'group-hover:text-amber-400' : 'group-hover:text-sky-400'
+                                      }`} />
+                                    </span>
+                                  </Link>
+                                );
+                              }
+
+                              return (
+                                <div
+                                  key={s.id}
+                                  className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
+                                >
+                                  {getCategoryIcon(itemType, isFounder)}
+                                  <span className="text-sm text-zinc-700 dark:text-zinc-300 truncate">{s.title}</span>
+                                  <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-200/80 dark:bg-zinc-800/60 text-zinc-500 flex-shrink-0">{itemType}</span>
+                                </div>
+                              );
+                            })}
                           </div>
-                        );
-                      })}
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
