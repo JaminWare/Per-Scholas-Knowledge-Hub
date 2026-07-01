@@ -251,21 +251,21 @@ function AppletCard({ article }: { article: ArticleWithContributor }) {
             <BookOpen className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className={`font-semibold text-sm leading-snug line-clamp-2 transition-colors ${
+            <h3 className={`font-semibold text-sm leading-snug line-clamp-2 transition-colors duration-200 ${
               isSample
-                ? 'text-sky-800 dark:text-sky-300 group-hover:text-sky-600 dark:group-hover:text-sky-400'
-                : 'text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400'
+                ? 'text-sky-800 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400'
+                : 'text-zinc-800 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400'
             }`}>
               {article.title}
               {!isSample && (
-                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-600 mt-1">Curated by {article.author || authorName}</p>
+                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-200 group-hover:text-sky-500 dark:group-hover:text-sky-400 mt-1">Curated by {article.author || authorName}</p>
               )}
             </h3>
           </div>
         </div>
 
         {!isSample && article.excerpt && (
-          <p className="text-xs text-zinc-500 dark:text-zinc-600 line-clamp-2 flex-1 leading-relaxed">{article.excerpt}</p>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 transition-colors duration-200 line-clamp-2 flex-1 leading-relaxed">{article.excerpt}</p>
         )}
 
         {!isSample && article.tags?.length > 0 && (
