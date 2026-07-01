@@ -256,10 +256,23 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
                       const isInternalNav = itemType === 'Article' || itemType === 'Study Tip' || itemType === 'Quick Reference' || itemType === 'Diagram' || itemType === 'Prompt Playbook';
 
                       if (isResourceLink) {
+                        const hasUrl = s.content && s.content.startsWith('http');
+                        if (!hasUrl) {
+                          return (
+                            <div
+                              key={s.id}
+                              className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent opacity-50"
+                            >
+                              <Link2 className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                              <span className="text-sm text-slate-500 dark:text-zinc-500 truncate">{s.title}</span>
+                              <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-zinc-800/60 text-slate-400 dark:text-zinc-600 flex-shrink-0">No URL</span>
+                            </div>
+                          );
+                        }
                         return (
                           <a
                             key={s.id}
-                            href={s.content || '#'}
+                            href={s.content}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/10 hover:border-sky-400 transition-all group"
@@ -267,7 +280,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
                             <Link2 className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
                             <span className="text-sm text-slate-800 dark:text-zinc-100 truncate group-hover:text-sky-600 dark:group-hover:text-sky-300">{s.title}</span>
                             <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
-                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{getDomainName(s.content || '')}</span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{getDomainName(s.content)}</span>
                               <ChevronRight className="w-3 h-3 text-slate-400 dark:text-zinc-600 group-hover:text-sky-400" />
                             </span>
                           </a>
@@ -347,7 +360,7 @@ export default function RecognitionPage() {
 
       const { data: articleData } = await supabase
         .from('articles')
-        .select('id, title, slug, author_name, study_category, submission_type, created_at')
+        .select('id, title, slug, content, author_name, study_category, submission_type, created_at')
         .eq('is_sample', false)
         .not('author_name', 'is', null)
         .order('created_at', { ascending: false })
@@ -359,7 +372,7 @@ export default function RecognitionPage() {
         track: a.study_category ?? '',
         badge: 'Cohort Contributor',
         title: a.title,
-        content: '',
+        content: a.content ?? '',
         submission_type: a.submission_type ?? 'Article',
         created_at: a.created_at ?? '',
         slug: a.slug,
