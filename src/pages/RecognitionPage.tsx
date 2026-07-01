@@ -227,116 +227,110 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
         }
       </button>
 
-      {/* Expanded category accordions */}
+      {/* Expanded: horizontal tab pills + content panel */}
       {isOpen && (
         <div className={`border-t ${isFounder ? 'border-sky-100 dark:border-amber-500/15' : 'border-sky-100 dark:border-zinc-600'} px-5 py-4`}>
           <p className={`font-mono text-[9px] uppercase tracking-widest mb-3 ${
             isFounder ? 'text-amber-500/70 dark:text-amber-600' : 'text-sky-400 dark:text-sky-600'
           }`}>Navigate to Content</p>
 
-          <div className="space-y-2">
+          {/* Horizontal tab pills */}
+          <div className="flex flex-wrap gap-2 md:gap-3 mb-4">
             {categoryEntries.map(([type, count]) => {
-              const isExpanded = openCategory === type;
-              const categoryItems = group.items.filter((i) => (i.submission_type ?? 'Article') === type);
-              const trackGroups = groupItemsByTrack(categoryItems);
-
+              const isActive = openCategory === type;
               return (
-                <div key={type} className="rounded-lg border border-sky-500/10 dark:border-zinc-600/60 overflow-hidden">
-                  <button
-                    onClick={(e) => { e.stopPropagation(); setOpenCategory(isExpanded ? null : type); }}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 text-left transition-all duration-200 ${
-                      isExpanded
-                        ? 'bg-zinc-100 dark:bg-zinc-800/80'
-                        : 'bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-700/60'
-                    }`}
-                  >
-                    {getCategoryIcon(type, isFounder)}
-                    <span className={`text-sm font-medium transition-colors duration-200 ${
-                      isExpanded
-                        ? (isFounder ? 'text-amber-600 dark:text-amber-400' : 'text-sky-600 dark:text-sky-400')
-                        : 'text-zinc-800 dark:text-zinc-200 hover:text-sky-600 dark:hover:text-sky-400'
-                    }`}>
-                      {pluralizeType(type, count)} ({count})
-                    </span>
-                    {isExpanded
-                      ? <ChevronDown className={`w-3.5 h-3.5 ml-auto flex-shrink-0 ${isFounder ? 'text-amber-400' : 'text-sky-400'}`} />
-                      : <ChevronRight className="w-3.5 h-3.5 ml-auto flex-shrink-0 text-zinc-400" />
-                    }
-                  </button>
-
-                  {isExpanded && (
-                    <div className="max-h-56 overflow-y-auto border-t border-zinc-200/60 dark:border-zinc-700/60">
-                      {Array.from(trackGroups.entries()).map(([bucket, items]) => (
-                        <div key={bucket}>
-                          {trackGroups.size > 1 && <span className={SECTION_HDR}>{bucket}</span>}
-                          <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
-                            {items.map((s) => {
-                              const itemType = s.submission_type ?? 'Article';
-                              const isResourceLink = itemType === 'Resource Link';
-                              const isInternalNav = itemType === 'Article' || itemType === 'Study Tip' || itemType === 'Quick Reference' || itemType === 'Diagram' || itemType === 'Prompt Playbook';
-
-                              if (isResourceLink) {
-                                return (
-                                  <a
-                                    key={s.id}
-                                    href={s.content || '#'}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/10 hover:border-sky-400 transition-all group"
-                                  >
-                                    <Link2 className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
-                                    <span className="text-sm text-zinc-800 dark:text-zinc-100 truncate group-hover:text-sky-600 dark:group-hover:text-sky-300">{s.title}</span>
-                                    <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
-                                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{getDomainName(s.content || '')}</span>
-                                      <ChevronRight className="w-3 h-3 text-zinc-400 dark:text-zinc-600 group-hover:text-sky-400" />
-                                    </span>
-                                  </a>
-                                );
-                              }
-
-                              if (isInternalNav) {
-                                return (
-                                  <Link
-                                    key={s.id}
-                                    to={`/article/${s.slug || buildSlugFromTitle(s.title)}`}
-                                    className={`flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/15 transition-all group ${
-                                      isFounder ? 'hover:border-amber-400' : 'hover:border-sky-500'
-                                    }`}
-                                  >
-                                    {getCategoryIcon(itemType, isFounder)}
-                                    <span className={`text-sm text-zinc-800 dark:text-zinc-100 truncate ${
-                                      isFounder ? 'group-hover:text-amber-600 dark:group-hover:text-amber-300' : 'group-hover:text-sky-600 dark:group-hover:text-sky-300'
-                                    }`}>{s.title}</span>
-                                    <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
-                                      <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{itemType}</span>
-                                      <ChevronRight className={`w-3 h-3 text-zinc-400 dark:text-zinc-600 ${
-                                        isFounder ? 'group-hover:text-amber-400' : 'group-hover:text-sky-400'
-                                      }`} />
-                                    </span>
-                                  </Link>
-                                );
-                              }
-
-                              return (
-                                <div
-                                  key={s.id}
-                                  className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
-                                >
-                                  {getCategoryIcon(itemType, isFounder)}
-                                  <span className="text-sm text-zinc-700 dark:text-zinc-300 truncate">{s.title}</span>
-                                  <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-200/80 dark:bg-zinc-800/60 text-zinc-500 flex-shrink-0">{itemType}</span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <button
+                  key={type}
+                  onClick={(e) => { e.stopPropagation(); setOpenCategory(isActive ? null : type); }}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm font-medium transition-colors duration-200 ${
+                    isActive
+                      ? (isFounder
+                          ? 'bg-amber-500/20 border-amber-500/50 text-amber-400'
+                          : 'bg-sky-500/20 border-sky-500/50 text-sky-400')
+                      : 'bg-zinc-800/50 border-zinc-700/50 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
+                  }`}
+                >
+                  {getCategoryIcon(type, isFounder)}
+                  {pluralizeType(type, count)} ({count})
+                </button>
               );
             })}
           </div>
+
+          {/* Active category content panel */}
+          {openCategory && (() => {
+            const categoryItems = group.items.filter((i) => (i.submission_type ?? 'Article') === openCategory);
+            const trackGroups = groupItemsByTrack(categoryItems);
+            return (
+              <div className="bg-zinc-100/80 dark:bg-zinc-900/50 rounded-lg p-2 border border-zinc-200/60 dark:border-zinc-800/50 max-h-56 overflow-y-auto">
+                {Array.from(trackGroups.entries()).map(([bucket, items]) => (
+                  <div key={bucket}>
+                    {trackGroups.size > 1 && <span className={SECTION_HDR}>{bucket}</span>}
+                    <div className="divide-y divide-zinc-200/60 dark:divide-zinc-800">
+                      {items.map((s) => {
+                        const itemType = s.submission_type ?? 'Article';
+                        const isResourceLink = itemType === 'Resource Link';
+                        const isInternalNav = itemType === 'Article' || itemType === 'Study Tip' || itemType === 'Quick Reference' || itemType === 'Diagram' || itemType === 'Prompt Playbook';
+
+                        if (isResourceLink) {
+                          return (
+                            <a
+                              key={s.id}
+                              href={s.content || '#'}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/10 hover:border-sky-400 transition-all group"
+                            >
+                              <Link2 className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
+                              <span className="text-sm text-zinc-800 dark:text-zinc-100 truncate group-hover:text-sky-600 dark:group-hover:text-sky-300">{s.title}</span>
+                              <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
+                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{getDomainName(s.content || '')}</span>
+                                <ChevronRight className="w-3 h-3 text-zinc-400 dark:text-zinc-600 group-hover:text-sky-400" />
+                              </span>
+                            </a>
+                          );
+                        }
+
+                        if (isInternalNav) {
+                          return (
+                            <Link
+                              key={s.id}
+                              to={`/article/${s.slug || buildSlugFromTitle(s.title)}`}
+                              className={`flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/15 transition-all group ${
+                                isFounder ? 'hover:border-amber-400' : 'hover:border-sky-500'
+                              }`}
+                            >
+                              {getCategoryIcon(itemType, isFounder)}
+                              <span className={`text-sm text-zinc-800 dark:text-zinc-100 truncate ${
+                                isFounder ? 'group-hover:text-amber-600 dark:group-hover:text-amber-300' : 'group-hover:text-sky-600 dark:group-hover:text-sky-300'
+                              }`}>{s.title}</span>
+                              <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
+                                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{itemType}</span>
+                                <ChevronRight className={`w-3 h-3 text-zinc-400 dark:text-zinc-600 ${
+                                  isFounder ? 'group-hover:text-amber-400' : 'group-hover:text-sky-400'
+                                }`} />
+                              </span>
+                            </Link>
+                          );
+                        }
+
+                        return (
+                          <div
+                            key={s.id}
+                            className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
+                          >
+                            {getCategoryIcon(itemType, isFounder)}
+                            <span className="text-sm text-zinc-700 dark:text-zinc-300 truncate">{s.title}</span>
+                            <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-200/80 dark:bg-zinc-800/60 text-zinc-500 flex-shrink-0">{itemType}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>
@@ -463,7 +457,7 @@ export default function RecognitionPage() {
             Per Scholas — 2026-RTT-23
           </span>
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold text-sky-400 drop-shadow-[0_0_12px_rgba(56,189,248,0.75)] mb-2">
+        <h1 className="text-3xl md:text-4xl font-bold text-white dark:text-white drop-shadow-[0_0_12px_rgba(56,189,248,0.75)] mb-2">
           Cohort 2026-RTT-23 Wall of Fame
         </h1>
         <p className="text-zinc-300 dark:text-zinc-300 max-w-xl leading-relaxed text-sm">
