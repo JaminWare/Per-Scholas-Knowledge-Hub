@@ -79,7 +79,13 @@ export const COMPTIA_OBJECTIVES: Record<string, string[]> = {
     '4.8 Scripting Basics',
     '4.9 Remote Access Tech',
   ],
-  'Advanced Healthcare IT — EHR Architecture': [],
-  'Advanced Healthcare IT — HIPAA Data Security': [],
-  'Advanced Healthcare IT — Clinical Workflows': [],
+  'Advanced Healthcare IT — EHR Architecture': [
+    'EHR Integrations & Sandboxes', 'Data Interoperability (HL7/FHIR)', 'Database Management', 'System Downtime Procedures',
+  ],
+  'Advanced Healthcare IT — HIPAA Data Security': [
+    'PHI Protection Strategies', 'Access Controls & Auditing', 'Threat Detection & Response', 'Compliance Documentation',
+  ],
+  'Advanced Healthcare IT — Clinical Workflows': [
+    'Patient Admission to Discharge', 'Order Entry Systems (CPOE)', 'Telehealth Integrations', 'Medical IoT Troubleshooting',
+  ],
 };
