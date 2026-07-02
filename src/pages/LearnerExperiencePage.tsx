@@ -6,19 +6,39 @@ import {
 import { supabase } from '../lib/supabase';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 
-// ─── Onboarding sub-categories (keyword-based) ──────────────
+// ─── Onboarding sub-categories (3-tier keyword-based) ──────────────
+
+interface NestedSubTab {
+  label: string;
+  keywords: string[];
+}
 
 interface OnboardingSubTab {
   id: string;
   label: string;
   keywords: string[];
+  nested: NestedSubTab[];
 }
 
 const ONBOARDING_SUB_TABS: OnboardingSubTab[] = [
-  { id: 'all-onboarding', label: 'All Onboarding', keywords: [] },
-  { id: 'canvas-workflows', label: 'Canvas Workflows', keywords: ['canvas', 'lms', 'assignment', 'calendar', 'module', 'syllabus', 'grades'] },
-  { id: 'google-cert-integrations', label: 'Google Cert Integrations', keywords: ['google it', 'google ai', 'coursera', 'cert', 'sync', 'qwiklabs'] },
-  { id: 'curriculum-pacing', label: 'Curriculum & Pacing', keywords: ['comptia', 'healthcare it', 'pacing', 'schedule', 'master pbq sheet', 'study guide'] },
+  { id: 'all-onboarding', label: 'All Onboarding', keywords: [], nested: [] },
+  { id: 'canvas-workflows', label: 'Canvas Workflows', keywords: ['canvas', 'lms', 'assignment', 'calendar', 'module', 'syllabus', 'grades'], nested: [
+    { label: 'All Canvas', keywords: [] },
+    { label: 'Assignments & Grades', keywords: ['assignment', 'rubric', 'grade', 'submission'] },
+    { label: 'Schedules & Sync', keywords: ['calendar', 'sync', 'schedule', 'dates'] },
+    { label: 'Module Navigation', keywords: ['module', 'syllabus', 'lock'] },
+  ]},
+  { id: 'google-cert', label: 'Google Cert', keywords: ['google', 'coursera', 'cert', 'sync', 'qwiklabs'], nested: [
+    { label: 'All Google Certs', keywords: [] },
+    { label: 'Google IT', keywords: ['google it', 'it support', 'qwiklabs'] },
+    { label: 'Google AI', keywords: ['google ai', 'ai cert', 'prompting'] },
+  ]},
+  { id: 'curriculum-pacing', label: 'Curriculum & Pacing', keywords: ['comptia', 'healthcare', 'pacing', 'schedule', 'master pbq'], nested: [
+    { label: 'All Curriculum', keywords: [] },
+    { label: 'CompTIA Mastery', keywords: ['comptia', 'core 1', 'core 2', 'exam'] },
+    { label: 'Healthcare IT Balance', keywords: ['healthcare', 'ehr', 'hipaa', 'clinical'] },
+    { label: 'Study & PBQ Tools', keywords: ['master pbq', 'study guide', 'notes'] },
+  ]},
 ];
 
 // ─── Tab definitions ─────────────────────────────────────────
@@ -73,6 +93,7 @@ function parseHardshipBreakthrough(content: string): { hardship: string; breakth
 export default function LearnerExperiencePage() {
   const [activeTab, setActiveTab] = useState('all');
   const [onboardingSubTab, setOnboardingSubTab] = useState('All Onboarding');
+  const [nestedSubTab, setNestedSubTab] = useState('');
   const [entries, setEntries] = useState<LearnerEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -152,10 +173,20 @@ export default function LearnerExperiencePage() {
           return sub.keywords.some((kw) => haystack.includes(kw));
         });
       }
+
+      if (sub && nestedSubTab) {
+        const nested = sub.nested.find((n) => n.label === nestedSubTab);
+        if (nested && nested.keywords.length > 0) {
+          result = result.filter((e) => {
+            const haystack = `${e.title} ${e.content}`.toLowerCase();
+            return nested.keywords.some((kw) => haystack.includes(kw));
+          });
+        }
+      }
     }
 
     return result;
-  }, [entries, activeTab, currentTab, onboardingSubTab]);
+  }, [entries, activeTab, currentTab, onboardingSubTab, nestedSubTab]);
 
   return (
     <div className="space-y-8">
@@ -187,6 +218,7 @@ export default function LearnerExperiencePage() {
                   onClick={() => {
                     setActiveTab(tab.id);
                     if (tab.id !== 'onboarding') setOnboardingSubTab('All Onboarding');
+                    setNestedSubTab('');
                   }}
                   className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                     isActive
@@ -205,24 +237,57 @@ export default function LearnerExperiencePage() {
 
       {/* ─── Onboarding Sub-Tabs (conditional) ─── */}
       {activeTab === 'onboarding' && (
-        <div className="flex flex-wrap gap-2">
-          {ONBOARDING_SUB_TABS.map((sub) => {
-            const isActive = onboardingSubTab === sub.label;
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 backdrop-blur-sm p-4 space-y-3">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Filter by focus area</span>
+          <div className="flex flex-wrap gap-2">
+            {ONBOARDING_SUB_TABS.map((sub) => {
+              const isActive = onboardingSubTab === sub.label;
+              return (
+                <button
+                  key={sub.id}
+                  type="button"
+                  onClick={() => { setOnboardingSubTab(sub.label); setNestedSubTab(''); }}
+                  className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                    isActive
+                      ? 'bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-sm shadow-teal-500/10'
+                      : 'bg-zinc-800/50 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/50 border-zinc-700/50'
+                  }`}
+                >
+                  {sub.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* ─── 3rd-Level Nested Pills ─── */}
+          {(() => {
+            const activeSub = ONBOARDING_SUB_TABS.find((s) => s.label === onboardingSubTab);
+            if (!activeSub || activeSub.nested.length === 0) return null;
             return (
-              <button
-                key={sub.id}
-                type="button"
-                onClick={() => setOnboardingSubTab(sub.label)}
-                className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-200 ${
-                  isActive
-                    ? 'bg-teal-500/20 text-teal-400 border-teal-500/30'
-                    : 'bg-zinc-800/30 text-zinc-500 hover:text-zinc-300 border-transparent'
-                }`}
-              >
-                {sub.label}
-              </button>
+              <div className="pl-3 border-l-2 border-sky-500/30 space-y-2">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-sky-500/70">Narrow further</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {activeSub.nested.map((n) => {
+                    const isNested = nestedSubTab === n.label;
+                    return (
+                      <button
+                        key={n.label}
+                        type="button"
+                        onClick={() => setNestedSubTab(isNested ? '' : n.label)}
+                        className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-200 ${
+                          isNested
+                            ? 'bg-sky-500/20 text-sky-300 border-sky-400/40'
+                            : 'bg-zinc-800/30 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/60 border-transparent'
+                        }`}
+                      >
+                        {n.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             );
-          })}
+          })()}
         </div>
       )}
 
