@@ -79,6 +79,26 @@ const CATEGORY_FILTERS: Record<string, CategoryFilter[]> = {
       { label: 'Celebrating Small Wins', keywords: ['milestone', 'win', 'progress', 'small step', 'goal'] },
     ]},
   ],
+  cert: [
+    { id: 'all-cert', label: 'All Cert Advice', keywords: [], nested: [] },
+    { id: 'test-strategies', label: 'Test-Day Strategies', keywords: ['anxiety', 'stress', 'time', 'flag', 'pearson', 'proctor', 'pace', 'home', 'center'], nested: [
+      { label: 'All Test Strategies', keywords: [] },
+      { label: 'Anxiety Management', keywords: ['anxiety', 'stress', 'panic', 'breathe', 'calm'] },
+      { label: 'Time Management', keywords: ['time', 'flag', 'skip', 'pace', 'clock'] },
+      { label: 'Testing Environment', keywords: ['pearson', 'center', 'home', 'proctor', 'camera'] },
+    ]},
+    { id: 'comptia-tactics', label: 'CompTIA Tactics', keywords: ['pbq', 'simulation', 'port', 'mnemonic', 'methodology', 'troubleshoot', '802.11', 'flashcard'], nested: [
+      { label: 'All CompTIA Tactics', keywords: [] },
+      { label: 'PBQ Strategies', keywords: ['pbq', 'performance', 'drag', 'drop', 'simulation'] },
+      { label: 'Memorization Hacks', keywords: ['port', '802.11', 'flashcard', 'acronym', 'mnemonic'] },
+      { label: 'Troubleshooting Steps', keywords: ['methodology', 'step', 'troubleshoot', 'isolate'] },
+    ]},
+    { id: 'study-benchmarks', label: 'Practice & Benchmarks', keywords: ['score', 'benchmark', 'practice', 'ready', 'dion', 'messer', 'cram', 'review', 'cheat sheet'], nested: [
+      { label: 'All Practice & Benchmarks', keywords: [] },
+      { label: 'Readiness Benchmarks', keywords: ['score', 'benchmark', 'practice', 'ready', 'dion', 'messer'] },
+      { label: 'Last-Minute Review', keywords: ['cram', 'day before', 'review', 'cheat sheet'] },
+    ]},
+  ],
 };
 
 // ─── Tab definitions ─────────────────────────────────────────
