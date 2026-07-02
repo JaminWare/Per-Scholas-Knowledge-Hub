@@ -77,7 +77,6 @@ const TRACK_RULES: { keywords: string[]; slug: string }[] = [
   { keywords: ['healthcare', 'clinical'],                  slug: 'healthcare-clinical' },
   // Top-level categories
   { keywords: ['diagram'],                                 slug: 'diagrams' },
-  { keywords: ['quick ref'],                               slug: 'quick-references' },
   { keywords: ['prompt playbook'],                         slug: 'azari-prompt-playbook' },
 ];
 
@@ -86,7 +85,7 @@ function resolveCanonicalSlug(track: string): string {
   for (const rule of TRACK_RULES) {
     if (rule.keywords.every((kw) => t.includes(kw))) return rule.slug;
   }
-  return 'quick-references';
+  return 'study-tips';
 }
 
 // Maps form track strings to the exact domain labels used by CurriculumDashboard filters

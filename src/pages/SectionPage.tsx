@@ -10,7 +10,7 @@ import { useArticles, type ArticleWithContributor } from '../hooks/useArticles';
 import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
-  Lightbulb, FileText, Sparkles, Layout, Laptop, Monitor, Database,
+  Lightbulb, Sparkles, Layout, Laptop, Monitor, Database,
   Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight, ArrowDown,
   Construction, Layers, Target,
 } from 'lucide-react';
@@ -23,10 +23,6 @@ const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ c
   'diagrams/motherboard':  { title: 'Motherboard Blueprint', icon: Layout, track: 'Diagrams' },
   'diagrams/network-topology': { title: 'Network Topology', icon: Layout, track: 'Diagrams' },
   'diagrams/ehr-dataflow': { title: 'EHR Data Flow', icon: Layout, track: 'Diagrams' },
-  'quick-references':      { title: 'Quick References', icon: FileText },
-  'quick-references/ports':    { title: 'Port Number Cheatsheet', icon: FileText, track: 'Quick References' },
-  'quick-references/acronyms': { title: 'Acronym Guide', icon: FileText, track: 'Quick References' },
-  'quick-references/cli-runbook': { title: 'CLI Runbook', icon: FileText, track: 'Quick References' },
   'azari-prompt-playbook': { title: 'Prompt Playbook', icon: Sparkles },
   'azari-prompt-playbook/pbq-prompts':    { title: 'PBQ Simulation Prompts', icon: Sparkles, track: 'Prompt Playbook' },
   'azari-prompt-playbook/medical-prompts':{ title: 'Medical Case Study Prompts', icon: Sparkles, track: 'Prompt Playbook' },
@@ -138,18 +134,16 @@ const TRACK_COLORS = {
 const DASHBOARD_CONTEXTS: Record<string, string> = {
   'study-tips':            'Study Tips',
   'diagrams':              'Diagram',
-  'quick-references':      'Quick Reference',
   'azari-prompt-playbook': 'Prompt',
 };
 
-const RESOURCE_TABS = ['All', 'Study Tips', 'Diagrams', 'Quick References', 'Prompt Playbook'] as const;
+const RESOURCE_TABS = ['All', 'Study Tips', 'Diagrams', 'Prompt Playbook'] as const;
 type ResourceTab = typeof RESOURCE_TABS[number];
 
 const TAB_ICONS: Record<ResourceTab, React.ComponentType<{ className?: string }>> = {
   'All': Layers,
   'Study Tips': Lightbulb,
   'Diagrams': Layout,
-  'Quick References': FileText,
   'Prompt Playbook': Sparkles,
 };
 
@@ -157,7 +151,6 @@ const TAB_TO_CONTEXT: Record<ResourceTab, string> = {
   'All': 'All',
   'Study Tips': 'Study Tips',
   'Diagrams': 'Diagram',
-  'Quick References': 'Quick Reference',
   'Prompt Playbook': 'Prompt',
 };
 
