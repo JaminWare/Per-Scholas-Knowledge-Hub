@@ -23,11 +23,11 @@ export const COMPTIA_OBJECTIVES: Record<string, string[]> = {
     '3.6 Custom PC Configurations',
     '3.7 Printers',
   ],
-  'CompTIA A+ Core 1 — Domain 4.0 (Virtualization & Cloud)': [
+  'CompTIA A+ Core 1 — Domain 4.0 (Cloud)': [
     '4.1 Cloud Computing Concepts',
     '4.2 Client-Side Virtualization',
   ],
-  'CompTIA A+ Core 1 — Domain 5.0 (HW & Network Troubleshooting)': [
+  'CompTIA A+ Core 1 — Domain 5.0 (Troubleshooting)': [
     '5.1 Troubleshooting Methodology',
     '5.2 Motherboard/RAM/CPU Issues',
     '5.3 Storage Issues',
