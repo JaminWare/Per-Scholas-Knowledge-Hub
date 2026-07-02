@@ -99,6 +99,24 @@ const CATEGORY_FILTERS: Record<string, CategoryFilter[]> = {
       { label: 'Last-Minute Review', keywords: ['cram', 'day before', 'review', 'cheat sheet'] },
     ]},
   ],
+  job: [
+    { id: 'all-job', label: 'All Job Advice', keywords: [], nested: [] },
+    { id: 'resume-portfolio', label: 'Resume & LinkedIn', keywords: ['resume', 'linkedin', 'cv', 'portfolio', 'bullet', 'ats', 'profile', 'cover letter'], nested: [
+      { label: 'All Resume & LinkedIn', keywords: [] },
+      { label: 'Resume Reality Checks', keywords: ['resume', 'cv', 'bullet', 'ats', 'cover letter'] },
+      { label: 'LinkedIn Optimization', keywords: ['linkedin', 'profile', 'network', 'connection'] },
+    ]},
+    { id: 'interview-prep', label: 'Interview Preparation', keywords: ['interview', 'behavioral', 'technical', 'star', 'whiteboard', 'question', 'answer'], nested: [
+      { label: 'All Interview Prep', keywords: [] },
+      { label: 'Behavioral Questions', keywords: ['behavioral', 'star', 'scenario', 'soft skill', 'conflict'] },
+      { label: 'Technical Interviews', keywords: ['technical', 'whiteboard', 'quiz', 'troubleshoot', 'scenario'] },
+    ]},
+    { id: 'field-transition', label: 'Field Transition', keywords: ['offer', 'negotiate', 'salary', 'helpdesk', 'hospital', 'clinical', 'onboarding', 'first day'], nested: [
+      { label: 'All Field Transition', keywords: [] },
+      { label: 'Offers & Negotiation', keywords: ['offer', 'negotiate', 'salary', 'benefits', 'accept'] },
+      { label: 'Surviving the Helpdesk', keywords: ['helpdesk', 'ticket', 'hospital', 'clinical', 'first day', 'onboarding'] },
+    ]},
+  ],
 };
 
 // ─── Tab definitions ─────────────────────────────────────────
