@@ -162,6 +162,41 @@ const TAB_TO_CONTEXT: Record<ResourceTab, string> = {
 const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-track]:bg-transparent';
 const CARD_WIDTH = 'w-[280px] sm:w-[320px] md:w-[350px] shrink-0 snap-start';
 
+const GENERAL_OVERVIEW_KEY = 'General Overview';
+
+function groupByObjective(
+  articles: ArticleWithContributor[],
+  canonicalTrack?: string,
+): [string, ArticleWithContributor[]][] {
+  const map = new Map<string, ArticleWithContributor[]>();
+  for (const a of articles) {
+    const key = a.comp_objective?.trim() || GENERAL_OVERVIEW_KEY;
+    if (!map.has(key)) map.set(key, []);
+    map.get(key)!.push(a);
+  }
+
+  const knownOrder = canonicalTrack ? (COMPTIA_OBJECTIVES[canonicalTrack] ?? []) : [];
+  const ordered: [string, ArticleWithContributor[]][] = [];
+
+  if (map.has(GENERAL_OVERVIEW_KEY)) {
+    ordered.push([GENERAL_OVERVIEW_KEY, map.get(GENERAL_OVERVIEW_KEY)!]);
+    map.delete(GENERAL_OVERVIEW_KEY);
+  }
+
+  for (const obj of knownOrder) {
+    if (map.has(obj)) {
+      ordered.push([obj, map.get(obj)!]);
+      map.delete(obj);
+    }
+  }
+
+  for (const [key, items] of map) {
+    ordered.push([key, items]);
+  }
+
+  return ordered;
+}
+
 function CopyLinkButton({ slug }: { slug: string }) {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
@@ -544,19 +579,36 @@ function TrackDomains({
               </div>
             )}
             {gridMode ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <>
                 {isLoading ? (
-                  <>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <AppletSkeleton />
                     <AppletSkeleton />
                     <AppletSkeleton />
-                  </>
+                  </div>
                 ) : domainArticles.length > 0 ? (
-                  domainArticles.map((a) => <AppletCard key={a.id} article={a} gridMode />)
+                  <div className="space-y-0">
+                    {groupByObjective(domainArticles, canonicalTarget).map(([objective, items], idx) => (
+                      <div key={objective}>
+                        <div className={`flex items-center gap-2 pb-2 border-b border-zinc-200 dark:border-zinc-700/50 ${idx === 0 ? 'mt-0' : 'mt-8'}`}>
+                          <Target className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
+                          <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-200">{objective}</h3>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700">
+                            {items.length}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                          {items.map((a) => <AppletCard key={a.id} article={a} gridMode />)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 ) : (
-                  <OpenSlotPlaceholder domain={domain} context={context} onContribute={onContribute} gridMode />
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <OpenSlotPlaceholder domain={domain} context={context} onContribute={onContribute} gridMode />
+                  </div>
                 )}
-              </div>
+              </>
             ) : (
               <div className={SCROLL_TRACK}>
                 {isLoading ? (
@@ -726,8 +778,21 @@ function CurriculumDashboard({
       }
 
       return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {allDomainArticles.map((a) => <AppletCard key={a.id} article={a} gridMode />)}
+        <div className="space-y-0">
+          {groupByObjective(allDomainArticles, canonicalTarget).map(([objective, items], idx) => (
+            <div key={objective}>
+              <div className={`flex items-center gap-2 pb-2 border-b border-zinc-200 dark:border-zinc-700/50 ${idx === 0 ? 'mt-0' : 'mt-8'}`}>
+                <Target className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
+                <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-200">{objective}</h3>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700">
+                  {items.length}
+                </span>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                {items.map((a) => <AppletCard key={a.id} article={a} gridMode />)}
+              </div>
+            </div>
+          ))}
         </div>
       );
     }
