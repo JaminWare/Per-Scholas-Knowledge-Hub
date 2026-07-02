@@ -6,6 +6,21 @@ import {
 import { supabase } from '../lib/supabase';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 
+// ─── Onboarding sub-categories (keyword-based) ──────────────
+
+interface OnboardingSubTab {
+  id: string;
+  label: string;
+  keywords: string[];
+}
+
+const ONBOARDING_SUB_TABS: OnboardingSubTab[] = [
+  { id: 'all-onboarding', label: 'All Onboarding', keywords: [] },
+  { id: 'workspace-comms', label: 'Workspace & Comms', keywords: ['zoom', 'slack', 'deskolas', 'audio', 'mic', 'access', 'login'] },
+  { id: 'virtual-environments', label: 'Virtual Environments', keywords: ['vm', 'virtualbox', 'hypervisor', 'sandbox', 'ram'] },
+  { id: 'healthcare-baselines', label: 'Healthcare Baselines', keywords: ['ehr', 'hipaa', 'compliance', 'portal'] },
+];
+
 // ─── Tab definitions ─────────────────────────────────────────
 
 interface JourneyTab {
@@ -57,6 +72,7 @@ function parseHardshipBreakthrough(content: string): { hardship: string; breakth
 
 export default function LearnerExperiencePage() {
   const [activeTab, setActiveTab] = useState('all');
+  const [onboardingSubTab, setOnboardingSubTab] = useState('All Onboarding');
   const [entries, setEntries] = useState<LearnerEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -115,12 +131,31 @@ export default function LearnerExperiencePage() {
   const currentTab = JOURNEY_TABS.find((t) => t.id === activeTab) ?? JOURNEY_TABS[0];
 
   const filteredEntries = useMemo(() => {
-    if (activeTab === 'all') return entries;
-    const suffix = currentTab.trackSuffix;
-    if (!suffix) return entries;
-    const target = `Learner Experience \u2014 ${suffix}`.toLowerCase();
-    return entries.filter((e) => e.track.toLowerCase().includes(target) || e.track.toLowerCase().includes(suffix.toLowerCase()));
-  }, [entries, activeTab, currentTab]);
+    let result: LearnerEntry[];
+    if (activeTab === 'all') {
+      result = entries;
+    } else {
+      const suffix = currentTab.trackSuffix;
+      if (!suffix) {
+        result = entries;
+      } else {
+        const target = `Learner Experience \u2014 ${suffix}`.toLowerCase();
+        result = entries.filter((e) => e.track.toLowerCase().includes(target) || e.track.toLowerCase().includes(suffix.toLowerCase()));
+      }
+    }
+
+    if (activeTab === 'onboarding' && onboardingSubTab !== 'All Onboarding') {
+      const sub = ONBOARDING_SUB_TABS.find((s) => s.label === onboardingSubTab);
+      if (sub && sub.keywords.length > 0) {
+        result = result.filter((e) => {
+          const haystack = `${e.title} ${e.content}`.toLowerCase();
+          return sub.keywords.some((kw) => haystack.includes(kw));
+        });
+      }
+    }
+
+    return result;
+  }, [entries, activeTab, currentTab, onboardingSubTab]);
 
   return (
     <div className="space-y-8">
@@ -149,7 +184,10 @@ export default function LearnerExperiencePage() {
                 <button
                   key={tab.id}
                   type="button"
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    if (tab.id !== 'onboarding') setOnboardingSubTab('All Onboarding');
+                  }}
                   className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                     isActive
                       ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
@@ -164,6 +202,29 @@ export default function LearnerExperiencePage() {
           </div>
         </div>
       </div>
+
+      {/* ─── Onboarding Sub-Tabs (conditional) ─── */}
+      {activeTab === 'onboarding' && (
+        <div className="flex flex-wrap gap-2">
+          {ONBOARDING_SUB_TABS.map((sub) => {
+            const isActive = onboardingSubTab === sub.label;
+            return (
+              <button
+                key={sub.id}
+                type="button"
+                onClick={() => setOnboardingSubTab(sub.label)}
+                className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-200 ${
+                  isActive
+                    ? 'bg-teal-500/20 text-teal-400 border-teal-500/30'
+                    : 'bg-zinc-800/30 text-zinc-500 hover:text-zinc-300 border-transparent'
+                }`}
+              >
+                {sub.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* ─── Content Grid ─── */}
       {isLoading ? (
