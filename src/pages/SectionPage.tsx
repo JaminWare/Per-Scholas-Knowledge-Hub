@@ -3,9 +3,10 @@ import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-do
 import CardZoomOverlay from '../components/CardZoomOverlay';
 import ArticleRenderer from '../components/ArticleRenderer';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
-import contentMap from '../data/contentMap';
+import contentMap, { type LocalArticle } from '../data/contentMap';
 import { extractReferences } from '../utils/extractReferences';
 import { useArticles, type ArticleWithContributor } from '../hooks/useArticles';
+import { normalizeCategory } from '../utils/normalizeCategory';
 import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
@@ -59,6 +60,9 @@ const KNOWN_AUTHORS: Record<string, string> = {
   'intro-healthcare-it-security':  'Jamin Ware',
   'cloud-computing-healthcare':    'Jamin Ware',
   'ai-prompt-engineering-healthcare': 'Jamin Ware',
+  'core1-networking/ports':        'Cohort Lead',
+  'core2-os/cli-runbook':          'Cohort Lead',
+  'study-tips/acronyms':           'Cohort Lead',
 };
 
 const CANONICAL_DOMAINS: Record<string, string> = {
@@ -161,6 +165,37 @@ const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory
 const CARD_WIDTH = 'w-[280px] sm:w-[320px] md:w-[350px] shrink-0 snap-start';
 
 const GENERAL_OVERVIEW_KEY = 'General Overview';
+
+function contentMapEntryToArticle(slug: string, entry: LocalArticle): ArticleWithContributor {
+  const introBlock = entry.content.find((b) => b.type === 'intro');
+  return {
+    id: `local-${slug}`,
+    title: entry.title,
+    slug,
+    section_id: null,
+    content: '',
+    formatted_content: null,
+    excerpt: introBlock && 'text' in introBlock ? introBlock.text.slice(0, 160) : null,
+    contributor_id: null,
+    tags: entry.tags ?? [],
+    is_featured: false,
+    is_sample: false,
+    study_category: normalizeCategory(entry.trackLabel, entry.title),
+    source_file: null,
+    author_name: entry.contributor,
+    submission_type: 'Quick Reference',
+    comp_objective: null,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+}
+
+function getLocalArticlesForSection(sectionSlug: string): ArticleWithContributor[] {
+  const prefix = sectionSlug + '/';
+  return Object.entries(contentMap)
+    .filter(([key]) => key.startsWith(prefix))
+    .map(([key, entry]) => contentMapEntryToArticle(key, entry));
+}
 
 function groupByObjective(
   articles: ArticleWithContributor[],
@@ -669,7 +704,7 @@ function CurriculumDashboard({
     }
     if (context === 'Study Tips') {
       const type = (a.submission_type ?? '').toLowerCase();
-      return a.is_sample || type === 'article' || type === 'study tip' || type === '';
+      return a.is_sample || type === 'article' || type === 'study tip' || type === 'quick reference' || type === '';
     }
     if (context === 'Diagram') {
       return a.is_sample || (a.submission_type ?? '').toLowerCase() === 'diagram';
@@ -829,8 +864,38 @@ function CurriculumDashboard({
 
   const [core1, core2, healthcare] = CURRICULUM_TRACKS;
 
+  const allCanonicalTargets = useMemo(() => {
+    const targets = new Set<string>();
+    for (const track of CURRICULUM_TRACKS) {
+      for (const domain of track.domains) {
+        targets.add(CANONICAL_DOMAINS[domain] || domain);
+      }
+    }
+    return targets;
+  }, []);
+
+  const uncategorizedArticles = useMemo(() => {
+    return visibleArticles.filter((a) => !a.is_sample && !allCanonicalTargets.has(a.study_category ?? ''));
+  }, [visibleArticles, allCanonicalTargets]);
+
   return (
     <div className="space-y-10">
+      {uncategorizedArticles.length > 0 && (
+        <section>
+          <div className="flex items-center gap-2.5 mb-4 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-sky-500/10 text-sky-500">
+              <BookOpen className="w-4 h-4" />
+            </div>
+            <h2 className="text-base font-bold uppercase tracking-widest text-sky-600 dark:text-sky-400">General Resources</h2>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700">
+              {uncategorizedArticles.length}
+            </span>
+          </div>
+          <div className={SCROLL_TRACK}>
+            {uncategorizedArticles.map((a) => <AppletCard key={a.id} article={a} />)}
+          </div>
+        </section>
+      )}
       <div className="grid grid-cols-2 gap-6 items-start min-w-[640px] md:min-w-0 overflow-x-auto md:overflow-x-visible">
         <section className="min-w-[300px]">
           <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
@@ -925,6 +990,16 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const dashboardContext = DASHBOARD_CONTEXTS[slug];
   const domainInfo = SLUG_TO_DOMAIN[slug];
 
+  const mergedArticles = useMemo(() => {
+    const sectionSlug = domainInfo ? slug : dashboardContext ? slug : null;
+    if (!sectionSlug) return allArticles;
+    const localArticles = getLocalArticlesForSection(sectionSlug);
+    if (localArticles.length === 0) return allArticles;
+    const existingSlugs = new Set(allArticles.map((a) => a.slug));
+    const newLocals = localArticles.filter((la) => !existingSlugs.has(la.slug));
+    return newLocals.length > 0 ? [...allArticles, ...newLocals] : allArticles;
+  }, [allArticles, slug, domainInfo, dashboardContext]);
+
   const isKnownSlug = !!(meta || localContent || dashboardContext || domainInfo);
 
   useEffect(() => {
@@ -988,11 +1063,11 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
           <ArticleRenderer blocks={localContent.content} />
         </div>
 
-        {!isLoading && allArticles.length > 0 && (
+        {!isLoading && mergedArticles.length > 0 && (
           <div className="mt-10">
             <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-4">More in this section</h2>
             <div className={SCROLL_TRACK}>
-              {allArticles.filter(a => {
+              {mergedArticles.filter(a => {
                 const canonicalTarget = CANONICAL_DOMAINS[meta?.title ?? ''] || meta?.title;
                 return a.study_category === canonicalTarget;
               }).map((a) => <AppletCard key={a.id} article={a} />)}
@@ -1041,7 +1116,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
 
       {dashboardContext ? (
         <CurriculumDashboard
-          articles={allArticles}
+          articles={mergedArticles}
           isLoading={isLoading}
           context={dashboardContext}
           onContribute={() => setIsModalOpen(true)}
@@ -1056,7 +1131,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
             onTabChange={handleTabChange}
           />
           <CurriculumDashboard
-            articles={allArticles}
+            articles={mergedArticles}
             isLoading={isLoading}
             context={TAB_TO_CONTEXT[activeTab]}
             onContribute={() => setIsModalOpen(true)}
@@ -1069,9 +1144,9 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         <div className={SCROLL_TRACK}>
           {[...Array(4)].map((_, i) => <AppletSkeleton key={i} />)}
         </div>
-      ) : allArticles.length > 0 ? (
+      ) : mergedArticles.length > 0 ? (
         <div className={SCROLL_TRACK}>
-          {allArticles.map((a) => <AppletCard key={a.id} article={a} />)}
+          {mergedArticles.map((a) => <AppletCard key={a.id} article={a} />)}
         </div>
       ) : (
         <ComingSoonPanel />
