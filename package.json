@@ -19,7 +19,9 @@
     "postcss": "^8.4.35",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-medium-image-zoom": "^5.4.8",
     "react-router-dom": "^7.18.0",
+    "react-syntax-highlighter": "^16.1.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.5.3",
     "vite": "^5.4.2"
@@ -29,6 +31,7 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@types/react-router-dom": "^5.3.3",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "eslint": "^9.9.1",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.11",

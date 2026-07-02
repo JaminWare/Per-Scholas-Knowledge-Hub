@@ -1,5 +1,13 @@
 import { Fragment, useState } from 'react';
 import { ExternalLink, ImageOff } from 'lucide-react';
+import { PrismLight as SyntaxHighlighter } from 'react-syntax-highlighter';
+import bash from 'react-syntax-highlighter/dist/esm/languages/prism/bash';
+import powershell from 'react-syntax-highlighter/dist/esm/languages/prism/powershell';
+import json from 'react-syntax-highlighter/dist/esm/languages/prism/json';
+import sql from 'react-syntax-highlighter/dist/esm/languages/prism/sql';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
 import {
   FirewallNetworkSegmentationDiagram,
   FirewallPacketInspectionDiagram,
@@ -7,6 +15,11 @@ import {
   TRACEPromptPipelineDiagram,
 } from './DiagramComponents';
 import MermaidDiagram from './MermaidDiagram';
+
+SyntaxHighlighter.registerLanguage('bash', bash);
+SyntaxHighlighter.registerLanguage('powershell', powershell);
+SyntaxHighlighter.registerLanguage('json', json);
+SyntaxHighlighter.registerLanguage('sql', sql);
 
 type InlineToken =
   | { type: 'text'; value: string }
@@ -229,12 +242,14 @@ function ImageBlock({ src, alt }: { src: string; alt: string }) {
     );
   }
   return (
-    <img
-      src={src}
-      alt={alt}
-      onError={() => setFailed(true)}
-      className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 shadow-md max-h-[450px] object-cover"
-    />
+    <Zoom>
+      <img
+        src={src}
+        alt={alt}
+        onError={() => setFailed(true)}
+        className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 shadow-md max-h-[450px] object-cover"
+      />
+    </Zoom>
   );
 }
 
@@ -349,9 +364,14 @@ export default function MarkdownRenderer({ content }: Props) {
                     ))}
                   </div>
                 </div>
-                <pre className="p-4 bg-zinc-900 overflow-x-auto text-sm">
-                  <code className="text-sky-300 font-mono leading-relaxed whitespace-pre">{block.code}</code>
-                </pre>
+                <SyntaxHighlighter
+                  language={block.lang}
+                  style={vscDarkPlus}
+                  customStyle={{ margin: 0, borderRadius: 0, padding: '1rem', fontSize: '0.875rem' }}
+                  wrapLongLines
+                >
+                  {block.code}
+                </SyntaxHighlighter>
               </div>
             );
           case 'paragraph':
