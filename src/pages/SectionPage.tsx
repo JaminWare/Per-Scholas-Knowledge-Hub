@@ -913,6 +913,16 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const dashboardContext = DASHBOARD_CONTEXTS[slug];
   const domainInfo = SLUG_TO_DOMAIN[slug];
 
+  const isKnownSlug = !!(meta || localContent || dashboardContext || domainInfo);
+
+  useEffect(() => {
+    if (!isKnownSlug) {
+      navigate('/', { replace: true });
+    }
+  }, [isKnownSlug, navigate]);
+
+  if (!isKnownSlug) return null;
+
   if (localContent && !isDomainSection) {
     const roleColor = roleColors[localContent.contributorRole ?? ''] ?? 'bg-zinc-800 text-zinc-400';
     return (
