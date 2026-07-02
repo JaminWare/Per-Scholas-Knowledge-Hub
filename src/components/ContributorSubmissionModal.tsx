@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {
   X, Send, Loader2, Tag,
-  FileText, Link2, BookOpen, Zap, GitBranch,
+  FileText, Link2, BookOpen, GitBranch,
   AlertCircle, Link as LinkIcon, ImagePlus, CheckCircle2, Sparkles
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -9,7 +9,7 @@ import { type NewSubmission } from '../utils/submissions';
 import { normalizeUrl } from '../utils/normalizeUrl';
 import { JOURNEY_TABS, CATEGORY_FILTERS } from '../pages/LearnerExperiencePage';
 
-type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Quick Reference' | 'Resource Link' | 'Prompt Playbook';
+type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Resource Link' | 'Prompt Playbook';
 
 const PROFANITY_PATTERN = new RegExp(
   ['fuck','shit','bitch','asshole','bastard','cunt','damn','piss','cock','dick','pussy','whore','slut','retard','nigger','faggot','kike','spic','chink','wetback'].join('|'),
@@ -20,7 +20,6 @@ const SUBMISSION_TYPES = [
   { value: 'Article' as SubmissionType, label: 'Article', icon: FileText },
   { value: 'Study Tip' as SubmissionType, label: 'Study Tip', icon: BookOpen },
   { value: 'Diagram' as SubmissionType, label: 'Diagram', icon: GitBranch },
-  { value: 'Quick Reference' as SubmissionType, label: 'Quick Ref', icon: Zap },
   { value: 'Resource Link' as SubmissionType, label: 'Resource Link', icon: Link2 },
   { value: 'Prompt Playbook' as SubmissionType, label: 'Playbook', icon: Sparkles },
 ];
@@ -53,12 +52,6 @@ const MASTER_CATEGORIES = [
     'Diagrams — EHR / Clinical Data Flow',
     'Diagrams — Security Architecture',
   ]},
-  { label: 'Quick References', badge: 'Reference Author', sub: [
-    'Quick References — Port Numbers & Protocols',
-    'Quick References — CLI Commands',
-    'Quick References — Acronyms & Mnemonics',
-    'Quick References — Subnetting Cheatsheet',
-  ]},
   { label: 'Prompt Playbook', badge: 'Playbook Engineer', sub: [
     'Prompt Playbook — CompTIA PBQ Simulations',
     'Prompt Playbook — Healthcare Case Studies',
@@ -82,11 +75,6 @@ function getVisibleCategories(type: SubmissionType) {
       return MASTER_CATEGORIES.filter((c) =>
         c.label === 'Learner Experience & FAQs' ||
         c.label === 'Diagrams'
-      );
-    case 'Quick Reference':
-      return MASTER_CATEGORIES.filter((c) =>
-        c.label === 'Learner Experience & FAQs' ||
-        c.label === 'Quick References'
       );
     case 'Prompt Playbook':
       return MASTER_CATEGORIES.filter((c) =>
@@ -183,11 +171,7 @@ function buildFormattedContent(
     '',
   ];
 
-  if (type === 'Quick Reference') {
-    sections.push(wrapInCodeFence(desc));
-  } else {
-    sections.push(descriptionBlock);
-  }
+  sections.push(descriptionBlock);
 
   sections.push('', '## \u{26A1} CompTIA A+ Relevance', '', relevanceBlock);
   sections.push('', '## \u{1F3E5} Healthcare IT Integration', '', healthcareCallout);
@@ -218,6 +202,11 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [resourceUrl, setResourceUrl] = useState('');
   const [diagramUrl, setDiagramUrl] = useState('');
 
+  // Prompt Playbook fields
+  const [promptRole, setPromptRole] = useState('');
+  const [promptText, setPromptText] = useState('');
+  const [promptUseCase, setPromptUseCase] = useState('');
+
   // Learner Experience cascading selections
   const [lxStage, setLxStage] = useState('');
   const [lxTopic, setLxTopic] = useState('');
@@ -230,7 +219,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   const isResourceLink = submissionType === 'Resource Link';
   const isLearnerExperience = masterCategory === LX_TRACK_VALUE;
-  const isLightweight = submissionType === 'Diagram' || submissionType === 'Study Tip' || submissionType === 'Quick Reference';
+  const isLightweight = submissionType === 'Diagram' || submissionType === 'Study Tip';
   const autoBadge = isLearnerExperience ? 'Community Contributor' : getBadge(track || masterCategory);
 
   const visibleCategories = getVisibleCategories(submissionType);
@@ -275,6 +264,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setReferences('');
     setResourceUrl('');
     setDiagramUrl('');
+    setPromptRole('');
+    setPromptText('');
+    setPromptUseCase('');
     setLxStage('');
     setLxTopic('');
     setLxFocus('');
@@ -286,11 +278,17 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const assembleContent = () => {
     if (isResourceLink) return resourceUrl.trim();
 
-    if (isLearnerExperience && isLightweight) {
-      return concept.trim();
+    if (submissionType === 'Prompt Playbook') {
+      return `**System Role / Context:**\n${promptRole.trim()}\n\n**The Prompt:**\n${promptText.trim()}\n\n**Use Case:**\n${promptUseCase.trim()}`;
     }
 
-    const descBlock = submissionType === 'Quick Reference' || isStructuredBlock(concept)
+    if (isLightweight) {
+      let content = concept.trim();
+      if (diagramUrl.trim()) content += `\n\n![Attachment](${diagramUrl.trim()})`;
+      return content;
+    }
+
+    const descBlock = isStructuredBlock(concept)
       ? wrapInCodeFence(concept.trim())
       : concept.trim();
     let md = `## \u{1F52C} Guided Description\n\n${descBlock}`;
@@ -319,7 +317,11 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
     if (isResourceLink) {
       if (!/^https?:\/\/.+/.test(resourceUrl.trim())) e.resourceUrl = 'Valid URL required.';
-    } else if (isLearnerExperience && isLightweight) {
+    } else if (submissionType === 'Prompt Playbook') {
+      if (promptRole.trim().length < 10) e.promptRole = 'At least 10 characters required.';
+      if (promptText.trim().length < 15) e.promptText = 'At least 15 characters required.';
+      if (promptUseCase.trim().length < 10) e.promptUseCase = 'At least 10 characters required.';
+    } else if (isLightweight) {
       if (concept.trim().length < 15) e.concept = 'At least 15 characters required.';
     } else {
       if (concept.trim().length < 15) e.concept = 'Required.';
@@ -381,7 +383,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       payloadBadge = 'Community Contributor';
     }
 
-    const formattedContent = (!isResourceLink && !(isLearnerExperience && isLightweight))
+    const formattedContent = (submissionType === 'Article' && !isLearnerExperience)
       ? buildFormattedContent(
           fullName.trim(), payloadTrack, submissionType,
           concept.trim(), aPlusRelevance.trim(), impact.trim(), references.trim(),
@@ -454,8 +456,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       </div>
     );
   }
-
-  const showFullFields = !isResourceLink && !(isLearnerExperience && isLightweight);
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -606,13 +606,46 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   <input type="url" value={resourceUrl} onChange={(e) => setResourceUrl(e.target.value)} placeholder="https://..." className={inputCls('resourceUrl')} />
                   {errors.resourceUrl && <p className="mt-1 text-xs text-red-500">{errors.resourceUrl}</p>}
                 </div>
-              ) : isLearnerExperience && isLightweight ? (
-                <div>
-                  <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                    Short Summary <span className="text-red-400">*</span>
-                  </label>
-                  <textarea value={concept} onChange={(e) => setConcept(e.target.value)} placeholder="Write a concise 1-3 sentence summary of your tip, diagram, or reference..." rows={3} className={`${inputCls('concept')} font-mono resize-y custom-scrollbar`} />
-                  {errors.concept && <p className="mt-1 text-xs text-red-500">{errors.concept}</p>}
+              ) : (submissionType === 'Study Tip' || submissionType === 'Diagram') ? (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      Description / Core Concept <span className="text-red-400">*</span>
+                    </label>
+                    <textarea value={concept} onChange={(e) => setConcept(e.target.value)} placeholder="Explain the tip, concept, or describe the diagram..." rows={4} className={`${inputCls('concept')} font-mono resize-y custom-scrollbar`} />
+                    {errors.concept && <p className="mt-1 text-xs text-red-500">{errors.concept}</p>}
+                  </div>
+                  <div>
+                    <label className="flex items-center gap-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      <ImagePlus className="w-3.5 h-3.5 text-sky-500" /> Supported Media / Attachment Link
+                    </label>
+                    <input type="url" value={diagramUrl} onChange={(e) => setDiagramUrl(e.target.value)} placeholder="Paste a link to an image, PDF, YouTube video, or Google Drive file..." className={inputCls('diagramUrl')} />
+                    <p className="mt-1.5 text-[10px] text-zinc-400 dark:text-zinc-500">Supports images, PDFs, YouTube, Google Drive, and other shareable URLs.</p>
+                  </div>
+                </div>
+              ) : submissionType === 'Prompt Playbook' ? (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      System Role & Context <span className="text-red-400">*</span>
+                    </label>
+                    <textarea value={promptRole} onChange={(e) => setPromptRole(e.target.value)} placeholder="e.g., Act as a senior network engineer troubleshooting Active Directory..." rows={3} className={`${inputCls('promptRole')} font-mono resize-y custom-scrollbar`} />
+                    {errors.promptRole && <p className="mt-1 text-xs text-red-500">{errors.promptRole}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      The Prompt Template <span className="text-red-400">*</span>
+                    </label>
+                    <textarea value={promptText} onChange={(e) => setPromptText(e.target.value)} placeholder="Paste the exact prompt text here..." rows={4} className={`${inputCls('promptText')} font-mono resize-y custom-scrollbar`} />
+                    {errors.promptText && <p className="mt-1 text-xs text-red-500">{errors.promptText}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      Use Case & Expected Output <span className="text-red-400">*</span>
+                    </label>
+                    <textarea value={promptUseCase} onChange={(e) => setPromptUseCase(e.target.value)} placeholder="When should the cohort use this prompt and what will it generate?" rows={3} className={`${inputCls('promptUseCase')} font-mono resize-y custom-scrollbar`} />
+                    {errors.promptUseCase && <p className="mt-1 text-xs text-red-500">{errors.promptUseCase}</p>}
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-4">
