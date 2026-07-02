@@ -7,7 +7,7 @@ import { useArticles } from '../hooks/useArticles';
 import SuccessToast from '../components/SuccessToast';
 import {
   TrendingUp, ArrowDown, Users, UploadCloud,
-  Compass, BookOpen, Flame, Briefcase, ChevronRight, Award,
+  Compass, BookOpen, Flame, Briefcase, ChevronRight, Award, LifeBuoy,
 } from 'lucide-react';
 
 const survivalGuideCards = [
@@ -77,10 +77,16 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         <div className="lg:col-span-2 xl:col-span-3 space-y-10">
 
           {/* Hero */}
-          <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-900 to-sky-950 dark:from-zinc-950 dark:via-zinc-900 dark:to-sky-950 border border-sky-500/10 dark:border-zinc-800 p-8 md:p-12">
+          <section className="relative overflow-hidden rounded-2xl border border-sky-500/10 dark:border-zinc-800">
+            <img
+              src="/hero-workspace.webp"
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-sky-950/85 to-slate-900/90" />
             <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/10 rounded-full blur-2xl pointer-events-none" />
-            <div className="relative">
+            <div className="relative p-8 md:p-12">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 text-sm font-medium mb-4">
                 <TrendingUp className="w-4 h-4" />
                 <span>Pioneering Cohort</span>
@@ -94,16 +100,24 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
               </div>
               <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
                 Per Scholas — Cohort Survival Guide
-                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-sky-400 mt-1">
+                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-sky-300 mt-1">
                   AI-Enabled Healthcare IT
                 </span>
               </h1>
-              <p className="text-lg text-zinc-300 max-w-2xl">
+              <p className="text-lg text-zinc-300 max-w-2xl mb-8">
                 Welcome to the collaborative resource hub for the{' '}
                 <strong className="text-sky-400">2026-RTT-23 cohort</strong> of AI-Enabled Healthcare IT
                 students. Find CompTIA A+ guides, EHR integration blueprints, and community hacks — all in
                 one place.
               </p>
+              <Link
+                to="/learner-experience"
+                className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm transition-all shadow-lg shadow-sky-500/30 hover:shadow-sky-400/40 hover:scale-[1.02]"
+              >
+                <LifeBuoy className="w-5 h-5" />
+                Start Here
+                <ChevronRight className="w-4 h-4" />
+              </Link>
             </div>
           </section>
 

@@ -23,12 +23,6 @@ interface TrackSection {
   domains: NavItem[];
 }
 
-// Flat top-level links — no children, no dropdowns
-const topLinks: NavItem[] = [
-  { title: 'Cohort Recognition',       slug: 'recognition',         icon: Award    },
-  { title: 'Learner Experience & FAQs', slug: 'learner-experience',  icon: LifeBuoy },
-];
-
 const tracks: TrackSection[] = [
   {
     id: 'core1',
@@ -86,24 +80,6 @@ const trackText = {
   cyan: 'text-sky-400',
 };
 
-// ─── Flat nav link ────────────────────────────────────────
-
-function NavLink({ item }: { item: NavItem }) {
-  const location = useLocation();
-  const Icon = item.icon;
-  const isActive = location.hash === `#/${item.slug}`;
-
-  return (
-    <Link
-      to={`/${item.slug}`}
-      className={`sidebar-item ${isActive ? 'active' : ''}`}
-    >
-      <Icon className="w-4 h-4 flex-shrink-0" />
-      <span className="flex-1 truncate text-[13px]">{item.title}</span>
-    </Link>
-  );
-}
-
 // ─── Domain row (flat direct link, no children) ───────────
 
 function DomainRow({ domain }: { domain: NavItem }) {
@@ -131,9 +107,12 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ onToggle }: SidebarProps) {
+  const location = useLocation();
   const [openTracks, setOpenTracks] = useState<Record<string, boolean>>({
     core1: true, core2: false, healthcare: false,
   });
+
+  const lxActive = location.hash === '#/learner-experience';
 
   return (
     <div className="flex flex-col h-full bg-zinc-900 border-r border-sky-500/10">
@@ -169,9 +148,32 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           <span className="truncate text-[13px]">Home</span>
         </Link>
 
-        {topLinks.map((item) => (
-          <NavLink key={item.slug} item={item} />
-        ))}
+        {/* ── START HERE block ─────────────────────────────── */}
+        <div className="my-2 border-t border-sky-500/20" />
+        <p className="px-2 pt-1 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-sky-400">
+          Start Here
+        </p>
+        <Link
+          to="/learner-experience"
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all ${
+            lxActive
+              ? 'bg-sky-500 text-white shadow-md shadow-sky-500/30'
+              : 'bg-sky-500/15 text-sky-300 border border-sky-500/30 hover:bg-sky-500/25 hover:border-sky-400/50 hover:shadow-[0_0_12px_rgba(56,189,248,0.15)]'
+          }`}
+        >
+          <LifeBuoy className="w-4 h-4 flex-shrink-0" />
+          <span className="flex-1 truncate">Learner Experience & FAQs</span>
+        </Link>
+        <div className="my-2 border-t border-sky-500/20" />
+        {/* ── end START HERE block ─────────────────────────── */}
+
+        <Link
+          to="/recognition"
+          className={`sidebar-item ${location.hash === '#/recognition' ? 'active' : ''}`}
+        >
+          <Award className="w-4 h-4 flex-shrink-0" />
+          <span className="flex-1 truncate text-[13px]">Cohort Recognition</span>
+        </Link>
 
         {tracks.map((track) => (
           <div key={track.id} className="pt-3">
