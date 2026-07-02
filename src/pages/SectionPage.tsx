@@ -433,7 +433,7 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
                 : 'bg-sky-500/10 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 hover:shadow-md hover:shadow-sky-500/20'
             }`}
           >
-            Read Article
+            Read Mission Brief
           </Link>
         )}
       </div>
@@ -501,7 +501,7 @@ function OpenSlotPlaceholder({ domain, context, onContribute, gridMode = false }
           onClick={onContribute}
           className="mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-sky-500/10 hover:bg-sky-500 text-sky-700 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)]"
         >
-          Submit a Contribution
+          Add Intel
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -946,7 +946,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
             onClick={() => setIsModalOpen(true)}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-400 hover:bg-sky-500 text-zinc-900 text-sm font-bold shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] transition-all"
           >
-            Submit a Contribution
+            Add Intel
           </button>
         </div>
       </div>

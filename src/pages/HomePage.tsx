@@ -83,12 +83,19 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
             <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/10 rounded-full blur-2xl pointer-events-none" />
             <div className="relative">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 text-sm font-medium mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 text-sm font-medium mb-4">
                 <TrendingUp className="w-4 h-4" />
                 <span>Pioneering Cohort</span>
               </div>
+              <div className="flex items-center gap-2.5 mb-6">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]"></span>
+                </span>
+                <span className="font-mono text-xs tracking-wider text-emerald-400/90">COHORT 2026-RTT-23 | STATUS: ACTIVE</span>
+              </div>
               <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
-                Per Scholas — Learners Knowledge Base
+                Per Scholas — Cohort Survival Guide
                 <span className="block bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-sky-400 mt-1">
                   AI-Enabled Healthcare IT
                 </span>
@@ -168,7 +175,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Recent Articles */}
           <section>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-zinc-800 dark:text-white">Recent Articles</h2>
+              <h2 className="text-xl font-bold text-zinc-800 dark:text-white">Recent Field Notes</h2>
             </div>
             {isLoading ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -214,10 +221,10 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-base font-bold whitespace-normal break-words tracking-normal leading-relaxed text-zinc-800 dark:text-zinc-100 group-hover:text-sky-700 dark:group-hover:text-sky-400 transition-colors duration-200">
-                  Contribute to the Hub
+                  Add Intel
                 </p>
                 <p className="text-xs whitespace-normal break-words leading-relaxed text-zinc-500 dark:text-zinc-400 mt-0.5">
-                  Submit new articles, references, or lab notes
+                  Submit field notes, workflow hacks, or study intel
                 </p>
               </div>
               <ChevronRight className="w-5 h-5 text-zinc-300 dark:text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0" />

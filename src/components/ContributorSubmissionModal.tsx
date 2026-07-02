@@ -19,7 +19,7 @@ const PROFANITY_PATTERN = new RegExp(
 
 const SUBMISSION_TYPES = [
   { value: 'Article' as SubmissionType, label: 'Article', icon: FileText },
-  { value: 'Study Tip' as SubmissionType, label: 'Study Tip', icon: BookOpen },
+  { value: 'Study Tip' as SubmissionType, label: 'Pro-Tip', icon: BookOpen },
   { value: 'Diagram' as SubmissionType, label: 'Diagram', icon: GitBranch },
   { value: 'Resource Link' as SubmissionType, label: 'Resource Link', icon: Link2 },
   { value: 'Prompt Playbook' as SubmissionType, label: 'Playbook', icon: Sparkles },
@@ -470,8 +470,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
         <div className="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex items-center justify-between flex-shrink-0">
           <div>
-            <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Contribute to the Hub</h2>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">Share your knowledge with the cohort</p>
+            <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Log New Intel</h2>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">Add your breakthrough, workflow fix, or study hack to the Cohort Survival Guide.</p>
           </div>
           <button onClick={() => { reset(); onClose(); }} className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"><X className="w-5 h-5" /></button>
         </div>

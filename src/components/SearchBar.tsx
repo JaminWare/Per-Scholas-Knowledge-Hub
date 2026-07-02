@@ -107,7 +107,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
           value={query}
           onChange={(e) => { setQuery(e.target.value); setIsOpen(true); }}
           onFocus={() => setIsOpen(true)}
-          placeholder="Search articles, domains..."
+          placeholder="Search the Archives..."
           className="w-full pl-12 pr-20 py-2.5 rounded-xl bg-zinc-200 dark:bg-white border border-zinc-400 dark:border-zinc-300 text-zinc-900 dark:text-zinc-900 placeholder-zinc-400 dark:placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all text-sm"
         />
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
@@ -155,7 +155,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
                         <p className="text-sm text-zinc-500 dark:text-zinc-400 line-clamp-1 mt-0.5">{result.excerpt}</p>
                       )}
                     </div>
-                    <span className="text-xs text-zinc-400 dark:text-zinc-500">{result.type === 'article' ? 'Article' : 'Domain'}</span>
+                    <span className="text-xs text-zinc-400 dark:text-zinc-500">{result.type === 'article' ? 'Mission Brief' : 'Domain'}</span>
                   </button>
                 </li>
               ))}
