@@ -460,12 +460,12 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
           <div className="flex-1 min-w-0">
             <h3 className={`font-semibold text-sm leading-snug line-clamp-2 transition-colors duration-200 ${
               isSample
-                ? 'text-sky-800 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400'
-                : 'text-zinc-800 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400'
+                ? 'text-sky-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-zinc-50'
+                : 'text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-zinc-50'
             }`}>
               {article.title}
               {!isSample && (
-                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-200 group-hover:text-sky-500 dark:group-hover:text-sky-400 mt-1">Curated by {article.author || authorName}</p>
+                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-200 group-hover:text-zinc-400 dark:group-hover:text-zinc-300 mt-1">Curated by {article.author || authorName}</p>
               )}
             </h3>
           </div>
@@ -497,8 +497,8 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
   return (
     <div className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
       isSample
-        ? 'bg-zinc-100/60 dark:bg-slate-900/50 border-sky-200/60 dark:border-sky-900/40 hover:border-sky-400/70 dark:hover:border-sky-400/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.5),0_4px_16px_rgba(56,189,248,0.08)]'
-        : 'bg-white dark:bg-slate-900/70 border-slate-200 dark:border-sky-900/30 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
+        ? 'bg-zinc-100/60 dark:bg-zinc-950/50 border-sky-200/60 dark:border-zinc-800 hover:border-sky-400/70 dark:hover:border-zinc-600 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.5),0_4px_16px_rgba(56,189,248,0.08)] dark:hover:shadow-[0_4px_20px_rgba(255,255,255,0.04)]'
+        : 'bg-white dark:bg-zinc-900/80 border-slate-200 dark:border-zinc-800 hover:border-sky-400/50 dark:hover:border-zinc-600 hover:shadow-md dark:hover:shadow-[0_4px_20px_rgba(255,255,255,0.04)]'
     }`}>
       <div className="cursor-zoom-in" onClick={() => setZoomed(true)}>
         {cardContent}
