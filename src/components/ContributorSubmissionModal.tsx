@@ -7,6 +7,7 @@ import {
 import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
 import { normalizeUrl } from '../utils/normalizeUrl';
+import { JOURNEY_TABS, CATEGORY_FILTERS } from '../pages/LearnerExperiencePage';
 
 type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Quick Reference' | 'Resource Link' | 'Prompt Playbook';
 
@@ -23,6 +24,8 @@ const SUBMISSION_TYPES = [
   { value: 'Resource Link' as SubmissionType, label: 'Resource Link', icon: Link2 },
   { value: 'Prompt Playbook' as SubmissionType, label: 'Playbook', icon: Sparkles },
 ];
+
+const LX_TRACK_VALUE = 'Learner Experience & FAQs';
 
 const MASTER_CATEGORIES = [
   { label: 'Study Tips', badge: 'Core 1 Expert', sub: [
@@ -57,25 +60,29 @@ const MASTER_CATEGORIES = [
     'Prompt Playbook — EHR Troubleshooting Frameworks',
     'Prompt Playbook — Study Drill Frameworks',
   ]},
+  { label: 'Learner Experience & FAQs', badge: 'Community Contributor', sub: [
+    LX_TRACK_VALUE,
+  ]},
 ];
 
 function getFilteredCategories(type: SubmissionType) {
   switch (type) {
     case 'Article':
-      return MASTER_CATEGORIES.filter((c) => c.label === 'Study Tips').map(c => ({ ...c, label: 'General' }));
+      return MASTER_CATEGORIES.filter((c) => c.label === 'Study Tips' || c.label === 'Learner Experience & FAQs').map(c => c.label === 'Study Tips' ? { ...c, label: 'General' } : c);
     case 'Study Tip':
-      return MASTER_CATEGORIES.filter((c) => c.label === 'Study Tips');
+      return MASTER_CATEGORIES.filter((c) => c.label === 'Study Tips' || c.label === 'Learner Experience & FAQs');
     case 'Diagram':
     case 'Quick Reference':
       return MASTER_CATEGORIES;
     case 'Resource Link':
-      return MASTER_CATEGORIES.map(c => ({ ...c, label: 'General' }));
+      return MASTER_CATEGORIES.map(c => c.label === 'Learner Experience & FAQs' ? c : { ...c, label: 'General' });
     case 'Prompt Playbook':
-      return MASTER_CATEGORIES.filter((c) => c.label === 'Prompt Playbook');
+      return MASTER_CATEGORIES.filter((c) => c.label === 'Prompt Playbook' || c.label === 'Learner Experience & FAQs');
   }
 }
 
 function getBadge(trackName: string): string {
+  if (trackName === LX_TRACK_VALUE || trackName.startsWith('Learner Experience')) return 'Community Contributor';
   if (trackName.includes('Core 2')) return 'Core 2 Expert';
   if (trackName.includes('Advanced Healthcare IT')) return 'Healthcare IT Specialist';
   if (trackName.includes('Prompt Playbook')) return 'Playbook Engineer';
@@ -179,33 +186,54 @@ function buildFormattedContent(
   return sections.join('\n');
 }
 
+const LX_STAGES = JOURNEY_TABS.filter((t) => t.id !== 'all');
+
 export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh }: { isOpen: boolean; onClose: () => void; onSubmitted: (s: NewSubmission) => void; onRefresh?: () => void; }) {
   const [fullName, setFullName] = useState('');
   const [submissionType, setSubmissionType] = useState<SubmissionType>('Article');
-  
+
   const filteredCategories = getFilteredCategories(submissionType);
   const [track, setTrack] = useState(filteredCategories[0].sub[0]);
   const [isTrackDropdownOpen, setIsTrackDropdownOpen] = useState(false);
   const [title, setTitle] = useState('');
-  
+
   const [concept, setConcept] = useState('');
   const [aPlusRelevance, setAPlusRelevance] = useState('');
   const [impact, setImpact] = useState('');
   const [references, setReferences] = useState('');
   const [resourceUrl, setResourceUrl] = useState('');
   const [diagramUrl, setDiagramUrl] = useState('');
-  
+
+  // Learner Experience cascading selections
+  const [lxStage, setLxStage] = useState('');
+  const [lxTopic, setLxTopic] = useState('');
+  const [lxFocus, setLxFocus] = useState('');
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
   const isResourceLink = submissionType === 'Resource Link';
+  const isLearnerExperience = track === LX_TRACK_VALUE;
+  const isLightweight = submissionType === 'Diagram' || submissionType === 'Study Tip' || submissionType === 'Quick Reference';
   const autoBadge = getBadge(track);
+
+  // Derive LX topic/focus options
+  const lxTopicOptions = lxStage && CATEGORY_FILTERS[lxStage]
+    ? CATEGORY_FILTERS[lxStage].filter((f) => !f.id.startsWith('all-'))
+    : [];
+  const selectedTopicObj = lxTopicOptions.find((t) => t.id === lxTopic);
+  const lxFocusOptions = selectedTopicObj
+    ? selectedTopicObj.nested.filter((n) => n.keywords.length > 0)
+    : [];
 
   useEffect(() => {
     const newFiltered = getFilteredCategories(submissionType);
     setTrack(newFiltered[0].sub[0]);
+    setLxStage('');
+    setLxTopic('');
+    setLxFocus('');
     setErrors({});
     setFormError('');
   }, [submissionType]);
@@ -228,6 +256,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setReferences('');
     setResourceUrl('');
     setDiagramUrl('');
+    setLxStage('');
+    setLxTopic('');
+    setLxFocus('');
     setErrors({});
     setFormError('');
     setIsTrackDropdownOpen(false);
@@ -236,6 +267,11 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   const assembleContent = () => {
     if (isResourceLink) return resourceUrl.trim();
+
+    if (isLearnerExperience && isLightweight) {
+      return concept.trim();
+    }
+
     const descBlock = submissionType === 'Quick Reference' || isStructuredBlock(concept)
       ? wrapInCodeFence(concept.trim())
       : concept.trim();
@@ -253,9 +289,15 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     const e: Record<string, string> = {};
     if (!fullName.trim()) e.fullName = 'Required.';
     if (!title.trim()) e.title = 'Required.';
-    
+
+    if (isLearnerExperience && !lxStage) {
+      e.lxStage = 'Please select a stage.';
+    }
+
     if (isResourceLink) {
       if (!/^https?:\/\/.+/.test(resourceUrl.trim())) e.resourceUrl = 'Valid URL required.';
+    } else if (isLearnerExperience && isLightweight) {
+      if (concept.trim().length < 15) e.concept = 'At least 15 characters required.';
     } else {
       if (concept.trim().length < 15) e.concept = 'Required.';
       if (aPlusRelevance.trim().length < 15) e.aPlusRelevance = 'Required.';
@@ -265,11 +307,20 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         e.diagramUrl = 'Please provide a valid Unsplash image URL to ensure cohesive knowledge base styling.';
       }
     }
-    
+
     setErrors(e);
     if (Object.keys(e).length > 0) return;
 
-    const rawContent = assembleContent();
+    let rawContent = assembleContent();
+
+    // Inject LX category tags for keyword filtering
+    if (isLearnerExperience) {
+      const topicLabel = selectedTopicObj?.label || '';
+      const focusLabel = lxFocusOptions.find((n) => n.label === lxFocus)?.label || '';
+      if (topicLabel || focusLabel) {
+        rawContent += `\n\n[Category Tags: ${topicLabel}${focusLabel ? ', ' + focusLabel : ''}]`;
+      }
+    }
 
     if (PROFANITY_PATTERN.test(title) || PROFANITY_PATTERN.test(rawContent)) {
       setFormError('Submission contains restricted language. Please align your contribution with professional academic standards.');
@@ -278,7 +329,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
     setIsSubmitting(true);
 
-    // Duplicate detection — check both published articles and pending submissions
+    // Duplicate detection
     try {
       if (isResourceLink) {
         const normalizedInput = normalizeUrl(resourceUrl);
@@ -307,21 +358,36 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       // Non-blocking: if the duplicate check fails, allow submission to proceed
     }
 
-    const formattedContent = !isResourceLink ? buildFormattedContent(
-      fullName.trim(), track, submissionType,
-      concept.trim(), aPlusRelevance.trim(), impact.trim(), references.trim(),
-      diagramUrl.trim() || undefined,
-    ) : null;
+    // Resolve track and badge for LX submissions
+    let payloadTrack = track;
+    let payloadBadge = autoBadge;
+    if (isLearnerExperience) {
+      const stageTab = LX_STAGES.find((t) => t.id === lxStage);
+      payloadTrack = `Learner Experience \u2014 ${stageTab?.label || lxStage}`;
+      payloadBadge = 'Community Contributor';
+    }
+
+    const formattedContent = (!isResourceLink && !(isLearnerExperience && isLightweight))
+      ? buildFormattedContent(
+          fullName.trim(), payloadTrack, submissionType,
+          concept.trim(), aPlusRelevance.trim(), impact.trim(), references.trim(),
+          diagramUrl.trim() || undefined,
+        )
+      : null;
 
     const insertPayload = {
-      full_name: fullName.trim(), track, badge: autoBadge, title: title.trim(), content: rawContent, submission_type: submissionType, formatted_content: formattedContent, is_approved: false,
+      full_name: fullName.trim(),
+      track: payloadTrack,
+      badge: payloadBadge,
+      title: title.trim(),
+      content: rawContent,
+      submission_type: submissionType,
+      formatted_content: formattedContent,
+      is_approved: false,
     };
-    console.log('[TRACER] ATTEMPTING INSERT WITH PAYLOAD:', insertPayload);
 
     try {
       const { data, error } = await supabase.from('submissions').insert(insertPayload).select().single();
-
-      console.log('[TRACER] SUPABASE INSERT RESPONSE:', { data, error });
 
       if (error) {
         setFormError('Database Error: ' + error.message);
@@ -329,12 +395,11 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         return;
       }
 
-      const sub: NewSubmission = { ...(data as NewSubmission), badge: autoBadge, submission_type: submissionType };
+      const sub: NewSubmission = { ...(data as NewSubmission), badge: payloadBadge, submission_type: submissionType };
 
       onSubmitted(sub);
       setIsSuccess(true);
     } catch (err: any) {
-      console.error('[TRACER] Database Ingestion Failure:', err);
       setFormError('Database Error: ' + (err?.message || JSON.stringify(err)));
     } finally {
       setIsSubmitting(false);
@@ -343,6 +408,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   if (!isOpen) return null;
   const inputCls = (field: string) => `w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/40 transition-all ${errors[field] ? 'border-red-400' : 'border-zinc-200 dark:border-zinc-800'}`;
+  const selectCls = (field: string) => `w-full px-4 py-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/60 border text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/40 transition-all appearance-none ${errors[field] ? 'border-red-400' : 'border-zinc-200 dark:border-zinc-800'} text-zinc-900 dark:text-zinc-100`;
 
   if (isSuccess) {
     return (
@@ -372,11 +438,13 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     );
   }
 
+  const showFullFields = !isResourceLink && !(isLearnerExperience && isLightweight);
+
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-zinc-950/70 dark:bg-zinc-300/25 backdrop-blur-sm" onClick={() => { reset(); onClose(); }} />
       <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[90vh]">
-        
+
         <div className="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex items-center justify-between flex-shrink-0">
           <div>
             <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Contribute to the Hub</h2>
@@ -394,7 +462,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
         <div className="px-6 py-5 overflow-y-auto flex-1 custom-scrollbar">
           <div className="space-y-6">
-            
+
             <div>
               <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Full Name / Discord Handle</label>
               <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="e.g. Jane Smith" className={inputCls('fullName')} />
@@ -420,7 +488,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   <span className="truncate pr-4 text-zinc-900 dark:text-zinc-100">{track}</span>
                   <ChevronDown className={`w-4 h-4 text-zinc-400 flex-shrink-0 transition-transform ${isTrackDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
-                
+
                 {isTrackDropdownOpen && (
                   <div className="w-full mt-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-inner overflow-hidden flex flex-col">
                     <div className="bg-zinc-100 dark:bg-zinc-800/80 px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500 border-b border-zinc-200 dark:border-zinc-800">
@@ -432,7 +500,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                           <div className="px-2 py-1 text-[10px] font-bold text-sky-500 uppercase tracking-wider">{cat.label}</div>
                           <div className="mt-1 space-y-1">
                             {cat.sub.map((subTrack) => (
-                              <button key={subTrack} type="button" onClick={() => { setTrack(subTrack); setIsTrackDropdownOpen(false); }} className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${track === subTrack ? 'bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50 text-zinc-700 dark:text-zinc-300'}`}>
+                              <button key={subTrack} type="button" onClick={() => { setTrack(subTrack); setIsTrackDropdownOpen(false); if (subTrack !== LX_TRACK_VALUE) { setLxStage(''); setLxTopic(''); setLxFocus(''); } }} className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${track === subTrack ? 'bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50 text-zinc-700 dark:text-zinc-300'}`}>
                                 {subTrack}
                               </button>
                             ))}
@@ -443,6 +511,59 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   </div>
                 )}
               </div>
+
+              {/* LX Cascading Dropdowns */}
+              {isLearnerExperience && (
+                <div className="mt-3 space-y-3 pl-3 border-l-2 border-sky-200 dark:border-sky-800">
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Stage</label>
+                    <select
+                      value={lxStage}
+                      onChange={(e) => { setLxStage(e.target.value); setLxTopic(''); setLxFocus(''); }}
+                      className={selectCls('lxStage')}
+                    >
+                      <option value="">Select a stage...</option>
+                      {LX_STAGES.map((tab) => (
+                        <option key={tab.id} value={tab.id}>{tab.label}</option>
+                      ))}
+                    </select>
+                    {errors.lxStage && <p className="mt-1 text-xs text-red-500">{errors.lxStage}</p>}
+                  </div>
+
+                  {lxStage && lxTopicOptions.length > 0 && (
+                    <div>
+                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Topic</label>
+                      <select
+                        value={lxTopic}
+                        onChange={(e) => { setLxTopic(e.target.value); setLxFocus(''); }}
+                        className={selectCls('lxTopic')}
+                      >
+                        <option value="">Select a topic...</option>
+                        {lxTopicOptions.map((opt) => (
+                          <option key={opt.id} value={opt.id}>{opt.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {lxTopic && lxFocusOptions.length > 0 && (
+                    <div>
+                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Focus</label>
+                      <select
+                        value={lxFocus}
+                        onChange={(e) => setLxFocus(e.target.value)}
+                        className={selectCls('lxFocus')}
+                      >
+                        <option value="">Select a focus...</option>
+                        {lxFocusOptions.map((opt) => (
+                          <option key={opt.label} value={opt.label}>{opt.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="mt-2 flex items-center gap-2">
                 <Tag className="w-3.5 h-3.5 text-sky-500" />
                 <span className="text-xs text-zinc-500 dark:text-zinc-400">You will earn: <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-100 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400">[{autoBadge}]</span></span>
@@ -464,12 +585,20 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               {isResourceLink ? (
                 <div>
                   <label className="flex items-center gap-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5"><LinkIcon className="w-3.5 h-3.5 text-sky-500" /> Resource URL</label>
-                  <input type="url" value={resourceUrl} onChange={(e) => setResourceUrl(e.target.value)} placeholder="https://…" className={inputCls('resourceUrl')} />
+                  <input type="url" value={resourceUrl} onChange={(e) => setResourceUrl(e.target.value)} placeholder="https://..." className={inputCls('resourceUrl')} />
                   {errors.resourceUrl && <p className="mt-1 text-xs text-red-500">{errors.resourceUrl}</p>}
+                </div>
+              ) : isLearnerExperience && isLightweight ? (
+                <div>
+                  <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+                    Short Summary <span className="text-red-400">*</span>
+                  </label>
+                  <textarea value={concept} onChange={(e) => setConcept(e.target.value)} placeholder="Write a concise 1-3 sentence summary of your tip, diagram, or reference..." rows={3} className={`${inputCls('concept')} font-mono resize-y custom-scrollbar`} />
+                  {errors.concept && <p className="mt-1 text-xs text-red-500">{errors.concept}</p>}
                 </div>
               ) : (
                 <div className="space-y-4">
-                  
+
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       1. Guided Description <span className="text-red-400">*</span>
@@ -526,7 +655,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         <div className="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex items-center justify-between flex-shrink-0">
           <button type="button" onClick={() => { reset(); onClose(); }} className="text-sm font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors">Cancel</button>
           <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all text-zinc-900 bg-sky-400 hover:bg-sky-500 shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] disabled:opacity-60">
-            {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting…</> : <><Send className="w-4 h-4" /> Submit Your Contribution</>}
+            {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><Send className="w-4 h-4" /> Submit Your Contribution</>}
           </button>
         </div>
 

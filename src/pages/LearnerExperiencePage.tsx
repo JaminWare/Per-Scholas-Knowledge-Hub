@@ -8,19 +8,19 @@ import ContributorSubmissionModal from '../components/ContributorSubmissionModal
 
 // ─── 3-tier category filter system ─────────────────────────────
 
-interface NestedFilter {
+export interface NestedFilter {
   label: string;
   keywords: string[];
 }
 
-interface CategoryFilter {
+export interface CategoryFilter {
   id: string;
   label: string;
   keywords: string[];
   nested: NestedFilter[];
 }
 
-const CATEGORY_FILTERS: Record<string, CategoryFilter[]> = {
+export const CATEGORY_FILTERS: Record<string, CategoryFilter[]> = {
   onboarding: [
     { id: 'all-onboarding', label: 'All Onboarding', keywords: [], nested: [] },
     { id: 'canvas-workflows', label: 'Canvas Workflows', keywords: ['canvas', 'lms', 'assignment', 'calendar', 'module', 'syllabus', 'grades'], nested: [
@@ -121,7 +121,7 @@ const CATEGORY_FILTERS: Record<string, CategoryFilter[]> = {
 
 // ─── Tab definitions ─────────────────────────────────────────
 
-interface JourneyTab {
+export interface JourneyTab {
   id: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -129,7 +129,7 @@ interface JourneyTab {
   emptyPrompt: string;
 }
 
-const JOURNEY_TABS: JourneyTab[] = [
+export const JOURNEY_TABS: JourneyTab[] = [
   { id: 'all', label: 'All', icon: Compass, emptyPrompt: 'Be the first to share a peer survival tip. Your cohort is waiting.' },
   { id: 'onboarding', label: 'Onboarding Hurdles', icon: Lightbulb, trackSuffix: 'Onboarding Hurdles', emptyPrompt: 'Did you survive the first-week setup chaos? Click here to drop a tip for the next cohort.' },
   { id: 'labs', label: 'Lab Survival Guides', icon: BookOpen, trackSuffix: 'Lab Survival Guides', emptyPrompt: 'Conquered a complex lab that almost broke you? Share your survival guide here.' },
