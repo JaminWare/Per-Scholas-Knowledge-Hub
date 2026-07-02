@@ -857,23 +857,6 @@ ORDER BY a.access_timestamp DESC;`,
   // ─────────────────────────────────────────────────────────
   // Sub-page fallbacks (keep previous ones working)
   // ─────────────────────────────────────────────────────────
-  'core1-networking/osi-tcpip': {
-    title: 'OSI Model & TCP/IP Deep Dive',
-    trackLabel: 'CompTIA A+ Core 1 — Domain 2.0 Networking',
-    contributor: 'NetSec Expert',
-    contributorRole: 'Core 1 Expert',
-    cohort: '2026-RTT-23',
-    tags: ['OSI', 'TCP/IP', 'networking'],
-    content: [
-      { type: 'intro', text: 'Master the OSI model and TCP/IP stack. Bottom-to-top mnemonic: "Please Do Not Throw Sausage Pizza Away".' },
-      { type: 'heading', text: 'TCP vs UDP' },
-      { type: 'table', headers: ['Feature', 'TCP', 'UDP'], rows: [
-        ['Connection', 'Connection-oriented (3-way handshake)', 'Connectionless'],
-        ['Reliability', 'Guaranteed delivery', 'Best-effort'],
-        ['Use Case', 'HTTP, FTP, SSH, email', 'DNS, VoIP, gaming, streaming'],
-      ]},
-    ],
-  },
 
   'healthcare-ehr/integration': {
     title: 'HL7 Messaging Schemas & EHR Integration Blueprints',
