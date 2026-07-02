@@ -430,38 +430,49 @@ export default function RecognitionPage() {
   const totalContributors = contributors.length;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="pb-32">
 
-      {/* Back navigation */}
-      <button
-        onClick={() => navigate(-1)}
-        className="inline-flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-sm font-medium"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Back to Previous Page
-      </button>
+      {/* Full-bleed cinematic hero banner */}
+      <section className="relative overflow-hidden">
+        <img
+          src="/hero-workspace.webp"
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-sky-950/85 to-slate-900/90" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/10 rounded-full blur-2xl pointer-events-none" />
 
-      {/* Hero banner */}
-      <div className="rounded-2xl border p-6 bg-zinc-800 border-zinc-700/50 dark:bg-black dark:border-zinc-800">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="p-2.5 rounded-xl bg-sky-500/20 border border-sky-500/30">
-            <Award className="w-6 h-6 text-sky-400" />
+        <div className="relative px-6 md:px-12 pt-6 pb-10 md:pb-14">
+          {/* Back button inside the banner */}
+          <button
+            onClick={() => navigate(-1)}
+            className="inline-flex items-center gap-2 text-sky-200/80 hover:text-white transition-colors text-sm font-medium mb-8"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Previous Page
+          </button>
+
+          <div className="flex items-center gap-3 mb-4">
+            <div className="p-2.5 rounded-xl bg-sky-500/20 border border-sky-500/30">
+              <Award className="w-6 h-6 text-sky-400" />
+            </div>
+            <span className="text-xs font-bold text-sky-400 uppercase tracking-widest">
+              Per Scholas — 2026-RTT-23
+            </span>
           </div>
-          <span className="text-xs font-bold text-sky-400 uppercase tracking-widest">
-            Per Scholas — 2026-RTT-23
-          </span>
+          <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-[0_0_12px_rgba(56,189,248,0.75)] mb-3">
+            Cohort 2026-RTT-23 Wall of Fame
+          </h1>
+          <p className="text-sky-100/80 max-w-xl leading-relaxed text-sm md:text-base">
+            Celebrating every learner who has contributed research, documentation, and knowledge to the
+            AI-Enabled Healthcare IT collective. Click any profile to explore their full portfolio.
+          </p>
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold text-white dark:text-white drop-shadow-[0_0_12px_rgba(56,189,248,0.75)] mb-2">
-          Cohort 2026-RTT-23 Wall of Fame
-        </h1>
-        <p className="text-zinc-300 dark:text-zinc-300 max-w-xl leading-relaxed text-sm">
-          Celebrating every learner who has contributed research, documentation, and knowledge to the
-          AI-Enabled Healthcare IT collective. Click any profile to explore their full portfolio.
-        </p>
-      </div>
+      </section>
 
-      {/* Contributors section */}
-      <section>
+      {/* Contributors section — tighter to banner */}
+      <section className="max-w-4xl mx-auto px-4 mt-6">
         <div className="flex items-center gap-2 mb-3">
           <Award className="w-4 h-4 text-sky-500" />
           <h2 className="text-sm font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">
