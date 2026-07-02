@@ -711,6 +711,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     </label>
                     <textarea value={concept} onChange={(e) => setConcept(e.target.value)} placeholder="Explain the main idea, textbook definition, or step-by-step process..." rows={4} className={`${inputCls('concept')} font-mono resize-y custom-scrollbar`} />
                     {errors.concept && <p className="mt-1 text-xs text-red-500">{errors.concept}</p>}
+                    <p className="mt-1.5 text-[10px] text-zinc-500 dark:text-zinc-400">Building a network map or timeline? Use <a href="https://mermaid.live" target="_blank" rel="noopener noreferrer" className="text-sky-500 hover:text-sky-400 underline">Mermaid Live Editor</a> to visually generate your diagram, then paste the markdown code block here.</p>
                   </div>
 
                   <div>
