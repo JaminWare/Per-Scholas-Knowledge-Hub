@@ -18,6 +18,7 @@ const survivalGuideCards = [
     icon: Compass,
     accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
     iconBg: 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20',
+    tab: 'onboarding',
   },
   {
     id: 'lab-survival',
@@ -26,6 +27,7 @@ const survivalGuideCards = [
     icon: BookOpen,
     accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
     iconBg: 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20',
+    tab: 'labs',
   },
   {
     id: 'mid-program',
@@ -34,6 +36,7 @@ const survivalGuideCards = [
     icon: Flame,
     accentClass: 'hover:border-amber-400/50 dark:hover:border-amber-500/40',
     iconBg: 'bg-gradient-to-br from-amber-500 to-amber-400 shadow-amber-500/20',
+    tab: 'slump',
   },
   {
     id: 'job-hunt',
@@ -42,6 +45,7 @@ const survivalGuideCards = [
     icon: Briefcase,
     accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
     iconBg: 'bg-gradient-to-br from-zinc-600 to-zinc-500 shadow-zinc-500/20',
+    tab: 'job',
   },
 ];
 
@@ -122,7 +126,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                   return (
                     <Link
                       key={card.id}
-                      to="/learner-experience"
+                      to={`/learner-experience?tab=${card.tab}`}
                       className={`group flex items-start gap-4 p-4 text-left bg-[#f4f8fa] dark:bg-zinc-500/50 border border-slate-200 dark:border-zinc-500 rounded-xl transition-all ${card.accentClass}`}
                     >
                       <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${card.iconBg}`}>

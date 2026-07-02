@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
   LifeBuoy, Lightbulb, BookOpen, Flame, Shield, Briefcase, Compass, Plus,
 } from 'lucide-react';
@@ -172,12 +172,34 @@ function parseHardshipBreakthrough(content: string): { hardship: string; breakth
 // ─── Main page component ─────────────────────────────────────
 
 export default function LearnerExperiencePage() {
-  const [activeTab, setActiveTab] = useState('all');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'all');
   const [activeLevel2, setActiveLevel2] = useState('');
   const [activeLevel3, setActiveLevel3] = useState('');
   const [entries, setEntries] = useState<LearnerEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    if (tabId === 'all') {
+      searchParams.delete('tab');
+      setSearchParams(searchParams);
+    } else {
+      setSearchParams({ tab: tabId });
+    }
+    setActiveLevel2('');
+    setActiveLevel3('');
+  };
+
+  useEffect(() => {
+    const paramTab = searchParams.get('tab') || 'all';
+    if (paramTab !== activeTab) {
+      setActiveTab(paramTab);
+      setActiveLevel2('');
+      setActiveLevel3('');
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     async function fetchEntries() {
@@ -308,11 +330,7 @@ export default function LearnerExperiencePage() {
                 <button
                   key={tab.id}
                   type="button"
-                  onClick={() => {
-                    setActiveTab(tab.id);
-                    setActiveLevel2('');
-                    setActiveLevel3('');
-                  }}
+                  onClick={() => handleTabChange(tab.id)}
                   className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                     isActive
                       ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
