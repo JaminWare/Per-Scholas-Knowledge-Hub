@@ -41,25 +41,37 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
           {article.excerpt}
         </p>
       )}
-      <div className={`mt-4 flex items-center justify-between ${featured ? '' : ''}`}>
-        <div className={`flex items-center gap-2 text-zinc-400 dark:text-zinc-500 ${featured ? 'text-sm' : 'text-xs'}`}>
+      <div className="mt-4 flex items-center justify-between">
+        <div className={`flex items-center gap-2 text-sky-600/70 dark:text-sky-500/60 ${featured ? 'text-sm' : 'text-xs'}`}>
           <Clock className={featured ? 'w-4 h-4' : 'w-3.5 h-3.5'} />
           <span>{formattedDate}</span>
         </div>
         {!featured && article.tags.length > 0 && (
           <div className="flex items-center gap-1">
-            <Tag className="w-3.5 h-3.5 text-zinc-500 dark:text-zinc-600" />
-            <span className="text-xs text-zinc-500 dark:text-zinc-600">{article.tags[0]}</span>
+            <Tag className="w-3.5 h-3.5 text-sky-500/60 dark:text-sky-400/60" />
+            <span className="text-xs font-mono text-sky-600/70 dark:text-sky-400/70">{article.tags[0]}</span>
           </div>
         )}
       </div>
     </>
   );
 
+  const overlayFooter = (
+    <div className="mt-4 pt-4 border-t border-slate-100 dark:border-zinc-700/60">
+      <Link
+        to={articlePath}
+        onClick={(e) => e.stopPropagation()}
+        className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 hover:gap-2.5 transition-all duration-200"
+      >
+        Read full article <ArrowRight className="w-4 h-4" />
+      </Link>
+    </div>
+  );
+
   if (featured) {
     return (
       <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-500 to-sky-400 p-1 shadow-xl shadow-sky-500/10">
-        <div className="relative h-full bg-white dark:bg-zinc-900 rounded-xl flex flex-col">
+        <div className="relative h-full bg-white dark:bg-slate-900 rounded-xl flex flex-col">
           <div
             className="cursor-zoom-in p-6 pb-0"
             onClick={() => setZoomed(true)}
@@ -76,14 +88,17 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
           </div>
         </div>
         <CardZoomOverlay open={zoomed} onClose={() => setZoomed(false)}>
-          <div className="p-6">{cardContent}</div>
+          <div className="p-6">
+            {cardContent}
+            {overlayFooter}
+          </div>
         </CardZoomOverlay>
       </div>
     );
   }
 
   return (
-    <div className="group card flex flex-col hover:border-sky-400/40 dark:hover:border-sky-500/40">
+    <div className="group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out bg-white dark:bg-slate-900/60 border-slate-200 dark:border-sky-900/30 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.35),0_4px_20px_rgba(14,165,233,0.10)]">
       <div
         className="cursor-zoom-in p-5 pb-0"
         onClick={() => setZoomed(true)}
@@ -99,7 +114,10 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
         </Link>
       </div>
       <CardZoomOverlay open={zoomed} onClose={() => setZoomed(false)}>
-        <div className="p-5">{cardContent}</div>
+        <div className="p-5">
+          {cardContent}
+          {overlayFooter}
+        </div>
       </CardZoomOverlay>
     </div>
   );

@@ -497,8 +497,8 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
   return (
     <div className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
       isSample
-        ? 'bg-zinc-100/60 dark:bg-zinc-900 border-sky-200/60 dark:border-zinc-800 hover:border-sky-400/70 dark:hover:border-sky-400/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.5),0_4px_16px_rgba(56,189,248,0.08)]'
-        : 'bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
+        ? 'bg-zinc-100/60 dark:bg-slate-900/50 border-sky-200/60 dark:border-sky-900/40 hover:border-sky-400/70 dark:hover:border-sky-400/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.5),0_4px_16px_rgba(56,189,248,0.08)]'
+        : 'bg-white dark:bg-slate-900/70 border-slate-200 dark:border-sky-900/30 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
     }`}>
       <div className="cursor-zoom-in" onClick={() => setZoomed(true)}>
         {cardContent}
@@ -529,7 +529,30 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
       </div>
 
       <CardZoomOverlay open={zoomed} onClose={() => setZoomed(false)}>
-        <div className="rounded-xl overflow-hidden">{cardContent}</div>
+        <div className="rounded-xl overflow-hidden">
+          {cardContent}
+          <div className="px-4 pb-4 pt-2 border-t border-zinc-200/60 dark:border-zinc-700/50">
+            {article.submission_type === 'Resource Link' ? (
+              <a
+                href={article.content}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-white bg-sky-500/10 hover:bg-sky-500 border border-sky-500/20 hover:border-sky-500 transition-all duration-200"
+              >
+                View Resource ↗
+              </a>
+            ) : (
+              <Link
+                to={`/article/${article.slug}`}
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-white bg-sky-500/10 hover:bg-sky-500 border border-sky-500/20 hover:border-sky-500 transition-all duration-200"
+              >
+                Read Mission Brief <ArrowRight className="w-4 h-4" />
+              </Link>
+            )}
+          </div>
+        </div>
       </CardZoomOverlay>
     </div>
   );
