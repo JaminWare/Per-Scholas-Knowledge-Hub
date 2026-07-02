@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
-  X, Send, Loader2, ChevronDown, Tag,
+  X, Send, Loader2, Tag,
   FileText, Link2, BookOpen, Zap, GitBranch,
   AlertCircle, Link as LinkIcon, ImagePlus, CheckCircle2, Sparkles
 } from 'lucide-react';
@@ -28,16 +28,21 @@ const SUBMISSION_TYPES = [
 const LX_TRACK_VALUE = 'Learner Experience & FAQs';
 
 const MASTER_CATEGORIES = [
-  { label: 'Study Tips', badge: 'Core 1 Expert', sub: [
+  { label: 'Learner Experience & FAQs', badge: 'Community Contributor', sub: [] as string[] },
+  { label: 'CompTIA A+ Core 1', badge: 'Core 1 Expert', sub: [
     'CompTIA A+ Core 1 — Domain 1.0 (Mobile Devices)',
     'CompTIA A+ Core 1 — Domain 2.0 (Networking)',
     'CompTIA A+ Core 1 — Domain 3.0 (Hardware)',
     'CompTIA A+ Core 1 — Domain 4.0 (Virtualization & Cloud)',
     'CompTIA A+ Core 1 — Domain 5.0 (HW & Network Troubleshooting)',
+  ]},
+  { label: 'CompTIA A+ Core 2', badge: 'Core 2 Expert', sub: [
     'CompTIA A+ Core 2 — Domain 1.0 (Operating Systems)',
     'CompTIA A+ Core 2 — Domain 2.0 (Security)',
     'CompTIA A+ Core 2 — Domain 3.0 (Software Troubleshooting)',
     'CompTIA A+ Core 2 — Domain 4.0 (Operational Procedures)',
+  ]},
+  { label: 'Advanced Healthcare IT', badge: 'Healthcare IT Specialist', sub: [
     'Advanced Healthcare IT — EHR Architecture',
     'Advanced Healthcare IT — HIPAA Data Security',
     'Advanced Healthcare IT — Clinical Workflows',
@@ -60,24 +65,34 @@ const MASTER_CATEGORIES = [
     'Prompt Playbook — EHR Troubleshooting Frameworks',
     'Prompt Playbook — Study Drill Frameworks',
   ]},
-  { label: 'Learner Experience & FAQs', badge: 'Community Contributor', sub: [
-    LX_TRACK_VALUE,
-  ]},
 ];
 
-function getFilteredCategories(type: SubmissionType) {
+function getVisibleCategories(type: SubmissionType) {
   switch (type) {
     case 'Article':
-      return MASTER_CATEGORIES.filter((c) => c.label === 'Study Tips' || c.label === 'Learner Experience & FAQs').map(c => c.label === 'Study Tips' ? { ...c, label: 'General' } : c);
     case 'Study Tip':
-      return MASTER_CATEGORIES.filter((c) => c.label === 'Study Tips' || c.label === 'Learner Experience & FAQs');
-    case 'Diagram':
-    case 'Quick Reference':
-      return MASTER_CATEGORIES;
     case 'Resource Link':
-      return MASTER_CATEGORIES.map(c => c.label === 'Learner Experience & FAQs' ? c : { ...c, label: 'General' });
+      return MASTER_CATEGORIES.filter((c) =>
+        c.label === 'Learner Experience & FAQs' ||
+        c.label === 'CompTIA A+ Core 1' ||
+        c.label === 'CompTIA A+ Core 2' ||
+        c.label === 'Advanced Healthcare IT'
+      );
+    case 'Diagram':
+      return MASTER_CATEGORIES.filter((c) =>
+        c.label === 'Learner Experience & FAQs' ||
+        c.label === 'Diagrams'
+      );
+    case 'Quick Reference':
+      return MASTER_CATEGORIES.filter((c) =>
+        c.label === 'Learner Experience & FAQs' ||
+        c.label === 'Quick References'
+      );
     case 'Prompt Playbook':
-      return MASTER_CATEGORIES.filter((c) => c.label === 'Prompt Playbook' || c.label === 'Learner Experience & FAQs');
+      return MASTER_CATEGORIES.filter((c) =>
+        c.label === 'Learner Experience & FAQs' ||
+        c.label === 'Prompt Playbook'
+      );
   }
 }
 
@@ -192,9 +207,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [fullName, setFullName] = useState('');
   const [submissionType, setSubmissionType] = useState<SubmissionType>('Article');
 
-  const filteredCategories = getFilteredCategories(submissionType);
-  const [track, setTrack] = useState(filteredCategories[0].sub[0]);
-  const [isTrackDropdownOpen, setIsTrackDropdownOpen] = useState(false);
+  const [masterCategory, setMasterCategory] = useState('');
+  const [track, setTrack] = useState('');
   const [title, setTitle] = useState('');
 
   const [concept, setConcept] = useState('');
@@ -215,9 +229,13 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [isSuccess, setIsSuccess] = useState(false);
 
   const isResourceLink = submissionType === 'Resource Link';
-  const isLearnerExperience = track === LX_TRACK_VALUE;
+  const isLearnerExperience = masterCategory === LX_TRACK_VALUE;
   const isLightweight = submissionType === 'Diagram' || submissionType === 'Study Tip' || submissionType === 'Quick Reference';
-  const autoBadge = getBadge(track);
+  const autoBadge = isLearnerExperience ? 'Community Contributor' : getBadge(track || masterCategory);
+
+  const visibleCategories = getVisibleCategories(submissionType);
+  const selectedMasterObj = MASTER_CATEGORIES.find((c) => c.label === masterCategory);
+  const domainOptions = selectedMasterObj?.sub ?? [];
 
   // Derive LX topic/focus options
   const lxTopicOptions = lxStage && CATEGORY_FILTERS[lxStage]
@@ -229,8 +247,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     : [];
 
   useEffect(() => {
-    const newFiltered = getFilteredCategories(submissionType);
-    setTrack(newFiltered[0].sub[0]);
+    setMasterCategory('');
+    setTrack('');
     setLxStage('');
     setLxTopic('');
     setLxFocus('');
@@ -248,7 +266,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const reset = () => {
     setFullName('');
     setSubmissionType('Article');
-    setTrack(MASTER_CATEGORIES[0].sub[0]);
+    setMasterCategory('');
+    setTrack('');
     setTitle('');
     setConcept('');
     setAPlusRelevance('');
@@ -261,7 +280,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setLxFocus('');
     setErrors({});
     setFormError('');
-    setIsTrackDropdownOpen(false);
     setIsSuccess(false);
   };
 
@@ -289,9 +307,14 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     const e: Record<string, string> = {};
     if (!fullName.trim()) e.fullName = 'Required.';
     if (!title.trim()) e.title = 'Required.';
+    if (!masterCategory) e.masterCategory = 'Please select a category.';
 
     if (isLearnerExperience && !lxStage) {
       e.lxStage = 'Please select a stage.';
+    }
+
+    if (!isLearnerExperience && masterCategory && domainOptions.length > 0 && !track) {
+      e.track = 'Please select a domain.';
     }
 
     if (isResourceLink) {
@@ -477,36 +500,37 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
             <div>
               <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Curriculum Track</label>
-              <div className="relative">
-                <button type="button" onClick={() => setIsTrackDropdownOpen(!isTrackDropdownOpen)} className={`${inputCls('track')} flex justify-between items-center text-left`}>
-                  <span className="truncate pr-4 text-zinc-900 dark:text-zinc-100">{track}</span>
-                  <ChevronDown className={`w-4 h-4 text-zinc-400 flex-shrink-0 transition-transform ${isTrackDropdownOpen ? 'rotate-180' : ''}`} />
-                </button>
+              <select
+                value={masterCategory}
+                onChange={(e) => { setMasterCategory(e.target.value); setTrack(''); setLxStage(''); setLxTopic(''); setLxFocus(''); }}
+                className={selectCls('masterCategory')}
+              >
+                <option value="">Select a category...</option>
+                {visibleCategories.map((cat) => (
+                  <option key={cat.label} value={cat.label}>{cat.label}</option>
+                ))}
+              </select>
+              {errors.masterCategory && <p className="mt-1 text-xs text-red-500">{errors.masterCategory}</p>}
 
-                {isTrackDropdownOpen && (
-                  <div className="w-full mt-2 bg-white dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl shadow-inner overflow-hidden flex flex-col">
-                    <div className="bg-zinc-100 dark:bg-zinc-800/80 px-4 py-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500 border-b border-zinc-200 dark:border-zinc-800">
-                      Track
-                    </div>
-                    <div className="max-h-48 overflow-y-auto custom-scrollbar p-2 space-y-3">
-                      {filteredCategories.map((cat) => (
-                        <div key={cat.label}>
-                          <div className="px-2 py-1 text-[10px] font-bold text-sky-500 uppercase tracking-wider">{cat.label}</div>
-                          <div className="mt-1 space-y-1">
-                            {cat.sub.map((subTrack) => (
-                              <button key={subTrack} type="button" onClick={() => { setTrack(subTrack); setIsTrackDropdownOpen(false); if (subTrack !== LX_TRACK_VALUE) { setLxStage(''); setLxTopic(''); setLxFocus(''); } }} className={`w-full text-left px-3 py-2 text-sm rounded-lg transition-colors ${track === subTrack ? 'bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400 font-medium' : 'hover:bg-zinc-50 dark:hover:bg-zinc-800/50 text-zinc-700 dark:text-zinc-300'}`}>
-                                {subTrack}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+              {/* Level 2: Domain select for technical tracks */}
+              {masterCategory && !isLearnerExperience && domainOptions.length > 0 && (
+                <div className="mt-3 pl-3 border-l-2 border-sky-200 dark:border-sky-800">
+                  <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Specific Domain / Module</label>
+                  <select
+                    value={track}
+                    onChange={(e) => setTrack(e.target.value)}
+                    className={selectCls('track')}
+                  >
+                    <option value="">Select a domain...</option>
+                    {domainOptions.map((d) => (
+                      <option key={d} value={d}>{d}</option>
+                    ))}
+                  </select>
+                  {errors.track && <p className="mt-1 text-xs text-red-500">{errors.track}</p>}
+                </div>
+              )}
 
-              {/* LX Cascading Dropdowns */}
+              {/* Level 2+: LX Cascading Dropdowns */}
               {isLearnerExperience && (
                 <div className="mt-3 space-y-3 pl-3 border-l-2 border-sky-200 dark:border-sky-800">
                   <div>
