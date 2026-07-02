@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   X, Send, Loader2, Tag,
   FileText, Link2, BookOpen, GitBranch,
@@ -225,6 +225,34 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const [authorSuggestions, setAuthorSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const authorFieldRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    supabase
+      .from('articles')
+      .select('author_name')
+      .not('author_name', 'is', null)
+      .not('author_name', 'eq', '')
+      .then(({ data }) => {
+        if (!data) return;
+        const unique = [...new Set(data.map((r) => r.author_name as string).filter(Boolean))].sort();
+        setAuthorSuggestions(unique);
+      });
+  }, [isOpen]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (authorFieldRef.current && !authorFieldRef.current.contains(e.target as Node)) {
+        setShowSuggestions(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const isResourceLink = submissionType === 'Resource Link';
   const isLearnerExperience = masterCategory === LX_TRACK_VALUE;
   const isLightweight = submissionType === 'Diagram' || submissionType === 'Study Tip';
@@ -287,6 +315,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setErrors({});
     setFormError('');
     setIsSuccess(false);
+    setShowSuggestions(false);
   };
 
   const assembleContent = () => {
@@ -509,7 +538,36 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
             <div>
               <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Full Name / Discord Handle</label>
-              <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="e.g. Jane Smith" className={inputCls('fullName')} />
+              <div className="relative" ref={authorFieldRef}>
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={(e) => { setFullName(e.target.value); setShowSuggestions(true); }}
+                  onFocus={() => { if (fullName.length > 0) setShowSuggestions(true); }}
+                  placeholder="e.g. Jane Smith"
+                  className={inputCls('fullName')}
+                  autoComplete="off"
+                />
+                {showSuggestions && fullName.length > 0 && (() => {
+                  const filtered = authorSuggestions.filter((name) =>
+                    name.toLowerCase().includes(fullName.toLowerCase()) && name.toLowerCase() !== fullName.toLowerCase()
+                  );
+                  if (filtered.length === 0) return null;
+                  return (
+                    <ul className="absolute top-full left-0 right-0 mt-1 z-50 max-h-40 overflow-y-auto rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-lg py-1">
+                      {filtered.map((name) => (
+                        <li
+                          key={name}
+                          onClick={() => { setFullName(name); setShowSuggestions(false); }}
+                          className="px-4 py-2 text-sm text-zinc-800 dark:text-zinc-200 hover:bg-sky-50 dark:hover:bg-sky-500/10 cursor-pointer transition-colors"
+                        >
+                          {name}
+                        </li>
+                      ))}
+                    </ul>
+                  );
+                })()}
+              </div>
               {errors.fullName && <p className="mt-1 text-xs text-red-500">{errors.fullName}</p>}
             </div>
 
