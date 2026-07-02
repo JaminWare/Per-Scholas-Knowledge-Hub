@@ -169,10 +169,14 @@ export default function Sidebar({ onToggle }: SidebarProps) {
 
         <Link
           to="/recognition"
-          className={`sidebar-item ${location.hash === '#/recognition' ? 'active' : ''}`}
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 ${
+            location.pathname === '/recognition'
+              ? 'bg-yellow-500/20 text-yellow-200 border border-yellow-400/60 shadow-[0_0_20px_rgba(234,179,8,0.30)]'
+              : 'bg-yellow-500/8 text-yellow-100 border border-yellow-500/40 shadow-[0_0_15px_rgba(234,179,8,0.15)] hover:border-yellow-400/60 hover:shadow-[0_0_20px_rgba(234,179,8,0.30)] hover:bg-yellow-500/15'
+          }`}
         >
-          <Award className="w-4 h-4 flex-shrink-0" />
-          <span className="flex-1 truncate text-[13px]">Cohort Recognition</span>
+          <Award className="w-4 h-4 flex-shrink-0 text-yellow-400" />
+          <span className="flex-1 truncate">Cohort Recognition</span>
         </Link>
 
         {tracks.map((track) => (
