@@ -12,7 +12,7 @@ import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, Sparkles, Layout, Laptop, Monitor, Database,
   Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight, ArrowDown,
-  Construction, Layers, Target,
+  Construction, Layers, Target, Bookmark,
 } from 'lucide-react';
 
 const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ className?: string }>; track?: string }> = {
@@ -144,7 +144,7 @@ const DASHBOARD_CONTEXTS: Record<string, string> = {
   'azari-prompt-playbook': 'Prompt',
 };
 
-const RESOURCE_TABS = ['All', 'Study Tips', 'Diagrams', 'Prompt Playbook'] as const;
+const RESOURCE_TABS = ['All', 'Study Tips', 'Diagrams', 'Prompt Playbook', 'Quick References'] as const;
 type ResourceTab = typeof RESOURCE_TABS[number];
 
 const TAB_ICONS: Record<ResourceTab, React.ComponentType<{ className?: string }>> = {
@@ -152,6 +152,7 @@ const TAB_ICONS: Record<ResourceTab, React.ComponentType<{ className?: string }>
   'Study Tips': Lightbulb,
   'Diagrams': Layout,
   'Prompt Playbook': Sparkles,
+  'Quick References': Bookmark,
 };
 
 const TAB_TO_CONTEXT: Record<ResourceTab, string> = {
@@ -159,6 +160,7 @@ const TAB_TO_CONTEXT: Record<ResourceTab, string> = {
   'Study Tips': 'Study Tips',
   'Diagrams': 'Diagram',
   'Prompt Playbook': 'Prompt',
+  'Quick References': 'Quick Reference',
 };
 
 const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-track]:bg-transparent';
