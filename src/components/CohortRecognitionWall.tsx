@@ -67,28 +67,75 @@ interface ContributorGroup {
   topBadge: string;
   typeCounts: Record<string, number>;
   totalCount: number;
+  tracks: string[];
+  objectives: string[];
+}
+
+function shortenTrack(track: string): string {
+  const match = track.match(/Domain\s+\d+\.\d+/i);
+  return match ? match[0] : track;
 }
 
 function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
-  const map = new Map<string, ContributorGroup>();
+  const map = new Map<string, ContributorGroup & { _tracks: Set<string>; _objectives: Set<string> }>();
   for (const s of submissions) {
     const key = s.full_name.trim().toLowerCase();
     if (!map.has(key)) {
-      map.set(key, { name: s.full_name.trim(), topBadge: s.badge || 'Cohort Contributor', typeCounts: {}, totalCount: 0 });
+      map.set(key, { name: s.full_name.trim(), topBadge: s.badge || 'Cohort Contributor', typeCounts: {}, totalCount: 0, tracks: [], objectives: [], _tracks: new Set(), _objectives: new Set() });
     }
     const group = map.get(key)!;
     if (s.badge && s.badge !== 'Cohort Contributor') group.topBadge = s.badge;
     const effectiveType = s.submission_type ?? 'Article';
     group.typeCounts[effectiveType] = (group.typeCounts[effectiveType] ?? 0) + 1;
     group.totalCount++;
+    if (s.track) group._tracks.add(shortenTrack(s.track));
+    if (s.comp_objective) group._objectives.add(s.comp_objective);
   }
 
   // Override Jamin Ware's badge to Founder
   const jamin = map.get('jamin ware');
   if (jamin) jamin.topBadge = 'Founder';
 
-  // Sort by contribution count descending
-  return Array.from(map.values()).sort((a, b) => b.totalCount - a.totalCount);
+  return Array.from(map.values()).map((g) => {
+    g.tracks = Array.from(g._tracks);
+    g.objectives = Array.from(g._objectives);
+    return g as ContributorGroup;
+  }).sort((a, b) => b.totalCount - a.totalCount);
+}
+
+// ── Track & Objective Badges ─────────────────────────────
+
+function TrackBadges({ tracks, objectives }: { tracks: string[]; objectives: string[] }) {
+  const maxShow = 3;
+  const visibleTracks = tracks.slice(0, maxShow);
+  const overflowTracks = tracks.length - maxShow;
+  const visibleObjectives = objectives.slice(0, 2);
+  const overflowObjectives = objectives.length - 2;
+
+  return (
+    <div className="flex flex-wrap gap-1 mt-1.5">
+      {visibleTracks.map((t) => (
+        <span key={t} className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-100 dark:bg-zinc-700/60 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-600">
+          {t}
+        </span>
+      ))}
+      {overflowTracks > 0 && (
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-100 dark:bg-zinc-700/60 text-zinc-500 dark:text-zinc-400">
+          +{overflowTracks} more
+        </span>
+      )}
+      {visibleObjectives.map((o) => (
+        <span key={o} className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+          {o}
+        </span>
+      ))}
+      {overflowObjectives > 0 && (
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-500 dark:text-emerald-400">
+          +{overflowObjectives} more
+        </span>
+      )}
+    </div>
+  );
 }
 
 // ── Contributor Row ──────────────────────────────────────
@@ -121,6 +168,9 @@ function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boo
               );
             })}
           </div>
+          {(group.tracks.length > 0 || group.objectives.length > 0) && (
+            <TrackBadges tracks={group.tracks} objectives={group.objectives} />
+          )}
         </div>
       </div>
     );
@@ -155,6 +205,9 @@ function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boo
             );
           })}
         </div>
+        {(group.tracks.length > 0 || group.objectives.length > 0) && (
+          <TrackBadges tracks={group.tracks} objectives={group.objectives} />
+        )}
       </div>
       <div className="hidden sm:flex items-center gap-1 flex-shrink-0">
         {Object.keys(group.typeCounts).map((type) => (
@@ -182,7 +235,7 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
 
       const { data: articleData } = await supabase
         .from('articles')
-        .select('id, title, slug, author_name, study_category, submission_type, created_at')
+        .select('id, title, slug, author_name, study_category, submission_type, comp_objective, created_at')
         .eq('is_sample', false)
         .not('author_name', 'is', null)
         .order('created_at', { ascending: false })
@@ -196,6 +249,7 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
         title: a.title,
         content: '',
         submission_type: a.submission_type ?? 'Article',
+        comp_objective: a.comp_objective ?? '',
         created_at: a.created_at ?? '',
       }));
 
