@@ -16,9 +16,9 @@ interface OnboardingSubTab {
 
 const ONBOARDING_SUB_TABS: OnboardingSubTab[] = [
   { id: 'all-onboarding', label: 'All Onboarding', keywords: [] },
-  { id: 'workspace-comms', label: 'Workspace & Comms', keywords: ['zoom', 'slack', 'deskolas', 'audio', 'mic', 'access', 'login'] },
-  { id: 'virtual-environments', label: 'Virtual Environments', keywords: ['vm', 'virtualbox', 'hypervisor', 'sandbox', 'ram'] },
-  { id: 'healthcare-baselines', label: 'Healthcare Baselines', keywords: ['ehr', 'hipaa', 'compliance', 'portal'] },
+  { id: 'canvas-workflows', label: 'Canvas Workflows', keywords: ['canvas', 'lms', 'assignment', 'calendar', 'module', 'syllabus', 'grades'] },
+  { id: 'google-cert-integrations', label: 'Google Cert Integrations', keywords: ['google it', 'google ai', 'coursera', 'cert', 'sync', 'qwiklabs'] },
+  { id: 'curriculum-pacing', label: 'Curriculum & Pacing', keywords: ['comptia', 'healthcare it', 'pacing', 'schedule', 'master pbq sheet', 'study guide'] },
 ];
 
 // ─── Tab definitions ─────────────────────────────────────────
