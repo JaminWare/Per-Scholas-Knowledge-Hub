@@ -148,6 +148,9 @@ interface LearnerEntry {
   track: string;
   slug: string;
   created_at: string;
+  lx_stage: string | null;
+  lx_topic: string | null;
+  lx_focus: string | null;
 }
 
 // ─── Content parser ──────────────────────────────────────────
@@ -199,6 +202,9 @@ export default function LearnerExperiencePage() {
           track: s.track ?? '',
           slug: (s.title ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `entry-${s.id}`,
           created_at: s.created_at,
+          lx_stage: s.lx_stage ?? null,
+          lx_topic: s.lx_topic ?? null,
+          lx_focus: s.lx_focus ?? null,
         }));
 
         const fromArticles: LearnerEntry[] = (articlesRes.data ?? []).map((a: any) => ({
@@ -209,6 +215,9 @@ export default function LearnerExperiencePage() {
           track: a.study_category ?? '',
           slug: a.slug ?? `article-${a.id}`,
           created_at: a.created_at,
+          lx_stage: a.lx_stage ?? null,
+          lx_topic: a.lx_topic ?? null,
+          lx_focus: a.lx_focus ?? null,
         }));
 
         const existingTitles = new Set(fromArticles.map((a) => a.title.toLowerCase()));
@@ -235,19 +244,22 @@ export default function LearnerExperiencePage() {
     if (activeTab === 'all') {
       result = entries;
     } else {
-      const suffix = currentTab.trackSuffix;
-      if (!suffix) {
-        result = entries;
-      } else {
+      result = entries.filter((e) => {
+        if (e.lx_stage) return e.lx_stage === activeTab;
+        // Fallback for legacy entries without lx_stage
+        const suffix = currentTab.trackSuffix;
+        if (!suffix) return true;
         const target = `Learner Experience \u2014 ${suffix}`.toLowerCase();
-        result = entries.filter((e) => e.track.toLowerCase().includes(target) || e.track.toLowerCase().includes(suffix.toLowerCase()));
-      }
+        return e.track.toLowerCase().includes(target) || e.track.toLowerCase().includes(suffix.toLowerCase());
+      });
     }
 
     if (filters && activeLevel2) {
       const sub = filters.find((s) => s.label === activeLevel2);
       if (sub && sub.keywords.length > 0) {
         result = result.filter((e) => {
+          if (e.lx_topic) return e.lx_topic === activeLevel2;
+          // Fallback: keyword scan for legacy entries
           const haystack = `${e.title} ${e.content}`.toLowerCase();
           return sub.keywords.some((kw) => haystack.includes(kw));
         });
@@ -257,6 +269,8 @@ export default function LearnerExperiencePage() {
         const nested = sub.nested.find((n) => n.label === activeLevel3);
         if (nested && nested.keywords.length > 0) {
           result = result.filter((e) => {
+            if (e.lx_focus) return e.lx_focus === activeLevel3;
+            // Fallback: keyword scan for legacy entries
             const haystack = `${e.title} ${e.content}`.toLowerCase();
             return nested.keywords.some((kw) => haystack.includes(kw));
           });

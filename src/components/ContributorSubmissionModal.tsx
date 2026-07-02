@@ -313,15 +313,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
     let rawContent = assembleContent();
 
-    // Inject LX category tags for keyword filtering
-    if (isLearnerExperience) {
-      const topicLabel = selectedTopicObj?.label || '';
-      const focusLabel = lxFocusOptions.find((n) => n.label === lxFocus)?.label || '';
-      if (topicLabel || focusLabel) {
-        rawContent += `\n\n[Category Tags: ${topicLabel}${focusLabel ? ', ' + focusLabel : ''}]`;
-      }
-    }
-
     if (PROFANITY_PATTERN.test(title) || PROFANITY_PATTERN.test(rawContent)) {
       setFormError('Submission contains restricted language. Please align your contribution with professional academic standards.');
       return;
@@ -384,6 +375,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       submission_type: submissionType,
       formatted_content: formattedContent,
       is_approved: false,
+      lx_stage: isLearnerExperience ? lxStage || null : null,
+      lx_topic: isLearnerExperience ? (selectedTopicObj?.label || null) : null,
+      lx_focus: isLearnerExperience ? (lxFocus || null) : null,
     };
 
     try {
