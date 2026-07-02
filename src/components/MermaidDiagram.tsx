@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import mermaid from 'mermaid';
+import Zoom from 'react-medium-image-zoom';
+import 'react-medium-image-zoom/dist/styles.css';
 
 mermaid.initialize({
   startOnLoad: false,
@@ -70,8 +72,10 @@ export default function MermaidDiagram({ chart }: Props) {
   }
 
   return (
-    <div className="my-4 rounded-xl border border-zinc-700 bg-zinc-900/80 p-4 overflow-x-auto">
-      <div ref={containerRef} className="flex justify-center [&_svg]:max-w-full" />
-    </div>
+    <Zoom>
+      <div className="my-4 rounded-xl border border-zinc-700 bg-zinc-900/80 p-4 overflow-x-auto cursor-zoom-in">
+        <div ref={containerRef} className="flex justify-center [&_svg]:max-w-full" />
+      </div>
+    </Zoom>
   );
 }

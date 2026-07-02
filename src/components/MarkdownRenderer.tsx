@@ -268,9 +268,11 @@ export default function MarkdownRenderer({ content }: Props) {
             const DiagramComp = diagramRegistry[block.id];
             if (!DiagramComp) return null;
             return (
-              <div key={idx} className="my-6 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700">
-                <DiagramComp />
-              </div>
+              <Zoom key={idx}>
+                <div className="my-6 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 cursor-zoom-in">
+                  <DiagramComp />
+                </div>
+              </Zoom>
             );
           }
           case 'h2':
