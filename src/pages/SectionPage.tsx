@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import ArticleRenderer from '../components/ArticleRenderer';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import contentMap from '../data/contentMap';
@@ -9,7 +9,7 @@ import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, FileText, Sparkles, Layout, Laptop, Monitor, Database,
   Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight, ArrowDown,
-  Construction,
+  Construction, Layers,
 } from 'lucide-react';
 
 const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ className?: string }>; track?: string }> = {
@@ -139,6 +139,25 @@ const DASHBOARD_CONTEXTS: Record<string, string> = {
   'azari-prompt-playbook': 'Prompt',
 };
 
+const RESOURCE_TABS = ['All', 'Study Tips', 'Diagrams', 'Quick References', 'Prompt Playbook'] as const;
+type ResourceTab = typeof RESOURCE_TABS[number];
+
+const TAB_ICONS: Record<ResourceTab, React.ComponentType<{ className?: string }>> = {
+  'All': Layers,
+  'Study Tips': Lightbulb,
+  'Diagrams': Layout,
+  'Quick References': FileText,
+  'Prompt Playbook': Sparkles,
+};
+
+const TAB_TO_CONTEXT: Record<ResourceTab, string> = {
+  'All': 'All',
+  'Study Tips': 'Study Tips',
+  'Diagrams': 'Diagram',
+  'Quick References': 'Quick Reference',
+  'Prompt Playbook': 'Prompt',
+};
+
 const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-track]:bg-transparent';
 const CARD_WIDTH = 'w-[280px] sm:w-[320px] md:w-[350px] shrink-0 snap-start';
 
@@ -200,20 +219,50 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
   );
 }
 
+function ResourcePlacard({ activeTab, onTabChange }: { activeTab: ResourceTab; onTabChange: (tab: ResourceTab) => void }) {
+  return (
+    <div className="rounded-xl border border-zinc-200 dark:border-zinc-700/60 bg-slate-50 dark:bg-zinc-800/50 px-5 py-4">
+      <div className="flex flex-wrap items-center gap-2">
+        {RESOURCE_TABS.map((tab) => {
+          const Icon = TAB_ICONS[tab];
+          const isActive = activeTab === tab;
+          return (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => onTabChange(tab)}
+              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                isActive
+                  ? 'bg-sky-500/20 text-sky-400 border-sky-500/30 shadow-[0_0_8px_rgba(56,189,248,0.15)]'
+                  : 'bg-zinc-800/50 text-zinc-400 hover:text-zinc-200 border-transparent hover:border-zinc-600/50'
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {tab}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function parseAuthorFromExcerpt(excerpt: string | null | undefined): string | null {
   if (!excerpt?.startsWith('Contributed by ')) return null;
   return excerpt.replace('Contributed by ', '').trim() || null;
 }
 
-function AppletCard({ article }: { article: ArticleWithContributor }) {
+function AppletCard({ article, gridMode = false }: { article: ArticleWithContributor; gridMode?: boolean }) {
   const isSample = article.is_sample;
   const authorName = (article.contributor as { name: string } | null)?.name
     ?? KNOWN_AUTHORS[article.slug]
     ?? parseAuthorFromExcerpt(article.excerpt)
     ?? (isSample ? '[OPEN SLOT]' : 'Knowledge Base');
 
+  const widthClass = gridMode ? 'w-full' : CARD_WIDTH;
+
   return (
-    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
+    <div className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
       isSample
         ? 'bg-zinc-100/60 dark:bg-zinc-900 border-sky-200/60 dark:border-zinc-800 hover:border-sky-400/70 dark:hover:border-sky-400/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.5),0_4px_16px_rgba(56,189,248,0.08)]'
         : 'bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
@@ -329,9 +378,10 @@ function AppletSkeleton() {
   );
 }
 
-function OpenSlotPlaceholder({ domain, context, onContribute }: { domain: string; context: string; onContribute: () => void }) {
+function OpenSlotPlaceholder({ domain, context, onContribute, gridMode = false }: { domain: string; context: string; onContribute: () => void; gridMode?: boolean }) {
+  const widthClass = gridMode ? 'w-full' : CARD_WIDTH;
   return (
-    <div className={`${CARD_WIDTH} group flex flex-col rounded-xl border overflow-hidden bg-slate-50 dark:bg-zinc-900 border-sky-200/60 dark:border-zinc-800`}>
+    <div className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden bg-slate-50 dark:bg-zinc-900 border-sky-200/60 dark:border-zinc-800`}>
       <div
         className="flex items-center justify-between px-3 py-1.5 bg-zinc-800 dark:bg-zinc-900/80"
         style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
@@ -384,6 +434,7 @@ function TrackDomains({
   isLoading,
   context,
   onContribute,
+  gridMode = false,
 }: {
   domains: readonly string[];
   colors: { domainHeader: string };
@@ -391,6 +442,7 @@ function TrackDomains({
   isLoading: boolean;
   context: string;
   onContribute: () => void;
+  gridMode?: boolean;
 }) {
   return (
     <div className="space-y-8">
@@ -399,26 +451,44 @@ function TrackDomains({
         const domainArticles = articles.filter((a) => a.study_category === canonicalTarget);
         return (
           <div key={domain}>
-            <div className="flex items-center gap-2 mb-3">
-              <h3 className={`text-sm font-bold ${colors.domainHeader}`}>{domain}</h3>
-              {!isLoading && (
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700">
-                  {domainArticles.length}
-                </span>
-              )}
-            </div>
-            <div className={SCROLL_TRACK}>
-              {isLoading ? (
-                <>
-                  <AppletSkeleton />
-                  <AppletSkeleton />
-                </>
-              ) : domainArticles.length > 0 ? (
-                domainArticles.map((a) => <AppletCard key={a.id} article={a} />)
-              ) : (
-                <OpenSlotPlaceholder domain={domain} context={context} onContribute={onContribute} />
-              )}
-            </div>
+            {!gridMode && (
+              <div className="flex items-center gap-2 mb-3">
+                <h3 className={`text-sm font-bold ${colors.domainHeader}`}>{domain}</h3>
+                {!isLoading && (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700">
+                    {domainArticles.length}
+                  </span>
+                )}
+              </div>
+            )}
+            {gridMode ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {isLoading ? (
+                  <>
+                    <AppletSkeleton />
+                    <AppletSkeleton />
+                    <AppletSkeleton />
+                  </>
+                ) : domainArticles.length > 0 ? (
+                  domainArticles.map((a) => <AppletCard key={a.id} article={a} gridMode />)
+                ) : (
+                  <OpenSlotPlaceholder domain={domain} context={context} onContribute={onContribute} gridMode />
+                )}
+              </div>
+            ) : (
+              <div className={SCROLL_TRACK}>
+                {isLoading ? (
+                  <>
+                    <AppletSkeleton />
+                    <AppletSkeleton />
+                  </>
+                ) : domainArticles.length > 0 ? (
+                  domainArticles.map((a) => <AppletCard key={a.id} article={a} />)
+                ) : (
+                  <OpenSlotPlaceholder domain={domain} context={context} onContribute={onContribute} />
+                )}
+              </div>
+            )}
           </div>
         );
       })}
@@ -432,14 +502,19 @@ function CurriculumDashboard({
   context,
   onContribute,
   focusDomain,
+  activeTab,
 }: {
   articles: ArticleWithContributor[];
   isLoading: boolean;
   context: string;
   onContribute: () => void;
   focusDomain?: { domain: string; trackIndex: number };
+  activeTab?: ResourceTab;
 }) {
   const isVisibleInContext = (a: ArticleWithContributor) => {
+    if (context === 'All') {
+      return !a.is_sample;
+    }
     if (context === 'Quick Reference') {
       return a.is_sample || (a.submission_type ?? '').toLowerCase() === 'quick reference' || (a.submission_type ?? '').toLowerCase() === 'resource link';
     }
@@ -508,6 +583,67 @@ function CurriculumDashboard({
   if (focusDomain) {
     const track = CURRICULUM_TRACKS[focusDomain.trackIndex];
     const colors = TRACK_COLORS[track.color];
+
+    if (activeTab === 'All') {
+      const canonicalTarget = CANONICAL_DOMAINS[focusDomain.domain] || focusDomain.domain;
+      const allDomainArticles = articles.filter((a) => a.study_category === canonicalTarget && !a.is_sample);
+      const hasAnyContent = allDomainArticles.length > 0;
+
+      if (isLoading) {
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <AppletSkeleton />
+            <AppletSkeleton />
+            <AppletSkeleton />
+          </div>
+        );
+      }
+
+      if (!hasAnyContent) {
+        return (
+          <div className="flex justify-center py-12">
+            <div className="w-full max-w-sm group flex flex-col rounded-xl border overflow-hidden bg-slate-50 dark:bg-zinc-900 border-sky-200/60 dark:border-zinc-800">
+              <div
+                className="flex items-center justify-between px-3 py-1.5 bg-zinc-800 dark:bg-zinc-900/80"
+                style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse flex-shrink-0" />
+                  <span className="text-[10px] font-mono text-zinc-500">first-contribution</span>
+                </div>
+                <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wider flex-shrink-0 bg-sky-500/20 text-sky-400 border border-sky-500/20" style={{ textShadow: '0 0 8px rgba(56,189,248,0.8)' }}>
+                  [PIONEER]
+                </span>
+              </div>
+              <div className="flex flex-col gap-3 p-5 flex-1 items-center text-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br from-sky-400 to-sky-500 shadow-lg shadow-sky-500/20">
+                  <Sparkles className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="font-bold text-base text-zinc-800 dark:text-white">Be the first to contribute to this domain!</h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                  No peer submissions exist yet. Your contribution will pioneer this curriculum track for the cohort.
+                </p>
+                <button
+                  type="button"
+                  onClick={onContribute}
+                  className="mt-2 inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-sky-500/10 hover:bg-sky-500 text-sky-700 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)]"
+                >
+                  Submit a Contribution
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {allDomainArticles.map((a) => <AppletCard key={a.id} article={a} gridMode />)}
+        </div>
+      );
+    }
+
     return (
       <TrackDomains
         domains={[focusDomain.domain]}
@@ -516,6 +652,7 @@ function CurriculumDashboard({
         isLoading={isLoading}
         context={context}
         onContribute={onContribute}
+        gridMode
       />
     );
   }
@@ -583,7 +720,24 @@ function CurriculumDashboard({
 export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?: number; onRefresh?: () => void }) {
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const slug = location.pathname.replace(/^\//, '').replace(/\/$/, '');
+
+  const rawTab = searchParams.get('tab');
+  const validatedTab: ResourceTab = RESOURCE_TABS.includes(rawTab as ResourceTab)
+    ? (rawTab as ResourceTab)
+    : 'All';
+  const [activeTab, setActiveTab] = useState<ResourceTab>(validatedTab);
+
+  const handleTabChange = (tab: ResourceTab) => {
+    setActiveTab(tab);
+    if (tab === 'All') {
+      searchParams.delete('tab');
+      setSearchParams(searchParams, { replace: true });
+    } else {
+      setSearchParams({ tab }, { replace: true });
+    }
+  };
 
   const { articles: allArticles, isLoading } = useArticles(refreshKey);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -708,13 +862,17 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
           onContribute={() => setIsModalOpen(true)}
         />
       ) : domainInfo ? (
-        <CurriculumDashboard
-          articles={allArticles}
-          isLoading={isLoading}
-          context="Study Tips"
-          onContribute={() => setIsModalOpen(true)}
-          focusDomain={domainInfo}
-        />
+        <>
+          <ResourcePlacard activeTab={activeTab} onTabChange={handleTabChange} />
+          <CurriculumDashboard
+            articles={allArticles}
+            isLoading={isLoading}
+            context={TAB_TO_CONTEXT[activeTab]}
+            onContribute={() => setIsModalOpen(true)}
+            focusDomain={domainInfo}
+            activeTab={activeTab}
+          />
+        </>
       ) : isLoading ? (
         <div className={SCROLL_TRACK}>
           {[...Array(4)].map((_, i) => <AppletSkeleton key={i} />)}
