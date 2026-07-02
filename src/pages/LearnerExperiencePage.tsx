@@ -61,6 +61,24 @@ const CATEGORY_FILTERS: Record<string, CategoryFilter[]> = {
       { label: 'Applied AI Labs', keywords: ['ai', 'prompt', 'gemini', 'chatgpt'] },
     ]},
   ],
+  slump: [
+    { id: 'all-slump', label: 'All Slump Advice', keywords: [], nested: [] },
+    { id: 'mental-endurance', label: 'Mental Endurance', keywords: ['imposter', 'confidence', 'doubt', 'overwhelm', 'compare', 'burnout', 'exhaustion', 'mental', 'stress', 'break'], nested: [
+      { label: 'All Mental Endurance', keywords: [] },
+      { label: 'Imposter Syndrome', keywords: ['imposter', 'confidence', 'doubt', 'overwhelm', 'compare'] },
+      { label: 'Burnout Recovery', keywords: ['burnout', 'exhaustion', 'mental', 'stress', 'break'] },
+    ]},
+    { id: 'life-balance', label: 'Time Management', keywords: ['balance', 'family', 'work', 'life', 'distraction', 'behind', 'catch up', 'late', 'schedule', 'time'], nested: [
+      { label: 'All Time Management', keywords: [] },
+      { label: 'Juggling Responsibilities', keywords: ['balance', 'family', 'work', 'life', 'kids', 'distraction'] },
+      { label: 'Catching Up', keywords: ['behind', 'catch up', 'late', 'schedule', 'time'] },
+    ]},
+    { id: 'motivation', label: 'Motivation & Focus', keywords: ['motivation', 'focus', 'discipline', 'routine', 'habit', 'milestone', 'win', 'progress', 'goal'], nested: [
+      { label: 'All Motivation', keywords: [] },
+      { label: 'Staying Focused', keywords: ['motivation', 'focus', 'discipline', 'routine', 'habit'] },
+      { label: 'Celebrating Small Wins', keywords: ['milestone', 'win', 'progress', 'small step', 'goal'] },
+    ]},
+  ],
 };
 
 // ─── Tab definitions ─────────────────────────────────────────
