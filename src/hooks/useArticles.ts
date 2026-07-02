@@ -47,6 +47,7 @@ export function useArticles(refreshKey: number = 0) {
           author_name: s.full_name ?? null,
           author: s.full_name ?? null,
           submission_type: s.submission_type ?? null,
+          comp_objective: s.comp_objective ?? null,
           created_at: s.created_at,
           updated_at: s.created_at,
         }));

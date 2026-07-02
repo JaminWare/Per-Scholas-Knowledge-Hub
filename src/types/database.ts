@@ -34,6 +34,7 @@ export interface Article {
   source_file: string | null;
   author_name: string | null;
   submission_type?: string | null;
+  comp_objective?: string | null;
   created_at: string;
   updated_at: string;
   contributor?: Contributor;

@@ -1,15 +1,16 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import ArticleRenderer from '../components/ArticleRenderer';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import contentMap from '../data/contentMap';
 import { extractReferences } from '../utils/extractReferences';
 import { useArticles, type ArticleWithContributor } from '../hooks/useArticles';
+import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, FileText, Sparkles, Layout, Laptop, Monitor, Database,
   Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight, ArrowDown,
-  Construction, Layers,
+  Construction, Layers, Target,
 } from 'lucide-react';
 
 const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ className?: string }>; track?: string }> = {
@@ -242,6 +243,87 @@ function ResourcePlacard({ activeTab, onTabChange }: { activeTab: ResourceTab; o
             </button>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+function ObjectivePlacard({
+  domainInfo,
+  activeObjective,
+  onObjectiveChange,
+  activeTab,
+  onTabChange,
+}: {
+  domainInfo: { domain: string; trackIndex: number };
+  activeObjective: string;
+  onObjectiveChange: (obj: string) => void;
+  activeTab: ResourceTab;
+  onTabChange: (tab: ResourceTab) => void;
+}) {
+  const canonicalTrack = CANONICAL_DOMAINS[domainInfo.domain] || domainInfo.domain;
+  const objectives = COMPTIA_OBJECTIVES[canonicalTrack] ?? [];
+
+  return (
+    <div className="space-y-3">
+      {objectives.length > 0 && (
+        <div className="rounded-xl border border-zinc-200 dark:border-zinc-700/60 bg-slate-50 dark:bg-zinc-800/50 px-5 py-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Target className="w-3.5 h-3.5 text-sky-500" />
+            <span className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">Objectives</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onObjectiveChange('All')}
+              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                activeObjective === 'All'
+                  ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
+                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+              }`}
+            >
+              All Objectives
+            </button>
+            {objectives.map((obj) => (
+              <button
+                key={obj}
+                type="button"
+                onClick={() => onObjectiveChange(obj)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                  activeObjective === obj
+                    ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
+                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+                }`}
+              >
+                {obj}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="rounded-xl border border-zinc-200 dark:border-zinc-700/60 bg-slate-50 dark:bg-zinc-800/50 px-5 py-4">
+        <div className="flex flex-wrap items-center gap-2">
+          {RESOURCE_TABS.map((tab) => {
+            const Icon = TAB_ICONS[tab];
+            const isActive = activeTab === tab;
+            return (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => onTabChange(tab)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                  isActive
+                    ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
+                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {tab}
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -503,6 +585,7 @@ function CurriculumDashboard({
   onContribute,
   focusDomain,
   activeTab,
+  activeObjective,
 }: {
   articles: ArticleWithContributor[];
   isLoading: boolean;
@@ -510,6 +593,7 @@ function CurriculumDashboard({
   onContribute: () => void;
   focusDomain?: { domain: string; trackIndex: number };
   activeTab?: ResourceTab;
+  activeObjective?: string;
 }) {
   const isVisibleInContext = (a: ArticleWithContributor) => {
     if (context === 'All') {
@@ -583,10 +667,14 @@ function CurriculumDashboard({
   if (focusDomain) {
     const track = CURRICULUM_TRACKS[focusDomain.trackIndex];
     const colors = TRACK_COLORS[track.color];
+    const canonicalTarget = CANONICAL_DOMAINS[focusDomain.domain] || focusDomain.domain;
+
+    const objectiveFilteredArticles = activeObjective && activeObjective !== 'All'
+      ? articles.filter((a) => a.comp_objective === activeObjective)
+      : articles;
 
     if (activeTab === 'All') {
-      const canonicalTarget = CANONICAL_DOMAINS[focusDomain.domain] || focusDomain.domain;
-      const allDomainArticles = articles.filter((a) => a.study_category === canonicalTarget && !a.is_sample);
+      const allDomainArticles = objectiveFilteredArticles.filter((a) => a.study_category === canonicalTarget && !a.is_sample);
       const hasAnyContent = allDomainArticles.length > 0;
 
       if (isLoading) {
@@ -644,11 +732,15 @@ function CurriculumDashboard({
       );
     }
 
+    const filteredVisible = activeObjective && activeObjective !== 'All'
+      ? visibleArticles.filter((a) => a.comp_objective === activeObjective)
+      : visibleArticles;
+
     return (
       <TrackDomains
         domains={[focusDomain.domain]}
         colors={colors}
-        articles={visibleArticles}
+        articles={filteredVisible}
         isLoading={isLoading}
         context={context}
         onContribute={onContribute}
@@ -728,6 +820,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
     ? (rawTab as ResourceTab)
     : 'All';
   const [activeTab, setActiveTab] = useState<ResourceTab>(validatedTab);
+  const [activeObjective, setActiveObjective] = useState('All');
 
   const handleTabChange = (tab: ResourceTab) => {
     setActiveTab(tab);
@@ -741,6 +834,10 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
 
   const { articles: allArticles, isLoading } = useArticles(refreshKey);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    setActiveObjective('All');
+  }, [slug]);
 
   const meta = sectionMeta[slug];
   const Icon = meta?.icon ?? BookOpen;
@@ -863,7 +960,13 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         />
       ) : domainInfo ? (
         <>
-          <ResourcePlacard activeTab={activeTab} onTabChange={handleTabChange} />
+          <ObjectivePlacard
+            domainInfo={domainInfo}
+            activeObjective={activeObjective}
+            onObjectiveChange={setActiveObjective}
+            activeTab={activeTab}
+            onTabChange={handleTabChange}
+          />
           <CurriculumDashboard
             articles={allArticles}
             isLoading={isLoading}
@@ -871,6 +974,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
             onContribute={() => setIsModalOpen(true)}
             focusDomain={domainInfo}
             activeTab={activeTab}
+            activeObjective={activeObjective}
           />
         </>
       ) : isLoading ? (

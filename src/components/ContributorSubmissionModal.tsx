@@ -8,6 +8,7 @@ import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
 import { normalizeUrl } from '../utils/normalizeUrl';
 import { JOURNEY_TABS, CATEGORY_FILTERS } from '../pages/LearnerExperiencePage';
+import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 
 type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Resource Link' | 'Prompt Playbook';
 
@@ -212,6 +213,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [lxTopic, setLxTopic] = useState('');
   const [lxFocus, setLxFocus] = useState('');
 
+  // CompTIA Objective
+  const [compObjective, setCompObjective] = useState('');
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -267,6 +271,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setPromptRole('');
     setPromptText('');
     setPromptUseCase('');
+    setCompObjective('');
     setLxStage('');
     setLxTopic('');
     setLxFocus('');
@@ -400,6 +405,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       submission_type: submissionType,
       formatted_content: formattedContent,
       is_approved: false,
+      comp_objective: compObjective || null,
       lx_stage: isLearnerExperience ? lxStage || null : null,
       lx_topic: isLearnerExperience ? (selectedTopicObj?.label || null) : null,
       lx_focus: isLearnerExperience ? (lxFocus || null) : null,
@@ -502,7 +508,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Curriculum Track</label>
               <select
                 value={masterCategory}
-                onChange={(e) => { setMasterCategory(e.target.value); setTrack(''); setLxStage(''); setLxTopic(''); setLxFocus(''); }}
+                onChange={(e) => { setMasterCategory(e.target.value); setTrack(''); setCompObjective(''); setLxStage(''); setLxTopic(''); setLxFocus(''); }}
                 className={selectCls('masterCategory')}
               >
                 <option value="">Select a category...</option>
@@ -518,7 +524,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Specific Domain / Module</label>
                   <select
                     value={track}
-                    onChange={(e) => setTrack(e.target.value)}
+                    onChange={(e) => { setTrack(e.target.value); setCompObjective(''); }}
                     className={selectCls('track')}
                   >
                     <option value="">Select a domain...</option>
@@ -527,6 +533,22 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     ))}
                   </select>
                   {errors.track && <p className="mt-1 text-xs text-red-500">{errors.track}</p>}
+
+                  {track && COMPTIA_OBJECTIVES[track] && COMPTIA_OBJECTIVES[track].length > 0 && (
+                    <div className="mt-3">
+                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Specific Objective</label>
+                      <select
+                        value={compObjective}
+                        onChange={(e) => setCompObjective(e.target.value)}
+                        className={selectCls('compObjective')}
+                      >
+                        <option value="">Select an objective (optional)...</option>
+                        {COMPTIA_OBJECTIVES[track].map((obj) => (
+                          <option key={obj} value={obj}>{obj}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                 </div>
               )}
 
