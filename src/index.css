@@ -67,20 +67,33 @@
   }
 }
 
-/* react-medium-image-zoom overlay — dark theme */
-[data-rmiz-modal-overlay="visible"] {
-  background-color: rgba(24, 24, 27, 0.95) !important;
-}
-
-/* Un-clamp text inside zoom modal so full content is readable */
-[data-rmiz-modal-overlay] .line-clamp-2,
-[data-rmiz-modal-overlay] .line-clamp-3,
-[data-rmiz-modal-overlay] .line-clamp-4,
-[data-rmiz-modal-overlay] .truncate {
+/* Un-clamp text inside card zoom overlay so full content is readable */
+.card-zoom-content .line-clamp-2,
+.card-zoom-content .line-clamp-3,
+.card-zoom-content .line-clamp-4,
+.card-zoom-content .truncate {
   -webkit-line-clamp: unset !important;
   line-clamp: unset !important;
   overflow: visible !important;
   white-space: normal !important;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoom-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out forwards;
+}
+
+.animate-zoom-in {
+  animation: zoom-in 0.2s ease-out forwards;
 }
 
 @keyframes founder-glow {

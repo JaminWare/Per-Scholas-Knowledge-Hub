@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import Zoom from 'react-medium-image-zoom';
-import 'react-medium-image-zoom/dist/styles.css';
+import CardZoomOverlay from '../components/CardZoomOverlay';
 import ArticleRenderer from '../components/ArticleRenderer';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import contentMap from '../data/contentMap';
@@ -365,6 +364,7 @@ function parseAuthorFromExcerpt(excerpt: string | null | undefined): string | nu
 }
 
 function AppletCard({ article, gridMode = false }: { article: ArticleWithContributor; gridMode?: boolean }) {
+  const [zoomed, setZoomed] = useState(false);
   const isSample = article.is_sample;
   const authorName = (article.contributor as { name: string } | null)?.name
     ?? KNOWN_AUTHORS[article.slug]
@@ -373,82 +373,86 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
 
   const widthClass = gridMode ? 'w-full' : CARD_WIDTH;
 
+  const cardContent = (
+    <>
+      <div
+        className={`flex items-center justify-between px-3 py-1.5 ${
+          isSample ? 'bg-zinc-800 dark:bg-zinc-900/80' : 'bg-zinc-800 dark:bg-zinc-900'
+        }`}
+        style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
+      >
+        <div className="flex items-center gap-2">
+          {isSample ? (
+            <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse flex-shrink-0" />
+          ) : (
+            <span className="text-[11px] font-mono font-bold text-sky-400 select-none">{`</>`}</span>
+          )}
+          <span className="text-[10px] font-mono text-zinc-500 truncate max-w-[120px]">
+            {article.slug?.split('/').pop() || 'resource'}
+          </span>
+        </div>
+        <span className={`text-[9px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wide flex-shrink-0 ${
+          isSample
+            ? 'bg-sky-500/20 text-sky-400 border border-sky-500/20'
+            : 'bg-sky-500/15 text-sky-400 border border-sky-500/20'
+        }`} style={isSample ? { textShadow: '0 0 8px rgba(56,189,248,0.8)' } : undefined}>
+          {isSample ? '[OPEN SLOT]' : '[Verified Peer Build]'}
+        </span>
+      </div>
+
+      <div className="flex flex-col gap-3 p-4">
+        <div className="flex items-start gap-3">
+          <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${
+            isSample ? 'bg-gradient-to-br from-sky-400 to-sky-500 shadow-sky-500/20' : 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20'
+          }`}>
+            <BookOpen className="w-4 h-4 text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className={`font-semibold text-sm leading-snug line-clamp-2 transition-colors duration-200 ${
+              isSample
+                ? 'text-sky-800 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400'
+                : 'text-zinc-800 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400'
+            }`}>
+              {article.title}
+              {!isSample && (
+                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-200 group-hover:text-sky-500 dark:group-hover:text-sky-400 mt-1">Curated by {article.author || authorName}</p>
+              )}
+            </h3>
+          </div>
+        </div>
+
+        {!isSample && article.excerpt && (
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 transition-colors duration-200 line-clamp-2 leading-relaxed">{article.excerpt}</p>
+        )}
+
+        {!isSample && article.tags?.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {article.tags.slice(0, 3).map((tag) => (
+              <span key={tag} className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700 border border-zinc-300/60 dark:border-zinc-300">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {isSample && (
+          <p className="text-[11px] text-sky-600 dark:text-sky-400 bg-sky-100/60 dark:bg-sky-500/10 rounded-lg px-2.5 py-2 border border-sky-200/60 dark:border-sky-500/20" style={{ textShadow: '0 0 6px rgba(56,189,248,0.4)' }}>
+            This curriculum endpoint is currently open for peer review and documentation.
+          </p>
+        )}
+      </div>
+    </>
+  );
+
   return (
     <div className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
       isSample
         ? 'bg-zinc-100/60 dark:bg-zinc-900 border-sky-200/60 dark:border-zinc-800 hover:border-sky-400/70 dark:hover:border-sky-400/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.5),0_4px_16px_rgba(56,189,248,0.08)]'
         : 'bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]'
     }`}>
-      <Zoom>
-        <div className="cursor-zoom-in">
-          <div
-            className={`flex items-center justify-between px-3 py-1.5 ${
-              isSample ? 'bg-zinc-800 dark:bg-zinc-900/80' : 'bg-zinc-800 dark:bg-zinc-900'
-            }`}
-            style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
-          >
-            <div className="flex items-center gap-2">
-              {isSample ? (
-                <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse flex-shrink-0" />
-              ) : (
-                <span className="text-[11px] font-mono font-bold text-sky-400 select-none">{`</>`}</span>
-              )}
-              <span className="text-[10px] font-mono text-zinc-500 truncate max-w-[120px]">
-                {article.slug?.split('/').pop() || 'resource'}
-              </span>
-            </div>
-            <span className={`text-[9px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wide flex-shrink-0 ${
-              isSample
-                ? 'bg-sky-500/20 text-sky-400 border border-sky-500/20'
-                : 'bg-sky-500/15 text-sky-400 border border-sky-500/20'
-            }`} style={isSample ? { textShadow: '0 0 8px rgba(56,189,248,0.8)' } : undefined}>
-              {isSample ? '[OPEN SLOT]' : '[Verified Peer Build]'}
-            </span>
-          </div>
-
-          <div className="flex flex-col gap-3 p-4">
-            <div className="flex items-start gap-3">
-              <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${
-                isSample ? 'bg-gradient-to-br from-sky-400 to-sky-500 shadow-sky-500/20' : 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20'
-              }`}>
-                <BookOpen className="w-4 h-4 text-white" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className={`font-semibold text-sm leading-snug line-clamp-2 transition-colors duration-200 ${
-                  isSample
-                    ? 'text-sky-800 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400'
-                    : 'text-zinc-800 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400'
-                }`}>
-                  {article.title}
-                  {!isSample && (
-                    <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-200 group-hover:text-sky-500 dark:group-hover:text-sky-400 mt-1">Curated by {article.author || authorName}</p>
-                  )}
-                </h3>
-              </div>
-            </div>
-
-            {!isSample && article.excerpt && (
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 transition-colors duration-200 line-clamp-2 leading-relaxed">{article.excerpt}</p>
-            )}
-
-            {!isSample && article.tags?.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {article.tags.slice(0, 3).map((tag) => (
-                  <span key={tag} className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700 border border-zinc-300/60 dark:border-zinc-300">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {isSample && (
-              <p className="text-[11px] text-sky-600 dark:text-sky-400 bg-sky-100/60 dark:bg-sky-500/10 rounded-lg px-2.5 py-2 border border-sky-200/60 dark:border-sky-500/20" style={{ textShadow: '0 0 6px rgba(56,189,248,0.4)' }}>
-                This curriculum endpoint is currently open for peer review and documentation.
-              </p>
-            )}
-          </div>
-        </div>
-      </Zoom>
+      <div className="cursor-zoom-in" onClick={() => setZoomed(true)}>
+        {cardContent}
+      </div>
 
       <div className="px-4 pb-4 mt-auto">
         {article.submission_type === 'Resource Link' ? (
@@ -473,6 +477,10 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
           </Link>
         )}
       </div>
+
+      <CardZoomOverlay open={zoomed} onClose={() => setZoomed(false)}>
+        <div className="rounded-xl overflow-hidden">{cardContent}</div>
+      </CardZoomOverlay>
     </div>
   );
 }
