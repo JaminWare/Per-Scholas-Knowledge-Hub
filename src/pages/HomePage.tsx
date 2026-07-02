@@ -2,41 +2,48 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
-import UniqueHacksGrid from '../components/UniqueHacksGrid';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import { type NewSubmission } from '../utils/submissions';
 import { useArticles } from '../hooks/useArticles';
 import SuccessToast from '../components/SuccessToast';
 import type { Article } from '../types/database';
 import {
-  TrendingUp, ArrowRight, ArrowDown, Users, UploadCloud,
-  Shield, Terminal, Monitor, ChevronRight, Award,
+  TrendingUp, ArrowDown, Users, UploadCloud,
+  Compass, BookOpen, Flame, Briefcase, ChevronRight, Award,
 } from 'lucide-react';
 
-const researchArticles = [
+const survivalGuideCards = [
   {
-    slug: 'firewall-basics',
-    title: 'The Role of Firewalls in Modern Network Security',
-    excerpt: 'A comprehensive breakdown of Windows Defender Firewall, inbound/outbound rule strategies, and defense-in-depth posture.',
-    icon: Shield,
-    color: 'from-sky-500 to-sky-400',
-    tag: 'Network Security',
+    id: 'onboarding',
+    title: 'Onboarding Hurdles',
+    description: 'Canvas workflows, VM setups, and tool access.',
+    icon: Compass,
+    accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
+    iconBg: 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20',
   },
   {
-    slug: 'command-documentation',
-    title: 'Command-Line Interface (CLI) Research',
-    excerpt: 'Analytical reference of essential CLI tools for systems administration, networking, and cloud environments.',
-    icon: Terminal,
-    color: 'from-zinc-600 to-zinc-500',
-    tag: 'Systems Admin',
+    id: 'lab-survival',
+    title: 'Lab Survival Guides',
+    description: 'EHR sandboxes, Active Directory, and infrastructure.',
+    icon: BookOpen,
+    accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
+    iconBg: 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20',
   },
   {
-    slug: 'snap-in',
-    title: 'Microsoft Management Console (MMC) Snap-ins',
-    excerpt: 'Deep-dive into Task Scheduler, Performance Monitor, and Group Policy Editor — with real-world administrative use cases.',
-    icon: Monitor,
-    color: 'from-sky-500 to-sky-400',
-    tag: 'Windows Administration',
+    id: 'mid-program',
+    title: 'The Mid-Program Slump',
+    description: 'Mental endurance, imposter syndrome, and time management.',
+    icon: Flame,
+    accentClass: 'hover:border-amber-400/50 dark:hover:border-amber-500/40',
+    iconBg: 'bg-gradient-to-br from-amber-500 to-amber-400 shadow-amber-500/20',
+  },
+  {
+    id: 'job-hunt',
+    title: 'Job Hunt & Certs',
+    description: 'Test-day strategies, resume reality checks, and interviews.',
+    icon: Briefcase,
+    accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
+    iconBg: 'bg-gradient-to-br from-zinc-600 to-zinc-500 shadow-zinc-500/20',
   },
 ];
 
@@ -56,7 +63,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
     return allArticles
       .filter((a) => !a.is_sample && a.title !== '[OPEN SLOT]')
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-      .slice(0, 8);
+      .slice(0, 6);
   }, [allArticles]);
 
   const handleSubmitted = (submission: NewSubmission) => {
@@ -95,6 +102,57 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
             </div>
           </section>
 
+          {/* The Cohort Survival Guide */}
+          <section>
+            <div className="bg-white dark:bg-zinc-600 border border-slate-200 dark:border-zinc-500 rounded-xl p-5">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400">
+                  <Compass className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold text-zinc-800 dark:text-zinc-100">The Cohort Survival Guide</h2>
+                  <p className="text-sm text-zinc-500">Real talk from learners who've been there</p>
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-2 gap-4">
+                {survivalGuideCards.map((card) => {
+                  const Icon = card.icon;
+                  return (
+                    <Link
+                      key={card.id}
+                      to="/learner-experience"
+                      className={`group flex items-start gap-4 p-4 text-left bg-[#f4f8fa] dark:bg-zinc-500/50 border border-slate-200 dark:border-zinc-500 rounded-xl transition-all ${card.accentClass}`}
+                    >
+                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${card.iconBg}`}>
+                        <Icon className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="font-semibold text-sm text-zinc-800 dark:text-zinc-100">
+                            {card.title}
+                          </p>
+                          <ChevronRight className="w-4 h-4 text-zinc-400 dark:text-zinc-600 flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                        </div>
+                        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 line-clamp-2">{card.description}</p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-slate-200 dark:border-zinc-500">
+                <Link
+                  to="/learner-experience"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
+                >
+                  Explore the full Learner Experience Hub &rarr;
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          </section>
+
           {/* Featured Articles */}
           {featuredArticles.length > 0 && (
             <section>
@@ -106,47 +164,6 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
               </div>
             </section>
           )}
-
-          {/* Unique Hacks Quick-Reference Grid */}
-          <UniqueHacksGrid />
-
-          {/* Research Articles */}
-          <section>
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-zinc-800 dark:text-white">Research Articles</h2>
-              <span className="text-xs text-zinc-600 dark:text-zinc-300 font-medium px-2.5 py-1 rounded-full bg-zinc-200 dark:bg-zinc-700">
-                Cohort 2026-RTT-23
-              </span>
-            </div>
-            <div className="grid md:grid-cols-3 gap-5">
-              {researchArticles.map((r) => {
-                const Icon = r.icon;
-                return (
-                  <Link
-                    key={r.slug}
-                    to={`/article/${r.slug}`}
-                    className="group block card p-5 hover:border-sky-400/40 dark:hover:border-sky-500/40 transition-all"
-                  >
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${r.color} flex items-center justify-center mb-4 shadow-lg group-hover:scale-105 transition-transform`}>
-                      <Icon className="w-5 h-5 text-white" />
-                    </div>
-                    <h3 className="font-semibold text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors leading-snug">
-                      {r.title}
-                    </h3>
-                    <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">{r.excerpt}</p>
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300">
-                        {r.tag}
-                      </span>
-                      <span className="flex items-center gap-1 text-sky-600 dark:text-sky-400 text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                        Read <ArrowRight className="w-3 h-3" />
-                      </span>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          </section>
 
           {/* Recent Articles */}
           <section>
@@ -218,7 +235,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-base font-bold whitespace-normal break-words tracking-normal leading-relaxed text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors duration-200">
-                  View Detailed Portfolios →
+                  View Detailed Portfolios &rarr;
                 </p>
                 <p className="text-xs whitespace-normal break-words leading-relaxed text-zinc-500 dark:text-zinc-400 mt-0.5">
                   Explore full contributor portfolios
