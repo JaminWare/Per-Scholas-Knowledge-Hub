@@ -1709,6 +1709,161 @@ curl -I https://example.com     # Test HTTP response headers`,
       },
     ],
   },
+
+  // ─────────────────────────────────────────────────────────
+  // LEARNER EXPERIENCE — Onboarding Runbooks
+  // ─────────────────────────────────────────────────────────
+
+  'learner-experience/navigation': {
+    title: 'Navigating the Hub: Search, Domains & Filtering',
+    trackLabel: 'Learner Experience & FAQs — Onboarding',
+    contributor: 'Jamin Ware',
+    contributorRole: 'Core 1 Expert',
+    cohort: '2026-RTT-23',
+    tags: ['onboarding', 'navigation', 'faq'],
+    content: [
+      {
+        type: 'intro',
+        text: 'This guide walks you through the three primary ways to find content inside the Cohort Survival Guide: the global search bar, the domain-structured sidebar, and the resource-type filter tabs. Master these three patterns and you will never lose track of a study resource again.',
+      },
+      { type: 'heading', text: '1. Global Search (Ctrl + K)' },
+      {
+        type: 'steps',
+        items: [
+          'Press Ctrl + K (or Cmd + K on Mac) from any page to open the global search overlay.',
+          'Start typing a keyword — results appear in real time as you type. Matches are pulled from article titles, tags, and content.',
+          'Click a result to navigate directly to that article. Press Escape to close the search overlay without navigating.',
+          'Pro tip: search by tag keywords like "ports", "HIPAA", or "subnetting" to surface all related resources across every domain.',
+        ],
+      },
+      { type: 'heading', text: '2. The Sidebar — Domain Dashboard Structure' },
+      {
+        type: 'paragraph',
+        text: 'The left-hand sidebar organizes every resource by CompTIA exam domain and healthcare track. Each collapsible section maps directly to an official exam objective area.',
+      },
+      {
+        type: 'table',
+        headers: ['Sidebar Section', 'What It Contains', 'When to Use'],
+        rows: [
+          ['CompTIA A+ Core 1 (220-1201)', 'Domains 1.0–5.0: Mobile, Networking, Hardware, Cloud, Troubleshooting', 'Primary study track — start here for exam prep'],
+          ['CompTIA A+ Core 2 (220-1202)', 'Domains 1.0–4.0: OS, Security, Software Troubleshooting, SOPs', 'Second exam track — tackle after Core 1 foundations'],
+          ['Advanced Healthcare IT', 'EHR Architecture, HIPAA Data Security, Clinical Workflows', 'Specialized modules for healthcare IT career prep'],
+        ],
+      },
+      {
+        type: 'tip',
+        text: 'Each domain page has its own "Add Intel" button. If you submit a resource from within a domain page, the system automatically tags it to that domain — no manual categorization needed.',
+      },
+      { type: 'heading', text: '3. Resource-Type Filter Tabs' },
+      {
+        type: 'paragraph',
+        text: 'Inside each domain dashboard, a filter tab bar lets you narrow down resources by type. This is especially useful when a domain has many contributions.',
+      },
+      {
+        type: 'table',
+        headers: ['Tab', 'Shows', 'Best For'],
+        rows: [
+          ['All', 'Every verified peer contribution (excluding open slots)', 'Browsing everything available in a domain'],
+          ['Study Tips', 'Articles, study guides, and written tips', 'Reading detailed explanations and exam strategies'],
+          ['Diagrams', 'Visual diagrams and annotated blueprints', 'Visual learners and quick reference during labs'],
+          ['Prompt Playbook', 'Canvas Class AI prompt templates', 'Generating practice questions and PBQ simulations'],
+          ['Quick References', 'Concise reference tables and resource links', 'Fast lookups during study sessions or labs'],
+        ],
+      },
+      { type: 'heading', text: '4. Objective-Level Filtering' },
+      {
+        type: 'paragraph',
+        text: 'Domain pages that map to CompTIA exam objectives also display an "Objectives" pill bar at the top. Click any specific objective (e.g., "3.1 — Troubleshoot common issues with motherboards") to filter the grid to only resources tagged for that exam objective.',
+      },
+      {
+        type: 'warning',
+        text: 'If you navigate to a domain and see only [OPEN SLOT] placeholders, it means no peers have submitted content for that area yet. Be the first — hit "Add Intel" and pioneer that module!',
+      },
+    ],
+  },
+
+  'learner-experience/adding-intel': {
+    title: 'Adding Intel: How to Submit Your Field Notes',
+    trackLabel: 'Learner Experience & FAQs — Onboarding',
+    contributor: 'Jamin Ware',
+    contributorRole: 'Core 1 Expert',
+    cohort: '2026-RTT-23',
+    tags: ['contribution', 'adding-intel', 'faq'],
+    content: [
+      {
+        type: 'intro',
+        text: 'Every member of the 2026-RTT-23 cohort can contribute resources to the knowledge base. This guide walks you through the submission process from clicking "Add Intel" to seeing your contribution appear on the Cohort Recognition Wall.',
+      },
+      { type: 'heading', text: '1. Opening the Submission Modal' },
+      {
+        type: 'steps',
+        items: [
+          'Click the "Add Intel" button. You will find it in the right sidebar on the Home page, or at the top-right of any domain dashboard page.',
+          'The submission form opens as a modal overlay — you do not leave your current page.',
+          'Choose your Submission Type first (Article, Diagram, Study Tip, Resource Link, or Prompt Playbook). The form adapts to your selection.',
+        ],
+      },
+      { type: 'heading', text: '2. The Smart Author Name Autocomplete' },
+      {
+        type: 'paragraph',
+        text: 'The "Full Name / Discord Handle" field includes a smart autocomplete feature. After your first contribution is approved and your name enters the system, it will appear in the dropdown for all future submissions.',
+      },
+      {
+        type: 'steps',
+        items: [
+          'Begin typing your name — after 1 or more characters, a dropdown appears showing matching names already in the system.',
+          'If your name appears in the dropdown, click it to auto-fill. This ensures consistent attribution across all your contributions.',
+          'If this is your very first contribution and your name does not appear, simply type it in full. It will be available in the autocomplete for your next submission.',
+          'The autocomplete is case-insensitive — typing "jam" will match "Jamin Ware" just as well as "Jam".',
+        ],
+      },
+      {
+        type: 'tip',
+        text: 'Consistency matters! Always use the same name or handle for every submission. The Recognition Wall groups your contributions by exact name match. If you submit as "Jane S" once and "Jane Smith" next time, they will appear as two different contributors.',
+      },
+      { type: 'heading', text: '3. Filling Out the Form' },
+      {
+        type: 'table',
+        headers: ['Field', 'Required?', 'Guidance'],
+        rows: [
+          ['Full Name / Discord Handle', 'Yes', 'Your display name on the Recognition Wall'],
+          ['Submission Type', 'Yes', 'Determines how your resource is categorized and displayed'],
+          ['Title', 'Yes', 'A clear, descriptive title (shown on cards and in search)'],
+          ['Category / Domain', 'Yes', 'Which exam domain or track your resource belongs to'],
+          ['Content / URL', 'Yes', 'The actual resource — markdown text, a diagram, or a link'],
+          ['Tags', 'Optional', 'Comma-separated keywords to improve discoverability'],
+        ],
+      },
+      { type: 'heading', text: '4. What Happens After You Submit' },
+      {
+        type: 'steps',
+        items: [
+          'Your submission enters the moderation queue. The Cohort Lead reviews it for quality and accuracy.',
+          'Once approved, your contribution appears on its domain dashboard as a verified peer resource card.',
+          'Your name and contribution count are automatically updated on the Cohort Recognition Wall.',
+          'A success toast notification confirms your submission was received. You can submit multiple resources in a single session.',
+        ],
+      },
+      { type: 'heading', text: '5. The Recognition Wall' },
+      {
+        type: 'paragraph',
+        text: 'Navigate to the "Cohort Recognition" page (accessible from the sidebar) to see every contributor ranked by total contributions. Each contributor card shows their name, badge tier, submission count, and a list of their published resources. The more you contribute, the higher your badge tier climbs.',
+      },
+      {
+        type: 'table',
+        headers: ['Badge Tier', 'Threshold', 'Meaning'],
+        rows: [
+          ['Community Contributor', '1+ submissions', 'You have entered the arena'],
+          ['Knowledge Pioneer', '3+ submissions', 'Consistent contributor with demonstrated expertise'],
+          ['Cohort Architect', '6+ submissions', 'A pillar of the cohort knowledge base'],
+        ],
+      },
+      {
+        type: 'warning',
+        text: 'Submissions that contain incorrect technical information, plagiarized content, or inappropriate material will be rejected during moderation. Always verify your facts before submitting — cite sources where possible.',
+      },
+    ],
+  },
 };
 
 export default contentMap;

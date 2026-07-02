@@ -12,7 +12,7 @@ import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, Sparkles, Layout, Laptop, Monitor, Database,
   Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight, ArrowDown,
-  Construction, Layers, Target, Bookmark,
+  Construction, Layers, Target, Bookmark, Compass,
 } from 'lucide-react';
 
 const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ className?: string }>; track?: string }> = {
@@ -43,6 +43,8 @@ const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ c
   'healthcare-ehr':        { title: 'EHR Architecture', icon: Database, track: 'Advanced Healthcare IT' },
   'healthcare-hipaa':      { title: 'HIPAA Data Security', icon: Lock, track: 'Advanced Healthcare IT' },
   'healthcare-clinical':   { title: 'Clinical Workflows', icon: Heart, track: 'Advanced Healthcare IT' },
+  'learner-experience/navigation':  { title: 'Navigating the Hub: Search, Domains & Filtering', icon: Compass, track: 'Learner Experience & FAQs' },
+  'learner-experience/adding-intel': { title: 'Adding Intel: How to Submit Your Field Notes', icon: BookOpen, track: 'Learner Experience & FAQs' },
 };
 
 const roleColors: Record<string, string> = {
@@ -68,6 +70,8 @@ const KNOWN_AUTHORS: Record<string, string> = {
   'healthcare-ehr':                'Jamin Ware',
   'healthcare-ehr/integration':    'Jamin Ware',
   'healthcare-clinical/cpoe':      'Jamin Ware',
+  'learner-experience/navigation':  'Jamin Ware',
+  'learner-experience/adding-intel': 'Jamin Ware',
 };
 
 const CANONICAL_DOMAINS: Record<string, string> = {
