@@ -1307,6 +1307,408 @@ Reference the SMART on FHIR specification in your explanations.` },
       { type: 'warning', text: 'Windows 11 requires TPM 2.0 and Secure Boot. Without both, the upgrade wizard blocks entirely. Enable TPM via BIOS: Intel = PTT, AMD = fTPM. Secure Boot requires UEFI mode (Legacy/CSM must be disabled).' },
     ],
   },
+
+  // ─────────────────────────────────────────────────────────
+  // QUICK REFERENCE — Remapped to Domain Structure
+  // ─────────────────────────────────────────────────────────
+
+  'core1-networking/ports': {
+    title: 'Network Ports & Protocols — Complete Quick Reference',
+    trackLabel: 'CompTIA A+ Core 1 (220-1201) — Domain 2.0 Networking',
+    contributor: 'NetSec Expert',
+    contributorRole: 'Reference Author',
+    cohort: '2026-RTT-23',
+    tags: ['ports', 'protocols', 'TCP', 'UDP', 'networking', 'quick-reference'],
+    content: [
+      {
+        type: 'intro',
+        text: 'This is the definitive port number reference for the CompTIA A+ Core 1 exam. Every port listed here appears in exam scenarios — memorize the protocol, transport layer, and typical use case for each. Port questions appear in both multiple-choice and PBQ drag-and-drop formats.',
+      },
+      { type: 'heading', text: '1. Essential Ports (Must Memorize)' },
+      {
+        type: 'table',
+        headers: ['Port', 'Protocol', 'Transport', 'Service', 'Exam Notes'],
+        rows: [
+          ['20', 'FTP-DATA', 'TCP', 'FTP Data Transfer', 'Active mode data channel'],
+          ['21', 'FTP', 'TCP', 'FTP Control/Command', 'Login, directory listing commands'],
+          ['22', 'SSH', 'TCP', 'Secure Shell / SFTP / SCP', 'Encrypted remote access — replaces Telnet'],
+          ['23', 'Telnet', 'TCP', 'Unencrypted Remote Access', 'INSECURE — never use in production'],
+          ['25', 'SMTP', 'TCP', 'Email Sending (outbound)', 'Server-to-server mail relay'],
+          ['53', 'DNS', 'TCP/UDP', 'Domain Name Resolution', 'UDP for queries, TCP for zone transfers'],
+          ['67', 'DHCP', 'UDP', 'DHCP Server', 'Assigns IP addresses to clients'],
+          ['68', 'DHCP', 'UDP', 'DHCP Client', 'Client listens for DHCP offers'],
+          ['80', 'HTTP', 'TCP', 'Web Traffic (unencrypted)', 'Default web server port'],
+          ['110', 'POP3', 'TCP', 'Email Retrieval', 'Downloads mail, removes from server'],
+          ['143', 'IMAP', 'TCP', 'Email Retrieval (synced)', 'Keeps mail on server, multi-device'],
+          ['443', 'HTTPS', 'TCP', 'Web Traffic (TLS encrypted)', 'All modern web — bank, EHR, cloud'],
+          ['445', 'SMB', 'TCP', 'Windows File Sharing', 'Also used by printers, AD replication'],
+          ['3389', 'RDP', 'TCP', 'Remote Desktop Protocol', 'Windows remote GUI access'],
+        ],
+      },
+      { type: 'heading', text: '2. Secure vs. Insecure Protocol Pairs' },
+      {
+        type: 'table',
+        headers: ['Insecure Protocol', 'Port', 'Secure Replacement', 'Port', 'Why It Matters'],
+        rows: [
+          ['Telnet', '23', 'SSH', '22', 'Telnet sends credentials in cleartext'],
+          ['HTTP', '80', 'HTTPS', '443', 'HTTP exposes all data to sniffing'],
+          ['FTP', '21', 'SFTP (SSH)', '22', 'FTP sends passwords in cleartext'],
+          ['POP3', '110', 'POP3S', '995', 'POP3 emails readable on the wire'],
+          ['IMAP', '143', 'IMAPS', '993', 'IMAP emails readable on the wire'],
+          ['SMTP', '25', 'SMTPS', '587', 'Port 587 requires STARTTLS auth'],
+          ['SNMP v1/v2', '161', 'SNMP v3', '161', 'v3 adds encryption + auth'],
+          ['LDAP', '389', 'LDAPS', '636', 'LDAP sends AD creds in cleartext'],
+        ],
+      },
+      {
+        type: 'warning',
+        text: 'Exam trap: Port 587 (SMTP with STARTTLS) is the modern secure email submission port. Port 25 is for server-to-server relay only. If a question says "user sending email securely" — the answer is 587, NOT 25 or 465.',
+      },
+      { type: 'heading', text: '3. Additional High-Frequency Ports' },
+      {
+        type: 'table',
+        headers: ['Port', 'Protocol', 'Transport', 'Service'],
+        rows: [
+          ['69', 'TFTP', 'UDP', 'Trivial FTP — firmware updates, PXE boot'],
+          ['161/162', 'SNMP', 'UDP', 'Network monitoring (161=agent, 162=trap)'],
+          ['389', 'LDAP', 'TCP', 'Active Directory queries'],
+          ['636', 'LDAPS', 'TCP', 'Encrypted Active Directory queries'],
+          ['587', 'SMTP (submission)', 'TCP', 'Authenticated email sending'],
+          ['993', 'IMAPS', 'TCP', 'Encrypted IMAP'],
+          ['995', 'POP3S', 'TCP', 'Encrypted POP3'],
+          ['1433', 'MS-SQL', 'TCP', 'Microsoft SQL Server'],
+          ['3306', 'MySQL', 'TCP', 'MySQL/MariaDB database'],
+          ['5060/5061', 'SIP', 'TCP/UDP', 'VoIP signaling (5061=secure)'],
+          ['5900', 'VNC', 'TCP', 'Virtual Network Computing'],
+          ['8080', 'HTTP-ALT', 'TCP', 'HTTP proxy / alternative web'],
+        ],
+      },
+      { type: 'heading', text: '4. Port Ranges Classification' },
+      {
+        type: 'steps',
+        items: [
+          'Well-Known Ports (0–1023): Reserved for standard services. Assigned by IANA. Examples: HTTP (80), HTTPS (443), SSH (22).',
+          'Registered Ports (1024–49151): Used by applications and services. Examples: MS-SQL (1433), MySQL (3306), RDP (3389).',
+          'Dynamic/Ephemeral Ports (49152–65535): Temporarily assigned by the OS for client-side connections. Never configure firewalls to block these outbound.',
+        ],
+      },
+      {
+        type: 'tip',
+        text: 'Memory trick for FTP: "20 is for DATA, 21 is for DONE (commands)." Think: data comes first (lower number), then you type commands after connecting. Also: DNS uses BOTH TCP and UDP — this is a guaranteed exam question.',
+      },
+      { type: 'heading', text: '5. Firewall Rule Scenarios (PBQ Format)' },
+      {
+        type: 'code',
+        lang: 'text',
+        code: `SCENARIO: A web server needs to serve HTTPS and allow SSH management.
+INBOUND ALLOW RULES:
+  ✅ TCP 443 (HTTPS)  — from ANY to server
+  ✅ TCP 22  (SSH)    — from management subnet ONLY
+  ❌ TCP 80  (HTTP)   — redirect to 443 or block
+  ❌ TCP 23  (Telnet) — NEVER allow
+
+SCENARIO: Email server accepting mail from the internet:
+  ✅ TCP 25  (SMTP)   — inbound from other mail servers
+  ✅ TCP 587 (submission) — from authenticated users
+  ✅ TCP 993 (IMAPS)  — for user email retrieval
+  ❌ TCP 110 (POP3)   — insecure, use 995 instead`,
+      },
+    ],
+  },
+
+  'core2-os/cli-runbook': {
+    title: 'Essential CLI Command Runbook — Windows & Linux',
+    trackLabel: 'CompTIA A+ Core 2 (220-1202) — Domain 1.0 Operating Systems',
+    contributor: 'SysAdmin Pro',
+    contributorRole: 'Reference Author',
+    cohort: '2026-RTT-23',
+    tags: ['CLI', 'commands', 'Windows', 'Linux', 'PowerShell', 'terminal', 'quick-reference'],
+    content: [
+      {
+        type: 'intro',
+        text: 'This command-line runbook covers every CLI tool tested on CompTIA A+ Core 2 (220-1202). Organized by operating system with real-world usage scenarios, syntax patterns, and critical flags. These commands appear in both multiple-choice questions and hands-on PBQ simulations.',
+      },
+      { type: 'heading', text: '1. Windows Network Diagnostics' },
+      {
+        type: 'table',
+        headers: ['Command', 'Purpose', 'Key Flags', 'Exam Use Case'],
+        rows: [
+          ['ipconfig', 'View/manage IP configuration', '/all /release /renew /flushdns', 'Verify adapter settings, reset DHCP lease'],
+          ['ping', 'Test connectivity to a host', '-t (continuous) -n (count)', 'Verify host reachability, test DNS resolution'],
+          ['tracert', 'Trace route to destination', '-d (no DNS lookup)', 'Identify where packets are being dropped'],
+          ['nslookup', 'Query DNS records', 'server <dns-ip>, set type=MX', 'Verify DNS resolution, check specific records'],
+          ['netstat', 'Show active connections', '-a -n -o -b', 'Find which process is using a port'],
+          ['pathping', 'Combines ping + tracert', 'No critical flags', 'Long-running latency analysis per hop'],
+          ['nbtstat', 'NetBIOS over TCP/IP stats', '-n (local names) -R (purge)', 'Troubleshoot Windows name resolution'],
+        ],
+      },
+      { type: 'heading', text: '2. Windows System Repair & Management' },
+      {
+        type: 'code',
+        lang: 'cmd',
+        code: `:: ── SYSTEM FILE CHECKER (SFC) ──────────────────────────────
+:: Must run AFTER DISM. Repairs individual Windows system files.
+sfc /scannow
+:: Output: "found corrupt files and successfully repaired them"
+
+:: ── DISM (Deployment Image Servicing) ─────────────────────
+:: Repairs the Windows component store. Run BEFORE sfc.
+DISM /Online /Cleanup-Image /CheckHealth     :: Quick status check
+DISM /Online /Cleanup-Image /ScanHealth      :: Deep scan (slower)
+DISM /Online /Cleanup-Image /RestoreHealth   :: Repair from Windows Update
+
+:: ── CHKDSK (Check Disk) ──────────────────────────────────
+chkdsk C: /f /r /x
+:: /f = fix errors, /r = recover readable info, /x = dismount first
+
+:: ── GPUPDATE (Group Policy) ──────────────────────────────
+gpupdate /force          :: Force immediate policy refresh
+gpresult /R              :: Show applied policies for current user
+
+:: ── SHUTDOWN & RESTART ───────────────────────────────────
+shutdown /s /t 0         :: Immediate shutdown
+shutdown /r /t 0         :: Immediate restart
+shutdown /r /o           :: Restart to Advanced Boot Options`,
+      },
+      {
+        type: 'warning',
+        text: 'CRITICAL EXAM RULE: Always run DISM /RestoreHealth BEFORE sfc /scannow. SFC relies on the component store to repair files — if the store is corrupted, SFC will silently use bad data. This ordering question appears on virtually every Core 2 exam.',
+      },
+      { type: 'heading', text: '3. Windows Disk & Partition Management' },
+      {
+        type: 'table',
+        headers: ['Command', 'Purpose', 'Common Usage'],
+        rows: [
+          ['diskpart', 'Interactive disk partition manager', 'list disk → select disk → clean → create partition primary'],
+          ['format', 'Format a volume', 'format F: /FS:NTFS /Q (quick format)'],
+          ['convert', 'Convert disk type', 'convert G: /FS:NTFS (FAT32 → NTFS, one-way)'],
+          ['defrag', 'Defragment HDD', 'defrag C: /O (optimize — SSD trim or HDD defrag)'],
+          ['robocopy', 'Robust file copy', 'robocopy src dest /MIR /MT:8 (mirror, 8 threads)'],
+          ['xcopy', 'Extended copy', 'xcopy src dest /E /H /K (subdirs, hidden, attributes)'],
+        ],
+      },
+      { type: 'heading', text: '4. Linux Essential Commands' },
+      {
+        type: 'table',
+        headers: ['Command', 'Purpose', 'Key Flags / Examples'],
+        rows: [
+          ['ls', 'List directory contents', '-la (all, long format), -lh (human-readable sizes)'],
+          ['cd', 'Change directory', 'cd ~ (home), cd .. (parent), cd / (root)'],
+          ['pwd', 'Print working directory', 'Shows absolute path of current location'],
+          ['cp', 'Copy files/directories', '-r (recursive for dirs), -p (preserve attributes)'],
+          ['mv', 'Move or rename', 'mv old.txt new.txt (rename), mv file /dest/ (move)'],
+          ['rm', 'Remove files/directories', '-r (recursive), -f (force), -i (interactive confirm)'],
+          ['mkdir', 'Create directory', '-p (create parent dirs if needed)'],
+          ['chmod', 'Change permissions', 'chmod 755 file (rwxr-xr-x), chmod u+x script.sh'],
+          ['chown', 'Change ownership', 'chown user:group file, -R for recursive'],
+          ['grep', 'Search text patterns', '-r (recursive), -i (case-insensitive), -n (line numbers)'],
+          ['find', 'Find files by criteria', 'find / -name "*.log" -mtime -7 (logs modified in 7 days)'],
+          ['cat', 'Display file contents', 'cat file.txt, cat file1 file2 > combined.txt'],
+          ['nano / vi', 'Text editors', 'nano = beginner-friendly, vi = modal (exam favorite)'],
+        ],
+      },
+      { type: 'heading', text: '5. Linux System Administration' },
+      {
+        type: 'code',
+        lang: 'bash',
+        code: `# ── SERVICE MANAGEMENT (systemd) ──────────────────────────
+sudo systemctl start nginx        # Start a service
+sudo systemctl stop nginx         # Stop a service
+sudo systemctl restart nginx      # Restart (stop + start)
+sudo systemctl enable nginx       # Auto-start at boot
+sudo systemctl status nginx       # Check service health
+
+# ── PACKAGE MANAGEMENT ────────────────────────────────────
+# Debian/Ubuntu (apt):
+sudo apt update && sudo apt upgrade -y
+sudo apt install <package>
+sudo apt remove <package>
+
+# Red Hat/CentOS (dnf/yum):
+sudo dnf update
+sudo dnf install <package>
+sudo dnf remove <package>
+
+# ── USER & PERMISSION MANAGEMENT ─────────────────────────
+sudo useradd -m -s /bin/bash newuser    # Create user with home dir
+sudo passwd newuser                      # Set password
+sudo usermod -aG sudo newuser            # Add to sudo group
+sudo userdel -r olduser                  # Delete user + home dir
+
+# ── NETWORK DIAGNOSTICS ──────────────────────────────────
+ip addr show                    # View IP configuration (replaces ifconfig)
+ip route show                   # View routing table
+ss -tulnp                       # Show listening ports (replaces netstat)
+dig google.com                  # DNS lookup (detailed)
+curl -I https://example.com     # Test HTTP response headers`,
+      },
+      { type: 'heading', text: '6. Linux Permissions Reference' },
+      {
+        type: 'table',
+        headers: ['Numeric', 'Symbolic', 'Meaning', 'Use Case'],
+        rows: [
+          ['7', 'rwx', 'Read + Write + Execute', 'Owner of scripts, binaries'],
+          ['6', 'rw-', 'Read + Write', 'Owner of data files'],
+          ['5', 'r-x', 'Read + Execute', 'Group access to scripts'],
+          ['4', 'r--', 'Read only', 'Public config files'],
+          ['0', '---', 'No access', 'Deny all to others'],
+          ['755', 'rwxr-xr-x', 'Owner full, others read+exec', 'Standard for executables'],
+          ['644', 'rw-r--r--', 'Owner read/write, others read', 'Standard for data files'],
+          ['700', 'rwx------', 'Owner only', 'Private scripts, SSH keys'],
+        ],
+      },
+      {
+        type: 'tip',
+        text: 'Exam shortcut for chmod: Read=4, Write=2, Execute=1. Add them up for each position (Owner-Group-Others). "chmod 754" = Owner(rwx=7), Group(r-x=5), Others(r--=4). PBQ simulations require setting exact permissions.',
+      },
+    ],
+  },
+
+  'study-tips/acronyms': {
+    title: 'Healthcare IT & CompTIA Acronym Master Directory',
+    trackLabel: 'Study Tips — Comprehensive Acronym Reference',
+    contributor: 'Cohort Lead',
+    contributorRole: 'Reference Author',
+    cohort: '2026-RTT-23',
+    tags: ['acronyms', 'healthcare-IT', 'CompTIA', 'HIPAA', 'networking', 'quick-reference'],
+    content: [
+      {
+        type: 'intro',
+        text: 'This master acronym directory covers every abbreviation tested on CompTIA A+ (Core 1 & Core 2) plus Healthcare IT certifications. Organized by domain with definitions and context. Bookmark this page — acronym questions appear in every section of both exams.',
+      },
+      { type: 'heading', text: '1. Networking & Protocols (Core 1 Domain 2.0)' },
+      {
+        type: 'table',
+        headers: ['Acronym', 'Full Term', 'Definition / Context'],
+        rows: [
+          ['TCP', 'Transmission Control Protocol', 'Connection-oriented, reliable delivery with 3-way handshake'],
+          ['UDP', 'User Datagram Protocol', 'Connectionless, best-effort delivery — used for DNS, VoIP, streaming'],
+          ['IP', 'Internet Protocol', 'Layer 3 addressing and routing (IPv4 = 32-bit, IPv6 = 128-bit)'],
+          ['DNS', 'Domain Name System', 'Resolves hostnames to IP addresses (Port 53)'],
+          ['DHCP', 'Dynamic Host Configuration Protocol', 'Auto-assigns IP, subnet, gateway, DNS to clients (Ports 67/68)'],
+          ['NAT', 'Network Address Translation', 'Maps private IPs to public IPs for internet access'],
+          ['VLAN', 'Virtual Local Area Network', 'Logical network segmentation within a physical switch'],
+          ['VPN', 'Virtual Private Network', 'Encrypted tunnel over public network for secure remote access'],
+          ['SSID', 'Service Set Identifier', 'The broadcast name of a wireless network'],
+          ['MAC', 'Media Access Control', 'Layer 2 hardware address (48-bit, e.g., AA:BB:CC:DD:EE:FF)'],
+          ['ARP', 'Address Resolution Protocol', 'Maps IP addresses to MAC addresses on a local subnet'],
+          ['ICMP', 'Internet Control Message Protocol', 'Used by ping and traceroute for connectivity testing'],
+          ['SNMP', 'Simple Network Management Protocol', 'Monitor and manage network devices (Port 161/162)'],
+          ['NTP', 'Network Time Protocol', 'Synchronizes clocks across network devices (Port 123)'],
+          ['STP', 'Spanning Tree Protocol', 'Prevents switching loops in redundant L2 topologies'],
+        ],
+      },
+      { type: 'heading', text: '2. Security & Encryption (Core 2 Domain 2.0)' },
+      {
+        type: 'table',
+        headers: ['Acronym', 'Full Term', 'Definition / Context'],
+        rows: [
+          ['TLS', 'Transport Layer Security', 'Encrypts data in transit (HTTPS = HTTP + TLS). Replaces SSL.'],
+          ['SSL', 'Secure Sockets Layer', 'DEPRECATED predecessor to TLS — never use SSL 2.0/3.0'],
+          ['AES', 'Advanced Encryption Standard', 'Symmetric encryption — 128/192/256-bit. Gold standard for data at rest.'],
+          ['RSA', 'Rivest-Shamir-Adleman', 'Asymmetric encryption — public/private key pair for key exchange'],
+          ['MFA', 'Multi-Factor Authentication', 'Requires 2+ factors: something you know/have/are'],
+          ['2FA', 'Two-Factor Authentication', 'Subset of MFA using exactly two factors'],
+          ['PKI', 'Public Key Infrastructure', 'Framework for managing digital certificates and CAs'],
+          ['CA', 'Certificate Authority', 'Trusted entity that issues and signs digital certificates'],
+          ['ACL', 'Access Control List', 'Ordered rules on routers/firewalls defining allow/deny traffic'],
+          ['IDS', 'Intrusion Detection System', 'Monitors traffic and alerts on suspicious patterns (passive)'],
+          ['IPS', 'Intrusion Prevention System', 'Monitors AND blocks malicious traffic (active)'],
+          ['TPM', 'Trusted Platform Module', 'Hardware security chip for encryption keys — required for Win 11'],
+          ['BitLocker', 'BitLocker Drive Encryption', 'Windows full-disk encryption using TPM + PIN/key'],
+          ['EFS', 'Encrypting File System', 'Windows per-file/folder encryption using user certificates'],
+          ['UAC', 'User Account Control', 'Windows elevation prompt preventing unauthorized admin actions'],
+        ],
+      },
+      { type: 'heading', text: '3. Hardware & Storage (Core 1 Domain 3.0)' },
+      {
+        type: 'table',
+        headers: ['Acronym', 'Full Term', 'Definition / Context'],
+        rows: [
+          ['RAM', 'Random Access Memory', 'Volatile working memory — DDR4/DDR5 in modern systems'],
+          ['ROM', 'Read-Only Memory', 'Non-volatile memory storing firmware (BIOS/UEFI)'],
+          ['NVMe', 'Non-Volatile Memory Express', 'High-speed storage protocol over PCIe (replaces SATA for SSDs)'],
+          ['SATA', 'Serial Advanced Technology Attachment', 'Storage interface — 6 Gb/s max (SATA III)'],
+          ['PCIe', 'Peripheral Component Interconnect Express', 'High-speed serial expansion bus for GPU, NVMe, NICs'],
+          ['BIOS', 'Basic Input/Output System', 'Legacy firmware interface — being replaced by UEFI'],
+          ['UEFI', 'Unified Extensible Firmware Interface', 'Modern firmware with GUI, Secure Boot, GPT support'],
+          ['POST', 'Power-On Self-Test', 'Hardware diagnostic routine run before OS boot'],
+          ['GPU', 'Graphics Processing Unit', 'Dedicated video processing — PCIe x16 slot'],
+          ['PSU', 'Power Supply Unit', 'Converts AC to DC — provides 3.3V, 5V, 12V rails'],
+          ['RAID', 'Redundant Array of Independent Disks', '0=stripe, 1=mirror, 5=parity, 10=stripe+mirror'],
+          ['ESD', 'Electrostatic Discharge', 'Static electricity that can destroy components'],
+          ['DIMM', 'Dual Inline Memory Module', 'Standard desktop RAM form factor (288-pin DDR4)'],
+          ['SO-DIMM', 'Small Outline DIMM', 'Laptop RAM form factor (260-pin DDR4)'],
+        ],
+      },
+      { type: 'heading', text: '4. Healthcare IT & HIPAA' },
+      {
+        type: 'table',
+        headers: ['Acronym', 'Full Term', 'Definition / Context'],
+        rows: [
+          ['HIPAA', 'Health Insurance Portability and Accountability Act', 'Federal law protecting patient health information'],
+          ['PHI', 'Protected Health Information', 'Any individually identifiable health data (18 identifiers)'],
+          ['ePHI', 'Electronic Protected Health Information', 'PHI stored or transmitted electronically'],
+          ['EHR', 'Electronic Health Record', 'Digital patient chart (Epic, Cerner, MEDITECH)'],
+          ['EMR', 'Electronic Medical Record', 'Single-practice digital record (subset of EHR)'],
+          ['HL7', 'Health Level Seven', 'Messaging standard for healthcare data exchange'],
+          ['FHIR', 'Fast Healthcare Interoperability Resources', 'Modern REST API standard for health data (HL7 FHIR R4)'],
+          ['CPOE', 'Computerized Physician Order Entry', 'Electronic system for entering medication/lab orders'],
+          ['LIS', 'Laboratory Information System', 'Manages lab test orders, results, and reporting'],
+          ['RIS', 'Radiology Information System', 'Manages imaging orders and radiology workflows'],
+          ['PACS', 'Picture Archiving and Communication System', 'Stores and retrieves medical images (DICOM format)'],
+          ['DICOM', 'Digital Imaging and Communications in Medicine', 'Standard format for medical imaging files'],
+          ['ADT', 'Admit-Discharge-Transfer', 'HL7 message type for patient movement tracking'],
+          ['BAA', 'Business Associate Agreement', 'Required contract when sharing PHI with third parties'],
+          ['CMS', 'Centers for Medicare & Medicaid Services', 'Federal agency overseeing healthcare compliance'],
+          ['HITECH', 'Health Information Technology for Economic and Clinical Health Act', 'Extended HIPAA breach notification requirements'],
+        ],
+      },
+      {
+        type: 'warning',
+        text: 'HIPAA defines 18 identifiers that make health data "PHI": name, DOB, SSN, MRN, phone, email, address, dates of service, photos, biometrics, device IDs, URLs, IP addresses, account numbers, certificate numbers, VINs, and any unique number or code. If even ONE identifier is present alongside health data, it is PHI.',
+      },
+      { type: 'heading', text: '5. Operating Systems & Virtualization (Core 1 Domain 4.0)' },
+      {
+        type: 'table',
+        headers: ['Acronym', 'Full Term', 'Definition / Context'],
+        rows: [
+          ['OS', 'Operating System', 'Core software managing hardware/software resources'],
+          ['VM', 'Virtual Machine', 'Software-emulated computer running inside a hypervisor'],
+          ['VDI', 'Virtual Desktop Infrastructure', 'Centrally hosted virtual desktops delivered to thin clients'],
+          ['IaaS', 'Infrastructure as a Service', 'Cloud-hosted VMs, storage, networking (AWS EC2, Azure VMs)'],
+          ['PaaS', 'Platform as a Service', 'Cloud-hosted runtime + middleware (Azure App Service, Heroku)'],
+          ['SaaS', 'Software as a Service', 'Cloud-hosted applications (Microsoft 365, Epic Hyperdrive)'],
+          ['DaaS', 'Desktop as a Service', 'Cloud-hosted virtual desktops (Amazon WorkSpaces, Citrix)'],
+          ['NTFS', 'New Technology File System', 'Windows default — supports permissions, encryption, journaling'],
+          ['GPT', 'GUID Partition Table', 'Modern partition scheme — supports 128 partitions, 18 EB max disk'],
+          ['MBR', 'Master Boot Record', 'Legacy partition scheme — 4 primary partitions, 2 TB max disk'],
+          ['CLI', 'Command-Line Interface', 'Text-based interface for executing system commands'],
+          ['GUI', 'Graphical User Interface', 'Visual interface with windows, icons, menus, pointers'],
+        ],
+      },
+      {
+        type: 'tip',
+        text: 'Exam trick: IaaS vs PaaS vs SaaS — "Who manages what?" IaaS: YOU manage OS and up. PaaS: YOU manage only code and data. SaaS: YOU manage nothing (just use it). The more the provider manages, the further right you are on the service spectrum.',
+      },
+      { type: 'heading', text: '6. Troubleshooting Tools & Utilities' },
+      {
+        type: 'table',
+        headers: ['Acronym', 'Full Term', 'Definition / Context'],
+        rows: [
+          ['SFC', 'System File Checker', 'Windows tool to verify and repair system files (sfc /scannow)'],
+          ['DISM', 'Deployment Image Servicing and Management', 'Repairs Windows component store (run BEFORE SFC)'],
+          ['BSOD', 'Blue Screen of Death', 'Windows critical stop error — requires driver/hardware diagnosis'],
+          ['WinRE', 'Windows Recovery Environment', 'Boot-time repair console for non-bootable systems'],
+          ['PXE', 'Preboot Execution Environment', 'Network boot — pulls OS image from server via TFTP/HTTP'],
+          ['RDP', 'Remote Desktop Protocol', 'Windows built-in remote access (Port 3389)'],
+          ['MMC', 'Microsoft Management Console', 'Framework for snap-in admin tools (compmgmt.msc, etc.)'],
+          ['MSCONFIG', 'Microsoft System Configuration', 'Boot options, service control, startup management'],
+          ['KVM', 'Keyboard Video Mouse (switch)', 'Hardware switch for controlling multiple PCs from one console'],
+        ],
+      },
+    ],
+  },
 };
 
 export default contentMap;

@@ -13,6 +13,8 @@ import {
   FirewallPacketInspectionDiagram,
 } from '../components/DiagramComponents';
 import { articleContentMap } from '../data/articles';
+import contentMap from '../data/contentMap';
+import ArticleRenderer from '../components/ArticleRenderer';
 import type { Article, Contributor } from '../types/database';
 
 const sectionTrackLabels: Record<string, string> = {
@@ -397,6 +399,8 @@ export default function ArticlePage() {
           }
         } else if (articleContentMap[slug]) {
           setArticle(makeLocalArticle(slug));
+        } else if (contentMap[slug]) {
+          setArticle(makeLocalArticle(slug, contentMap[slug].title));
         } else if (FOUNDER_SLUGS.has(slug)) {
           setArticle(makeLocalArticle(slug));
         } else if (isKnownSampleSlug(slug)) {
@@ -405,6 +409,7 @@ export default function ArticlePage() {
       } catch (error) {
         console.error('Error fetching article:', error);
         if (articleContentMap[slug]) setArticle(makeLocalArticle(slug));
+        else if (contentMap[slug]) setArticle(makeLocalArticle(slug, contentMap[slug].title));
         else if (FOUNDER_SLUGS.has(slug)) setArticle(makeLocalArticle(slug));
         else if (isKnownSampleSlug(slug)) setArticle(makeLocalArticle(slug, slugToSampleTitle(slug)));
       } finally {
@@ -448,9 +453,10 @@ export default function ArticlePage() {
 
   const strictlyIsSample = /\[\s*(sample|OPEN SLOT)\s*\]/i.test(article?.title ?? '');
   const isSample = strictlyIsSample || article.is_sample === true;
+  const localContentEntry = contentMap[article.slug];
   const markdownContent = articleContentMap[article.slug] ?? article.formatted_content ?? article.content;
-  const authorName = deriveAuthorName(contributor, article);
-  const trackLabel = deriveTrackLabel(article);
+  const authorName = localContentEntry?.contributor ?? deriveAuthorName(contributor, article);
+  const trackLabel = localContentEntry?.trackLabel?.toUpperCase() ?? deriveTrackLabel(article);
   const authorInitial = authorName.charAt(0).toUpperCase();
 
   // Founder bypass: never render sample gateway for known founder slugs
@@ -576,6 +582,8 @@ export default function ArticlePage() {
           <OSIPDUArticleDiagrams />
         ) : isTCPIPArticle ? (
           <TCPIPArticleContent />
+        ) : localContentEntry ? (
+          <ArticleRenderer blocks={localContentEntry.content} />
         ) : effectiveIsSample ? (
           <div className="max-w-2xl mx-auto text-center my-16">
             <div className="relative rounded-2xl border-2 border-dashed border-sky-300 dark:border-sky-500/30 bg-sky-50/40 dark:bg-zinc-800/60 p-10">

@@ -18,6 +18,7 @@ const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ c
   'study-tips':            { title: 'Study Tips', icon: Lightbulb },
   'study-tips/core1-overview': { title: 'Core 1 Overview', icon: Lightbulb, track: 'Study Tips' },
   'study-tips/core2-overview': { title: 'Core 2 Overview', icon: Lightbulb, track: 'Study Tips' },
+  'study-tips/acronyms': { title: 'Acronym Master Directory', icon: Lightbulb, track: 'Study Tips' },
   'diagrams':              { title: 'Diagrams', icon: Layout },
   'diagrams/motherboard':  { title: 'Motherboard Blueprint', icon: Layout, track: 'Diagrams' },
   'diagrams/network-topology': { title: 'Network Topology', icon: Layout, track: 'Diagrams' },
@@ -28,11 +29,13 @@ const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ c
   'azari-prompt-playbook/ehr-prompts':    { title: 'EHR Troubleshooting Prompts', icon: Sparkles, track: 'Prompt Playbook' },
   'core1-mobile':          { title: 'Domain 1.0 — Mobile Devices', icon: Laptop, track: 'CompTIA A+ Core 1' },
   'core1-networking':      { title: 'Domain 2.0 — Networking', icon: Network, track: 'CompTIA A+ Core 1' },
+  'core1-networking/ports': { title: 'Network Ports & Protocols', icon: Network, track: 'CompTIA A+ Core 1' },
   'core1-hardware':        { title: 'Domain 3.0 — Hardware', icon: Cpu, track: 'CompTIA A+ Core 1' },
   'core1-cloud':           { title: 'Domain 4.0 — Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
   'core1-virtualization':  { title: 'Domain 4.0 — Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
   'core1-troubleshooting': { title: 'Domain 5.0 — HW & Network Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 1' },
   'core2-os':              { title: 'Domain 1.0 — Operating Systems', icon: Monitor, track: 'CompTIA A+ Core 2' },
+  'core2-os/cli-runbook': { title: 'CLI Command Runbook', icon: Monitor, track: 'CompTIA A+ Core 2' },
   'core2-security':        { title: 'Domain 2.0 — Security', icon: Shield, track: 'CompTIA A+ Core 2' },
   'core2-software':        { title: 'Domain 3.0 — Software Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 2' },
   'core2-operations':      { title: 'Domain 4.0 — Operational Procedures', icon: Users, track: 'CompTIA A+ Core 2' },
@@ -46,6 +49,7 @@ const roleColors: Record<string, string> = {
   'Core 2 Expert':       'bg-sky-500/10 text-sky-400',
   'HealthIT Specialist': 'bg-sky-500/10 text-sky-400',
   'AI Prompt Engineer':  'bg-sky-500/10 text-sky-400',
+  'Reference Author':    'bg-amber-500/10 text-amber-400',
 };
 
 const KNOWN_AUTHORS: Record<string, string> = {
