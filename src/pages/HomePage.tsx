@@ -1,12 +1,10 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
 import ArticleCard from '../components/ArticleCard';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import { type NewSubmission } from '../utils/submissions';
 import { useArticles } from '../hooks/useArticles';
 import SuccessToast from '../components/SuccessToast';
-import type { Article } from '../types/database';
 import {
   TrendingUp, ArrowDown, Users, UploadCloud,
   Compass, BookOpen, Flame, Briefcase, ChevronRight, Award,
@@ -48,23 +46,19 @@ const survivalGuideCards = [
 ];
 
 export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
-  const [featuredArticles, setFeaturedArticles] = useState<Article[]>([]);
   const { articles: allArticles, isLoading } = useArticles();
-  const [modalOpen,        setModalOpen]         = useState(false);
-  const [toastVisible,     setToastVisible]      = useState(false);
-  const [toastMessage,     setToastMessage]      = useState('');
+  const [modalOpen,    setModalOpen]    = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
-  useEffect(() => {
-    supabase.from('articles').select('*, contributor:contributors(*)').eq('is_featured', true).limit(3)
-      .then(({ data }) => { if (data) setFeaturedArticles(data); });
-  }, []);
-
-  const recentArticles = useMemo(() => {
-    return allArticles
+  const sortedData = useMemo(() => {
+    return [...allArticles]
       .filter((a) => !a.is_sample && a.title !== '[OPEN SLOT]')
-      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-      .slice(0, 6);
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   }, [allArticles]);
+
+  const featuredArticles = useMemo(() => sortedData.filter((a) => a.is_featured === true).slice(0, 3), [sortedData]);
+  const recentArticles   = useMemo(() => sortedData.slice(0, 6), [sortedData]);
 
   const handleSubmitted = (submission: NewSubmission) => {
     setToastMessage(`${submission.full_name} — "${submission.title}" added to the wall!`);
