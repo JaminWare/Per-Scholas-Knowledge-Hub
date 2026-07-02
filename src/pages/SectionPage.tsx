@@ -61,8 +61,13 @@ const KNOWN_AUTHORS: Record<string, string> = {
   'cloud-computing-healthcare':    'Jamin Ware',
   'ai-prompt-engineering-healthcare': 'Jamin Ware',
   'core1-networking/ports':        'Cohort Lead',
-  'core2-os/cli-runbook':          'Cohort Lead',
+  'core2-os/cli-runbook':          'Jamin Ware',
   'study-tips/acronyms':           'Cohort Lead',
+  'core2-os':                      'Jamin Ware',
+  'core2-os/windows-bootcamp':     'Jamin Ware',
+  'healthcare-ehr':                'Jamin Ware',
+  'healthcare-ehr/integration':    'Jamin Ware',
+  'healthcare-clinical/cpoe':      'Jamin Ware',
 };
 
 const CANONICAL_DOMAINS: Record<string, string> = {
