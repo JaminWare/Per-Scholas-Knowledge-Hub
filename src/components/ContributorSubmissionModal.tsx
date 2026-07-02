@@ -213,6 +213,10 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [lxTopic, setLxTopic] = useState('');
   const [lxFocus, setLxFocus] = useState('');
 
+  // LX Survival Guide fields
+  const [hardship, setHardship] = useState('');
+  const [breakthrough, setBreakthrough] = useState('');
+
   // CompTIA Objective
   const [compObjective, setCompObjective] = useState('');
 
@@ -242,9 +246,12 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   useEffect(() => {
     setMasterCategory('');
     setTrack('');
+    setCompObjective('');
     setLxStage('');
     setLxTopic('');
     setLxFocus('');
+    setHardship('');
+    setBreakthrough('');
     setErrors({});
     setFormError('');
   }, [submissionType]);
@@ -275,6 +282,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setLxStage('');
     setLxTopic('');
     setLxFocus('');
+    setHardship('');
+    setBreakthrough('');
     setErrors({});
     setFormError('');
     setIsSuccess(false);
@@ -285,6 +294,10 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
     if (submissionType === 'Prompt Playbook') {
       return `**System Role / Context:**\n${promptRole.trim()}\n\n**The Prompt:**\n${promptText.trim()}\n\n**Use Case:**\n${promptUseCase.trim()}`;
+    }
+
+    if (submissionType === 'Article' && isLearnerExperience) {
+      return `**THE HARDSHIP:**\n${hardship.trim()}\n\n---\n\n**THE BREAKTHROUGH:**\n${breakthrough.trim()}`;
     }
 
     if (isLightweight) {
@@ -328,6 +341,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       if (promptUseCase.trim().length < 10) e.promptUseCase = 'At least 10 characters required.';
     } else if (isLightweight) {
       if (concept.trim().length < 15) e.concept = 'At least 15 characters required.';
+    } else if (submissionType === 'Article' && isLearnerExperience) {
+      if (hardship.trim().length < 15) e.hardship = 'At least 15 characters required.';
+      if (breakthrough.trim().length < 15) e.breakthrough = 'At least 15 characters required.';
     } else {
       if (concept.trim().length < 15) e.concept = 'Required.';
       if (aPlusRelevance.trim().length < 15) e.aPlusRelevance = 'Required.';
@@ -534,7 +550,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   </select>
                   {errors.track && <p className="mt-1 text-xs text-red-500">{errors.track}</p>}
 
-                  {track && COMPTIA_OBJECTIVES[track] && COMPTIA_OBJECTIVES[track].length > 0 && (
+                  {track && COMPTIA_OBJECTIVES[track]?.length > 0 && (
                     <div className="mt-3">
                       <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Specific Objective</label>
                       <select
@@ -543,7 +559,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                         className={selectCls('compObjective')}
                       >
                         <option value="">Select an objective (optional)...</option>
-                        {COMPTIA_OBJECTIVES[track].map((obj) => (
+                        {(COMPTIA_OBJECTIVES[track] || []).map((obj) => (
                           <option key={obj} value={obj}>{obj}</option>
                         ))}
                       </select>
@@ -643,6 +659,23 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     </label>
                     <input type="url" value={diagramUrl} onChange={(e) => setDiagramUrl(e.target.value)} placeholder="Paste a link to an image, PDF, YouTube video, or Google Drive file..." className={inputCls('diagramUrl')} />
                     <p className="mt-1.5 text-[10px] text-zinc-400 dark:text-zinc-500">Supports images, PDFs, YouTube, Google Drive, and other shareable URLs.</p>
+                  </div>
+                </div>
+              ) : (submissionType === 'Article' && isLearnerExperience) ? (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      The Hardship / The Challenge <span className="text-red-400">*</span>
+                    </label>
+                    <textarea value={hardship} onChange={(e) => setHardship(e.target.value)} placeholder="Describe the specific hurdle, error, or burnout moment you faced..." rows={4} className={`${inputCls('hardship')} font-mono resize-y custom-scrollbar`} />
+                    {errors.hardship && <p className="mt-1 text-xs text-red-500">{errors.hardship}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
+                      The Breakthrough / Field Notes <span className="text-red-400">*</span>
+                    </label>
+                    <textarea value={breakthrough} onChange={(e) => setBreakthrough(e.target.value)} placeholder="How did you solve it? What is your tactical advice for the next peer?" rows={6} className={`${inputCls('breakthrough')} font-mono resize-y custom-scrollbar`} />
+                    {errors.breakthrough && <p className="mt-1 text-xs text-red-500">{errors.breakthrough}</p>}
                   </div>
                 </div>
               ) : submissionType === 'Prompt Playbook' ? (
