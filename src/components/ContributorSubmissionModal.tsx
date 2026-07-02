@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
   X, Send, Loader2, Tag,
   FileText, Link2, BookOpen, GitBranch,
-  AlertCircle, Link as LinkIcon, ImagePlus, CheckCircle2, Sparkles
+  AlertCircle, Link as LinkIcon, ImagePlus, CheckCircle2, Sparkles, Lightbulb
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
@@ -492,6 +492,11 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           <button onClick={() => { reset(); onClose(); }} className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"><X className="w-5 h-5" /></button>
         </div>
 
+        <div className="mx-6 mt-4 px-4 py-3 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-start gap-2.5 flex-shrink-0">
+          <Lightbulb className="w-4 h-4 text-sky-400 mt-0.5 flex-shrink-0" />
+          <p className="text-sm text-sky-600 dark:text-sky-400 leading-snug">Diagramming? Don't upload screenshots of your topology. Use the <a href="https://mermaid.live" target="_blank" rel="noopener noreferrer" className="font-bold underline hover:text-sky-300">Mermaid Live Editor</a> to visually map out your architecture and paste the markdown code below.</p>
+        </div>
+
         {formError && (
           <div className="mx-6 mt-4 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 flex items-start gap-2.5 flex-shrink-0">
             <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
@@ -518,6 +523,12 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   </button>
                 ))}
               </div>
+              {submissionType === 'Diagram' && (
+                <div className="mt-3 px-4 py-3 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-start gap-2.5">
+                  <AlertCircle className="w-4 h-4 text-amber-400 mt-0.5 flex-shrink-0" />
+                  <p className="text-sm text-amber-600 dark:text-amber-400 leading-snug">Building a Diagram? We use Mermaid.js! Build your flowchart at the <a href="https://mermaid.live" target="_blank" rel="noopener noreferrer" className="font-bold underline hover:text-amber-300">Mermaid Live Editor</a>, copy the markdown block, and paste it directly into the Guided Description below.</p>
+                </div>
+              )}
             </div>
 
             <div>
@@ -749,7 +760,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                       <input type="url" value={diagramUrl} onChange={(e) => setDiagramUrl(e.target.value)} placeholder="e.g., https://drive.google.com/... or https://images.unsplash.com/..." className={`${inputCls('diagramUrl')} pl-10`} />
                     </div>
                     {errors.diagramUrl && <p className="mt-1 text-xs text-red-500">{errors.diagramUrl}</p>}
-                    <p className="mt-2 text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">Supported: Standard Image URLs (.png, .jpg, .gif), Google Drive links (PDFs/Docs), and Canva presentation links. For raw code or CLI logs, use markdown code blocks in the description.</p>
+                    <p className="mt-2 text-[10px] text-zinc-500 dark:text-zinc-400 font-medium"><span className="font-bold text-sky-500">Visualizing a process? Use the <a href="https://mermaid.live" target="_blank" rel="noopener noreferrer" className="underline hover:text-sky-400">Mermaid Live Editor</a> instead of uploading an image.</span> Supported: Standard Image URLs (.png, .jpg, .gif), Google Drive links (PDFs/Docs), and Canva presentation links. For raw code or CLI logs, use markdown code blocks in the description.</p>
                   </div>
 
                 </div>
