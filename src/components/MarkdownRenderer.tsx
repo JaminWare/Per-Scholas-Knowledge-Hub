@@ -6,6 +6,7 @@ import {
   HealthcareCloudHierarchyDiagram,
   TRACEPromptPipelineDiagram,
 } from './DiagramComponents';
+import MermaidDiagram from './MermaidDiagram';
 
 type InlineToken =
   | { type: 'text'; value: string }
@@ -335,6 +336,9 @@ export default function MarkdownRenderer({ content }: Props) {
               </div>
             );
           case 'code_fence':
+            if (block.lang === 'mermaid') {
+              return <MermaidDiagram key={idx} chart={block.code} />;
+            }
             return (
               <div key={idx} className="rounded-xl overflow-hidden border border-zinc-300 dark:border-zinc-700 my-4">
                 <div className="flex items-center gap-2 px-4 py-2 bg-zinc-800 dark:bg-zinc-900 border-b border-zinc-700">
