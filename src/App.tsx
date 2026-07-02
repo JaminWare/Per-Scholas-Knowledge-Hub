@@ -8,6 +8,7 @@ import ArticlePage from './pages/ArticlePage';
 import SectionPage from './pages/SectionPage';
 import ComingSoonPage from './pages/ComingSoonPage';
 import RecognitionPage from './pages/RecognitionPage';
+import LearnerExperiencePage from './pages/LearnerExperiencePage';
 import AdminControlPage from './pages/AdminControlPage';
 import { PanelLeftOpen, PanelLeftClose, Sun, Moon } from 'lucide-react';
 
@@ -107,6 +108,7 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
             <Route path="/recognition" element={<RecognitionPage />} />
+            <Route path="/learner-experience" element={<LearnerExperiencePage />} />
             <Route path="/article/:slug" element={<ArticlePage />} />
             <Route path="/article/:slug/*" element={<ArticlePage />} />
             <Route path="/:slug/*" element={<SectionPage refreshKey={refreshKey} />} />

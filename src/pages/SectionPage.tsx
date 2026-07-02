@@ -233,8 +233,8 @@ function ResourcePlacard({ activeTab, onTabChange }: { activeTab: ResourceTab; o
               onClick={() => onTabChange(tab)}
               className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                 isActive
-                  ? 'bg-sky-500/20 text-sky-400 border-sky-500/30 shadow-[0_0_8px_rgba(56,189,248,0.15)]'
-                  : 'bg-zinc-800/50 text-zinc-400 hover:text-zinc-200 border-transparent hover:border-zinc-600/50'
+                  ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
+                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
               }`}
             >
               <Icon className="w-3.5 h-3.5" />

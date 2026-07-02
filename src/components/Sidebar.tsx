@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   Home, ChevronDown, ChevronRight, ChevronLeft,
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
-  BookOpen, Lightbulb, FileText, Sparkles, Layout,
+  BookOpen, LifeBuoy,
   Laptop, Monitor, Heart, Database, Award,
 } from 'lucide-react';
 
@@ -25,11 +25,8 @@ interface TrackSection {
 
 // Flat top-level links — no children, no dropdowns
 const topLinks: NavItem[] = [
-  { title: 'Cohort Recognition', slug: 'recognition',           icon: Award      },
-  { title: 'Study Tips',      slug: 'study-tips',            icon: Lightbulb  },
-  { title: 'Diagrams',        slug: 'diagrams',              icon: Layout     },
-  { title: 'Quick References',slug: 'quick-references',      icon: FileText   },
-  { title: 'Prompt Playbook', slug: 'azari-prompt-playbook', icon: Sparkles   },
+  { title: 'Cohort Recognition',       slug: 'recognition',         icon: Award    },
+  { title: 'Learner Experience & FAQs', slug: 'learner-experience',  icon: LifeBuoy },
 ];
 
 const tracks: TrackSection[] = [
