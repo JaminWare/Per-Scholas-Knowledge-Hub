@@ -349,8 +349,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       if (aPlusRelevance.trim().length < 15) e.aPlusRelevance = 'Required.';
       if (impact.trim().length < 15) e.impact = 'Required.';
       if (references.trim().length === 0) e.references = 'Required.';
-      if (!diagramUrl.trim() || !/images\.unsplash\.com/.test(diagramUrl.trim())) {
-        e.diagramUrl = 'Please provide a valid Unsplash image URL to ensure cohesive knowledge base styling.';
+      if (!diagramUrl.trim() || !/^https?:\/\/.+/.test(diagramUrl.trim())) {
+        e.diagramUrl = 'Please provide a valid URL (must start with http:// or https://).';
       }
     }
 
@@ -739,16 +739,16 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
                   <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800">
                     <label className="flex items-center gap-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                      5. Diagram / Visual Attachment <span className="text-red-400">*</span>
+                      5. Media, Document, or Visual Attachment (URL) <span className="text-red-400">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <ImagePlus className="h-4 w-4 text-zinc-400" />
                       </div>
-                      <input type="url" value={diagramUrl} onChange={(e) => setDiagramUrl(e.target.value)} placeholder="Required: Provide a valid high-resolution Unsplash image link (e.g., https://images.unsplash.com/...)" className={`${inputCls('diagramUrl')} pl-10`} />
+                      <input type="url" value={diagramUrl} onChange={(e) => setDiagramUrl(e.target.value)} placeholder="e.g., https://drive.google.com/... or https://images.unsplash.com/..." className={`${inputCls('diagramUrl')} pl-10`} />
                     </div>
                     {errors.diagramUrl && <p className="mt-1 text-xs text-red-500">{errors.diagramUrl}</p>}
-                    <p className="mt-2 text-[10px] text-amber-600 dark:text-amber-500 font-medium">Required: Use a valid Unsplash image URL (images.unsplash.com) to preserve responsive visual layouts and cohesive knowledge base styling.</p>
+                    <p className="mt-2 text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">Supported: Standard Image URLs (.png, .jpg, .gif), Google Drive links (PDFs/Docs), and Canva presentation links. For raw code or CLI logs, use markdown code blocks in the description.</p>
                   </div>
 
                 </div>
