@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
-  LifeBuoy, Lightbulb, BookOpen, Flame, Shield, Briefcase, Compass, Plus,
+  LifeBuoy, Lightbulb, BookOpen, Flame, Shield, Briefcase, Compass, Plus, ChevronRight,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
+import CardZoomOverlay from '../components/CardZoomOverlay';
 
 // ─── 3-tier category filter system ─────────────────────────────
 
@@ -444,13 +445,11 @@ export default function LearnerExperiencePage() {
 // ─── Breakthrough Card ───────────────────────────────────────
 
 function BreakthroughCard({ entry }: { entry: LearnerEntry }) {
+  const [zoomed, setZoomed] = useState(false);
   const { hardship, breakthrough } = parseHardshipBreakthrough(entry.content);
 
-  return (
-    <Link
-      to={`/article/${entry.slug}`}
-      className="group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]"
-    >
+  const cardInner = (expanded = false) => (
+    <>
       {/* Header bar */}
       <div
         className="flex items-center justify-between px-3 py-1.5 bg-zinc-800 dark:bg-zinc-900"
@@ -469,15 +468,15 @@ function BreakthroughCard({ entry }: { entry: LearnerEntry }) {
 
       {/* Body */}
       <div className="flex flex-col gap-3 p-4 flex-1">
-        <h3 className="font-semibold text-sm leading-snug line-clamp-2 text-zinc-800 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors duration-200">
+        <h3 className="font-semibold text-sm leading-snug text-zinc-800 dark:text-white transition-colors duration-200" style={{ WebkitLineClamp: expanded ? undefined : 2, display: expanded ? undefined : '-webkit-box', WebkitBoxOrient: expanded ? undefined : 'vertical', overflow: expanded ? undefined : 'hidden' }}>
           {entry.title}
         </h3>
 
         {/* Hardship section */}
         <div className="space-y-1">
           <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">The Hardship</span>
-          <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed">
-            {hardship.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').slice(0, 180)}
+          <p className={`text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
+            {hardship.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').slice(0, expanded ? undefined : 180)}
           </p>
         </div>
 
@@ -488,20 +487,46 @@ function BreakthroughCard({ entry }: { entry: LearnerEntry }) {
               <Lightbulb className="w-2.5 h-2.5" />
               The Breakthrough
             </span>
-            <p className="text-xs text-sky-700 dark:text-sky-300 line-clamp-3 leading-relaxed">
-              {breakthrough.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').slice(0, 180)}
+            <p className={`text-xs text-sky-700 dark:text-sky-300 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
+              {breakthrough.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').slice(0, expanded ? undefined : 180)}
             </p>
           </div>
         )}
 
         {/* Footer */}
-        <div className="mt-auto pt-3 border-t border-zinc-100 dark:border-zinc-800">
+        <div className="mt-auto pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between gap-2">
           <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/15">
             {entry.author}
           </span>
+          {expanded && (
+            <Link
+              to={`/article/${entry.slug}`}
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-1 text-[11px] font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
+            >
+              Read full article <ChevronRight className="w-3 h-3" />
+            </Link>
+          )}
         </div>
       </div>
-    </Link>
+    </>
+  );
+
+  return (
+    <>
+      <div
+        onClick={() => setZoomed(true)}
+        className="group flex flex-col rounded-xl border overflow-hidden cursor-zoom-in transition-all duration-300 ease-out bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]"
+      >
+        {cardInner(false)}
+      </div>
+
+      <CardZoomOverlay open={zoomed} onClose={() => setZoomed(false)}>
+        <div className="flex flex-col rounded-xl overflow-hidden">
+          {cardInner(true)}
+        </div>
+      </CardZoomOverlay>
+    </>
   );
 }
 
