@@ -5,6 +5,7 @@ export interface LocalArticle {
   contributorRole: string;
   cohort: string;
   tags: string[];
+  studyCategory?: string;
   content: ContentBlock[];
 }
 
@@ -56,27 +57,27 @@ const contentMap: Record<string, LocalArticle> = {
           'Supervision Mode (Apple): Enables deeper management controls — required for app lock, web filtering, and remote screen viewing.',
           'Work Profile (Android): Creates a cryptographically isolated container; personal apps cannot read work data.',
           'Certificate Authority: MDM server must trust the org CA; devices receive client certs for 802.1X Wi-Fi.',
-          'Compliance Policy: Enforce PIN length ≥ 6, biometric auth, OS version minimums, jailbreak/root detection.',
+          'Compliance Policy: Enforce PIN length \u2265 6, biometric auth, OS version minimums, jailbreak/root detection.',
         ],
       },
       {
         type: 'warning',
-        text: 'Never enroll a device into MDM without user consent documentation in BYOD scenarios. HIPAA requires that employees acknowledge that IT can remotely wipe a device registered for corporate email — even if it\'s personally owned.',
+        text: 'Never enroll a device into MDM without user consent documentation in BYOD scenarios. HIPAA requires that employees acknowledge that IT can remotely wipe a device registered for corporate email \u2014 even if it\'s personally owned.',
       },
       { type: 'heading', text: '3. Remote Wipe vs. Selective Wipe' },
       {
         type: 'table',
         headers: ['Action', 'What It Erases', 'When to Use'],
         rows: [
-          ['Full Remote Wipe', 'Entire device — factory reset', 'Device lost/stolen or employee termination (corporate device)'],
-          ['Selective Wipe', 'Work profile / managed apps only', 'Employee resignation (BYOD — preserves personal data)'],
+          ['Full Remote Wipe', 'Entire device \u2014 factory reset', 'Device lost/stolen or employee termination (corporate device)'],
+          ['Selective Wipe', 'Work profile / managed apps only', 'Employee resignation (BYOD \u2014 preserves personal data)'],
           ['Account Remove', 'MDM profile + managed apps + settings', 'Device retirement with data confirmation'],
         ],
       },
       {
         type: 'code',
         lang: 'powershell',
-        code: `# Microsoft Intune — Initiate a selective wipe via PowerShell
+        code: `# Microsoft Intune \u2014 Initiate a selective wipe via PowerShell
 Connect-MgGraph -Scopes "DeviceManagementManagedDevices.ReadWrite.All"
 
 $device = Get-MgDeviceManagementManagedDevice -Filter "userPrincipalName eq 'jdoe@clinic.org'"
@@ -91,215 +92,9 @@ Write-Host "Selective wipe initiated for device: $($device.DeviceName)" -Foregro
     ],
   },
 
-  'core1-networking': {
-    title: 'Subnetting Cheatsheets & Common Network Port Quick References',
-    trackLabel: 'CompTIA A+ Core 1 (220-1201) — Domain 2.0 Networking',
-    contributor: 'NetSec Expert',
-    contributorRole: 'Core 1 Expert',
-    cohort: '2026-RTT-23',
-    tags: ['networking', 'subnetting', 'ports', 'protocols', 'CIDR', 'OSI'],
-    content: [
-      {
-        type: 'intro',
-        text: 'Networking is the highest-weighted domain across both A+ exams. Master subnetting, port numbers, and OSI mappings here — these concepts appear in every PBQ simulation on the 220-1201.',
-      },
-      { type: 'heading', text: '1. CIDR Subnetting Quick Reference' },
-      {
-        type: 'table',
-        headers: ['CIDR', 'Subnet Mask', 'Total Hosts', 'Usable Hosts', 'Block Size'],
-        rows: [
-          ['/24', '255.255.255.0', '256', '254', '256'],
-          ['/25', '255.255.255.128', '128', '126', '128'],
-          ['/26', '255.255.255.192', '64', '62', '64'],
-          ['/27', '255.255.255.224', '32', '30', '32'],
-          ['/28', '255.255.255.240', '16', '14', '16'],
-          ['/29', '255.255.255.248', '8', '6', '8'],
-          ['/30', '255.255.255.252', '4', '2', '4'],
-        ],
-      },
-      {
-        type: 'tip',
-        text: 'The "Magic Number" trick: Subtract the last octet of the mask from 256 to get block size. /26 → 256-192 = 64. Networks start at 0, 64, 128, 192.',
-      },
-      { type: 'heading', text: '2. Critical Port Numbers (Memorize These)' },
-      {
-        type: 'code',
-        lang: 'text',
-        code: `╔══════╦══════════╦═══════╦════════════════════════════════════╗
-║ Port ║ Protocol ║ Layer ║ Service                            ║
-╠══════╬══════════╬═══════╬════════════════════════════════════╣
-║  20  ║ TCP      ║  App  ║ FTP Data Transfer                  ║
-║  21  ║ TCP      ║  App  ║ FTP Control                        ║
-║  22  ║ TCP      ║  App  ║ SSH / SFTP                         ║
-║  23  ║ TCP      ║  App  ║ Telnet (INSECURE — avoid!)         ║
-║  25  ║ TCP      ║  App  ║ SMTP (email sending)               ║
-║  53  ║ TCP/UDP  ║  App  ║ DNS                                ║
-║  67  ║ UDP      ║  App  ║ DHCP Server                        ║
-║  68  ║ UDP      ║  App  ║ DHCP Client                        ║
-║  80  ║ TCP      ║  App  ║ HTTP                               ║
-║ 110  ║ TCP      ║  App  ║ POP3                               ║
-║ 143  ║ TCP      ║  App  ║ IMAP                               ║
-║ 443  ║ TCP      ║  App  ║ HTTPS (TLS)                        ║
-║ 445  ║ TCP      ║  App  ║ SMB / Windows File Sharing         ║
-║ 3389 ║ TCP      ║  App  ║ RDP (Remote Desktop)               ║
-╚══════╩══════════╩═══════╩════════════════════════════════════╝`,
-      },
-      { type: 'heading', text: '3. OSI Model with Protocol Mapping' },
-      {
-        type: 'table',
-        headers: ['Layer', 'Name', 'Protocols / Devices', 'PDU Name'],
-        rows: [
-          ['7', 'Application', 'HTTP, FTP, DNS, SMTP, SNMP', 'Data'],
-          ['6', 'Presentation', 'TLS/SSL, JPEG, ASCII', 'Data'],
-          ['5', 'Session', 'NetBIOS, RPC, SOCKS', 'Data'],
-          ['4', 'Transport', 'TCP, UDP', 'Segment'],
-          ['3', 'Network', 'IP, ICMP, Router, L3 Switch', 'Packet'],
-          ['2', 'Data Link', 'Ethernet, MAC, Switch, Bridge', 'Frame'],
-          ['1', 'Physical', 'Cables, Hubs, Repeaters, NIC', 'Bits'],
-        ],
-      },
-      {
-        type: 'warning',
-        text: 'On PBQ "drag to layer" questions: Switches operate at Layer 2 (by MAC address). Routers operate at Layer 3 (by IP). A Layer 3 switch does both. Hubs are always Layer 1.',
-      },
-    ],
-  },
-
-  'core1-hardware': {
-    title: 'DDR Speed Matching, Form Factors, & NVMe PCIe Lane Allocation',
-    trackLabel: 'CompTIA A+ Core 1 (220-1201) — Domain 3.0 Hardware',
-    contributor: 'Tech Specialist',
-    contributorRole: 'Core 1 Expert',
-    cohort: '2026-RTT-23',
-    tags: ['RAM', 'DDR', 'NVMe', 'PCIe', 'hardware', 'storage', 'form-factors'],
-    content: [
-      {
-        type: 'intro',
-        text: 'Hardware questions dominate the 220-1201 practical simulations. This guide covers DDR generation compatibility, memory channel configurations, NVMe PCIe lane budgets, and form factor rules you need to know cold.',
-      },
-      { type: 'heading', text: '1. DDR Generation Comparison' },
-      {
-        type: 'table',
-        headers: ['Generation', 'Speed Range', 'Voltage', 'Notch Position', 'Max Module Size'],
-        rows: [
-          ['DDR3', '800–2133 MT/s', '1.35–1.5V', 'Different from DDR4', '16 GB'],
-          ['DDR4', '2133–3200 MT/s', '1.2V', 'Different from DDR3/5', '128 GB'],
-          ['DDR5', '4800–8400 MT/s', '1.1V', 'Different from DDR4', '128 GB+'],
-          ['LPDDR5 (Mobile)', '6400 MT/s', '0.5V', 'Soldered (no slot)', '32 GB'],
-        ],
-      },
-      {
-        type: 'warning',
-        text: 'DDR3, DDR4, and DDR5 are physically incompatible — different notch positions prevent wrong-generation installation. A motherboard that supports DDR4 will never accept DDR5 sticks. Always check the motherboard QVL (Qualified Vendor List) before purchasing RAM.',
-      },
-      { type: 'heading', text: '2. Memory Channel Configuration Rules' },
-      {
-        type: 'steps',
-        items: [
-          'Single-channel: Any one DIMM in any slot. Slowest performance.',
-          'Dual-channel: Populate matching slots (usually same color). Doubles memory bandwidth.',
-          'Quad-channel: Used in HEDT/server platforms (X299, TRX50). Requires 4 matched DIMMs.',
-          'Always match: capacity, speed, and timings across channel pairs for stable XMP/EXPO profiles.',
-          'If installing 2 of 4 slots: use slots A2 and B2 (skip A1/B1) for dual-channel on most ATX boards.',
-        ],
-      },
-      { type: 'heading', text: '3. NVMe PCIe Lane Budget' },
-      {
-        type: 'table',
-        headers: ['Interface', 'PCIe Version', 'Bandwidth', 'Typical Slot', 'Backward Compatible?'],
-        rows: [
-          ['NVMe Gen 3 x4', 'PCIe 3.0', '~3.5 GB/s', 'M.2 2280 (M-key)', 'Yes (slower)'],
-          ['NVMe Gen 4 x4', 'PCIe 4.0', '~7 GB/s', 'M.2 2280 (M-key)', 'Yes (runs at Gen 3)'],
-          ['NVMe Gen 5 x4', 'PCIe 5.0', '~14 GB/s', 'M.2 2280 (M-key)', 'Yes (runs at lower gen)'],
-          ['SATA SSD', 'SATA III', '~550 MB/s', 'M.2 2280 (B+M-key) or 2.5"', 'Yes'],
-        ],
-      },
-      {
-        type: 'code',
-        lang: 'powershell',
-        code: `# Identify NVMe drive spec in Windows
-Get-PhysicalDisk | Select FriendlyName, MediaType, BusType, Size
-
-# Check PCIe link speed for NVMe controller
-Get-PnpDevice -Class DiskDrive | Where-Object {$_.FriendlyName -match "NVMe"} |
-  Get-PnpDeviceProperty -KeyName DEVPKEY_Device_BusNumber`,
-      },
-      {
-        type: 'tip',
-        text: 'Exam shortcut: M.2 form factor ≠ NVMe protocol. An M.2 slot can carry SATA or NVMe. Check the key notch: B-key = SATA/some NVMe. M-key = NVMe Gen 3/4/5. B+M key = usually SATA.',
-      },
-    ],
-  },
-
-  'core1-cloud': {
-    title: 'Type 1 vs Type 2 Hypervisor Setups & Cloud Infrastructure Models',
-    trackLabel: 'CompTIA A+ Core 1 (220-1201) — Domain 4.0 Virtualization & Cloud',
-    contributor: 'Cloud Architect',
-    contributorRole: 'Core 1 Expert',
-    cohort: '2026-RTT-23',
-    tags: ['cloud', 'virtualization', 'hypervisor', 'IaaS', 'SaaS', 'PaaS', 'VDI'],
-    content: [
-      {
-        type: 'intro',
-        text: 'Cloud and virtualization account for a meaningful question block on 220-1201. Master hypervisor types, cloud service models, and deployment architectures with this comprehensive breakdown.',
-      },
-      { type: 'heading', text: '1. Hypervisor Types Compared' },
-      {
-        type: 'table',
-        headers: ['Type', 'Runs On', 'Examples', 'Use Case', 'Performance'],
-        rows: [
-          ['Type 1 (Bare-Metal)', 'Directly on hardware', 'VMware ESXi, MS Hyper-V, KVM, Proxmox', 'Data centers, enterprise', 'Excellent'],
-          ['Type 2 (Hosted)', 'On top of a host OS', 'VirtualBox, VMware Workstation, Parallels', 'Developer workstations, testing', 'Good (overhead from host OS)'],
-        ],
-      },
-      {
-        type: 'tip',
-        text: 'Key exam rule: If the scenario says "runs directly on hardware with no OS underneath" → Type 1. If it says "runs as an application inside Windows or macOS" → Type 2. Never guess based on product name alone.',
-      },
-      { type: 'heading', text: '2. Cloud Service Models' },
-      {
-        type: 'table',
-        headers: ['Model', 'Customer Manages', 'Provider Manages', 'Healthcare Example'],
-        rows: [
-          ['IaaS', 'OS, runtime, middleware, data, apps', 'Servers, storage, networking', 'Azure VMs hosting EHR application'],
-          ['PaaS', 'Application code, data', 'OS, runtime, infra, scaling', 'Azure App Service for patient portal'],
-          ['SaaS', 'Data configuration only', 'Everything', 'Epic Hyperdrive web client, Microsoft 365'],
-          ['DaaS (VDI)', 'User profile, documents', 'Virtual desktop infrastructure', 'Citrix clinical workstations'],
-        ],
-      },
-      { type: 'heading', text: '3. Cloud Deployment Models' },
-      {
-        type: 'steps',
-        items: [
-          'Public Cloud: Resources hosted by third-party provider (AWS, Azure, GCP). Multi-tenant, pay-as-you-go.',
-          'Private Cloud: Dedicated infrastructure for one organization. On-premises or hosted. Higher cost, maximum control.',
-          'Hybrid Cloud: Mix of public and private. Sensitive PHI stays on-premises; burst workloads go public.',
-          'Community Cloud: Shared by organizations with common compliance needs (e.g., multiple hospitals sharing HIPAA-compliant infrastructure).',
-        ],
-      },
-      {
-        type: 'warning',
-        text: 'In healthcare, private or hybrid cloud deployments are standard for systems processing PHI. Public cloud SaaS is acceptable when the vendor has a signed BAA (Business Associate Agreement) — required by HIPAA.',
-      },
-      { type: 'heading', text: '4. Resource Allocation Concepts' },
-      {
-        type: 'code',
-        lang: 'bash',
-        code: `# VMware ESXi — Check VM resource allocation via ESXi Shell
-esxcli vm process list          # List running VMs
-vim-cmd vmsvc/getallvms         # Full VM inventory with ID
-
-# Allocate CPU/RAM via vim-cmd (example: VM ID 42)
-vim-cmd vmsvc/power.off 42
-# Edit .vmx file to change numvcpus and memSize
-vim-cmd vmsvc/power.on 42`,
-      },
-    ],
-  },
-
   'core1-troubleshooting': {
     title: 'Interactive Motherboard Troubleshooting & Master PBQ Analysis',
-    trackLabel: 'CompTIA A+ Core 1 (220-1201) — Domain 5.0 Hardware & Network Troubleshooting',
+    trackLabel: 'CompTIA A+ Core 1 (220-1201) \u2014 Domain 5.0 Hardware & Network Troubleshooting',
     contributor: 'Jamin Ware',
     contributorRole: 'Core 1 Expert',
     cohort: '2026-RTT-23',
@@ -314,27 +109,27 @@ vim-cmd vmsvc/power.on 42`,
         type: 'table',
         headers: ['BIOS Vendor', 'Beep Pattern', 'Meaning'],
         rows: [
-          ['AMI BIOS', '1 short', 'POST passed — no errors'],
+          ['AMI BIOS', '1 short', 'POST passed \u2014 no errors'],
           ['AMI BIOS', '1 long + 2 short', 'Video card failure'],
           ['AMI BIOS', '2 short', 'Memory parity error'],
           ['AMI BIOS', 'Continuous beep', 'RAM not seated / completely missing'],
           ['Award BIOS', '1 long + 2 short', 'Video error'],
           ['Award BIOS', '1 long + 3 short', 'Video memory error'],
-          ['Phoenix BIOS', '3-3-4 (beep-beep-beep pause…)', 'Video card not detected'],
+          ['Phoenix BIOS', '3-3-4 (beep-beep-beep pause\u2026)', 'Video card not detected'],
         ],
       },
       { type: 'heading', text: '2. Systematic Hardware Fault Isolation' },
       {
         type: 'steps',
         items: [
-          'Step 1 — Establish a baseline: Document last known working state. What changed?',
-          'Step 2 — Check PSU: Test with a PSU tester or swap a known-good unit. A dead PSU is the #1 "no power" culprit.',
-          'Step 3 — Minimal boot config: Remove all non-essential hardware (GPU, extra RAM, HDDs). Boot with CPU + 1 DIMM only.',
-          'Step 4 — Interpret POST codes: Use the onboard diagnostic LED or LCD POST code reader if available.',
-          'Step 5 — Reseat all components: RAM, GPU, CPU cooler retention bracket.',
-          'Step 6 — CMOS reset: Clear NVRAM by removing CR2032 battery for 30 seconds, or use the CLR_CMOS jumper.',
-          'Step 7 — Component swap: Swap GPU, RAM sticks one at a time using known-good spares to isolate the fault.',
-          'Step 8 — Document and escalate: If the motherboard is suspected faulty, escalate with component swap log.',
+          'Step 1 \u2014 Establish a baseline: Document last known working state. What changed?',
+          'Step 2 \u2014 Check PSU: Test with a PSU tester or swap a known-good unit. A dead PSU is the #1 "no power" culprit.',
+          'Step 3 \u2014 Minimal boot config: Remove all non-essential hardware (GPU, extra RAM, HDDs). Boot with CPU + 1 DIMM only.',
+          'Step 4 \u2014 Interpret POST codes: Use the onboard diagnostic LED or LCD POST code reader if available.',
+          'Step 5 \u2014 Reseat all components: RAM, GPU, CPU cooler retention bracket.',
+          'Step 6 \u2014 CMOS reset: Clear NVRAM by removing CR2032 battery for 30 seconds, or use the CLR_CMOS jumper.',
+          'Step 7 \u2014 Component swap: Swap GPU, RAM sticks one at a time using known-good spares to isolate the fault.',
+          'Step 8 \u2014 Document and escalate: If the motherboard is suspected faulty, escalate with component swap log.',
         ],
       },
       {
@@ -369,7 +164,7 @@ tracert 8.8.8.8                  :: Identify where packets stop`,
       },
       {
         type: 'tip',
-        text: 'PBQ strategy: Always work OSI bottom-up (Physical → Data Link → Network → Application). The exam rewards methodical escalation. Skipping steps = wrong answer.',
+        text: 'PBQ strategy: Always work OSI bottom-up (Physical \u2192 Data Link \u2192 Network \u2192 Application). The exam rewards methodical escalation. Skipping steps = wrong answer.',
       },
     ],
   },
@@ -378,277 +173,151 @@ tracert 8.8.8.8                  :: Identify where packets stop`,
   // TRACK B — CompTIA A+ Core 2 (220-1202)
   // ─────────────────────────────────────────────────────────
 
-  'core2-os': {
-    title: 'Cross-Platform OS Installation Guidelines & Upgrade Path Matrix',
-    trackLabel: 'CompTIA A+ Core 2 (220-1202) — Domain 1.0 Operating Systems',
+  'core2-os/cli-runbook': {
+    title: 'Essential CLI Command Runbook \u2014 Windows & Linux',
+    trackLabel: 'CompTIA A+ Core 2 (220-1202) \u2014 Domain 1.0 Operating Systems',
     contributor: 'Jamin Ware',
-    contributorRole: 'Core 2 Expert',
+    contributorRole: 'Reference Author',
     cohort: '2026-RTT-23',
-    tags: ['OS', 'Windows', 'macOS', 'Linux', 'installation', 'upgrade', 'boot-camp'],
+    tags: ['CLI', 'commands', 'Windows', 'Linux', 'PowerShell', 'terminal', 'quick-reference'],
+    studyCategory: '1.2 Command-Line Tools',
     content: [
       {
         type: 'intro',
-        text: 'Domain 1.0 covers the widest breadth of any Core 2 section — Windows 10/11 installations, upgrade constraints, macOS/Linux basics, and the dreaded Boot Camp scenarios. SysAdmin Pro compiled this complete playbook.',
+        text: 'This command-line runbook covers every CLI tool tested on CompTIA A+ Core 2 (220-1202). Organized by operating system with real-world usage scenarios, syntax patterns, and critical flags. These commands appear in both multiple-choice questions and hands-on PBQ simulations.',
       },
-      { type: 'heading', text: '1. Windows 11 Minimum Requirements' },
+      { type: 'heading', text: '1. Windows Network Diagnostics' },
       {
         type: 'table',
-        headers: ['Component', 'Minimum Spec', 'Common Gotcha'],
+        headers: ['Command', 'Purpose', 'Key Flags', 'Exam Use Case'],
         rows: [
-          ['CPU', '1 GHz, 2+ cores, 64-bit', 'Intel 7th gen (Kaby Lake) mostly excluded'],
-          ['RAM', '4 GB', 'TPM check fails before RAM check — misleading error'],
-          ['Storage', '64 GB', 'OS partition only; full install needs ~30 GB free'],
-          ['TPM', 'TPM 2.0', 'Enable via BIOS → Security → PTT (Intel) / fTPM (AMD)'],
-          ['Secure Boot', 'Required', 'Legacy BIOS / CSM mode must be DISABLED'],
-          ['Display', '720p, 9" diagonal', 'Tablets under 9" may fail'],
+          ['ipconfig', 'View/manage IP configuration', '/all /release /renew /flushdns', 'Verify adapter settings, reset DHCP lease'],
+          ['ping', 'Test connectivity to a host', '-t (continuous) -n (count)', 'Verify host reachability, test DNS resolution'],
+          ['tracert', 'Trace route to destination', '-d (no DNS lookup)', 'Identify where packets are being dropped'],
+          ['nslookup', 'Query DNS records', 'server <dns-ip>, set type=MX', 'Verify DNS resolution, check specific records'],
+          ['netstat', 'Show active connections', '-a -n -o -b', 'Find which process is using a port'],
+          ['pathping', 'Combines ping + tracert', 'No critical flags', 'Long-running latency analysis per hop'],
+          ['nbtstat', 'NetBIOS over TCP/IP stats', '-n (local names) -R (purge)', 'Troubleshoot Windows name resolution'],
         ],
       },
-      { type: 'heading', text: '2. Windows Upgrade Path Rules' },
-      {
-        type: 'steps',
-        items: [
-          'In-place upgrade: Same architecture (64-bit → 64-bit) ONLY. Cannot upgrade 32-bit to 64-bit in-place.',
-          'Edition lock: Cannot upgrade Windows 11 Home → Pro in-place without a license key. Use Settings → Activation.',
-          'Windows 10 → 11: Supported in-place via Windows Update or Media Creation Tool (if hardware qualifies).',
-          'Windows 7/8.1 → 11: NOT a direct in-place upgrade path. Must be clean install. Migrate user data separately.',
-          'Rollback window: After an in-place upgrade, a 10-day rollback window exists (Settings → Recovery → Go Back).',
-        ],
-      },
-      {
-        type: 'warning',
-        text: 'Apple Silicon Macs (M1/M2/M3/M4) do NOT support Boot Camp. Use Parallels Desktop 18+ or UTM for Windows VMs on Apple Silicon. This distinction appears repeatedly on the exam and in clinical IT environments.',
-      },
-      { type: 'heading', text: '3. Boot Camp: Intel Mac Troubleshooting Matrix' },
-      {
-        type: 'table',
-        headers: ['Symptom', 'Root Cause', 'Fix'],
-        rows: [
-          ['Partition fails to create', 'Time Machine running / fragmented APFS', 'Disable Time Machine → run diskutil repairVolume /'],
-          ['"No bootable device" after install', 'Missing EFI entry', 'Hold Option key → select Windows (EFI) from boot picker'],
-          ['Keyboard / trackpad dead in Windows', 'Boot Camp support drivers missing', 'Run BootCamp.exe from mounted support drive'],
-          ['Clock wrong when switching OS', 'Windows uses local time; macOS uses UTC', 'Add UTC registry key to Windows (see code block)'],
-          ['Audio not working in Windows', 'Realtek driver conflict', 'Reinstall Boot Camp audio via Device Manager'],
-        ],
-      },
-      {
-        type: 'code',
-        lang: 'powershell',
-        code: `# Fix clock skew between macOS and Windows Boot Camp
-# Run in elevated PowerShell on the Windows partition:
-Set-ItemProperty -Path "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\TimeZoneInformation" \`
-  -Name RealTimeIsUniversal -Value 1 -Type DWord
-Write-Host "Windows will now read hardware clock as UTC — clock sync fixed." -ForegroundColor Green
-
-# Verify macOS architecture (run in macOS Terminal FIRST):
-# uname -m → x86_64 = Intel (Boot Camp OK)
-# uname -m → arm64  = Apple Silicon (Boot Camp NOT available)`,
-      },
-    ],
-  },
-
-  'core2-security': {
-    title: 'Malware Remediation Best Practices & Social Engineering Defenses',
-    trackLabel: 'CompTIA A+ Core 2 (220-1202) — Domain 2.0 Security',
-    contributor: 'SecOps Lead',
-    contributorRole: 'Core 2 Expert',
-    cohort: '2026-RTT-23',
-    tags: ['security', 'malware', 'social-engineering', 'remediation', 'CompTIA'],
-    content: [
-      {
-        type: 'intro',
-        text: 'Security is the highest-weighted domain on Core 2. This guide covers the mandated 8-step malware removal process, threat taxonomy, social engineering attack types, and Windows security hardening — all exam-critical topics.',
-      },
-      { type: 'heading', text: '1. The CompTIA 8-Step Malware Removal Process' },
-      {
-        type: 'steps',
-        items: [
-          '1. Investigate and verify malware symptoms (slow performance, pop-ups, unknown processes).',
-          '2. Quarantine the infected system — disconnect from all networks immediately.',
-          '3. Disable System Restore — prevents malware from sheltering in restore points.',
-          '4. Remediate — run updated anti-malware in Safe Mode; use bootable rescue disk for rootkits.',
-          '5. Schedule scans and run full system updates (Windows Update, definitions).',
-          '6. Enable System Restore and create a clean restore point.',
-          '7. Educate the end user: phishing awareness, safe browsing, password hygiene.',
-          '8. Document: ticket the incident, root cause, remediation steps, and lessons learned.',
-        ],
-      },
-      {
-        type: 'warning',
-        text: 'Step 3 is the most commonly missed in both the exam and real life. If you scan BEFORE disabling System Restore, the malware can restore itself from a shadow copy after reboot. Always disable System Restore first.',
-      },
-      { type: 'heading', text: '2. Malware Type Quick Reference' },
-      {
-        type: 'table',
-        headers: ['Type', 'Propagation', 'Payload', 'Removal Difficulty'],
-        rows: [
-          ['Virus', 'Attaches to executable files', 'Data corruption, system damage', 'Moderate'],
-          ['Worm', 'Self-replicates via network without user action', 'Network congestion, backdoors', 'High'],
-          ['Trojan', 'Disguised as legitimate software', 'Remote access, data theft', 'Moderate'],
-          ['Ransomware', 'Email, RDP, web exploits', 'Encrypts files, demands payment', 'Very High (restore from backup)'],
-          ['Rootkit', 'Kernel-level injection', 'Hides malware, intercepts OS calls', 'Extreme (often requires OS reinstall)'],
-          ['Spyware / Keylogger', 'Drive-by download, PUPS', 'Credential theft, surveillance', 'Moderate'],
-          ['Cryptominer', 'Watering hole, pirated software', 'CPU/GPU hijack for crypto mining', 'Moderate'],
-        ],
-      },
-      { type: 'heading', text: '3. Social Engineering Attack Types' },
-      {
-        type: 'table',
-        headers: ['Attack', 'Method', 'Defense'],
-        rows: [
-          ['Phishing', 'Bulk email mimicking trusted sender', 'Email filtering, security awareness training'],
-          ['Spear Phishing', 'Targeted email using personal info', 'Verify sender via second channel before clicking'],
-          ['Vishing', 'Phone call impersonating IT/bank', 'Never give creds over phone; call back on official number'],
-          ['Smishing', 'SMS with malicious link', 'Never click unsolicited SMS links'],
-          ['Tailgating', 'Physical: follow authorized person through secured door', 'Mantrap / badge enforcement / security culture'],
-          ['Pretexting', 'Fabricated scenario to extract info', 'Verify identity before sharing any data'],
-        ],
-      },
-    ],
-  },
-
-  'core2-software': {
-    title: 'Windows BSOD Log Analysis & Critical SFC/DISM Repair Runbooks',
-    trackLabel: 'CompTIA A+ Core 2 (220-1202) — Domain 3.0 Software Troubleshooting',
-    contributor: 'Support Tier 2',
-    contributorRole: 'Core 2 Expert',
-    cohort: '2026-RTT-23',
-    tags: ['BSOD', 'SFC', 'DISM', 'Windows', 'troubleshooting', 'WinRE'],
-    content: [
-      {
-        type: 'intro',
-        text: 'Blue Screen of Death (BSOD) analysis and Windows image repair are core Tier 2 support skills. This runbook from the Support Tier 2 contributor covers stop code interpretation, WinDbg basics, and the SFC/DISM repair sequence.',
-      },
-      { type: 'heading', text: '1. Critical BSOD Stop Codes' },
-      {
-        type: 'table',
-        headers: ['Stop Code', 'Hex Code', 'Most Likely Cause'],
-        rows: [
-          ['IRQL_NOT_LESS_OR_EQUAL', '0x0000000A', 'Driver accessing memory at wrong IRQL — update or rollback drivers'],
-          ['PAGE_FAULT_IN_NONPAGED_AREA', '0x00000050', 'Faulty RAM or corrupt driver accessing invalid memory'],
-          ['SYSTEM_SERVICE_EXCEPTION', '0x0000003B', 'Corrupt or incompatible system driver'],
-          ['CRITICAL_PROCESS_DIED', '0x000000EF', 'Core system process terminated — often malware or corrupt OS'],
-          ['MEMORY_MANAGEMENT', '0x0000001A', 'RAM hardware failure — run MemTest86'],
-          ['NTFS_FILE_SYSTEM', '0x00000024', 'NTFS volume error — run chkdsk /f /r'],
-          ['DRIVER_IRQL_NOT_LESS_OR_EQUAL', '0x000000D1', 'Network adapter or graphics driver issue'],
-        ],
-      },
-      { type: 'heading', text: '2. SFC + DISM Repair Sequence (Always Run in This Order)' },
+      { type: 'heading', text: '2. Windows System Repair & Management' },
       {
         type: 'code',
         lang: 'cmd',
-        code: `:: Run ALL commands from elevated Command Prompt or PowerShell
-
-:: STEP 1 — Repair the Windows component store (online)
-DISM /Online /Cleanup-Image /RestoreHealth
-:: Wait for 100% completion — may take 15-30 minutes
-
-:: STEP 2 — Run System File Checker after DISM completes
+        code: `:: \u2500\u2500 SYSTEM FILE CHECKER (SFC) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+:: Must run AFTER DISM. Repairs individual Windows system files.
 sfc /scannow
-:: "Windows Resource Protection found corrupt files and repaired them" = success
-:: "...could not repair..." = run DISM from bootable WinPE and retry
+:: Output: "found corrupt files and successfully repaired them"
 
-:: STEP 3 — Check disk for file system errors
+:: \u2500\u2500 DISM (Deployment Image Servicing) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+:: Repairs the Windows component store. Run BEFORE sfc.
+DISM /Online /Cleanup-Image /CheckHealth     :: Quick status check
+DISM /Online /Cleanup-Image /ScanHealth      :: Deep scan (slower)
+DISM /Online /Cleanup-Image /RestoreHealth   :: Repair from Windows Update
+
+:: \u2500\u2500 CHKDSK (Check Disk) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
 chkdsk C: /f /r /x
-:: /f = fix errors  /r = recover readable info  /x = dismount first
-:: Will schedule on next reboot if C: is the system drive
+:: /f = fix errors, /r = recover readable info, /x = dismount first
 
-:: STEP 4 — Verify image health post-repair
-DISM /Online /Cleanup-Image /CheckHealth`,
+:: \u2500\u2500 GPUPDATE (Group Policy) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+gpupdate /force          :: Force immediate policy refresh
+gpresult /R              :: Show applied policies for current user
+
+:: \u2500\u2500 SHUTDOWN & RESTART \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+shutdown /s /t 0         :: Immediate shutdown
+shutdown /r /t 0         :: Immediate restart
+shutdown /r /o           :: Restart to Advanced Boot Options`,
       },
       {
         type: 'warning',
-        text: 'Never run SFC before DISM. SFC can silently mark corrupt system files as "repaired" using the broken component store, masking the real problem. Always DISM first to heal the store, then SFC to restore individual files.',
+        text: 'CRITICAL EXAM RULE: Always run DISM /RestoreHealth BEFORE sfc /scannow. SFC relies on the component store to repair files \u2014 if the store is corrupted, SFC will silently use bad data. This ordering question appears on virtually every Core 2 exam.',
       },
-      { type: 'heading', text: '3. Reading a Minidump in WinDbg (Quick Method)' },
-      {
-        type: 'code',
-        lang: 'powershell',
-        code: `# Locate minidump files
-Get-ChildItem C:\Windows\Minidump | Sort-Object LastWriteTime -Descending | Select -First 5
-
-# Quick BSOD analysis without WinDbg — read event log
-Get-WinEvent -LogName System | Where-Object {$_.Id -eq 41 -or $_.Id -eq 1001} |
-  Select TimeCreated, Message | Format-List | Out-File $env:TEMP\bsod_log.txt
-
-notepad $env:TEMP\bsod_log.txt`,
-      },
-    ],
-  },
-
-  'core2-operations': {
-    title: 'ESD Safety Protocols & Professional Cohort Documentation Standards',
-    trackLabel: 'CompTIA A+ Core 2 (220-1202) — Domain 4.0 Operational Procedures',
-    contributor: 'Operations Lead',
-    contributorRole: 'Core 2 Expert',
-    cohort: '2026-RTT-23',
-    tags: ['ESD', 'documentation', 'change-management', 'safety', 'operations'],
-    content: [
-      {
-        type: 'intro',
-        text: 'Operational procedures are often underestimated — they account for a significant question block on 220-1202 and directly translate to professional IT practice. This guide covers ESD safety, documentation standards, and the change management lifecycle.',
-      },
-      { type: 'heading', text: '1. ESD Safety Protocols' },
-      {
-        type: 'steps',
-        items: [
-          'Use an anti-static wrist strap connected to an unpainted metal chassis — not a painted surface or plastic.',
-          'ESD-safe mat: Place components on anti-static mat, not bare table or carpet.',
-          'Anti-static bags: Store components in pink or silver anti-static bags; never on top of the bag (only works from inside).',
-          'Environment: Maintain 40–60% relative humidity. Dry air below 20% RH dramatically increases ESD risk.',
-          'Clothing: Avoid synthetic fabrics (polyester, wool). Natural cotton is safer in ESD-sensitive areas.',
-          'Self-grounding: Before touching any component, touch an exposed metal part of the chassis with the system unplugged.',
-        ],
-      },
-      {
-        type: 'warning',
-        text: 'A typical ESD event is 1,000–35,000 volts — but humans cannot feel discharges below ~3,500V. Components can be permanently damaged by ESD you never felt. Treat ESD prevention as non-negotiable, not optional.',
-      },
-      { type: 'heading', text: '2. Change Management Lifecycle' },
+      { type: 'heading', text: '3. Windows Disk & Partition Management' },
       {
         type: 'table',
-        headers: ['Phase', 'Key Activity', 'Output Document'],
+        headers: ['Command', 'Purpose', 'Common Usage'],
         rows: [
-          ['Request', 'Document proposed change, affected systems, business justification', 'RFC (Request for Change)'],
-          ['Assessment', 'Risk analysis, rollback plan, resource requirements', 'Risk Assessment Matrix'],
-          ['Approval', 'CAB (Change Advisory Board) review and sign-off', 'Approved Change Order'],
-          ['Implementation', 'Execute during approved maintenance window', 'Change Log with timestamps'],
-          ['Verification', 'Test functionality, confirm success with stakeholders', 'Post-Implementation Review'],
-          ['Documentation', 'Update CMDB, knowledge base, and asset management', 'Updated Configuration Records'],
+          ['diskpart', 'Interactive disk partition manager', 'list disk \u2192 select disk \u2192 clean \u2192 create partition primary'],
+          ['format', 'Format a volume', 'format F: /FS:NTFS /Q (quick format)'],
+          ['convert', 'Convert disk type', 'convert G: /FS:NTFS (FAT32 \u2192 NTFS, one-way)'],
+          ['defrag', 'Defragment HDD', 'defrag C: /O (optimize \u2014 SSD trim or HDD defrag)'],
+          ['robocopy', 'Robust file copy', 'robocopy src dest /MIR /MT:8 (mirror, 8 threads)'],
+          ['xcopy', 'Extended copy', 'xcopy src dest /E /H /K (subdirs, hidden, attributes)'],
         ],
       },
-      { type: 'heading', text: '3. Professional Ticket Documentation Template' },
+      { type: 'heading', text: '4. Linux Essential Commands' },
+      {
+        type: 'table',
+        headers: ['Command', 'Purpose', 'Key Flags / Examples'],
+        rows: [
+          ['ls', 'List directory contents', '-la (all, long format), -lh (human-readable sizes)'],
+          ['cd', 'Change directory', 'cd ~ (home), cd .. (parent), cd / (root)'],
+          ['pwd', 'Print working directory', 'Shows absolute path of current location'],
+          ['cp', 'Copy files/directories', '-r (recursive for dirs), -p (preserve attributes)'],
+          ['mv', 'Move or rename', 'mv old.txt new.txt (rename), mv file /dest/ (move)'],
+          ['rm', 'Remove files/directories', '-r (recursive), -f (force), -i (interactive confirm)'],
+          ['mkdir', 'Create directory', '-p (create parent dirs if needed)'],
+          ['chmod', 'Change permissions', 'chmod 755 file (rwxr-xr-x), chmod u+x script.sh'],
+          ['chown', 'Change ownership', 'chown user:group file, -R for recursive'],
+          ['grep', 'Search text patterns', '-r (recursive), -i (case-insensitive), -n (line numbers)'],
+          ['find', 'Find files by criteria', 'find / -name "*.log" -mtime -7 (logs modified in 7 days)'],
+          ['cat', 'Display file contents', 'cat file.txt, cat file1 file2 > combined.txt'],
+          ['nano / vi', 'Text editors', 'nano = beginner-friendly, vi = modal (exam favorite)'],
+        ],
+      },
+      { type: 'heading', text: '5. Linux System Administration' },
       {
         type: 'code',
-        lang: 'text',
-        code: `────────────────────────────────────────────────
-INCIDENT TICKET — COHORT 2026-RTT-23 STANDARD
-────────────────────────────────────────────────
-Ticket ID    : INC-2026-XXXX
-Date/Time    : YYYY-MM-DD HH:MM (24hr format)
-Technician   : [Your Name / Badge]
-Affected User: [Full Name, Department, Ext.]
-Device ID    : [Asset Tag / Serial Number]
-Priority     : P1-Critical / P2-High / P3-Medium / P4-Low
+        lang: 'bash',
+        code: `# \u2500\u2500 SERVICE MANAGEMENT (systemd) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+sudo systemctl start nginx        # Start a service
+sudo systemctl stop nginx         # Stop a service
+sudo systemctl restart nginx      # Restart (stop + start)
+sudo systemctl enable nginx       # Auto-start at boot
+sudo systemctl status nginx       # Check service health
 
-SYMPTOM DESCRIPTION:
-  [Exact user-reported issue in their own words]
+# \u2500\u2500 PACKAGE MANAGEMENT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+# Debian/Ubuntu (apt):
+sudo apt update && sudo apt upgrade -y
+sudo apt install <package>
+sudo apt remove <package>
 
-INVESTIGATION STEPS:
-  1. [What you checked first]
-  2. [Commands run / diagnostics performed]
-  3. [Findings at each step]
+# Red Hat/CentOS (dnf/yum):
+sudo dnf update
+sudo dnf install <package>
+sudo dnf remove <package>
 
-ROOT CAUSE:
-  [Identified cause — be specific, not vague]
+# \u2500\u2500 USER & PERMISSION MANAGEMENT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+sudo useradd -m -s /bin/bash newuser    # Create user with home dir
+sudo passwd newuser                      # Set password
+sudo usermod -aG sudo newuser            # Add to sudo group
+sudo userdel -r olduser                  # Delete user + home dir
 
-RESOLUTION:
-  [Exact steps taken to resolve; include KB article if used]
-
-VERIFICATION:
-  [How you confirmed the issue was resolved — tested by user?]
-
-FOLLOW-UP REQUIRED: Yes / No
-────────────────────────────────────────────────`,
+# \u2500\u2500 NETWORK DIAGNOSTICS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+ip addr show                    # View IP configuration (replaces ifconfig)
+ip route show                   # View routing table
+ss -tulnp                       # Show listening ports (replaces netstat)
+dig google.com                  # DNS lookup (detailed)
+curl -I https://example.com     # Test HTTP response headers`,
+      },
+      { type: 'heading', text: '6. Linux Permissions Reference' },
+      {
+        type: 'table',
+        headers: ['Numeric', 'Symbolic', 'Meaning', 'Use Case'],
+        rows: [
+          ['7', 'rwx', 'Read + Write + Execute', 'Owner of scripts, binaries'],
+          ['6', 'rw-', 'Read + Write', 'Owner of data files'],
+          ['5', 'r-x', 'Read + Execute', 'Group access to scripts'],
+          ['4', 'r--', 'Read only', 'Public config files'],
+          ['0', '---', 'No access', 'Deny all to others'],
+          ['755', 'rwxr-xr-x', 'Owner full, others read+exec', 'Standard for executables'],
+          ['644', 'rw-r--r--', 'Owner read/write, others read', 'Standard for data files'],
+          ['700', 'rwx------', 'Owner only', 'Private scripts, SSH keys'],
+        ],
+      },
+      {
+        type: 'tip',
+        text: 'Exam shortcut for chmod: Read=4, Write=2, Execute=1. Add them up for each position (Owner-Group-Others). "chmod 754" = Owner(rwx=7), Group(r-x=5), Others(r--=4). PBQ simulations require setting exact permissions.',
       },
     ],
   },
@@ -659,7 +328,7 @@ FOLLOW-UP REQUIRED: Yes / No
 
   'healthcare-ehr': {
     title: 'HL7 Messaging Schemas & Epic/Cerner EHR Integration Blueprints',
-    trackLabel: 'Advanced Healthcare IT — EHR Architecture',
+    trackLabel: 'Advanced Healthcare IT \u2014 EHR Architecture',
     contributor: 'Jamin Ware',
     contributorRole: 'HealthIT Specialist',
     cohort: '2026-RTT-23',
@@ -691,7 +360,7 @@ OBX|2|NM|718-7^HGB^LN||13.2|g/dL|12.0-16.0|N|||F|||20260626110000`,
         rows: [
           ['Interface Engine', 'Epic Bridges', 'Cerner Millennium Interface Engine', 'Routes HL7 messages between systems'],
           ['Middleware', 'InterSystems HealthShare / Rhapsody', 'Mirth Connect / Rhapsody', 'Message transformation and routing'],
-          ['Lab Interface', 'Epic Bridges → LIS', 'Cerner PathNet → LIS', 'Bidirectional lab orders/results'],
+          ['Lab Interface', 'Epic Bridges \u2192 LIS', 'Cerner PathNet \u2192 LIS', 'Bidirectional lab orders/results'],
           ['ADT Feed', 'Epic ADT (A01/A08/A03)', 'Cerner Registration (A01/A08)', 'Patient admit/discharge/transfer events'],
           ['FHIR API Layer', 'Epic FHIR R4', 'Cerner SMART on FHIR', 'Modern REST access for third-party apps'],
         ],
@@ -700,12 +369,12 @@ OBX|2|NM|718-7^HGB^LN||13.2|g/dL|12.0-16.0|N|||F|||20260626110000`,
       {
         type: 'code',
         lang: 'bash',
-        code: `# Epic FHIR R4 — Get patient by MRN
+        code: `# Epic FHIR R4 \u2014 Get patient by MRN
 GET https://fhir.epic.org/interconnect-fhir-oauth/api/FHIR/R4/Patient?identifier=MR-789456
 Authorization: Bearer <SMART_token>
 Accept: application/fhir+json
 
-# Cerner FHIR — Search observations by patient + code
+# Cerner FHIR \u2014 Search observations by patient + code
 GET https://fhir-ehr.cerner.com/r4/TENANT_ID/Observation?patient=12345&code=http://loinc.org|6690-2
 
 # Create a MedicationRequest (new order)
@@ -725,142 +394,13 @@ Content-Type: application/fhir+json
     ],
   },
 
-  'healthcare-hipaa': {
-    title: 'PHI Encryption Standards, Access Control Matrices, & Audit Log Requirements',
-    trackLabel: 'Advanced Healthcare IT — HIPAA Data Security',
-    contributor: 'Compliance Officer',
-    contributorRole: 'HealthIT Specialist',
-    cohort: '2026-RTT-23',
-    tags: ['HIPAA', 'PHI', 'encryption', 'access-control', 'audit-logs', 'compliance'],
-    content: [
-      {
-        type: 'intro',
-        text: 'HIPAA compliance is not optional — it is federal law. This comprehensive reference by the Compliance Officer covers encryption standards for PHI at rest and in transit, access control matrix design, and audit log requirements that survive a CMS audit.',
-      },
-      { type: 'heading', text: '1. PHI Encryption Standards' },
-      {
-        type: 'table',
-        headers: ['Data State', 'Minimum Standard', 'Recommended', 'Common Tool'],
-        rows: [
-          ['At Rest (Database)', 'AES-128', 'AES-256', 'SQL TDE, FileVault, BitLocker'],
-          ['At Rest (Workstation)', 'AES-128', 'AES-256 + TPM 2.0', 'BitLocker (Windows), FileVault (Mac)'],
-          ['In Transit', 'TLS 1.2', 'TLS 1.3', 'HTTPS, SFTP, STARTTLS'],
-          ['Backup Media', 'AES-256', 'AES-256 + offline key escrow', 'Veeam, Commvault with encryption'],
-          ['Email with PHI', 'TLS + Message-level encryption', 'S/MIME or PGP', 'ProofPoint, Zix, Microsoft Purview'],
-        ],
-      },
-      {
-        type: 'warning',
-        text: 'TLS 1.0 and TLS 1.1 are DEPRECATED and must not be used for PHI transmission. Any system still running TLS 1.0 is out of HIPAA compliance and must be remediated immediately. Run SSLScan or Qualys SSL Labs to audit.',
-      },
-      { type: 'heading', text: '2. Role-Based Access Control Matrix (Sample)' },
-      {
-        type: 'table',
-        headers: ['Role', 'Demographics', 'Clinical Notes', 'Billing', 'PHI Export', 'Admin'],
-        rows: [
-          ['Physician', 'R/W', 'R/W', 'R', 'Limited', 'None'],
-          ['Nurse', 'R/W', 'R/W', 'None', 'None', 'None'],
-          ['Medical Coder', 'R', 'R (dx only)', 'R/W', 'None', 'None'],
-          ['IT Support (Tier 1)', 'R (last 4 SSN only)', 'None', 'None', 'None', 'System only'],
-          ['Privacy Officer', 'R', 'R (audit mode)', 'R', 'Audit only', 'Policy only'],
-          ['Administrator', 'Full', 'Full', 'Full', 'Full', 'Full'],
-        ],
-      },
-      { type: 'heading', text: '3. Audit Log Requirements' },
-      {
-        type: 'steps',
-        items: [
-          'Required events: All PHI access (read/write/delete), failed login attempts, privilege escalation, configuration changes.',
-          'Retention: Minimum 6 years from the date of creation or last effective date (HIPAA Security Rule §164.316).',
-          'Integrity: Logs must be tamper-evident — use WORM storage, cryptographic signing, or centralized SIEM.',
-          'Review cadence: Logs must be reviewed regularly — most auditors expect weekly automated alerting + monthly human review.',
-          'Monitoring alerts: Trigger on: access outside normal hours, bulk exports, access to VIP patient records, repeated failed auth.',
-        ],
-      },
-      {
-        type: 'code',
-        lang: 'sql',
-        code: `-- Sample audit log query: Who accessed patient 789456 in the last 30 days?
-SELECT
-  a.access_timestamp,
-  u.user_display_name,
-  u.department,
-  a.access_type,        -- READ, WRITE, DELETE, EXPORT
-  a.resource_accessed,
-  a.ip_address,
-  a.workstation_id
-FROM phi_audit_log a
-  JOIN system_users u ON a.user_id = u.user_id
-WHERE
-  a.patient_mrn = 'MR-789456'
-  AND a.access_timestamp >= NOW() - INTERVAL '30 days'
-ORDER BY a.access_timestamp DESC;`,
-      },
-    ],
-  },
-
-  'healthcare-clinical': {
-    title: 'Computerized Physician Order Entry (CPOE) Optimization & Order Set Workflows',
-    trackLabel: 'Advanced Healthcare IT — Clinical Workflows',
-    contributor: 'Clinical Analyst',
-    contributorRole: 'HealthIT Specialist',
-    cohort: '2026-RTT-23',
-    tags: ['CPOE', 'clinical-workflows', 'order-sets', 'downtime', 'healthcare-it'],
-    content: [
-      {
-        type: 'intro',
-        text: 'CPOE (Computerized Physician Order Entry) is the digital backbone of clinical care delivery. This guide from our Clinical Analyst covers order set optimization, interface error handling, and the downtime protocols that keep hospitals running when the EHR goes dark.',
-      },
-      { type: 'heading', text: '1. CPOE Order Set Optimization Principles' },
-      {
-        type: 'steps',
-        items: [
-          'Standardize defaults: Pre-populate order sets with evidence-based defaults (e.g., sepsis bundle, AMI protocol) to reduce cognitive load at point of care.',
-          'Decision support alerts: CDS (Clinical Decision Support) rules fire for drug-allergy, drug-drug interactions, and duplicate orders — calibrate sensitivity to reduce alert fatigue.',
-          'Order set versioning: All order set changes require physician and pharmacy sign-off. Use version control in the EHR build environment.',
-          'Naming convention: Use "DEPT — CONDITION — AGE GROUP" format (e.g., "CARD — Acute MI — Adult") for searchability.',
-          'Favorite lists: Train physicians to build personal order favorites for their top 10 recurring orders — reduces clicks by 40-60%.',
-        ],
-      },
-      { type: 'heading', text: '2. CPOE Interface Error Handling' },
-      {
-        type: 'table',
-        headers: ['Error Type', 'Likely Cause', 'Immediate Action'],
-        rows: [
-          ['Order stuck in "Transmitting"', 'HL7 interface engine down', 'Alert interface team; manually fax order to pharmacy'],
-          ['"Patient not found" in pharmacy', 'ADT not synced to pharmacy system', 'Check A01 message in interface engine logs; resend'],
-          ['Lab orders not received by LIS', 'MLLP listener down on LIS server', 'Ping LIS server on port 2575; alert lab and IT'],
-          ['Duplicate medication alert not firing', 'Order set missing duplicate check flag', 'Escalate to EHR build team for CDS rule review'],
-          ['eMAR not updating', 'Medication administration interface lag', 'Verify interface heartbeat; manual paper MAR as backup'],
-        ],
-      },
-      {
-        type: 'warning',
-        text: 'When a CPOE-to-pharmacy interface fails, NEVER let a critical medication order wait more than 15 minutes. Activate verbal/phone order protocol immediately and document the downtime event in the incident log.',
-      },
-      { type: 'heading', text: '3. Downtime Activation Checklist' },
-      {
-        type: 'steps',
-        items: [
-          'T+0 min: Confirm EHR outage with help desk and system admin. Verify it is a true outage, not a local workstation issue.',
-          'T+5 min: Notify charge nurses on all units and department heads. Activate downtime binders (kept at each nursing station).',
-          'T+10 min: Switch to paper CPOE forms. Medications via paper MAR. Lab via paper requisitions.',
-          'T+30 min: Brief all attending physicians; activate verbal order protocol.',
-          'T+60 min: Escalate to CMIO and hospital administration if outage persists.',
-          'On restoration: Reconcile all paper orders into EHR within 2 hours per Joint Commission standard.',
-          'Post-event: Complete downtime report within 48 hours. RCA within 7 days.',
-        ],
-      },
-    ],
-  },
-
   // ─────────────────────────────────────────────────────────
   // Sub-page fallbacks (keep previous ones working)
   // ─────────────────────────────────────────────────────────
 
   'healthcare-ehr/integration': {
     title: 'HL7 Messaging Schemas & EHR Integration Blueprints',
-    trackLabel: 'Advanced Healthcare IT — EHR Architecture',
+    trackLabel: 'Advanced Healthcare IT \u2014 EHR Architecture',
     contributor: 'Jamin Ware',
     contributorRole: 'HealthIT Specialist',
     cohort: '2026-RTT-23',
@@ -872,7 +412,7 @@ ORDER BY a.access_timestamp DESC;`,
 
   'healthcare-clinical/cpoe': {
     title: 'CPOE Optimization & Order Set Workflows',
-    trackLabel: 'Advanced Healthcare IT — Clinical Workflows',
+    trackLabel: 'Advanced Healthcare IT \u2014 Clinical Workflows',
     contributor: 'Jamin Ware',
     contributorRole: 'HealthIT Specialist',
     cohort: '2026-RTT-23',
@@ -883,12 +423,12 @@ ORDER BY a.access_timestamp DESC;`,
   },
 
   // ─────────────────────────────────────────────────────────
-  // STUDY TIPS — Overview pages
+  // STUDY TIPS \u2014 Overview pages
   // ─────────────────────────────────────────────────────────
 
   'study-tips/core1-overview': {
-    title: 'CompTIA A+ Core 1 (220-1201) — Complete Study Guide Overview',
-    trackLabel: 'Study Tips — CompTIA A+ Core 1',
+    title: 'CompTIA A+ Core 1 (220-1201) \u2014 Complete Study Guide Overview',
+    trackLabel: 'Study Tips \u2014 CompTIA A+ Core 1',
     contributor: 'Cohort Lead',
     contributorRole: 'Core 1 Expert',
     cohort: '2026-RTT-23',
@@ -903,188 +443,16 @@ ORDER BY a.access_timestamp DESC;`,
         ['4.0', 'Virtualization & Cloud', '11%'],
         ['5.0', 'Hardware & Network Troubleshooting', '29%'],
       ]},
-      { type: 'tip', text: 'Domain 5.0 is the highest-weighted domain at 29%. Prioritize motherboard troubleshooting PBQs and the 8-step diagnostic methodology. Domain 3.0 Hardware at 25% is second — focus on DDR generations, PCIe lanes, and form factors.' },
+      { type: 'tip', text: 'Domain 5.0 is the highest-weighted domain at 29%. Prioritize motherboard troubleshooting PBQs and the 8-step diagnostic methodology. Domain 3.0 Hardware at 25% is second \u2014 focus on DDR generations, PCIe lanes, and form factors.' },
       { type: 'heading', text: 'Critical Study Priorities' },
       { type: 'steps', items: [
-        'Domain 5.0: Master POST beep codes (AMI, Award, Phoenix) — they appear in every PBQ simulation.',
-        'Domain 2.0: Memorize port numbers cold — 20/21 FTP, 22 SSH, 53 DNS, 80/443 HTTP/HTTPS, 3389 RDP.',
+        'Domain 5.0: Master POST beep codes (AMI, Award, Phoenix) \u2014 they appear in every PBQ simulation.',
+        'Domain 2.0: Memorize port numbers cold \u2014 20/21 FTP, 22 SSH, 53 DNS, 80/443 HTTP/HTTPS, 3389 RDP.',
         'Domain 3.0: Know every DDR generation (3/4/5) voltage, speed, and notch position.',
         'Domain 1.0: Understand MDM enrollment types (DEP/ADE vs. User Enrollment) and remote wipe vs. selective wipe.',
         'Domain 4.0: Type 1 vs. Type 2 hypervisors; IaaS/PaaS/SaaS service model distinctions.',
       ]},
-      { type: 'warning', text: 'The 220-1201 exam contains PBQ (Performance-Based Questions) that are drag-and-drop simulations, not multiple choice. You cannot skip them — they are scored at the beginning of the exam. Practice PBQs weekly.' },
-    ],
-  },
-
-  'study-tips/core2-overview': {
-    title: 'CompTIA A+ Core 2 (220-1202) — Complete Study Guide Overview',
-    trackLabel: 'Study Tips — CompTIA A+ Core 2',
-    contributor: 'SysAdmin Pro',
-    contributorRole: 'Core 2 Expert',
-    cohort: '2026-RTT-23',
-    tags: ['study-tips', 'core2', 'overview', 'CompTIA'],
-    content: [
-      { type: 'intro', text: 'Your master index for CompTIA A+ Core 2 (220-1202). This overview maps every domain to its highest-yield study resources in this knowledge base.' },
-      { type: 'heading', text: 'Domain Weight Distribution' },
-      { type: 'table', headers: ['Domain', 'Topic', 'Exam Weight'], rows: [
-        ['1.0', 'Operating Systems', '27%'],
-        ['2.0', 'Security', '24%'],
-        ['3.0', 'Software Troubleshooting', '26%'],
-        ['4.0', 'Operational Procedures', '23%'],
-      ]},
-      { type: 'tip', text: 'Core 2 is the most balanced exam — all domains are within 4% of each other. No single domain dominates, so breadth of study matters more than depth in any one area.' },
-      { type: 'heading', text: 'Non-Negotiable Study Items' },
-      { type: 'steps', items: [
-        'Security: Memorize the 8-step malware removal process in exact order — it appears verbatim on the exam.',
-        'OS: Know Windows 11 TPM 2.0 requirement; know upgrade path rules (32-bit cannot in-place upgrade to 64-bit).',
-        'Troubleshooting: SFC must run AFTER DISM — never before. This is a guaranteed exam question.',
-        'Operations: Know change management phases: Request → Assessment → Approval → Implementation → Verification → Documentation.',
-        'Security: Social engineering types — phishing, spear phishing, vishing, smishing, tailgating, pretexting.',
-      ]},
-    ],
-  },
-
-  // ─────────────────────────────────────────────────────────
-  // DIAGRAMS
-  // ─────────────────────────────────────────────────────────
-
-  'diagrams/motherboard': {
-    title: 'Interactive Motherboard Blueprint',
-    trackLabel: 'Diagrams — Hardware Architecture',
-    contributor: 'Tech Specialist',
-    contributorRole: 'Core 1 Expert',
-    cohort: '2026-RTT-23',
-    tags: ['diagrams', 'motherboard', 'hardware', 'blueprint'],
-    content: [
-      { type: 'intro', text: 'A comprehensive annotated motherboard blueprint covering every connector, slot, and component location tested on the 220-1201 exam.' },
-      { type: 'heading', text: 'ATX Motherboard Component Map' },
-      { type: 'code', lang: 'text', code: `┌─────────────────────────────────────────────────────────┐
-│  ATX MOTHERBOARD — ANNOTATED COMPONENT LAYOUT           │
-├─────────────────────────────────────────────────────────┤
-│ [24-pin ATX Power]  [CPU Socket]  [EPS 8-pin CPU Power] │
-│                     [AM5 / LGA1700]                     │
-│ [DIMM A1]─────────────────────────── [DIMM B1]          │
-│ [DIMM A2]─────────────────────────── [DIMM B2]          │
-│   ↑ Populate A2+B2 first for dual-channel               │
-│                                                         │
-│ [PCIe 5.0 x16  — Primary GPU Slot]                      │
-│ [PCIe 3.0 x1   — Expansion Card]                        │
-│ [PCIe 4.0 x16  — Secondary GPU/NVMe AIC]                │
-│                                                         │
-│ [M.2 NVMe Slot 0] ← Gen 4 x4 (CPU lanes)               │
-│ [M.2 NVMe Slot 1] ← Gen 3 x4 (Chipset lanes)           │
-│                                                         │
-│ [SATA 0─5] ← 6x SATA III ports (6 Gb/s)                │
-│                                                         │
-│ [USB 3.2 Gen 2 Header]  [USB 3.2 Gen 1 Header]          │
-│ [USB 2.0 Header x2]     [Front Panel Header]            │
-│                                                         │
-│ [CLR_CMOS Jumper] [BIOS Flashback Button] [CR2032]      │
-└─────────────────────────────────────────────────────────┘` },
-      { type: 'heading', text: 'Front Panel Header Pin Map' },
-      { type: 'table', headers: ['Pins', 'Label', 'Function'], rows: [
-        ['1-2', 'PWR_SW', 'Power button (momentary contact)'],
-        ['3-4', 'PWR_LED+/-', 'Power LED indicator'],
-        ['5-6', 'RST_SW', 'Reset button'],
-        ['7-8', 'HDD_LED', 'Storage activity LED'],
-        ['9-10', 'SPEAK', '4-pin internal speaker for POST beeps'],
-      ]},
-      { type: 'warning', text: 'The SPEAKER header (pins 9-10) is separate from the audio header. Without it connected, you will NOT hear POST beep codes during troubleshooting. Always verify it is connected before diagnosing POST failures.' },
-      { type: 'heading', text: 'PCIe Lane Budget (Intel 13th/14th Gen Example)' },
-      { type: 'table', headers: ['Source', 'Total Lanes', 'Allocation'], rows: [
-        ['CPU (direct)', '20 lanes', 'PCIe 5.0 x16 (GPU) + PCIe 4.0 x4 (M.2 slot 0)'],
-        ['Chipset (Z790)', '28 lanes', 'PCIe 3.0/4.0 for remaining M.2, SATA, USB'],
-        ['Combined total', '48 effective', 'Shared via DMI 4.0 x8 between CPU and chipset'],
-      ]},
-    ],
-  },
-
-  'diagrams/network-topology': {
-    title: 'Network Topology Mapping Tool',
-    trackLabel: 'Diagrams — Network Architecture',
-    contributor: 'NetSec Expert',
-    contributorRole: 'Core 1 Expert',
-    cohort: '2026-RTT-23',
-    tags: ['diagrams', 'networking', 'topology', 'LAN', 'WAN'],
-    content: [
-      { type: 'intro', text: 'Visual topology reference for all major network architectures — from physical cabling topologies to logical segmentation used in healthcare IT environments.' },
-      { type: 'heading', text: 'Physical Topology Comparison' },
-      { type: 'code', lang: 'text', code: `STAR TOPOLOGY (Most Common in Enterprise)
-     [Workstation 1]
-          |
-     [Workstation 2]──── [Central Switch] ────[Server]
-          |
-     [Workstation 3]
-  ✅ Pros: Single point of failure only at switch
-  ❌ Cons: If switch fails, entire segment down
-
-──────────────────────────────────────────────────
-MESH TOPOLOGY (Healthcare Critical Systems)
-  [EHR Server]─────[Backup Server]
-       │   ╲       ╱    │
-       │    ╲     ╱     │
-  [Lab System]──[Pharmacy]
-  ✅ Pros: Redundant paths, no single point of failure
-  ❌ Cons: Expensive, complex to manage
-
-──────────────────────────────────────────────────
-BUS TOPOLOGY (Legacy — avoid in new installs)
-  [PC1]──[PC2]──[PC3]──[PC4]──[Terminator]
-  ❌ Deprecated: Entire network fails on cable break` },
-      { type: 'heading', text: 'Network Segmentation: VLAN Architecture' },
-      { type: 'table', headers: ['VLAN ID', 'Segment Name', 'Devices', 'Access Level'], rows: [
-        ['VLAN 10', 'Clinical Workstations', 'EHR terminals, nurse stations', 'EHR + Internet'],
-        ['VLAN 20', 'Medical Devices', 'IV pumps, monitors, imaging', 'LAN only (air-gapped preferred)'],
-        ['VLAN 30', 'Staff Wi-Fi', 'Personal laptops, phones (BYOD)', 'Internet only'],
-        ['VLAN 40', 'Guest Wi-Fi', 'Patient/visitor devices', 'Internet only (isolated)'],
-        ['VLAN 99', 'Management', 'Switches, routers, APs', 'Admin only (jump host required)'],
-      ]},
-      { type: 'tip', text: 'In healthcare networks, medical devices (VLAN 20) should NEVER be on the same VLAN as general workstations. A compromised workstation must not be able to reach infusion pumps or imaging equipment.' },
-    ],
-  },
-
-  'diagrams/ehr-dataflow': {
-    title: 'EHR Architecture Data Flow Diagram',
-    trackLabel: 'Diagrams — Healthcare IT Architecture',
-    contributor: 'HealthIT Architect',
-    contributorRole: 'HealthIT Specialist',
-    cohort: '2026-RTT-23',
-    tags: ['diagrams', 'EHR', 'data-flow', 'architecture', 'HL7'],
-    content: [
-      { type: 'intro', text: 'A complete data flow blueprint for how clinical data moves between EHR systems, ancillary systems, and external partners in a modern hospital environment.' },
-      { type: 'heading', text: 'Clinical Data Flow Architecture' },
-      { type: 'code', lang: 'text', code: `┌──────────────────────────────────────────────────────────┐
-│           CLINICAL DATA FLOW — HIGH LEVEL                │
-├──────────────────────────────────────────────────────────┤
-│                                                          │
-│  [Registration Desk]──ADT A01/A08──→[EHR Core Engine]   │
-│                                           │              │
-│  [CPOE (Physician)]──Order HL7 ORM──→[Order Mgmt]       │
-│                                           │              │
-│  [Laboratory (LIS)]←──Order──────────────┤              │
-│       │                                  │              │
-│       └──Result ORU R01──────────────→[EHR Results]     │
-│                                           │              │
-│  [Pharmacy (PIS)]←──MedOrder Rx──────────┤              │
-│       │                                  │              │
-│       └──eMAR Update──────────────────→[Nursing]        │
-│                                           │              │
-│  [Radiology (RIS)]←──Order──────────────┤              │
-│       │                                  │              │
-│       └──DICOM Images──→[PACS]           │              │
-│       └──Report ORU R01──────────────→[EHR]             │
-│                                           │              │
-│  [Billing/RCM]←──Charges DFT P03─────────┘              │
-└──────────────────────────────────────────────────────────┘` },
-      { type: 'heading', text: 'Message Type Reference' },
-      { type: 'table', headers: ['HL7 Message', 'Trigger Event', 'Direction'], rows: [
-        ['ADT^A01', 'Patient admitted', 'Registration → EHR, Pharmacy, Lab'],
-        ['ADT^A03', 'Patient discharged', 'EHR → Billing, Ancillary systems'],
-        ['ORM^O01', 'New order placed (lab, rad)', 'CPOE → LIS/RIS'],
-        ['ORU^R01', 'Result available', 'LIS/RIS → EHR'],
-        ['RDE^O11', 'Pharmacy dispense event', 'Pharmacy → eMAR'],
-        ['DFT^P03', 'Charge capture', 'EHR → Billing/RCM'],
-      ]},
+      { type: 'warning', text: 'The 220-1201 exam contains PBQ (Performance-Based Questions) that are drag-and-drop simulations, not multiple choice. You cannot skip them \u2014 they are scored at the beginning of the exam. Practice PBQs weekly.' },
     ],
   },
 
@@ -1094,7 +462,7 @@ BUS TOPOLOGY (Legacy — avoid in new installs)
 
   'azari-prompt-playbook/pbq-prompts': {
     title: 'Core 1 PBQ Simulation Prompts for Canvas Class AI',
-    trackLabel: 'Prompt Playbook — CompTIA A+ Core 1 PBQ Simulations',
+    trackLabel: 'Prompt Playbook \u2014 CompTIA A+ Core 1 PBQ Simulations',
     contributor: 'Cohort Lead',
     contributorRole: 'AI Prompt Engineer',
     cohort: '2026-RTT-23',
@@ -1102,7 +470,7 @@ BUS TOPOLOGY (Legacy — avoid in new installs)
     content: [
       { type: 'intro', text: 'Ready-to-use prompt frameworks engineered for Canvas Class AI to generate realistic Performance-Based Question (PBQ) simulations for CompTIA A+ Core 1. Copy these prompts directly into the AI interface.' },
       { type: 'heading', text: 'Motherboard Troubleshooting PBQ Simulator' },
-      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI — Motherboard Troubleshooting PBQ
+      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI \u2014 Motherboard Troubleshooting PBQ
 
 You are a CompTIA A+ 220-1201 exam simulator. Generate a realistic
 Performance-Based Question in the following format:
@@ -1129,7 +497,7 @@ After the user arranges the steps, provide:
 2. Which step most technicians miss and why
 3. What the symptom most likely indicates` },
       { type: 'heading', text: 'Network Configuration PBQ Prompt' },
-      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI — Network Subnetting PBQ
+      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI \u2014 Network Subnetting PBQ
 
 Generate a subnetting Performance-Based Question:
 
@@ -1156,400 +524,13 @@ and explain why each answer is correct or incorrect.` },
     ],
   },
 
-  'azari-prompt-playbook/medical-prompts': {
-    title: 'Medical Case Study Breakdown Prompts for Canvas Class AI',
-    trackLabel: 'Prompt Playbook — Healthcare IT Case Studies',
-    contributor: 'HealthIT Architect',
-    contributorRole: 'AI Prompt Engineer',
-    cohort: '2026-RTT-23',
-    tags: ['prompts', 'healthcare', 'AI', 'case-study', 'EHR', 'Canvas'],
-    content: [
-      { type: 'intro', text: 'Prompt templates designed to turn Canvas Class AI into an interactive healthcare IT case study tutor — simulating real EHR outages, HIPAA scenarios, and clinical workflow disruptions.' },
-      { type: 'heading', text: 'EHR Downtime Scenario Prompt' },
-      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI — EHR Downtime Incident Response
-
-You are a Healthcare IT simulation trainer. Present this scenario
-and quiz me on my response decisions:
-
-SCENARIO: It is 2:14 AM on a Tuesday. The hospital EHR (Epic) becomes
-completely unavailable. You receive a page as the on-call IT analyst.
-Initial symptoms: All clinical workstations show "Unable to connect to
-EHR server." The pharmacy system is also offline. Lab results are not
-flowing. ICU nurses are reporting they cannot access patient charts.
-
-Ask me these questions one at a time (wait for my answer before next):
-
-Q1: What is your FIRST action in the next 5 minutes?
-Q2: Which department do you notify FIRST and how?
-Q3: What paper backup process should already be in place?
-Q4: At what point do you escalate to the on-call CMIO?
-Q5: How do you handle medication orders for ICU patients during downtime?
-
-After each answer: Score my response 1-5, explain what I got right,
-what I missed, and what the Joint Commission would expect.` },
-      { type: 'heading', text: 'HIPAA Breach Assessment Prompt' },
-      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI — HIPAA Breach Triage Simulation
-
-Act as a HIPAA Compliance Officer trainer. Present this scenario:
-
-SCENARIO: A hospital employee reports that they accidentally emailed
-a spreadsheet containing 847 patient names, DOBs, and diagnoses to
-an external vendor who was not a Business Associate. The email was
-sent 12 days ago. The vendor has confirmed receipt and states they
-have not shared the data further.
-
-Quiz me step by step:
-
-Q1: Does this qualify as a HIPAA breach? Justify your answer.
-Q2: What is the notification timeline for affected patients?
-Q3: Does the number 847 trigger any special reporting requirements?
-Q4: What documentation must be completed within 60 days?
-Q5: Draft a 3-sentence patient notification letter.
-
-Grade each response. Reference the actual HIPAA Breach Notification
-Rule (45 CFR §164.400-414) in your explanations.` },
-    ],
-  },
-
-  'azari-prompt-playbook/ehr-prompts': {
-    title: 'EHR Troubleshooting Frameworks for Canvas Class AI',
-    trackLabel: 'Prompt Playbook — EHR Troubleshooting',
-    contributor: 'Clinical Analyst',
-    contributorRole: 'AI Prompt Engineer',
-    cohort: '2026-RTT-23',
-    tags: ['prompts', 'EHR', 'troubleshooting', 'AI', 'frameworks', 'Canvas'],
-    content: [
-      { type: 'intro', text: 'Structured prompt frameworks to simulate EHR interface failures, HL7 error diagnosis, and clinical IT troubleshooting scenarios using Canvas Class AI.' },
-      { type: 'heading', text: 'HL7 Interface Error Diagnosis Prompt' },
-      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI — HL7 Interface Troubleshooting
-
-You are an integration engine expert. I will describe interface errors
-and you will guide me through diagnosis step by step.
-
-SCENARIO: Lab results from the LIS (Laboratory Information System)
-stopped flowing to the EHR at 08:45 AM. Orders are still going FROM
-the EHR TO the lab, but results are not coming back. The lab supervisor
-says results ARE printing locally in the lab.
-
-Guide me through the diagnostic tree:
-1. First ask me what the interface engine log shows
-2. Based on my answer, ask about MLLP port connectivity
-3. Ask me to check the ACK/NACK response messages
-4. Ask if there's a transformation error in the mapping layer
-5. Ask about any recent software updates in the last 24 hours
-
-For each step: explain WHY you're checking that item, what the
-finding would mean, and what the fix would be.
-
-Teach me the systematic approach, don't just give me the answer.` },
-      { type: 'heading', text: 'FHIR API Troubleshooting Prompt' },
-      { type: 'code', lang: 'text', code: `PROMPT: Canvas Class AI — FHIR API Integration Debug
-
-Act as a senior FHIR integration developer. A mobile patient portal
-app is failing to retrieve patient data. Help me debug it.
-
-ERROR: HTTP 401 Unauthorized on GET /Patient/12345
-
-Walk me through:
-1. OAuth 2.0 token validation (is the token expired? wrong scope?)
-2. SMART on FHIR launch context (standalone vs. EHR launch?)
-3. Patient compartment access rules
-4. Checking the FHIR server audit log for the denied request
-5. Testing with a raw curl command
-
-After each step I describe what I find, you tell me:
-- What that finding means
-- What to check next
-- Whether we've found the root cause
-
-Reference the SMART on FHIR specification in your explanations.` },
-      { type: 'tip', text: 'For best results with Canvas Class AI: start every prompt with a role assignment ("You are a..."), then specify the scenario, then list your exact questions. Ending with "Teach me the systematic approach" prevents the AI from just giving answers without explanation.' },
-    ],
-  },
-
   // ─────────────────────────────────────────────────────────
-  // Fix Boot Camp reference — Core 2 OS page stays clean
+  // QUICK REFERENCES
   // ─────────────────────────────────────────────────────────
-
-  'core2-os/windows-bootcamp': {
-    title: 'Cross-Platform OS Installation Guidelines & Upgrade Path Matrix',
-    trackLabel: 'CompTIA A+ Core 2 (220-1202) — Domain 1.0 Operating Systems',
-    contributor: 'Jamin Ware',
-    contributorRole: 'Core 2 Expert',
-    cohort: '2026-RTT-23',
-    tags: ['windows', 'macOS', 'Linux', 'installation', 'upgrade'],
-    content: [
-      { type: 'intro', text: 'Complete cross-platform OS installation guide covering Windows 11 clean installs, in-place upgrade paths, and macOS/Linux essentials for the 220-1202 exam.' },
-      { type: 'heading', text: 'Windows 11 Upgrade Path Matrix' },
-      { type: 'table', headers: ['Source OS', 'Target OS', 'Method', 'Data Preserved?'], rows: [
-        ['Windows 10 Home', 'Windows 11 Home', 'In-place via Windows Update', 'Yes (if compatible hardware)'],
-        ['Windows 10 Pro', 'Windows 11 Pro', 'In-place via Windows Update', 'Yes (if compatible hardware)'],
-        ['Windows 7/8.1', 'Windows 11', 'Clean install only (no direct path)', 'Must migrate manually'],
-        ['Windows 10 32-bit', 'Windows 11 64-bit', 'Clean install only', 'No (architecture change)'],
-      ]},
-      { type: 'warning', text: 'Windows 11 requires TPM 2.0 and Secure Boot. Without both, the upgrade wizard blocks entirely. Enable TPM via BIOS: Intel = PTT, AMD = fTPM. Secure Boot requires UEFI mode (Legacy/CSM must be disabled).' },
-    ],
-  },
-
-  // ─────────────────────────────────────────────────────────
-  // QUICK REFERENCE — Remapped to Domain Structure
-  // ─────────────────────────────────────────────────────────
-
-  'core1-networking/ports': {
-    title: 'Network Ports & Protocols — Complete Quick Reference',
-    trackLabel: 'CompTIA A+ Core 1 (220-1201) — Domain 2.0 Networking',
-    contributor: 'NetSec Expert',
-    contributorRole: 'Reference Author',
-    cohort: '2026-RTT-23',
-    tags: ['ports', 'protocols', 'TCP', 'UDP', 'networking', 'quick-reference'],
-    content: [
-      {
-        type: 'intro',
-        text: 'This is the definitive port number reference for the CompTIA A+ Core 1 exam. Every port listed here appears in exam scenarios — memorize the protocol, transport layer, and typical use case for each. Port questions appear in both multiple-choice and PBQ drag-and-drop formats.',
-      },
-      { type: 'heading', text: '1. Essential Ports (Must Memorize)' },
-      {
-        type: 'table',
-        headers: ['Port', 'Protocol', 'Transport', 'Service', 'Exam Notes'],
-        rows: [
-          ['20', 'FTP-DATA', 'TCP', 'FTP Data Transfer', 'Active mode data channel'],
-          ['21', 'FTP', 'TCP', 'FTP Control/Command', 'Login, directory listing commands'],
-          ['22', 'SSH', 'TCP', 'Secure Shell / SFTP / SCP', 'Encrypted remote access — replaces Telnet'],
-          ['23', 'Telnet', 'TCP', 'Unencrypted Remote Access', 'INSECURE — never use in production'],
-          ['25', 'SMTP', 'TCP', 'Email Sending (outbound)', 'Server-to-server mail relay'],
-          ['53', 'DNS', 'TCP/UDP', 'Domain Name Resolution', 'UDP for queries, TCP for zone transfers'],
-          ['67', 'DHCP', 'UDP', 'DHCP Server', 'Assigns IP addresses to clients'],
-          ['68', 'DHCP', 'UDP', 'DHCP Client', 'Client listens for DHCP offers'],
-          ['80', 'HTTP', 'TCP', 'Web Traffic (unencrypted)', 'Default web server port'],
-          ['110', 'POP3', 'TCP', 'Email Retrieval', 'Downloads mail, removes from server'],
-          ['143', 'IMAP', 'TCP', 'Email Retrieval (synced)', 'Keeps mail on server, multi-device'],
-          ['443', 'HTTPS', 'TCP', 'Web Traffic (TLS encrypted)', 'All modern web — bank, EHR, cloud'],
-          ['445', 'SMB', 'TCP', 'Windows File Sharing', 'Also used by printers, AD replication'],
-          ['3389', 'RDP', 'TCP', 'Remote Desktop Protocol', 'Windows remote GUI access'],
-        ],
-      },
-      { type: 'heading', text: '2. Secure vs. Insecure Protocol Pairs' },
-      {
-        type: 'table',
-        headers: ['Insecure Protocol', 'Port', 'Secure Replacement', 'Port', 'Why It Matters'],
-        rows: [
-          ['Telnet', '23', 'SSH', '22', 'Telnet sends credentials in cleartext'],
-          ['HTTP', '80', 'HTTPS', '443', 'HTTP exposes all data to sniffing'],
-          ['FTP', '21', 'SFTP (SSH)', '22', 'FTP sends passwords in cleartext'],
-          ['POP3', '110', 'POP3S', '995', 'POP3 emails readable on the wire'],
-          ['IMAP', '143', 'IMAPS', '993', 'IMAP emails readable on the wire'],
-          ['SMTP', '25', 'SMTPS', '587', 'Port 587 requires STARTTLS auth'],
-          ['SNMP v1/v2', '161', 'SNMP v3', '161', 'v3 adds encryption + auth'],
-          ['LDAP', '389', 'LDAPS', '636', 'LDAP sends AD creds in cleartext'],
-        ],
-      },
-      {
-        type: 'warning',
-        text: 'Exam trap: Port 587 (SMTP with STARTTLS) is the modern secure email submission port. Port 25 is for server-to-server relay only. If a question says "user sending email securely" — the answer is 587, NOT 25 or 465.',
-      },
-      { type: 'heading', text: '3. Additional High-Frequency Ports' },
-      {
-        type: 'table',
-        headers: ['Port', 'Protocol', 'Transport', 'Service'],
-        rows: [
-          ['69', 'TFTP', 'UDP', 'Trivial FTP — firmware updates, PXE boot'],
-          ['161/162', 'SNMP', 'UDP', 'Network monitoring (161=agent, 162=trap)'],
-          ['389', 'LDAP', 'TCP', 'Active Directory queries'],
-          ['636', 'LDAPS', 'TCP', 'Encrypted Active Directory queries'],
-          ['587', 'SMTP (submission)', 'TCP', 'Authenticated email sending'],
-          ['993', 'IMAPS', 'TCP', 'Encrypted IMAP'],
-          ['995', 'POP3S', 'TCP', 'Encrypted POP3'],
-          ['1433', 'MS-SQL', 'TCP', 'Microsoft SQL Server'],
-          ['3306', 'MySQL', 'TCP', 'MySQL/MariaDB database'],
-          ['5060/5061', 'SIP', 'TCP/UDP', 'VoIP signaling (5061=secure)'],
-          ['5900', 'VNC', 'TCP', 'Virtual Network Computing'],
-          ['8080', 'HTTP-ALT', 'TCP', 'HTTP proxy / alternative web'],
-        ],
-      },
-      { type: 'heading', text: '4. Port Ranges Classification' },
-      {
-        type: 'steps',
-        items: [
-          'Well-Known Ports (0–1023): Reserved for standard services. Assigned by IANA. Examples: HTTP (80), HTTPS (443), SSH (22).',
-          'Registered Ports (1024–49151): Used by applications and services. Examples: MS-SQL (1433), MySQL (3306), RDP (3389).',
-          'Dynamic/Ephemeral Ports (49152–65535): Temporarily assigned by the OS for client-side connections. Never configure firewalls to block these outbound.',
-        ],
-      },
-      {
-        type: 'tip',
-        text: 'Memory trick for FTP: "20 is for DATA, 21 is for DONE (commands)." Think: data comes first (lower number), then you type commands after connecting. Also: DNS uses BOTH TCP and UDP — this is a guaranteed exam question.',
-      },
-      { type: 'heading', text: '5. Firewall Rule Scenarios (PBQ Format)' },
-      {
-        type: 'code',
-        lang: 'text',
-        code: `SCENARIO: A web server needs to serve HTTPS and allow SSH management.
-INBOUND ALLOW RULES:
-  ✅ TCP 443 (HTTPS)  — from ANY to server
-  ✅ TCP 22  (SSH)    — from management subnet ONLY
-  ❌ TCP 80  (HTTP)   — redirect to 443 or block
-  ❌ TCP 23  (Telnet) — NEVER allow
-
-SCENARIO: Email server accepting mail from the internet:
-  ✅ TCP 25  (SMTP)   — inbound from other mail servers
-  ✅ TCP 587 (submission) — from authenticated users
-  ✅ TCP 993 (IMAPS)  — for user email retrieval
-  ❌ TCP 110 (POP3)   — insecure, use 995 instead`,
-      },
-    ],
-  },
-
-  'core2-os/cli-runbook': {
-    title: 'Essential CLI Command Runbook — Windows & Linux',
-    trackLabel: 'CompTIA A+ Core 2 (220-1202) — Domain 1.0 Operating Systems',
-    contributor: 'Jamin Ware',
-    contributorRole: 'Reference Author',
-    cohort: '2026-RTT-23',
-    tags: ['CLI', 'commands', 'Windows', 'Linux', 'PowerShell', 'terminal', 'quick-reference'],
-    content: [
-      {
-        type: 'intro',
-        text: 'This command-line runbook covers every CLI tool tested on CompTIA A+ Core 2 (220-1202). Organized by operating system with real-world usage scenarios, syntax patterns, and critical flags. These commands appear in both multiple-choice questions and hands-on PBQ simulations.',
-      },
-      { type: 'heading', text: '1. Windows Network Diagnostics' },
-      {
-        type: 'table',
-        headers: ['Command', 'Purpose', 'Key Flags', 'Exam Use Case'],
-        rows: [
-          ['ipconfig', 'View/manage IP configuration', '/all /release /renew /flushdns', 'Verify adapter settings, reset DHCP lease'],
-          ['ping', 'Test connectivity to a host', '-t (continuous) -n (count)', 'Verify host reachability, test DNS resolution'],
-          ['tracert', 'Trace route to destination', '-d (no DNS lookup)', 'Identify where packets are being dropped'],
-          ['nslookup', 'Query DNS records', 'server <dns-ip>, set type=MX', 'Verify DNS resolution, check specific records'],
-          ['netstat', 'Show active connections', '-a -n -o -b', 'Find which process is using a port'],
-          ['pathping', 'Combines ping + tracert', 'No critical flags', 'Long-running latency analysis per hop'],
-          ['nbtstat', 'NetBIOS over TCP/IP stats', '-n (local names) -R (purge)', 'Troubleshoot Windows name resolution'],
-        ],
-      },
-      { type: 'heading', text: '2. Windows System Repair & Management' },
-      {
-        type: 'code',
-        lang: 'cmd',
-        code: `:: ── SYSTEM FILE CHECKER (SFC) ──────────────────────────────
-:: Must run AFTER DISM. Repairs individual Windows system files.
-sfc /scannow
-:: Output: "found corrupt files and successfully repaired them"
-
-:: ── DISM (Deployment Image Servicing) ─────────────────────
-:: Repairs the Windows component store. Run BEFORE sfc.
-DISM /Online /Cleanup-Image /CheckHealth     :: Quick status check
-DISM /Online /Cleanup-Image /ScanHealth      :: Deep scan (slower)
-DISM /Online /Cleanup-Image /RestoreHealth   :: Repair from Windows Update
-
-:: ── CHKDSK (Check Disk) ──────────────────────────────────
-chkdsk C: /f /r /x
-:: /f = fix errors, /r = recover readable info, /x = dismount first
-
-:: ── GPUPDATE (Group Policy) ──────────────────────────────
-gpupdate /force          :: Force immediate policy refresh
-gpresult /R              :: Show applied policies for current user
-
-:: ── SHUTDOWN & RESTART ───────────────────────────────────
-shutdown /s /t 0         :: Immediate shutdown
-shutdown /r /t 0         :: Immediate restart
-shutdown /r /o           :: Restart to Advanced Boot Options`,
-      },
-      {
-        type: 'warning',
-        text: 'CRITICAL EXAM RULE: Always run DISM /RestoreHealth BEFORE sfc /scannow. SFC relies on the component store to repair files — if the store is corrupted, SFC will silently use bad data. This ordering question appears on virtually every Core 2 exam.',
-      },
-      { type: 'heading', text: '3. Windows Disk & Partition Management' },
-      {
-        type: 'table',
-        headers: ['Command', 'Purpose', 'Common Usage'],
-        rows: [
-          ['diskpart', 'Interactive disk partition manager', 'list disk → select disk → clean → create partition primary'],
-          ['format', 'Format a volume', 'format F: /FS:NTFS /Q (quick format)'],
-          ['convert', 'Convert disk type', 'convert G: /FS:NTFS (FAT32 → NTFS, one-way)'],
-          ['defrag', 'Defragment HDD', 'defrag C: /O (optimize — SSD trim or HDD defrag)'],
-          ['robocopy', 'Robust file copy', 'robocopy src dest /MIR /MT:8 (mirror, 8 threads)'],
-          ['xcopy', 'Extended copy', 'xcopy src dest /E /H /K (subdirs, hidden, attributes)'],
-        ],
-      },
-      { type: 'heading', text: '4. Linux Essential Commands' },
-      {
-        type: 'table',
-        headers: ['Command', 'Purpose', 'Key Flags / Examples'],
-        rows: [
-          ['ls', 'List directory contents', '-la (all, long format), -lh (human-readable sizes)'],
-          ['cd', 'Change directory', 'cd ~ (home), cd .. (parent), cd / (root)'],
-          ['pwd', 'Print working directory', 'Shows absolute path of current location'],
-          ['cp', 'Copy files/directories', '-r (recursive for dirs), -p (preserve attributes)'],
-          ['mv', 'Move or rename', 'mv old.txt new.txt (rename), mv file /dest/ (move)'],
-          ['rm', 'Remove files/directories', '-r (recursive), -f (force), -i (interactive confirm)'],
-          ['mkdir', 'Create directory', '-p (create parent dirs if needed)'],
-          ['chmod', 'Change permissions', 'chmod 755 file (rwxr-xr-x), chmod u+x script.sh'],
-          ['chown', 'Change ownership', 'chown user:group file, -R for recursive'],
-          ['grep', 'Search text patterns', '-r (recursive), -i (case-insensitive), -n (line numbers)'],
-          ['find', 'Find files by criteria', 'find / -name "*.log" -mtime -7 (logs modified in 7 days)'],
-          ['cat', 'Display file contents', 'cat file.txt, cat file1 file2 > combined.txt'],
-          ['nano / vi', 'Text editors', 'nano = beginner-friendly, vi = modal (exam favorite)'],
-        ],
-      },
-      { type: 'heading', text: '5. Linux System Administration' },
-      {
-        type: 'code',
-        lang: 'bash',
-        code: `# ── SERVICE MANAGEMENT (systemd) ──────────────────────────
-sudo systemctl start nginx        # Start a service
-sudo systemctl stop nginx         # Stop a service
-sudo systemctl restart nginx      # Restart (stop + start)
-sudo systemctl enable nginx       # Auto-start at boot
-sudo systemctl status nginx       # Check service health
-
-# ── PACKAGE MANAGEMENT ────────────────────────────────────
-# Debian/Ubuntu (apt):
-sudo apt update && sudo apt upgrade -y
-sudo apt install <package>
-sudo apt remove <package>
-
-# Red Hat/CentOS (dnf/yum):
-sudo dnf update
-sudo dnf install <package>
-sudo dnf remove <package>
-
-# ── USER & PERMISSION MANAGEMENT ─────────────────────────
-sudo useradd -m -s /bin/bash newuser    # Create user with home dir
-sudo passwd newuser                      # Set password
-sudo usermod -aG sudo newuser            # Add to sudo group
-sudo userdel -r olduser                  # Delete user + home dir
-
-# ── NETWORK DIAGNOSTICS ──────────────────────────────────
-ip addr show                    # View IP configuration (replaces ifconfig)
-ip route show                   # View routing table
-ss -tulnp                       # Show listening ports (replaces netstat)
-dig google.com                  # DNS lookup (detailed)
-curl -I https://example.com     # Test HTTP response headers`,
-      },
-      { type: 'heading', text: '6. Linux Permissions Reference' },
-      {
-        type: 'table',
-        headers: ['Numeric', 'Symbolic', 'Meaning', 'Use Case'],
-        rows: [
-          ['7', 'rwx', 'Read + Write + Execute', 'Owner of scripts, binaries'],
-          ['6', 'rw-', 'Read + Write', 'Owner of data files'],
-          ['5', 'r-x', 'Read + Execute', 'Group access to scripts'],
-          ['4', 'r--', 'Read only', 'Public config files'],
-          ['0', '---', 'No access', 'Deny all to others'],
-          ['755', 'rwxr-xr-x', 'Owner full, others read+exec', 'Standard for executables'],
-          ['644', 'rw-r--r--', 'Owner read/write, others read', 'Standard for data files'],
-          ['700', 'rwx------', 'Owner only', 'Private scripts, SSH keys'],
-        ],
-      },
-      {
-        type: 'tip',
-        text: 'Exam shortcut for chmod: Read=4, Write=2, Execute=1. Add them up for each position (Owner-Group-Others). "chmod 754" = Owner(rwx=7), Group(r-x=5), Others(r--=4). PBQ simulations require setting exact permissions.',
-      },
-    ],
-  },
 
   'study-tips/acronyms': {
     title: 'Healthcare IT & CompTIA Acronym Master Directory',
-    trackLabel: 'Study Tips — Comprehensive Acronym Reference',
+    trackLabel: 'Study Tips \u2014 Comprehensive Acronym Reference',
     contributor: 'Cohort Lead',
     contributorRole: 'Reference Author',
     cohort: '2026-RTT-23',
@@ -1557,7 +538,7 @@ curl -I https://example.com     # Test HTTP response headers`,
     content: [
       {
         type: 'intro',
-        text: 'This master acronym directory covers every abbreviation tested on CompTIA A+ (Core 1 & Core 2) plus Healthcare IT certifications. Organized by domain with definitions and context. Bookmark this page — acronym questions appear in every section of both exams.',
+        text: 'This master acronym directory covers every abbreviation tested on CompTIA A+ (Core 1 & Core 2) plus Healthcare IT certifications. Organized by domain with definitions and context. Bookmark this page \u2014 acronym questions appear in every section of both exams.',
       },
       { type: 'heading', text: '1. Networking & Protocols (Core 1 Domain 2.0)' },
       {
@@ -1565,7 +546,7 @@ curl -I https://example.com     # Test HTTP response headers`,
         headers: ['Acronym', 'Full Term', 'Definition / Context'],
         rows: [
           ['TCP', 'Transmission Control Protocol', 'Connection-oriented, reliable delivery with 3-way handshake'],
-          ['UDP', 'User Datagram Protocol', 'Connectionless, best-effort delivery — used for DNS, VoIP, streaming'],
+          ['UDP', 'User Datagram Protocol', 'Connectionless, best-effort delivery \u2014 used for DNS, VoIP, streaming'],
           ['IP', 'Internet Protocol', 'Layer 3 addressing and routing (IPv4 = 32-bit, IPv6 = 128-bit)'],
           ['DNS', 'Domain Name System', 'Resolves hostnames to IP addresses (Port 53)'],
           ['DHCP', 'Dynamic Host Configuration Protocol', 'Auto-assigns IP, subnet, gateway, DNS to clients (Ports 67/68)'],
@@ -1587,9 +568,9 @@ curl -I https://example.com     # Test HTTP response headers`,
         headers: ['Acronym', 'Full Term', 'Definition / Context'],
         rows: [
           ['TLS', 'Transport Layer Security', 'Encrypts data in transit (HTTPS = HTTP + TLS). Replaces SSL.'],
-          ['SSL', 'Secure Sockets Layer', 'DEPRECATED predecessor to TLS — never use SSL 2.0/3.0'],
-          ['AES', 'Advanced Encryption Standard', 'Symmetric encryption — 128/192/256-bit. Gold standard for data at rest.'],
-          ['RSA', 'Rivest-Shamir-Adleman', 'Asymmetric encryption — public/private key pair for key exchange'],
+          ['SSL', 'Secure Sockets Layer', 'DEPRECATED predecessor to TLS \u2014 never use SSL 2.0/3.0'],
+          ['AES', 'Advanced Encryption Standard', 'Symmetric encryption \u2014 128/192/256-bit. Gold standard for data at rest.'],
+          ['RSA', 'Rivest-Shamir-Adleman', 'Asymmetric encryption \u2014 public/private key pair for key exchange'],
           ['MFA', 'Multi-Factor Authentication', 'Requires 2+ factors: something you know/have/are'],
           ['2FA', 'Two-Factor Authentication', 'Subset of MFA using exactly two factors'],
           ['PKI', 'Public Key Infrastructure', 'Framework for managing digital certificates and CAs'],
@@ -1597,7 +578,7 @@ curl -I https://example.com     # Test HTTP response headers`,
           ['ACL', 'Access Control List', 'Ordered rules on routers/firewalls defining allow/deny traffic'],
           ['IDS', 'Intrusion Detection System', 'Monitors traffic and alerts on suspicious patterns (passive)'],
           ['IPS', 'Intrusion Prevention System', 'Monitors AND blocks malicious traffic (active)'],
-          ['TPM', 'Trusted Platform Module', 'Hardware security chip for encryption keys — required for Win 11'],
+          ['TPM', 'Trusted Platform Module', 'Hardware security chip for encryption keys \u2014 required for Win 11'],
           ['BitLocker', 'BitLocker Drive Encryption', 'Windows full-disk encryption using TPM + PIN/key'],
           ['EFS', 'Encrypting File System', 'Windows per-file/folder encryption using user certificates'],
           ['UAC', 'User Account Control', 'Windows elevation prompt preventing unauthorized admin actions'],
@@ -1608,16 +589,16 @@ curl -I https://example.com     # Test HTTP response headers`,
         type: 'table',
         headers: ['Acronym', 'Full Term', 'Definition / Context'],
         rows: [
-          ['RAM', 'Random Access Memory', 'Volatile working memory — DDR4/DDR5 in modern systems'],
+          ['RAM', 'Random Access Memory', 'Volatile working memory \u2014 DDR4/DDR5 in modern systems'],
           ['ROM', 'Read-Only Memory', 'Non-volatile memory storing firmware (BIOS/UEFI)'],
           ['NVMe', 'Non-Volatile Memory Express', 'High-speed storage protocol over PCIe (replaces SATA for SSDs)'],
-          ['SATA', 'Serial Advanced Technology Attachment', 'Storage interface — 6 Gb/s max (SATA III)'],
+          ['SATA', 'Serial Advanced Technology Attachment', 'Storage interface \u2014 6 Gb/s max (SATA III)'],
           ['PCIe', 'Peripheral Component Interconnect Express', 'High-speed serial expansion bus for GPU, NVMe, NICs'],
-          ['BIOS', 'Basic Input/Output System', 'Legacy firmware interface — being replaced by UEFI'],
+          ['BIOS', 'Basic Input/Output System', 'Legacy firmware interface \u2014 being replaced by UEFI'],
           ['UEFI', 'Unified Extensible Firmware Interface', 'Modern firmware with GUI, Secure Boot, GPT support'],
           ['POST', 'Power-On Self-Test', 'Hardware diagnostic routine run before OS boot'],
-          ['GPU', 'Graphics Processing Unit', 'Dedicated video processing — PCIe x16 slot'],
-          ['PSU', 'Power Supply Unit', 'Converts AC to DC — provides 3.3V, 5V, 12V rails'],
+          ['GPU', 'Graphics Processing Unit', 'Dedicated video processing \u2014 PCIe x16 slot'],
+          ['PSU', 'Power Supply Unit', 'Converts AC to DC \u2014 provides 3.3V, 5V, 12V rails'],
           ['RAID', 'Redundant Array of Independent Disks', '0=stripe, 1=mirror, 5=parity, 10=stripe+mirror'],
           ['ESD', 'Electrostatic Discharge', 'Static electricity that can destroy components'],
           ['DIMM', 'Dual Inline Memory Module', 'Standard desktop RAM form factor (288-pin DDR4)'],
@@ -1663,16 +644,16 @@ curl -I https://example.com     # Test HTTP response headers`,
           ['PaaS', 'Platform as a Service', 'Cloud-hosted runtime + middleware (Azure App Service, Heroku)'],
           ['SaaS', 'Software as a Service', 'Cloud-hosted applications (Microsoft 365, Epic Hyperdrive)'],
           ['DaaS', 'Desktop as a Service', 'Cloud-hosted virtual desktops (Amazon WorkSpaces, Citrix)'],
-          ['NTFS', 'New Technology File System', 'Windows default — supports permissions, encryption, journaling'],
-          ['GPT', 'GUID Partition Table', 'Modern partition scheme — supports 128 partitions, 18 EB max disk'],
-          ['MBR', 'Master Boot Record', 'Legacy partition scheme — 4 primary partitions, 2 TB max disk'],
+          ['NTFS', 'New Technology File System', 'Windows default \u2014 supports permissions, encryption, journaling'],
+          ['GPT', 'GUID Partition Table', 'Modern partition scheme \u2014 supports 128 partitions, 18 EB max disk'],
+          ['MBR', 'Master Boot Record', 'Legacy partition scheme \u2014 4 primary partitions, 2 TB max disk'],
           ['CLI', 'Command-Line Interface', 'Text-based interface for executing system commands'],
           ['GUI', 'Graphical User Interface', 'Visual interface with windows, icons, menus, pointers'],
         ],
       },
       {
         type: 'tip',
-        text: 'Exam trick: IaaS vs PaaS vs SaaS — "Who manages what?" IaaS: YOU manage OS and up. PaaS: YOU manage only code and data. SaaS: YOU manage nothing (just use it). The more the provider manages, the further right you are on the service spectrum.',
+        text: 'Exam trick: IaaS vs PaaS vs SaaS \u2014 "Who manages what?" IaaS: YOU manage OS and up. PaaS: YOU manage only code and data. SaaS: YOU manage nothing (just use it). The more the provider manages, the further right you are on the service spectrum.',
       },
       { type: 'heading', text: '6. Troubleshooting Tools & Utilities' },
       {
@@ -1681,9 +662,9 @@ curl -I https://example.com     # Test HTTP response headers`,
         rows: [
           ['SFC', 'System File Checker', 'Windows tool to verify and repair system files (sfc /scannow)'],
           ['DISM', 'Deployment Image Servicing and Management', 'Repairs Windows component store (run BEFORE SFC)'],
-          ['BSOD', 'Blue Screen of Death', 'Windows critical stop error — requires driver/hardware diagnosis'],
+          ['BSOD', 'Blue Screen of Death', 'Windows critical stop error \u2014 requires driver/hardware diagnosis'],
           ['WinRE', 'Windows Recovery Environment', 'Boot-time repair console for non-bootable systems'],
-          ['PXE', 'Preboot Execution Environment', 'Network boot — pulls OS image from server via TFTP/HTTP'],
+          ['PXE', 'Preboot Execution Environment', 'Network boot \u2014 pulls OS image from server via TFTP/HTTP'],
           ['RDP', 'Remote Desktop Protocol', 'Windows built-in remote access (Port 3389)'],
           ['MMC', 'Microsoft Management Console', 'Framework for snap-in admin tools (compmgmt.msc, etc.)'],
           ['MSCONFIG', 'Microsoft System Configuration', 'Boot options, service control, startup management'],
@@ -1694,12 +675,12 @@ curl -I https://example.com     # Test HTTP response headers`,
   },
 
   // ─────────────────────────────────────────────────────────
-  // LEARNER EXPERIENCE — Onboarding Runbooks
+  // LEARNER EXPERIENCE & FAQs
   // ─────────────────────────────────────────────────────────
 
   'learner-experience/navigation': {
     title: 'Navigating the Hub: Search, Domains & Filtering',
-    trackLabel: 'Learner Experience & FAQs — Onboarding',
+    trackLabel: 'Learner Experience & FAQs \u2014 Onboarding',
     contributor: 'Jamin Ware',
     contributorRole: 'Core 1 Expert',
     cohort: '2026-RTT-23',
@@ -1714,12 +695,12 @@ curl -I https://example.com     # Test HTTP response headers`,
         type: 'steps',
         items: [
           'Press Ctrl + K (or Cmd + K on Mac) from any page to open the global search overlay.',
-          'Start typing a keyword — results appear in real time as you type. Matches are pulled from article titles, tags, and content.',
+          'Start typing a keyword \u2014 results appear in real time as you type. Matches are pulled from article titles, tags, and content.',
           'Click a result to navigate directly to that article. Press Escape to close the search overlay without navigating.',
           'Pro tip: search by tag keywords like "ports", "HIPAA", or "subnetting" to surface all related resources across every domain.',
         ],
       },
-      { type: 'heading', text: '2. The Sidebar — Domain Dashboard Structure' },
+      { type: 'heading', text: '2. The Sidebar \u2014 Domain Dashboard Structure' },
       {
         type: 'paragraph',
         text: 'The left-hand sidebar organizes every resource by CompTIA exam domain and healthcare track. Each collapsible section maps directly to an official exam objective area.',
@@ -1728,14 +709,14 @@ curl -I https://example.com     # Test HTTP response headers`,
         type: 'table',
         headers: ['Sidebar Section', 'What It Contains', 'When to Use'],
         rows: [
-          ['CompTIA A+ Core 1 (220-1201)', 'Domains 1.0–5.0: Mobile, Networking, Hardware, Cloud, Troubleshooting', 'Primary study track — start here for exam prep'],
-          ['CompTIA A+ Core 2 (220-1202)', 'Domains 1.0–4.0: OS, Security, Software Troubleshooting, SOPs', 'Second exam track — tackle after Core 1 foundations'],
+          ['CompTIA A+ Core 1 (220-1201)', 'Domains 1.0\u20135.0: Mobile, Networking, Hardware, Cloud, Troubleshooting', 'Primary study track \u2014 start here for exam prep'],
+          ['CompTIA A+ Core 2 (220-1202)', 'Domains 1.0\u20134.0: OS, Security, Software Troubleshooting, SOPs', 'Second exam track \u2014 tackle after Core 1 foundations'],
           ['Advanced Healthcare IT', 'EHR Architecture, HIPAA Data Security, Clinical Workflows', 'Specialized modules for healthcare IT career prep'],
         ],
       },
       {
         type: 'tip',
-        text: 'Each domain page has its own "Add Intel" button. If you submit a resource from within a domain page, the system automatically tags it to that domain — no manual categorization needed.',
+        text: 'Each domain page has its own "Add Intel" button. If you submit a resource from within a domain page, the system automatically tags it to that domain \u2014 no manual categorization needed.',
       },
       { type: 'heading', text: '3. Resource-Type Filter Tabs' },
       {
@@ -1756,18 +737,18 @@ curl -I https://example.com     # Test HTTP response headers`,
       { type: 'heading', text: '4. Objective-Level Filtering' },
       {
         type: 'paragraph',
-        text: 'Domain pages that map to CompTIA exam objectives also display an "Objectives" pill bar at the top. Click any specific objective (e.g., "3.1 — Troubleshoot common issues with motherboards") to filter the grid to only resources tagged for that exam objective.',
+        text: 'Domain pages that map to CompTIA exam objectives also display an "Objectives" pill bar at the top. Click any specific objective (e.g., "3.1 \u2014 Troubleshoot common issues with motherboards") to filter the grid to only resources tagged for that exam objective.',
       },
       {
         type: 'warning',
-        text: 'If you navigate to a domain and see only [OPEN SLOT] placeholders, it means no peers have submitted content for that area yet. Be the first — hit "Add Intel" and pioneer that module!',
+        text: 'If you navigate to a domain and see only [OPEN SLOT] placeholders, it means no peers have submitted content for that area yet. Be the first \u2014 hit "Add Intel" and pioneer that module!',
       },
     ],
   },
 
   'learner-experience/adding-intel': {
     title: 'Adding Intel: How to Submit Your Field Notes',
-    trackLabel: 'Learner Experience & FAQs — Onboarding',
+    trackLabel: 'Learner Experience & FAQs \u2014 Onboarding',
     contributor: 'Jamin Ware',
     contributorRole: 'Core 1 Expert',
     cohort: '2026-RTT-23',
@@ -1782,7 +763,7 @@ curl -I https://example.com     # Test HTTP response headers`,
         type: 'steps',
         items: [
           'Click the "Add Intel" button. You will find it in the right sidebar on the Home page, or at the top-right of any domain dashboard page.',
-          'The submission form opens as a modal overlay — you do not leave your current page.',
+          'The submission form opens as a modal overlay \u2014 you do not leave your current page.',
           'Choose your Submission Type first (Article, Diagram, Study Tip, Resource Link, or Prompt Playbook). The form adapts to your selection.',
         ],
       },
@@ -1794,10 +775,10 @@ curl -I https://example.com     # Test HTTP response headers`,
       {
         type: 'steps',
         items: [
-          'Begin typing your name — after 1 or more characters, a dropdown appears showing matching names already in the system.',
+          'Begin typing your name \u2014 after 1 or more characters, a dropdown appears showing matching names already in the system.',
           'If your name appears in the dropdown, click it to auto-fill. This ensures consistent attribution across all your contributions.',
           'If this is your very first contribution and your name does not appear, simply type it in full. It will be available in the autocomplete for your next submission.',
-          'The autocomplete is case-insensitive — typing "jam" will match "Jamin Ware" just as well as "Jam".',
+          'The autocomplete is case-insensitive \u2014 typing "jam" will match "Jamin Ware" just as well as "Jam".',
         ],
       },
       {
@@ -1813,7 +794,7 @@ curl -I https://example.com     # Test HTTP response headers`,
           ['Submission Type', 'Yes', 'Determines how your resource is categorized and displayed'],
           ['Title', 'Yes', 'A clear, descriptive title (shown on cards and in search)'],
           ['Category / Domain', 'Yes', 'Which exam domain or track your resource belongs to'],
-          ['Content / URL', 'Yes', 'The actual resource — markdown text, a diagram, or a link'],
+          ['Content / URL', 'Yes', 'The actual resource \u2014 markdown text, a diagram, or a link'],
           ['Tags', 'Optional', 'Comma-separated keywords to improve discoverability'],
         ],
       },
@@ -1843,10 +824,11 @@ curl -I https://example.com     # Test HTTP response headers`,
       },
       {
         type: 'warning',
-        text: 'Submissions that contain incorrect technical information, plagiarized content, or inappropriate material will be rejected during moderation. Always verify your facts before submitting — cite sources where possible.',
+        text: 'Submissions that contain incorrect technical information, plagiarized content, or inappropriate material will be rejected during moderation. Always verify your facts before submitting \u2014 cite sources where possible.',
       },
     ],
   },
+
 };
 
 export default contentMap;
