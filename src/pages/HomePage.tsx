@@ -139,7 +139,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                   </div>
                 </div>
                 <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">
-                  Per Scholas &mdash; Cohort Survival Guide
+                  Per Scholas Cohort Survival Guide
                   <span className="block bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-sky-300 text-base md:text-lg font-semibold mt-0.5">
                     AI Enabled Healthcare IT
                   </span>
