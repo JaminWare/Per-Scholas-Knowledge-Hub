@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   Home, ChevronDown, ChevronRight, ChevronLeft,
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
-  BookOpen, LifeBuoy, Headphones,
+  BookOpen, LifeBuoy, Headphones, ExternalLink,
   Laptop, Monitor, Heart, Database, Award,
 } from 'lucide-react';
 
@@ -168,10 +168,12 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           href="https://deskolas.vercel.app"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 bg-sky-500/10 text-sky-300 border border-sky-500/20 hover:bg-sky-500/20 hover:border-sky-400/40"
+          title="Opens in a new tab"
+          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 hover:scale-[1.02] active:scale-95 bg-sky-500/10 text-sky-300 border border-sky-500/20 hover:bg-sky-500/20 hover:border-sky-400/40"
         >
           <Headphones className="w-4 h-4 flex-shrink-0" />
           <span className="flex-1 truncate">Deskolas</span>
+          <ExternalLink className="w-3.5 h-3.5 flex-shrink-0 opacity-50" />
         </a>
         <div className="my-2 border-t border-sky-500/20" />
         {/* ── end START HERE block ─────────────────────────── */}
