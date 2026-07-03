@@ -443,13 +443,15 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
             }`}>
               {article.title}
               {!isSample && (
-                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-200 group-hover:text-zinc-400 dark:group-hover:text-zinc-300 mt-1">Curated by {article.author || authorName}</p>
+                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-200 group-hover:text-zinc-400 dark:group-hover:text-zinc-300 mt-1">
+                  {article.submission_type === 'Resource Link' ? 'Curated by' : 'Contributed by'} {article.author || authorName}
+                </p>
               )}
             </h3>
           </div>
         </div>
 
-        {!isSample && article.excerpt && (
+        {!isSample && article.excerpt && !article.excerpt.startsWith('Contributed by ') && (
           <p className="text-xs text-zinc-500 dark:text-slate-400 transition-colors duration-200 line-clamp-2 leading-relaxed">{article.excerpt}</p>
         )}
 
