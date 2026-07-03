@@ -474,8 +474,7 @@ export default function RecognitionPage() {
             Recognition Wall
           </h1>
           <p className="text-sky-100/80 max-w-xl leading-relaxed text-sm md:text-base">
-            Celebrating every learner who has contributed research, documentation, and knowledge to the
-            AI-Enabled Healthcare IT collective. Click any profile to explore their full portfolio.
+            Celebrating every learner who has contributed research, documentation, and knowledge to the collective!
           </p>
         </div>
       </section>
