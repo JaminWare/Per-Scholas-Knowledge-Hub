@@ -91,18 +91,18 @@ function resolveCanonicalSlug(track: string): string {
 
 // Maps form track strings to the exact domain labels used by CurriculumDashboard filters
 const SLUG_TO_STUDY_CATEGORY: Record<string, string> = {
-  'core1-mobile':          'Domain 1.0 — Mobile Devices',
-  'core1-networking':      'Domain 2.0 — Networking',
-  'core1-hardware':        'Domain 3.0 — Hardware',
-  'core1-virtualization':  'Domain 4.0 — Virtualization & Cloud',
-  'core1-troubleshooting': 'Domain 5.0 — Hardware & Network Troubleshooting',
-  'core2-os':              'Domain 1.0 — Operating Systems',
-  'core2-security':        'Domain 2.0 — Security',
-  'core2-software':        'Domain 3.0 — Software Troubleshooting',
-  'core2-operations':      'Domain 4.0 — Operational Procedures',
-  'healthcare-ehr':        'EHR Architecture',
-  'healthcare-hipaa':      'HIPAA Data Security',
-  'healthcare-clinical':   'Clinical Workflows',
+  'core1-mobile':          'CompTIA A+ Core 1 — Domain 1.0 (Mobile Devices)',
+  'core1-networking':      'CompTIA A+ Core 1 — Domain 2.0 (Networking)',
+  'core1-hardware':        'CompTIA A+ Core 1 — Domain 3.0 (Hardware)',
+  'core1-virtualization':  'CompTIA A+ Core 1 — Domain 4.0 (Cloud)',
+  'core1-troubleshooting': 'CompTIA A+ Core 1 — Domain 5.0 (Troubleshooting)',
+  'core2-os':              'CompTIA A+ Core 2 — Domain 1.0 (Operating Systems)',
+  'core2-security':        'CompTIA A+ Core 2 — Domain 2.0 (Security)',
+  'core2-software':        'CompTIA A+ Core 2 — Domain 3.0 (Software Troubleshooting)',
+  'core2-operations':      'CompTIA A+ Core 2 — Domain 4.0 (Operational Procedures)',
+  'healthcare-ehr':        'Advanced Healthcare IT — EHR Architecture',
+  'healthcare-hipaa':      'Advanced Healthcare IT — HIPAA Data Security',
+  'healthcare-clinical':   'Advanced Healthcare IT — Clinical Workflows',
 };
 
 function resolveStudyCategory(track: string): string {

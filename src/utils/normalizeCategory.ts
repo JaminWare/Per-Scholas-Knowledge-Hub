@@ -13,9 +13,21 @@ const KNOWN_CANONICAL = new Set([
   'Advanced Healthcare IT — Clinical Workflows',
 ]);
 
+const SHORT_FORM_ALIASES: Record<string, string> = {
+  'EHR Architecture': 'Advanced Healthcare IT — EHR Architecture',
+  'HIPAA Data Security': 'Advanced Healthcare IT — HIPAA Data Security',
+  'Clinical Workflows': 'Advanced Healthcare IT — Clinical Workflows',
+};
+
 type Rule = { test: (s: string) => boolean; target: string };
 
 const RULES: Rule[] = [
+  // Healthcare rules MUST come before generic CompTIA rules to prevent
+  // "security" in "HIPAA Data Security" from matching Core 2 Security
+  { test: (s) => s.includes('hipaa') || s.includes('phi') || s.includes('safeguard'), target: 'Advanced Healthcare IT — HIPAA Data Security' },
+  { test: (s) => s.includes('ehr') || s.includes('electronic health') || s.includes('fhir') || s.includes('hl7'), target: 'Advanced Healthcare IT — EHR Architecture' },
+  { test: (s) => (s.includes('clinical') && !s.includes('comptia')) || s.includes('cpoe') || s.includes('telehealth'), target: 'Advanced Healthcare IT — Clinical Workflows' },
+
   // Domain 5 must come before generic troubleshooting/hardware/network matches
   { test: (s) => s.includes('domain 5'), target: 'CompTIA A+ Core 1 — Domain 5.0 (Troubleshooting)' },
   { test: (s) => s.includes('troubleshooting') && (s.includes('network') || s.includes('hardware')), target: 'CompTIA A+ Core 1 — Domain 5.0 (Troubleshooting)' },
@@ -39,16 +51,12 @@ const RULES: Rule[] = [
   { test: (s) => s.includes('software') && s.includes('troubleshooting'), target: 'CompTIA A+ Core 2 — Domain 3.0 (Software Troubleshooting)' },
   { test: (s) => s.includes('domain 4') && (s.includes('core 2') || s.includes('operational')), target: 'CompTIA A+ Core 2 — Domain 4.0 (Operational Procedures)' },
   { test: (s) => s.includes('operational') || s.includes('change management'), target: 'CompTIA A+ Core 2 — Domain 4.0 (Operational Procedures)' },
-
-  // Healthcare
-  { test: (s) => s.includes('ehr') || s.includes('electronic health'), target: 'Advanced Healthcare IT — EHR Architecture' },
-  { test: (s) => s.includes('hipaa') || s.includes('safeguard') || s.includes('audit'), target: 'Advanced Healthcare IT — HIPAA Data Security' },
-  { test: (s) => s.includes('workflow') || s.includes('clinical'), target: 'Advanced Healthcare IT — Clinical Workflows' },
 ];
 
 export function normalizeCategory(rawCategory: string, title: string = ''): string {
   const trimmed = (rawCategory ?? '').trim();
   if (KNOWN_CANONICAL.has(trimmed)) return trimmed;
+  if (SHORT_FORM_ALIASES[trimmed]) return SHORT_FORM_ALIASES[trimmed];
 
   const surface = `${trimmed} ${title}`.toLowerCase();
 
