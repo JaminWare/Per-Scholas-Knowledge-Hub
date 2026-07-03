@@ -444,7 +444,7 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
               {article.title}
               {!isSample && (
                 <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-200 group-hover:text-zinc-400 dark:group-hover:text-zinc-300 mt-1">
-                  {article.submission_type === 'Resource Link' ? 'Curated by' : 'Contributed by'} {article.author || authorName}
+                  Contributed by {article.author || authorName}
                 </p>
               )}
             </h3>
