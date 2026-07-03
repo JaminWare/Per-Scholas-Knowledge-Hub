@@ -472,10 +472,10 @@ function BreakthroughCard({ entry }: { entry: LearnerEntry }) {
           {entry.title}
         </h3>
 
-        {/* Hardship section */}
+        {/* Breakthrough section */}
         <div className="space-y-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">The Hardship</span>
-          <p className={`text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
+          <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">The Breakthrough</span>
+          <p className={`text-xs text-zinc-600 dark:text-slate-400 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
             {hardship.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').slice(0, expanded ? undefined : 180)}
           </p>
         </div>
@@ -516,7 +516,7 @@ function BreakthroughCard({ entry }: { entry: LearnerEntry }) {
     <>
       <div
         onClick={() => setZoomed(true)}
-        className="group flex flex-col rounded-xl border overflow-hidden cursor-zoom-in transition-all duration-300 ease-out bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 hover:border-sky-400/50 dark:hover:border-sky-500/50 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.45),0_4px_16px_rgba(56,189,248,0.08)]"
+        className="group flex flex-col rounded-xl border overflow-hidden cursor-zoom-in transition-all duration-300 ease-out bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 hover:-translate-y-1 hover:border-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/10"
       >
         {cardInner(false)}
       </div>

@@ -730,9 +730,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                 <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                      The Hardship / The Challenge <span className="text-red-400">*</span>
+                      The Breakthrough / The Challenge <span className="text-red-400">*</span>
                     </label>
-                    <textarea value={hardship} onChange={(e) => setHardship(e.target.value)} placeholder="Describe the specific hurdle, error, or burnout moment you faced..." rows={4} className={`${inputCls('hardship')} font-mono resize-y custom-scrollbar`} />
+                    <textarea value={hardship} onChange={(e) => setHardship(e.target.value)} placeholder="Describe the specific challenge, breakthrough moment, or lesson learned..." rows={4} className={`${inputCls('hardship')} font-mono resize-y custom-scrollbar`} />
                     {errors.hardship && <p className="mt-1 text-xs text-red-500">{errors.hardship}</p>}
                   </div>
                   <div>

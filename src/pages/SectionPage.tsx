@@ -450,7 +450,7 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
         </div>
 
         {!isSample && article.excerpt && (
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 transition-colors duration-200 line-clamp-2 leading-relaxed">{article.excerpt}</p>
+          <p className="text-xs text-zinc-500 dark:text-slate-400 transition-colors duration-200 line-clamp-2 leading-relaxed">{article.excerpt}</p>
         )}
 
         {!isSample && article.tags?.length > 0 && (
@@ -473,10 +473,10 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
   );
 
   return (
-    <div className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out ${
+    <div className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-in-out ${
       isSample
-        ? 'bg-zinc-100/60 dark:bg-zinc-950/50 border-sky-200/60 dark:border-zinc-800 hover:border-sky-400/70 dark:hover:border-zinc-600 hover:shadow-[0_0_0_1.5px_rgba(56,189,248,0.5),0_4px_16px_rgba(56,189,248,0.08)] dark:hover:shadow-[0_4px_20px_rgba(255,255,255,0.04)]'
-        : 'bg-white dark:bg-zinc-900/80 border-slate-200 dark:border-zinc-800 hover:border-sky-400/50 dark:hover:border-zinc-600 hover:shadow-md dark:hover:shadow-[0_4px_20px_rgba(255,255,255,0.04)]'
+        ? 'bg-zinc-100/60 dark:bg-zinc-950/50 border-sky-200/60 dark:border-zinc-800 hover:-translate-y-1 hover:border-sky-400/70 dark:hover:border-zinc-600 hover:shadow-xl hover:shadow-cyan-500/10'
+        : 'bg-white dark:bg-zinc-900/80 border-slate-200 dark:border-zinc-800 hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/10 hover:border-cyan-500/30'
     }`}>
       <div className="cursor-zoom-in" onClick={() => setZoomed(true)}>
         {cardContent}
