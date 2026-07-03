@@ -472,8 +472,14 @@ function AdminPanel() {
       ? `Contributed by ${sub.full_name}`
       : deriveExcerpt(publishContent);
 
-    const isLX = sub.track.toLowerCase().includes('learner experience');
-    const sectionPrefix = isLX ? 'learner-experience' : resolveCanonicalSlug(sub.track);
+    const trackLower = sub.track.toLowerCase();
+    const isLX = trackLower.includes('learner experience');
+    const isHealthcare = trackLower.includes('healthcare');
+    const sectionPrefix = isLX
+      ? 'learner-experience'
+      : isHealthcare
+        ? 'advanced-healthcare-it'
+        : resolveCanonicalSlug(sub.track);
 
     if (openSlot) {
       // Overwrite the placeholder slot

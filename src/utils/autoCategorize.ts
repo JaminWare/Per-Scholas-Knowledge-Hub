@@ -84,18 +84,21 @@ const RULES: Rule[] = [
     keywords: ['ehr', 'fhir', 'hl7', 'epic', 'cerner', 'electronic health record', 'interoperability', 'health information exchange'],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT \u2014 EHR Architecture',
+    compObjective: 'EHR Integrations & Sandboxes',
   },
   // Advanced Healthcare IT — HIPAA
   {
-    keywords: ['hipaa', 'phi', 'compliance', 'audit', 'privacy rule', 'security rule', 'breach notification', 'baa'],
+    keywords: ['hipaa', 'phi', 'compliance', 'audit', 'privacy rule', 'security rule', 'breach notification', 'baa', 'cybersecurity', 'risk assessment', 'vulnerability'],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT \u2014 HIPAA Data Security',
+    compObjective: 'PHI Protection Strategies',
   },
   // Advanced Healthcare IT — Clinical Workflows
   {
     keywords: ['clinical', 'cpoe', 'patient', 'telehealth', 'medical iot', 'nursing', 'discharge', 'admission', 'lab order'],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT \u2014 Clinical Workflows',
+    compObjective: 'Patient Admission to Discharge',
   },
 ];
 
