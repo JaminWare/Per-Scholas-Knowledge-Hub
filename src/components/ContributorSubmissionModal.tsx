@@ -28,14 +28,16 @@ const SUBMISSION_TYPES = [
 
 const LX_TRACK_VALUE = 'Learner Experience & FAQs';
 
+// Sub-domain values must exactly match COMPTIA_OBJECTIVES keys so the
+// objectives dropdown resolves correctly.
 const MASTER_CATEGORIES = [
   { label: 'Learner Experience & FAQs', badge: 'Community Contributor', sub: [] as string[] },
   { label: 'CompTIA A+ Core 1', badge: 'Core 1 Expert', sub: [
     'CompTIA A+ Core 1 — Domain 1.0 (Mobile Devices)',
     'CompTIA A+ Core 1 — Domain 2.0 (Networking)',
     'CompTIA A+ Core 1 — Domain 3.0 (Hardware)',
-    'CompTIA A+ Core 1 — Domain 4.0 (Virtualization & Cloud)',
-    'CompTIA A+ Core 1 — Domain 5.0 (HW & Network Troubleshooting)',
+    'CompTIA A+ Core 1 — Domain 4.0 (Cloud)',
+    'CompTIA A+ Core 1 — Domain 5.0 (Troubleshooting)',
   ]},
   { label: 'CompTIA A+ Core 2', badge: 'Core 2 Expert', sub: [
     'CompTIA A+ Core 2 — Domain 1.0 (Operating Systems)',
@@ -185,6 +187,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   // CompTIA Objective
   const [compObjective, setCompObjective] = useState('');
+  const [dbObjectives, setDbObjectives] = useState<Record<string, string[]>>({});
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState('');
@@ -241,6 +244,27 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         setAuthorSuggestions(unique);
       });
   }, [isOpen]);
+
+  useEffect(() => {
+    if (dbObjectives && Object.keys(dbObjectives).length > 0) return;
+    supabase
+      .from('articles')
+      .select('study_category, comp_objective')
+      .not('comp_objective', 'is', null)
+      .not('comp_objective', 'eq', '')
+      .then(({ data }) => {
+        if (!data) return;
+        const map: Record<string, string[]> = {};
+        for (const row of data as { study_category: string | null; comp_objective: string | null }[]) {
+          const cat = row.study_category?.trim();
+          const obj = row.comp_objective?.trim();
+          if (!cat || !obj) continue;
+          if (!map[cat]) map[cat] = [];
+          if (!map[cat].includes(obj)) map[cat].push(obj);
+        }
+        setDbObjectives(map);
+      });
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -610,21 +634,27 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   </select>
                   {errors.track && <p className="mt-1 text-xs text-red-500">{errors.track}</p>}
 
-                  {track && COMPTIA_OBJECTIVES[track]?.length > 0 && (
-                    <div className="mt-3">
-                      <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Specific Objective</label>
-                      <select
-                        value={compObjective}
-                        onChange={(e) => { setCompObjective(e.target.value); setUserOverride(true); setAutoDetected(false); }}
-                        className={selectCls('compObjective')}
-                      >
-                        <option value="">Select an objective (optional)...</option>
-                        {(COMPTIA_OBJECTIVES[track] || []).map((obj) => (
-                          <option key={obj} value={obj}>{obj}</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
+                  {track && (() => {
+                    const staticOpts = COMPTIA_OBJECTIVES[track] ?? [];
+                    const dbOpts = dbObjectives[track] ?? [];
+                    const mergedOpts = [...staticOpts, ...dbOpts.filter((o) => !staticOpts.includes(o))];
+                    if (mergedOpts.length === 0) return null;
+                    return (
+                      <div className="mt-3">
+                        <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Specific Objective</label>
+                        <select
+                          value={compObjective}
+                          onChange={(e) => { setCompObjective(e.target.value); setUserOverride(true); setAutoDetected(false); }}
+                          className={selectCls('compObjective')}
+                        >
+                          <option value="">Select an objective (optional)...</option>
+                          {mergedOpts.map((obj) => (
+                            <option key={obj} value={obj}>{obj}</option>
+                          ))}
+                        </select>
+                      </div>
+                    );
+                  })()}
                 </div>
               )}
 
