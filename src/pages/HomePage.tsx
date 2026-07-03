@@ -143,10 +143,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                 </span>
               </h1>
               <p className="text-lg text-zinc-300 max-w-2xl mb-8">
-                Welcome to the collaborative resource hub for the{' '}
-                <strong className="text-sky-400">2026-RTT-23 cohort</strong> of AI-Enabled Healthcare IT
-                students. Find CompTIA A+ guides, EHR integration blueprints, and community hacks - all in
-                one place.
+                Welcome to the collaborative resource hub!
               </p>
               <Link
                 to="/learner-experience"
