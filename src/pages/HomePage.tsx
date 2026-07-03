@@ -5,10 +5,40 @@ import ContributorSubmissionModal from '../components/ContributorSubmissionModal
 import { type NewSubmission } from '../utils/submissions';
 import { useArticles } from '../hooks/useArticles';
 import SuccessToast from '../components/SuccessToast';
+import contentMap from '../data/contentMap';
 import {
   TrendingUp, ArrowDown, Users, UploadCloud,
   Compass, BookOpen, Flame, Briefcase, ChevronRight, Award, LifeBuoy,
 } from 'lucide-react';
+
+const PINNED_SLUGS = ['learner-experience/navigation', 'learner-experience/adding-intel'] as const;
+
+function buildPinnedArticles() {
+  return PINNED_SLUGS.map((slug) => {
+    const entry = contentMap[slug];
+    const introBlock = entry?.content.find((b) => b.type === 'intro');
+    return {
+      id: `local-${slug}`,
+      title: entry?.title ?? slug,
+      slug,
+      section_id: null,
+      content: '',
+      formatted_content: null,
+      excerpt: introBlock && 'text' in introBlock ? introBlock.text.slice(0, 160) : null,
+      contributor_id: null,
+      tags: entry?.tags ?? [],
+      is_featured: true,
+      is_sample: false,
+      study_category: null,
+      source_file: null,
+      author_name: entry?.contributor ?? null,
+      submission_type: 'Quick Reference',
+      comp_objective: null,
+      created_at: new Date(0).toISOString(),
+      updated_at: new Date(0).toISOString(),
+    };
+  });
+}
 
 const survivalGuideCards = [
   {
@@ -61,7 +91,14 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   }, [allArticles]);
 
-  const featuredArticles = useMemo(() => sortedData.filter((a) => a.is_featured === true).slice(0, 3), [sortedData]);
+  const featuredArticles = useMemo(() => {
+    const pinned = buildPinnedArticles();
+    const pinnedSlugs = new Set(PINNED_SLUGS as readonly string[]);
+    const organic = sortedData
+      .filter((a) => a.is_featured === true && !pinnedSlugs.has(a.slug))
+      .slice(0, 3);
+    return [...pinned, ...organic];
+  }, [sortedData]);
   const recentArticles   = useMemo(() => sortedData.slice(0, 6), [sortedData]);
 
   const handleSubmitted = (submission: NewSubmission) => {

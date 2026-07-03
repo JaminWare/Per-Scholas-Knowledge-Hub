@@ -6,6 +6,7 @@ export interface LocalArticle {
   cohort: string;
   tags: string[];
   studyCategory?: string;
+  isFeatured?: boolean;
   content: ContentBlock[];
 }
 
@@ -685,6 +686,7 @@ and explain why each answer is correct or incorrect.` },
     contributorRole: 'Core 1 Expert',
     cohort: '2026-RTT-23',
     tags: ['onboarding', 'navigation', 'faq'],
+    isFeatured: true,
     content: [
       {
         type: 'intro',
@@ -753,6 +755,7 @@ and explain why each answer is correct or incorrect.` },
     contributorRole: 'Core 1 Expert',
     cohort: '2026-RTT-23',
     tags: ['contribution', 'adding-intel', 'faq'],
+    isFeatured: true,
     content: [
       {
         type: 'intro',
