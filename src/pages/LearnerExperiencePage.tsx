@@ -4,6 +4,8 @@ import {
   LifeBuoy, Lightbulb, BookOpen, Flame, Shield, Briefcase, Compass, Plus, ChevronRight,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { parseTicketContent } from '../utils/normalizeDeskolas';
+import { formatRelativeTime } from '../utils/formatRelativeTime';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import CardZoomOverlay from '../components/CardZoomOverlay';
 
@@ -43,24 +45,33 @@ export const CATEGORY_FILTERS: Record<string, CategoryFilter[]> = {
     ]},
   ],
   labs: [
-    { id: 'all-labs', label: 'All Labs', keywords: [], nested: [] },
-    { id: 'infrastructure', label: 'Infrastructure & OS', keywords: ['comptia', 'vm', 'virtualbox', 'active directory', 'powershell', 'cli', 'packet tracer'], nested: [
-      { label: 'All Infrastructure', keywords: [] },
-      { label: 'Hardware & Networking', keywords: ['packet tracer', 'switch', 'router', 'hardware', 'ip'] },
-      { label: 'Active Directory & VMs', keywords: ['vm', 'virtualbox', 'hypervisor', 'active directory', 'domain'] },
-      { label: 'CLI & Scripting', keywords: ['powershell', 'bash', 'cmd', 'cli', 'linux'] },
+    { id: 'all-labs', label: 'All Tech Solutions', keywords: [], nested: [] },
+    { id: 'hardware-av', label: 'Hardware & AV Setup', keywords: ['hardware', 'av', 'audio', 'video', 'monitor', 'webcam', 'mic', 'headset', 'display', 'usb', 'peripheral', 'cable'], nested: [
+      { label: 'All Hardware & AV', keywords: [] },
+      { label: 'Display & Video', keywords: ['monitor', 'display', 'hdmi', 'webcam', 'video', 'screen'] },
+      { label: 'Audio & Peripherals', keywords: ['mic', 'headset', 'audio', 'speaker', 'usb', 'keyboard', 'mouse'] },
     ]},
-    { id: 'healthcare', label: 'Healthcare IT & Clinical', keywords: ['ehr', 'emr', 'hipaa', 'phi', 'iot', 'biomedical'], nested: [
-      { label: 'All Healthcare IT', keywords: [] },
-      { label: 'EHR Sandboxes', keywords: ['ehr', 'emr', 'chart', 'patient', 'epic', 'cerner'] },
-      { label: 'Compliance & Security', keywords: ['hipaa', 'phi', 'audit', 'access'] },
-      { label: 'Medical IoT', keywords: ['iot', 'biomedical', 'device', 'network'] },
+    { id: 'network-access', label: 'Network & Access', keywords: ['network', 'wifi', 'vpn', 'internet', 'connection', 'proxy', 'firewall', 'dns', 'ip'], nested: [
+      { label: 'All Network', keywords: [] },
+      { label: 'WiFi & Connectivity', keywords: ['wifi', 'internet', 'connection', 'disconnect', 'slow'] },
+      { label: 'VPN & Proxy', keywords: ['vpn', 'proxy', 'firewall', 'blocked', 'access'] },
     ]},
-    { id: 'qwiklabs', label: 'Qwiklabs & Certs', keywords: ['qwiklabs', 'google', 'coursera', 'ai', 'prompt'], nested: [
-      { label: 'All Qwiklabs', keywords: [] },
-      { label: 'Google IT Support', keywords: ['qwiklabs', 'google it', 'timeout', 'instance'] },
-      { label: 'Applied AI Labs', keywords: ['ai', 'prompt', 'gemini', 'chatgpt'] },
+    { id: 'software-ides', label: 'Software & IDEs', keywords: ['software', 'ide', 'vscode', 'install', 'update', 'crash', 'extension', 'plugin', 'virtualbox', 'vm'], nested: [
+      { label: 'All Software', keywords: [] },
+      { label: 'VS Code & Extensions', keywords: ['vscode', 'extension', 'plugin', 'editor', 'terminal'] },
+      { label: 'VMs & Environments', keywords: ['virtualbox', 'vm', 'docker', 'environment', 'install'] },
     ]},
+    { id: 'git-github', label: 'Git & GitHub', keywords: ['git', 'github', 'push', 'pull', 'merge', 'branch', 'commit', 'clone', 'repository', 'conflict'], nested: [
+      { label: 'All Git', keywords: [] },
+      { label: 'Push & Pull Issues', keywords: ['push', 'pull', 'remote', 'origin', 'reject', 'fetch'] },
+      { label: 'Merge & Conflicts', keywords: ['merge', 'conflict', 'branch', 'rebase', 'reset'] },
+    ]},
+    { id: 'accounts-lms', label: 'Accounts & LMS', keywords: ['account', 'login', 'password', 'canvas', 'lms', 'coursera', 'email', 'access', 'locked', 'reset'], nested: [
+      { label: 'All Accounts', keywords: [] },
+      { label: 'Login & Password', keywords: ['login', 'password', 'locked', 'reset', 'mfa', '2fa'] },
+      { label: 'Canvas & Coursera', keywords: ['canvas', 'coursera', 'lms', 'enrollment', 'module'] },
+    ]},
+    { id: 'general-troubleshooting', label: 'General Troubleshooting', keywords: ['troubleshoot', 'error', 'issue', 'problem', 'help', 'fix', 'broken', 'other'], nested: [] },
   ],
   slump: [
     { id: 'all-slump', label: 'All Slump Advice', keywords: [], nested: [] },
@@ -133,7 +144,7 @@ export interface JourneyTab {
 export const JOURNEY_TABS: JourneyTab[] = [
   { id: 'all', label: 'All', icon: Compass, emptyPrompt: 'Be the first to share a peer survival tip. Your cohort is waiting.' },
   { id: 'onboarding', label: 'Onboarding Hurdles', icon: Lightbulb, trackSuffix: 'Onboarding Hurdles', emptyPrompt: 'Did you survive the first-week setup chaos? Click here to drop a tip for the next cohort.' },
-  { id: 'labs', label: 'Lab Survival Guides', icon: BookOpen, trackSuffix: 'Lab Survival Guides', emptyPrompt: 'Conquered a complex lab that almost broke you? Share your survival guide here.' },
+  { id: 'labs', label: 'Tech Solutions', icon: BookOpen, trackSuffix: 'Tech Solutions', emptyPrompt: 'Have a fix for a common tech issue? Share your solution here to help the next learner.' },
   { id: 'slump', label: 'The Mid-Program Slump', icon: Flame, trackSuffix: 'The Mid-Program Slump', emptyPrompt: 'Hit a wall mid-way through and broken through it? Share your strategy here.' },
   { id: 'cert', label: 'Certification Prep', icon: Shield, trackSuffix: 'Certification Prep', emptyPrompt: 'Have a test-day hack or anxiety management trick? The cohort needs it.' },
   { id: 'job', label: 'Job Hunt Triage', icon: Briefcase, trackSuffix: 'Job Hunt Triage', emptyPrompt: 'Landed an interview or fixed your resume? Drop your advice for the next wave.' },
@@ -446,7 +457,9 @@ export default function LearnerExperiencePage() {
 
 function BreakthroughCard({ entry }: { entry: LearnerEntry }) {
   const [zoomed, setZoomed] = useState(false);
-  const { hardship, breakthrough } = parseHardshipBreakthrough(entry.content);
+  const hasTicketFormat = /Problem:/i.test(entry.content) && /Solution:/i.test(entry.content);
+  const ticket = hasTicketFormat ? parseTicketContent(entry.content) : null;
+  const { hardship, breakthrough } = !hasTicketFormat ? parseHardshipBreakthrough(entry.content) : { hardship: '', breakthrough: null };
 
   const cardInner = (expanded = false) => (
     <>
@@ -461,9 +474,12 @@ function BreakthroughCard({ entry }: { entry: LearnerEntry }) {
             {entry.slug.split('/').pop()}
           </span>
         </div>
-        <span className="text-[9px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wide flex-shrink-0 bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
-          [Peer Wisdom]
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-[9px] text-zinc-500 font-mono">{formatRelativeTime(entry.created_at)}</span>
+          <span className="text-[9px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wide flex-shrink-0 bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+            {hasTicketFormat ? '[Resolved]' : '[Peer Wisdom]'}
+          </span>
+        </div>
       </div>
 
       {/* Body */}
@@ -472,25 +488,54 @@ function BreakthroughCard({ entry }: { entry: LearnerEntry }) {
           {entry.title}
         </h3>
 
-        {/* Breakthrough section */}
-        <div className="space-y-1">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">The Breakthrough</span>
-          <p className={`text-xs text-zinc-600 dark:text-slate-400 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
-            {hardship.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').slice(0, expanded ? undefined : 180)}
-          </p>
-        </div>
+        {ticket ? (
+          <>
+            {/* Solution snippet (card face) */}
+            {!expanded && (
+              <p className="text-xs text-zinc-600 dark:text-slate-400 leading-relaxed line-clamp-3">
+                {ticket.solution.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').slice(0, 180)}
+              </p>
+            )}
 
-        {/* Breakthrough section */}
-        {breakthrough && (
-          <div className="space-y-1">
-            <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
-              <Lightbulb className="w-2.5 h-2.5" />
-              The Breakthrough
-            </span>
-            <p className={`text-xs text-sky-700 dark:text-sky-300 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
-              {breakthrough.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').slice(0, expanded ? undefined : 180)}
-            </p>
-          </div>
+            {/* Expanded: structured Problem/Solution blocks */}
+            {expanded && (
+              <>
+                <div className="rounded-lg border-l-4 border-amber-400/70 bg-amber-50 dark:bg-amber-500/5 px-3 py-2.5 space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">Problem</span>
+                  <p className="text-xs text-amber-900 dark:text-amber-200/80 leading-relaxed whitespace-pre-wrap">
+                    {ticket.problem.replace(/^#+\s*/gm, '').replace(/\*\*/g, '')}
+                  </p>
+                </div>
+                <div className="rounded-lg border-l-4 border-emerald-400/70 bg-emerald-50 dark:bg-emerald-500/5 px-3 py-2.5 space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Solution</span>
+                  <p className="text-xs text-emerald-900 dark:text-emerald-200/80 leading-relaxed whitespace-pre-wrap">
+                    {ticket.solution.replace(/^#+\s*/gm, '').replace(/\*\*/g, '')}
+                  </p>
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <div className="space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">The Breakthrough</span>
+              <p className={`text-xs text-zinc-600 dark:text-slate-400 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
+                {hardship.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').slice(0, expanded ? undefined : 180)}
+              </p>
+            </div>
+
+            {breakthrough && (
+              <div className="space-y-1">
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+                  <Lightbulb className="w-2.5 h-2.5" />
+                  The Breakthrough
+                </span>
+                <p className={`text-xs text-sky-700 dark:text-sky-300 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
+                  {breakthrough.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').slice(0, expanded ? undefined : 180)}
+                </p>
+              </div>
+            )}
+          </>
         )}
 
         {/* Footer */}
