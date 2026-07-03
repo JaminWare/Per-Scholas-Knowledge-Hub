@@ -135,7 +135,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]"></span>
                     </span>
-                    <span className="font-mono text-[11px] tracking-wider text-emerald-400/90">COHORT 2026-RTT-23 | STATUS: ACTIVE</span>
+                    <span className="font-mono text-[11px] tracking-wider text-emerald-400/90">2026-RTT-23 | STATUS: ACTIVE</span>
                   </div>
                 </div>
                 <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">
