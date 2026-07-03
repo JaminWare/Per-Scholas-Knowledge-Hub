@@ -462,7 +462,7 @@ export default function RecognitionPage() {
             </span>
           </div>
           <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-[0_0_12px_rgba(56,189,248,0.75)] mb-3">
-            Cohort 2026-RTT-23 Wall of Fame
+            Recognition Wall
           </h1>
           <p className="text-sky-100/80 max-w-xl leading-relaxed text-sm md:text-base">
             Celebrating every learner who has contributed research, documentation, and knowledge to the
