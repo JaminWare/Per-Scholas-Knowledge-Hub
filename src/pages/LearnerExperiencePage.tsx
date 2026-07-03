@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
-  LifeBuoy, Lightbulb, BookOpen, Flame, Shield, Briefcase, Compass, Plus, ChevronRight,
+  LifeBuoy, Lightbulb, BookOpen, Flame, Shield, Briefcase, Compass, Plus, ChevronRight, ExternalLink,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { formatRelativeTime } from '../utils/formatRelativeTime';
@@ -484,13 +484,25 @@ function BreakthroughCard({ entry }: { entry: LearnerEntry }) {
             {entry.author}
           </span>
           {expanded && (
-            <Link
-              to={`/article/${entry.slug}`}
-              onClick={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-1 text-[11px] font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
-            >
-              Read full article <ChevronRight className="w-3 h-3" />
-            </Link>
+            /^https?:\/\//.test(entry.content) ? (
+              <a
+                href={entry.content}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-1 text-[11px] font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
+              >
+                Open resource <ExternalLink className="w-3 h-3" />
+              </a>
+            ) : (
+              <Link
+                to={`/article/${entry.slug}`}
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-1 text-[11px] font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
+              >
+                Read full article <ChevronRight className="w-3 h-3" />
+              </Link>
+            )
           )}
         </div>
       </div>
