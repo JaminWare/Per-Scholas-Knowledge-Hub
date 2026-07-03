@@ -165,8 +165,6 @@ const TAB_TO_CONTEXT: Record<ResourceTab, string> = {
 const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-track]:bg-transparent';
 const CARD_WIDTH = 'w-[280px] sm:w-[320px] md:w-[350px] shrink-0 snap-start';
 
-const GENERAL_OVERVIEW_KEY = 'General Overview';
-
 function contentMapEntryToArticle(slug: string, entry: LocalArticle): ArticleWithContributor {
   const introBlock = entry.content.find((b) => b.type === 'intro');
   return {
@@ -185,7 +183,7 @@ function contentMapEntryToArticle(slug: string, entry: LocalArticle): ArticleWit
     source_file: null,
     author_name: entry.contributor,
     submission_type: 'Quick Reference',
-    comp_objective: null,
+    comp_objective: entry.studyCategory || null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
@@ -204,18 +202,14 @@ function groupByObjective(
 ): [string, ArticleWithContributor[]][] {
   const map = new Map<string, ArticleWithContributor[]>();
   for (const a of articles) {
-    const key = a.comp_objective?.trim() || GENERAL_OVERVIEW_KEY;
+    const key = a.comp_objective?.trim();
+    if (!key) continue;
     if (!map.has(key)) map.set(key, []);
     map.get(key)!.push(a);
   }
 
   const knownOrder = canonicalTrack ? (COMPTIA_OBJECTIVES[canonicalTrack] ?? []) : [];
   const ordered: [string, ArticleWithContributor[]][] = [];
-
-  if (map.has(GENERAL_OVERVIEW_KEY)) {
-    ordered.push([GENERAL_OVERVIEW_KEY, map.get(GENERAL_OVERVIEW_KEY)!]);
-    map.delete(GENERAL_OVERVIEW_KEY);
-  }
 
   for (const obj of knownOrder) {
     if (map.has(obj)) {
