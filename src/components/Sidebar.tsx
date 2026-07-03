@@ -157,8 +157,8 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           to="/learner-experience"
           className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all ${
             lxActive
-              ? 'bg-sky-500 text-white shadow-md shadow-sky-500/30'
-              : 'bg-sky-500/15 text-sky-300 border border-sky-500/30 hover:bg-sky-500/25 hover:border-sky-400/50 hover:shadow-[0_0_12px_rgba(56,189,248,0.15)]'
+              ? 'bg-white/15 text-white shadow-md shadow-black/20'
+              : 'bg-white/5 text-zinc-300 border border-white/10 hover:bg-white/10 hover:border-white/20 hover:text-white'
           }`}
         >
           <LifeBuoy className="w-4 h-4 flex-shrink-0" />

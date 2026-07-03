@@ -146,7 +146,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                 Welcome to the collaborative resource hub!
               </p>
               <Link
-                to="/learner-experience"
+                to="/learner-experience?tab=onboarding"
                 className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm transition-all shadow-lg shadow-sky-500/30 hover:shadow-sky-400/40 hover:scale-[1.02]"
               >
                 <LifeBuoy className="w-5 h-5" />
