@@ -277,6 +277,34 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
   );
 }
 
+function ResourcePlacard({ activeTab, onTabChange }: { activeTab: ResourceTab; onTabChange: (tab: ResourceTab) => void }) {
+  return (
+    <div className="rounded-xl border border-zinc-200 dark:border-zinc-700/60 bg-slate-50 dark:bg-zinc-800/50 px-5 py-4">
+      <div className="flex flex-wrap items-center gap-2">
+        {RESOURCE_TABS.map((tab) => {
+          const Icon = TAB_ICONS[tab];
+          const isActive = activeTab === tab;
+          return (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => onTabChange(tab)}
+              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                isActive
+                  ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
+                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+              }`}
+            >
+              <Icon className="w-3.5 h-3.5" />
+              {tab}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 function ObjectivePlacard({
   domainInfo,
   activeObjective,
@@ -292,71 +320,68 @@ function ObjectivePlacard({
 }) {
   const canonicalTrack = CANONICAL_DOMAINS[domainInfo.domain] || domainInfo.domain;
   const objectives = COMPTIA_OBJECTIVES[canonicalTrack] ?? [];
-  const hasFilters = activeTab !== 'All' || activeObjective !== 'All';
-
-  const activePill = 'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold border transition-all duration-200 bg-sky-500 text-white border-transparent shadow shadow-sky-500/30';
-  const inactivePill = 'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold border transition-all duration-200 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:border-sky-400/60 dark:hover:border-sky-500/50 hover:text-sky-600 dark:hover:text-sky-400';
 
   return (
-    <div className="rounded-xl border border-zinc-200 dark:border-zinc-700/60 bg-zinc-50 dark:bg-zinc-800/40 px-5 py-4 space-y-4">
-      <div>
-        <div className="flex items-center justify-between mb-2.5">
-          <div className="flex items-center gap-1.5">
-            <Layers className="w-3 h-3 text-sky-500" />
-            <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Contribution Type</span>
+    <div className="space-y-3">
+      {objectives.length > 0 && (
+        <div className="rounded-xl border border-zinc-200 dark:border-zinc-700/60 bg-slate-50 dark:bg-zinc-800/50 px-5 py-4">
+          <div className="flex items-center gap-2 mb-3">
+            <Target className="w-3.5 h-3.5 text-sky-500" />
+            <span className="text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider">Objectives</span>
           </div>
-          {hasFilters && (
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
-              onClick={() => { onTabChange('All'); onObjectiveChange('All'); }}
-              className="text-[10px] font-semibold text-sky-500 hover:text-sky-400 transition-colors"
+              onClick={() => onObjectiveChange('All')}
+              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                activeObjective === 'All'
+                  ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
+                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+              }`}
             >
-              Clear filters
+              All Objectives
             </button>
-          )}
+            {objectives.map((obj) => (
+              <button
+                key={obj}
+                type="button"
+                onClick={() => onObjectiveChange(obj)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                  activeObjective === obj
+                    ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
+                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+                }`}
+              >
+                {obj}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {(RESOURCE_TABS.slice(1) as ResourceTab[]).map((tab) => {
+      )}
+
+      <div className="rounded-xl border border-zinc-200 dark:border-zinc-700/60 bg-slate-50 dark:bg-zinc-800/50 px-5 py-4">
+        <div className="flex flex-wrap items-center gap-2">
+          {RESOURCE_TABS.map((tab) => {
             const Icon = TAB_ICONS[tab];
             const isActive = activeTab === tab;
             return (
               <button
                 key={tab}
                 type="button"
-                onClick={() => onTabChange(isActive ? 'All' : tab)}
-                className={isActive ? activePill : inactivePill}
+                onClick={() => onTabChange(tab)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                  isActive
+                    ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
+                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+                }`}
               >
-                <Icon className="w-3 h-3" />
+                <Icon className="w-3.5 h-3.5" />
                 {tab}
               </button>
             );
           })}
         </div>
       </div>
-
-      {objectives.length > 0 && (
-        <div>
-          <div className="flex items-center gap-1.5 mb-2.5">
-            <Target className="w-3 h-3 text-sky-500" />
-            <span className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Objectives</span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {objectives.map((obj) => {
-              const isActive = activeObjective === obj;
-              return (
-                <button
-                  key={obj}
-                  type="button"
-                  onClick={() => onObjectiveChange(isActive ? 'All' : obj)}
-                  className={isActive ? activePill : inactivePill}
-                >
-                  {obj}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -513,10 +538,9 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
   );
 }
 
-function AppletSkeleton({ gridMode = false }: { gridMode?: boolean }) {
-  const widthClass = gridMode ? 'w-full' : CARD_WIDTH;
+function AppletSkeleton() {
   return (
-    <div className={`${widthClass} bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl p-5 animate-pulse`}>
+    <div className={`${CARD_WIDTH} bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl p-5 animate-pulse`}>
       <div className="flex items-start gap-3 mb-4">
         <div className="w-10 h-10 rounded-xl bg-zinc-200 dark:bg-zinc-700 flex-shrink-0" />
         <div className="flex-1 space-y-2">
@@ -694,6 +718,8 @@ function CurriculumDashboard({
   }, [articles, context]);
 
   if (focusDomain) {
+    const track = CURRICULUM_TRACKS[focusDomain.trackIndex];
+    const colors = TRACK_COLORS[track.color];
     const canonicalTarget = CANONICAL_DOMAINS[focusDomain.domain] || focusDomain.domain;
 
     const objectiveFilteredArticles = activeObjective && activeObjective !== 'All'
@@ -707,14 +733,13 @@ function CurriculumDashboard({
 
     const allDomainArticles = typeFilteredArticles.filter((a) => a.study_category === canonicalTarget && !a.is_sample);
     const hasAnyContent = allDomainArticles.length > 0;
-    const isFiltered = activeObjective !== 'All' || (activeTab !== 'All');
 
     if (isLoading) {
       return (
-        <div className="space-y-3">
-          <AppletSkeleton gridMode />
-          <AppletSkeleton gridMode />
-          <AppletSkeleton gridMode />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <AppletSkeleton />
+          <AppletSkeleton />
+          <AppletSkeleton />
         </div>
       );
     }
@@ -763,15 +788,21 @@ function CurriculumDashboard({
     }
 
     return (
-      <div className="space-y-3">
-        {isFiltered && (
-          <p className="text-xs text-zinc-400 dark:text-zinc-500 pb-1">
-            {allDomainArticles.length} result{allDomainArticles.length !== 1 ? 's' : ''}
-            {activeObjective !== 'All' ? ` · ${activeObjective}` : ''}
-            {activeTab !== 'All' ? ` · ${activeTab}` : ''}
-          </p>
-        )}
-        {allDomainArticles.map((a) => <AppletCard key={a.id} article={a} gridMode />)}
+      <div className="space-y-0">
+        {groupByObjective(allDomainArticles, canonicalTarget).map(([objective, items], idx) => (
+          <div key={objective}>
+            <div className={`flex items-center gap-2 pb-2 border-b border-zinc-200 dark:border-zinc-700/50 ${idx === 0 ? 'mt-0' : 'mt-8'}`}>
+              <Target className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
+              <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-200">{objective}</h3>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700">
+                {items.length}
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+              {items.map((a) => <AppletCard key={a.id} article={a} gridMode />)}
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
@@ -894,7 +925,6 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
 
   useEffect(() => {
     setActiveObjective('All');
-    setActiveTab('All');
   }, [slug]);
 
   const meta = sectionMeta[slug];
