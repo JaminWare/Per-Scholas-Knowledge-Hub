@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
-  Zap, Star, Crown, Link2, UploadCloud,
+  Lightbulb, GitBranch, Sparkles, Star, Crown, Link2, UploadCloud,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
@@ -46,21 +46,27 @@ function getDomainName(urlString: string): string {
   }
 }
 
-// ── Dynamic pluralization ────────────────────────────────
+// ── Portal bucket mapping ────────────────────────────────
 
-const PLURAL_MAP: Record<string, string> = {
-  'Article': 'Articles',
-  'Resource Link': 'Resource Links',
-  'Diagram': 'Diagrams',
-  'Study Tip': 'Study Tips',
-  'Quick Ref': 'Quick Refs',
-  'Quick Reference': 'Quick References',
-  'Prompt Playbook': 'Prompt Playbooks',
-};
+type PortalBucket = 'Articles' | 'Pro-Tips' | 'Diagrams' | 'Resource Links' | 'Playbooks';
 
-function pluralizeType(type: string, count: number): string {
-  if (count === 1) return type;
-  return PLURAL_MAP[type] ?? `${type}s`;
+function mapToPortalBucket(rawType: string | null | undefined): PortalBucket {
+  switch (rawType) {
+    case 'Pro-Tip':
+    case 'Study Tip':
+    case 'Quick Reference':
+    case 'Quick Ref':
+      return 'Pro-Tips';
+    case 'Diagram':
+      return 'Diagrams';
+    case 'Resource Link':
+      return 'Resource Links';
+    case 'Playbook':
+    case 'Prompt Playbook':
+      return 'Playbooks';
+    default:
+      return 'Articles';
+  }
 }
 
 // ── Track resolution (single source of truth) ────────────
@@ -134,9 +140,11 @@ const SECTION_HDR = 'bg-zinc-100/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-
 // ── Category icon helper ─────────────────────────────────
 
 function getCategoryIcon(type: string, isFounder: boolean) {
-  if (type === 'Resource Link') return <Link2 className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />;
-  if (type === 'Article') return <BookOpen className={`w-3.5 h-3.5 flex-shrink-0 ${isFounder ? 'text-amber-500' : 'text-sky-500'}`} />;
-  return <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />;
+  if (type === 'Resource Links') return <Link2 className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />;
+  if (type === 'Pro-Tips') return <Lightbulb className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />;
+  if (type === 'Diagrams') return <GitBranch className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />;
+  if (type === 'Playbooks') return <Sparkles className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />;
+  return <BookOpen className={`w-3.5 h-3.5 flex-shrink-0 ${isFounder ? 'text-amber-500' : 'text-sky-500'}`} />;
 }
 
 // ── Unified Contributor Card ─────────────────────────────
@@ -231,7 +239,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
                 }`}
               >
                 {getCategoryIcon(type, isFounder)}
-                {pluralizeType(type, count)} ({count})
+                {type} ({count})
               </button>
             );
           })}
@@ -240,7 +248,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
 
       {/* Expanded content panel */}
       {isOpen && openCategory && (() => {
-        const categoryItems = group.items.filter((i) => (i.submission_type ?? 'Article') === openCategory);
+        const categoryItems = group.items.filter((i) => mapToPortalBucket(i.submission_type) === openCategory);
         const trackGroups = groupItemsByTrack(categoryItems);
         return (
           <div className={`border-t ${isFounder ? 'border-sky-100 dark:border-amber-500/15' : 'border-zinc-200 dark:border-zinc-600'} px-5 py-4`}>
@@ -251,8 +259,9 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
                   <div className="divide-y divide-slate-200 dark:divide-zinc-800">
                     {items.map((s) => {
                       const itemType = s.submission_type ?? 'Article';
-                      const isResourceLink = itemType === 'Resource Link';
-                      const isInternalNav = itemType === 'Article' || itemType === 'Study Tip' || itemType === 'Quick Reference' || itemType === 'Diagram' || itemType === 'Prompt Playbook';
+                      const itemBucket = mapToPortalBucket(itemType);
+                      const isResourceLink = itemBucket === 'Resource Links';
+                      const isInternalNav = itemBucket === 'Articles' || itemBucket === 'Pro-Tips' || itemBucket === 'Diagrams' || itemBucket === 'Playbooks';
 
                       if (isResourceLink) {
                         const hasUrl = s.content && s.content.startsWith('http');
@@ -295,12 +304,12 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
                               isFounder ? 'hover:border-amber-400' : 'hover:border-sky-500'
                             }`}
                           >
-                            {getCategoryIcon(itemType, isFounder)}
+                            {getCategoryIcon(itemBucket, isFounder)}
                             <span className={`text-sm text-slate-800 dark:text-zinc-100 truncate ${
                               isFounder ? 'group-hover:text-amber-600 dark:group-hover:text-amber-300' : 'group-hover:text-sky-600 dark:group-hover:text-sky-300'
                             }`}>{s.title}</span>
                             <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
-                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{itemType}</span>
+                              <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{itemBucket}</span>
                               <ChevronRight className={`w-3 h-3 text-slate-400 dark:text-zinc-600 ${
                                 isFounder ? 'group-hover:text-amber-400' : 'group-hover:text-sky-400'
                               }`} />
@@ -314,9 +323,9 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
                           key={s.id}
                           className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
                         >
-                          {getCategoryIcon(itemType, isFounder)}
+                          {getCategoryIcon(itemBucket, isFounder)}
                           <span className="text-sm text-slate-700 dark:text-zinc-300 truncate">{s.title}</span>
-                          <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-200 dark:bg-zinc-800/60 text-slate-600 dark:text-zinc-500 flex-shrink-0">{itemType}</span>
+                          <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-200 dark:bg-zinc-800/60 text-slate-600 dark:text-zinc-500 flex-shrink-0">{itemBucket}</span>
                         </div>
                       );
                     })}
@@ -404,8 +413,8 @@ export default function RecognitionPage() {
         const group = acc[key];
         if (item.badge && item.badge !== 'Cohort Contributor') group.topBadge = item.badge;
         group.items.push(item);
-        const effectiveType = item.submission_type ?? 'Article';
-        group.typeCounts[effectiveType] = (group.typeCounts[effectiveType] ?? 0) + 1;
+        const bucket = mapToPortalBucket(item.submission_type);
+        group.typeCounts[bucket] = (group.typeCounts[bucket] ?? 0) + 1;
         return acc;
       }, {});
 
