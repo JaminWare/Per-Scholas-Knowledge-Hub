@@ -124,9 +124,8 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           </div>
           <div className="min-w-0">
             <p className="font-bold text-zinc-100 text-[13px] leading-tight truncate">
-              Cohort Survival Guide
+              Knowledge Base
             </p>
-            <p className="text-[11px] text-zinc-400">2026-RTT-23</p>
           </div>
         </Link>
         <button

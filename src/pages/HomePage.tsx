@@ -139,7 +139,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                   </div>
                 </div>
                 <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">
-                  The Learners Hub
+                  Learners Hub
                   <span className="block bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-sky-300 text-base md:text-lg font-semibold mt-0.5">
                     AI Enabled Healthcare IT
                   </span>
@@ -167,7 +167,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                   <Compass className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-zinc-800 dark:text-zinc-100">The Cohort Survival Guide</h2>
+                  <h2 className="text-lg font-bold text-zinc-800 dark:text-zinc-100">Cohort Survival Guide</h2>
                   <p className="text-sm text-zinc-500">Real talk from learners who've been there</p>
                 </div>
               </div>
