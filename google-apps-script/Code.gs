@@ -15,7 +15,7 @@
 //    - Who has access: Anyone
 //    Click Deploy, then copy the Web App URL.
 // 7. Go to your Supabase project → Project Settings → Edge Functions → Secrets.
-//    Add a secret named GOOGLE_SHEETS_WEBHOOK_URL and paste the URL from step 6.
+//    Add a secret named SHEETS_WEBHOOK_URL and paste the URL from step 6.
 // 8. In Supabase: Database → Webhooks → Create a new webhook:
 //    - Name:   on_submission_insert
 //    - Table:  submissions

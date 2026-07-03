@@ -12,14 +12,6 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const sheetsUrl = Deno.env.get("GOOGLE_SHEETS_WEBHOOK_URL");
-    if (!sheetsUrl) {
-      return new Response(
-        JSON.stringify({ error: "GOOGLE_SHEETS_WEBHOOK_URL secret is not set." }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-      );
-    }
-
     // Supabase Database Webhook sends the full event envelope.
     // Shape: { type, table, schema, record, old_record }
     const body = await req.json();

@@ -467,7 +467,7 @@ export default function RecognitionPage() {
               <Award className="w-6 h-6 text-sky-400" />
             </div>
             <span className="text-xs font-bold text-sky-400 uppercase tracking-widest">
-              Per Scholas2026-RTT-23
+              Per Scholas 2026-RTT-23
             </span>
           </div>
           <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-[0_0_12px_rgba(56,189,248,0.75)] mb-3">

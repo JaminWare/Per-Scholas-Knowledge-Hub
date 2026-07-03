@@ -175,7 +175,7 @@ function LoginScreen({ onAuth }: { onAuth: () => void }) {
             <Lock className="w-8 h-8 text-sky-400" />
           </div>
           <h1 className="text-2xl font-bold text-zinc-100">Cohort Admin Portal</h1>
-          <p className="text-sm text-zinc-500 mt-1">Per Scholas2026-RTT-23</p>
+          <p className="text-sm text-zinc-500 mt-1">Per Scholas 2026-RTT-23</p>
         </div>
 
         <form
@@ -568,7 +568,7 @@ function AdminPanel() {
             </div>
             <div>
               <h1 className="text-base font-bold text-zinc-100 leading-none">Admin Control Panel</h1>
-              <p className="text-[11px] text-zinc-500 mt-0.5">Per Scholas2026-RTT-23 Cohort</p>
+              <p className="text-[11px] text-zinc-500 mt-0.5">Per Scholas 2026-RTT-23 Cohort</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
