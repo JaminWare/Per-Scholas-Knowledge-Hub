@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   X, Send, Loader2, Tag,
   FileText, Link2, BookOpen, GitBranch,
@@ -9,6 +9,7 @@ import { type NewSubmission } from '../utils/submissions';
 import { checkForDuplicate } from '../utils/duplicateCheck';
 import { JOURNEY_TABS, CATEGORY_FILTERS } from '../pages/LearnerExperiencePage';
 import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
+import { autoCategorizeSubmission } from '../utils/autoCategorize';
 
 type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Resource Link' | 'Prompt Playbook';
 
@@ -47,51 +48,16 @@ const MASTER_CATEGORIES = [
     'Advanced Healthcare IT — HIPAA Data Security',
     'Advanced Healthcare IT — Clinical Workflows',
   ]},
-  { label: 'Diagrams', badge: 'Diagram Architect', sub: [
-    'Diagrams — Motherboard / Hardware Blueprints',
-    'Diagrams — Network Topology',
-    'Diagrams — EHR / Clinical Data Flow',
-    'Diagrams — Security Architecture',
-  ]},
-  { label: 'Prompt Playbook', badge: 'Playbook Engineer', sub: [
-    'Prompt Playbook — CompTIA PBQ Simulations',
-    'Prompt Playbook — Healthcare Case Studies',
-    'Prompt Playbook — EHR Troubleshooting Frameworks',
-    'Prompt Playbook — Study Drill Frameworks',
-  ]},
 ];
 
-function getVisibleCategories(type: SubmissionType) {
-  switch (type) {
-    case 'Article':
-    case 'Study Tip':
-    case 'Resource Link':
-      return MASTER_CATEGORIES.filter((c) =>
-        c.label === 'Learner Experience & FAQs' ||
-        c.label === 'CompTIA A+ Core 1' ||
-        c.label === 'CompTIA A+ Core 2' ||
-        c.label === 'Advanced Healthcare IT'
-      );
-    case 'Diagram':
-      return MASTER_CATEGORIES.filter((c) =>
-        c.label === 'Learner Experience & FAQs' ||
-        c.label === 'Diagrams'
-      );
-    case 'Prompt Playbook':
-      return MASTER_CATEGORIES.filter((c) =>
-        c.label === 'Learner Experience & FAQs' ||
-        c.label === 'Prompt Playbook'
-      );
-  }
+function getVisibleCategories(_type: SubmissionType) {
+  return MASTER_CATEGORIES;
 }
 
 function getBadge(trackName: string): string {
   if (trackName === LX_TRACK_VALUE || trackName.startsWith('Learner Experience')) return 'Community Contributor';
   if (trackName.includes('Core 2')) return 'Core 2 Expert';
   if (trackName.includes('Advanced Healthcare IT')) return 'Healthcare IT Specialist';
-  if (trackName.includes('Prompt Playbook')) return 'Playbook Engineer';
-  if (trackName.includes('Diagrams')) return 'Diagram Architect';
-  if (trackName.includes('Quick References')) return 'Reference Author';
   return 'Core 1 Expert';
 }
 
@@ -229,6 +195,42 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [showSuggestions, setShowSuggestions] = useState(false);
   const authorFieldRef = useRef<HTMLDivElement>(null);
 
+  const [autoDetected, setAutoDetected] = useState(false);
+  const [userOverride, setUserOverride] = useState(false);
+  const autoDetectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const runAutoDetect = useCallback(() => {
+    if (userOverride) return;
+    const textBody = [concept, aPlusRelevance, promptText, promptRole].filter(Boolean).join(' ');
+    const result = autoCategorizeSubmission(title, textBody);
+    if (!result) {
+      setAutoDetected(false);
+      return;
+    }
+    if (result.submissionType && submissionType !== result.submissionType) {
+      setSubmissionType(result.submissionType);
+    }
+    if (result.masterCategory && result.masterCategory !== masterCategory) {
+      setMasterCategory(result.masterCategory);
+    }
+    if (result.track && result.track !== track) {
+      setTrack(result.track);
+    }
+    if (result.compObjective && result.compObjective !== compObjective) {
+      setCompObjective(result.compObjective);
+    }
+    if (result.masterCategory || result.track) {
+      setAutoDetected(true);
+    }
+  }, [title, concept, aPlusRelevance, promptText, promptRole, userOverride, submissionType, masterCategory, track, compObjective]);
+
+  useEffect(() => {
+    if (userOverride) return;
+    if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current);
+    autoDetectTimer.current = setTimeout(runAutoDetect, 400);
+    return () => { if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current); };
+  }, [title, concept, aPlusRelevance, promptText, promptRole, runAutoDetect, userOverride]);
+
   useEffect(() => {
     if (!isOpen) return;
     supabase
@@ -282,6 +284,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setBreakthrough('');
     setErrors({});
     setFormError('');
+    setAutoDetected(false);
+    setUserOverride(false);
   }, [submissionType]);
 
   useEffect(() => {
@@ -316,6 +320,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setFormError('');
     setIsSuccess(false);
     setShowSuggestions(false);
+    setAutoDetected(false);
+    setUserOverride(false);
   };
 
   const assembleContent = () => {
@@ -581,7 +587,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Curriculum Track</label>
               <select
                 value={masterCategory}
-                onChange={(e) => { setMasterCategory(e.target.value); setTrack(''); setCompObjective(''); setLxStage(''); setLxTopic(''); setLxFocus(''); }}
+                onChange={(e) => { setMasterCategory(e.target.value); setTrack(''); setCompObjective(''); setLxStage(''); setLxTopic(''); setLxFocus(''); setUserOverride(true); setAutoDetected(false); }}
                 className={selectCls('masterCategory')}
               >
                 <option value="">Select a category...</option>
@@ -597,7 +603,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Specific Domain / Module</label>
                   <select
                     value={track}
-                    onChange={(e) => { setTrack(e.target.value); setCompObjective(''); }}
+                    onChange={(e) => { setTrack(e.target.value); setCompObjective(''); setUserOverride(true); setAutoDetected(false); }}
                     className={selectCls('track')}
                   >
                     <option value="">Select a domain...</option>
@@ -680,6 +686,11 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               <div className="mt-2 flex items-center gap-2">
                 <Tag className="w-3.5 h-3.5 text-sky-500" />
                 <span className="text-xs text-zinc-500 dark:text-zinc-400">You will earn: <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-sky-100 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400">[{autoBadge}]</span></span>
+                {autoDetected && (
+                  <span className="inline-flex items-center gap-1 ml-auto text-xs font-medium text-emerald-500">
+                    <CheckCircle2 className="w-3 h-3" /> Auto-detected
+                  </span>
+                )}
               </div>
             </div>
 
