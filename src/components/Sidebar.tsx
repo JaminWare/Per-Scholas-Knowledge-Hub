@@ -157,7 +157,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           to="/learner-experience"
           className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all ${
             lxActive
-              ? 'bg-white/30 text-white shadow-md shadow-black/30 border border-white/25'
+              ? 'bg-white/10 text-white border-2 border-white shadow-[0_0_15px_rgba(56,189,248,0.6)]'
               : 'bg-white/5 text-zinc-300 border border-white/10 hover:bg-white/15 hover:border-white/25 hover:text-white'
           }`}
         >
