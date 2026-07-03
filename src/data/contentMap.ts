@@ -425,12 +425,12 @@ Content-Type: application/fhir+json
   },
 
   // ─────────────────────────────────────────────────────────
-  // STUDY TIPS \u2014 Overview pages
+  // STUDY TIPS — Overview pages (re-routed to Core 1)
   // ─────────────────────────────────────────────────────────
 
   'study-tips/core1-overview': {
     title: 'CompTIA A+ Core 1 (220-1201) \u2014 Complete Study Guide Overview',
-    trackLabel: 'Study Tips \u2014 CompTIA A+ Core 1',
+    trackLabel: 'CompTIA A+ Core 1 \u2014 Study Guide Overview',
     contributor: 'Cohort Lead',
     contributorRole: 'Core 1 Expert',
     cohort: '2026-RTT-23',
@@ -459,12 +459,12 @@ Content-Type: application/fhir+json
   },
 
   // ─────────────────────────────────────────────────────────
-  // PROMPT PLAYBOOK
+  // PBQ SIMULATION PROMPTS (re-routed to Core 1 Networking)
   // ─────────────────────────────────────────────────────────
 
-  'azari-prompt-playbook/pbq-prompts': {
+  'core1-networking/pbq-prompts': {
     title: 'Core 1 PBQ Simulation Prompts for Canvas Class AI',
-    trackLabel: 'Prompt Playbook \u2014 CompTIA A+ Core 1 PBQ Simulations',
+    trackLabel: 'CompTIA A+ Core 1 \u2014 PBQ Simulations',
     contributor: 'Cohort Lead',
     contributorRole: 'AI Prompt Engineer',
     cohort: '2026-RTT-23',
@@ -527,12 +527,12 @@ and explain why each answer is correct or incorrect.` },
   },
 
   // ─────────────────────────────────────────────────────────
-  // QUICK REFERENCES
+  // QUICK REFERENCES (re-routed to Core 1)
   // ─────────────────────────────────────────────────────────
 
   'study-tips/acronyms': {
     title: 'Healthcare IT & CompTIA Acronym Master Directory',
-    trackLabel: 'Study Tips \u2014 Comprehensive Acronym Reference',
+    trackLabel: 'CompTIA A+ Core 1 \u2014 Acronym Reference',
     contributor: 'Cohort Lead',
     contributorRole: 'Reference Author',
     cohort: '2026-RTT-23',

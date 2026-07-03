@@ -4,24 +4,20 @@ import CardZoomOverlay from '../components/CardZoomOverlay';
 import ArticleRenderer from '../components/ArticleRenderer';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import contentMap, { type LocalArticle } from '../data/contentMap';
-import { extractReferences } from '../utils/extractReferences';
 import { useArticles, type ArticleWithContributor } from '../hooks/useArticles';
 import { normalizeCategory } from '../utils/normalizeCategory';
 import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
-  Lightbulb, Sparkles, Layout, Laptop, Monitor, Database,
+  Lightbulb, Sparkles, Laptop, Monitor, Database,
   Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight, ArrowDown,
   Construction, Layers, Target, Bookmark, Compass,
 } from 'lucide-react';
 
 const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ className?: string }>; track?: string }> = {
-  'study-tips':            { title: 'Study Tips', icon: Lightbulb },
-  'study-tips/core1-overview': { title: 'Core 1 Overview', icon: Lightbulb, track: 'Study Tips' },
-  'study-tips/acronyms': { title: 'Acronym Master Directory', icon: Lightbulb, track: 'Study Tips' },
-  'diagrams':              { title: 'Diagrams', icon: Layout },
-  'azari-prompt-playbook': { title: 'Prompt Playbook', icon: Sparkles },
-  'azari-prompt-playbook/pbq-prompts':    { title: 'PBQ Simulation Prompts', icon: Sparkles, track: 'Prompt Playbook' },
+  'study-tips/core1-overview': { title: 'Core 1 Overview', icon: Lightbulb, track: 'CompTIA A+ Core 1' },
+  'study-tips/acronyms': { title: 'Acronym Master Directory', icon: Bookmark, track: 'CompTIA A+ Core 1' },
+  'core1-networking/pbq-prompts': { title: 'PBQ Simulation Prompts', icon: Sparkles, track: 'CompTIA A+ Core 1' },
   'core1-mobile':          { title: 'Domain 1.0 — Mobile Devices', icon: Laptop, track: 'CompTIA A+ Core 1' },
   'core1-networking':      { title: 'Domain 2.0 — Networking', icon: Network, track: 'CompTIA A+ Core 1' },
   'core1-hardware':        { title: 'Domain 3.0 — Hardware', icon: Cpu, track: 'CompTIA A+ Core 1' },
@@ -137,29 +133,17 @@ const TRACK_COLORS = {
   cyan: { header: 'text-sky-600 dark:text-sky-400', icon: 'bg-sky-500/10 text-sky-500', domainHeader: 'text-sky-500 dark:text-sky-400' },
 };
 
-const DASHBOARD_CONTEXTS: Record<string, string> = {
-  'study-tips':            'Study Tips',
-  'diagrams':              'Diagram',
-  'azari-prompt-playbook': 'Prompt',
-};
+const DASHBOARD_CONTEXTS: Record<string, string> = {};
 
-const RESOURCE_TABS = ['All', 'Study Tips', 'Diagrams', 'Prompt Playbook', 'Quick References'] as const;
+const RESOURCE_TABS = ['All'] as const;
 type ResourceTab = typeof RESOURCE_TABS[number];
 
 const TAB_ICONS: Record<ResourceTab, React.ComponentType<{ className?: string }>> = {
   'All': Layers,
-  'Study Tips': Lightbulb,
-  'Diagrams': Layout,
-  'Prompt Playbook': Sparkles,
-  'Quick References': Bookmark,
 };
 
 const TAB_TO_CONTEXT: Record<ResourceTab, string> = {
   'All': 'All',
-  'Study Tips': 'Study Tips',
-  'Diagrams': 'Diagram',
-  'Prompt Playbook': 'Prompt',
-  'Quick References': 'Quick Reference',
 };
 
 const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-track]:bg-transparent';
@@ -714,73 +698,12 @@ function CurriculumDashboard({
   activeObjective?: string;
 }) {
   const isVisibleInContext = (a: ArticleWithContributor) => {
-    if (context === 'All') {
-      return !a.is_sample;
-    }
-    if (context === 'Quick Reference') {
-      return a.is_sample || (a.submission_type ?? '').toLowerCase() === 'quick reference' || (a.submission_type ?? '').toLowerCase() === 'resource link';
-    }
-    if (context === 'Study Tips') {
-      const type = (a.submission_type ?? '').toLowerCase();
-      return a.is_sample || type === 'article' || type === 'study tip' || type === 'quick reference' || type === '';
-    }
-    if (context === 'Diagram') {
-      return a.is_sample || (a.submission_type ?? '').toLowerCase() === 'diagram';
-    }
-    if (context === 'Prompt') {
-      return a.is_sample || (a.submission_type ?? '').toLowerCase() === 'prompt playbook';
-    }
-    return true;
+    return !a.is_sample;
   };
 
-  const referenceCards = useMemo<ArticleWithContributor[]>(() => {
-    if (context !== 'Quick Reference') return [];
-    const nonQrArticles = articles.filter((a) => {
-      const type = (a.submission_type ?? '').toLowerCase();
-      return type !== 'quick reference' && type !== 'resource link' && !a.is_sample;
-    });
-    const cards: ArticleWithContributor[] = [];
-    const seenUrls = new Set<string>();
-    for (const article of nonQrArticles) {
-      const refs = extractReferences(article.formatted_content ?? article.content);
-      for (const ref of refs) {
-        if (seenUrls.has(ref.url)) continue;
-        seenUrls.add(ref.url);
-        cards.push({
-          id: `ref-${ref.url}`,
-          title: ref.label,
-          slug: `ref-${encodeURIComponent(ref.url)}`,
-          section_id: null,
-          content: ref.url,
-          formatted_content: null,
-          excerpt: `Extracted from: ${article.title}`,
-          contributor_id: null,
-          tags: [],
-          is_featured: false,
-          is_sample: false,
-          study_category: article.study_category,
-          source_file: null,
-          author_name: article.author_name ?? null,
-          submission_type: 'Resource Link',
-          created_at: article.created_at,
-          updated_at: article.created_at,
-        });
-      }
-    }
-    return cards;
-  }, [articles, context]);
-
   const visibleArticles = useMemo(() => {
-    let base = articles;
-    if (context === 'Quick Reference' && referenceCards.length > 0) {
-      const existingUrls = new Set(
-        articles.filter((a) => (a.submission_type ?? '').toLowerCase() === 'resource link').map((a) => a.content?.trim())
-      );
-      const newRefs = referenceCards.filter((r) => !existingUrls.has(r.content?.trim()));
-      base = [...articles, ...newRefs];
-    }
-    return base.filter(isVisibleInContext);
-  }, [articles, referenceCards, context]);
+    return articles.filter(isVisibleInContext);
+  }, [articles, context]);
 
   if (focusDomain) {
     const track = CURRICULUM_TRACKS[focusDomain.trackIndex];

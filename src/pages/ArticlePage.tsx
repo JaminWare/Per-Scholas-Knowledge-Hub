@@ -30,9 +30,6 @@ const sectionTrackLabels: Record<string, string> = {
   'healthcare-hipaa':      'ADVANCED HEALTHCARE IT — HIPAA SECURITY',
   'healthcare-ehr':        'ADVANCED HEALTHCARE IT — EHR ARCHITECTURE',
   'healthcare-clinical':   'ADVANCED HEALTHCARE IT — CLINICAL WORKFLOWS',
-  'azari-prompt-playbook': 'AI PROMPT PLAYBOOK',
-  'study-tips':            'STUDY TIPS',
-  'diagrams':              'DIAGRAMS',
 };
 
 // Slugs that must never fall through to "Article Not Found"
@@ -40,7 +37,7 @@ const FOUNDER_SLUGS = new Set([
   'firewall-basics', 'command-documentation', 'snap-in',
   'intro-healthcare-it-security', 'cloud-computing-healthcare',
   'ai-prompt-engineering-healthcare',
-  'diagrams/network-topology-architecture', 'diagrams/osi-pdu-flow',
+  'core1-networking/network-topology-architecture', 'core1-networking/osi-pdu-flow',
   'core1-networking/sample-protocols',
 ]);
 
@@ -464,8 +461,8 @@ export default function ArticlePage() {
   const effectiveIsSample = isSample && !isFounderSlug;
 
   // Full-page diagram panel routing — each is suppressed when title matches [Sample]
-  const isNetworkTopologyArticle = article.slug === 'diagrams/network-topology-architecture' && !strictlyIsSample;
-  const isOSIPDUArticle          = article.slug === 'diagrams/osi-pdu-flow' && !strictlyIsSample;
+  const isNetworkTopologyArticle = article.slug === 'core1-networking/network-topology-architecture' && !strictlyIsSample;
+  const isOSIPDUArticle          = article.slug === 'core1-networking/osi-pdu-flow' && !strictlyIsSample;
   const isTCPIPArticle           = article.slug === 'core1-networking/sample-protocols' && !strictlyIsSample;
 
   function handleBack() {

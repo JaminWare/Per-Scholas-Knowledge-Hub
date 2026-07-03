@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, Lightbulb, Network, BrainCircuit, HeartPulse, ChevronRight } from 'lucide-react';
+import { Sparkles, Network, HeartPulse, ChevronRight } from 'lucide-react';
 
 interface QuickLaunchTile {
   id: string;
@@ -12,15 +12,6 @@ interface QuickLaunchTile {
 }
 
 const tiles: QuickLaunchTile[] = [
-  {
-    id: 'study-tips',
-    label: 'Study Tips Hub',
-    description: 'CompTIA mnemonics, OSI frameworks & active-recall flashcards',
-    icon: Lightbulb,
-    route: '/study-tips',
-    accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
-    iconBg: 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20',
-  },
   {
     id: 'networking',
     label: 'Networking Domain',
@@ -38,15 +29,6 @@ const tiles: QuickLaunchTile[] = [
     route: '/healthcare-clinical',
     accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
     iconBg: 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20',
-  },
-  {
-    id: 'prompts',
-    label: 'AI Prompt Hacks',
-    description: 'PBQ simulation prompts, EHR troubleshooting frameworks & case studies',
-    icon: BrainCircuit,
-    route: '/azari-prompt-playbook',
-    accentClass: 'hover:border-amber-400/50 dark:hover:border-amber-500/40',
-    iconBg: 'bg-gradient-to-br from-amber-500 to-amber-400 shadow-amber-500/20',
   },
 ];
 
@@ -92,17 +74,6 @@ export default function UniqueHacksGrid() {
               </button>
             );
           })}
-        </div>
-
-        {/* Footer link */}
-        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-zinc-500">
-          <button
-            onClick={() => navigate('/study-tips')}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
-          >
-            Browse all study tips &amp; tricks
-            <ChevronRight className="w-4 h-4" />
-          </button>
         </div>
       </div>
     </section>

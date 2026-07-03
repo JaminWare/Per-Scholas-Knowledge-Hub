@@ -76,8 +76,8 @@ const TRACK_RULES: { keywords: string[]; slug: string }[] = [
   { keywords: ['healthcare', 'hipaa'],                     slug: 'healthcare-hipaa' },
   { keywords: ['healthcare', 'clinical'],                  slug: 'healthcare-clinical' },
   // Top-level categories
-  { keywords: ['diagram'],                                 slug: 'diagrams' },
-  { keywords: ['prompt playbook'],                         slug: 'azari-prompt-playbook' },
+  { keywords: ['diagram'],                                 slug: 'core1-networking' },
+  { keywords: ['prompt playbook'],                         slug: 'core1-hardware' },
 ];
 
 function resolveCanonicalSlug(track: string): string {
@@ -85,7 +85,7 @@ function resolveCanonicalSlug(track: string): string {
   for (const rule of TRACK_RULES) {
     if (rule.keywords.every((kw) => t.includes(kw))) return rule.slug;
   }
-  return 'study-tips';
+  return 'core1-networking';
 }
 
 // Maps form track strings to the exact domain labels used by CurriculumDashboard filters
