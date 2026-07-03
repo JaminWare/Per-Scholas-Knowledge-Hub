@@ -52,6 +52,6 @@ Provides a graphical view of the hardware installed on the computer. Admins use 
 A storage administration tool utilized to initialize brand new hard drives, extend existing volume partitions (like a full C: drive), format drives, and change drive letter assignments.
 
 ## References & Citations
-* **Microsoft Learn:** [Microsoft Management Console Overview](https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management-components/what-is-microsoft-management-console) — *Official console hosting architecture definitions.*
-* **Microsoft Learn:** [Task Scheduler Administrative Schema & Scripting Rules](https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-start-page) — *Automation workflows.*
-* **Microsoft Learn:** [Local Group Policy Editor Operational Guide](https://learn.microsoft.com/en-us/windows/client-management/group-policy-overview) — *Securing Windows workspace configurations.*
+* **Microsoft Learn:** [Microsoft Management Console Overview](https://learn.microsoft.com/en-us/troubleshoot/windows-server/system-management-components/what-is-microsoft-management-console)  - *Official console hosting architecture definitions.*
+* **Microsoft Learn:** [Task Scheduler Administrative Schema & Scripting Rules](https://learn.microsoft.com/en-us/windows/win32/taskschd/task-scheduler-start-page)  - *Automation workflows.*
+* **Microsoft Learn:** [Local Group Policy Editor Operational Guide](https://learn.microsoft.com/en-us/windows/client-management/group-policy-overview)  - *Securing Windows workspace configurations.*

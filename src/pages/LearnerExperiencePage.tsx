@@ -283,7 +283,7 @@ export default function LearnerExperiencePage() {
         // Fallback for legacy entries without lx_stage
         const suffix = currentTab.trackSuffix;
         if (!suffix) return true;
-        const target = `Learner Experience \u2014 ${suffix}`.toLowerCase();
+        const target = `Learner Experience - ${suffix}`.toLowerCase();
         return e.track.toLowerCase().includes(target) || e.track.toLowerCase().includes(suffix.toLowerCase());
       });
     }
@@ -501,13 +501,13 @@ function BreakthroughCard({ entry }: { entry: LearnerEntry }) {
             {expanded && (
               <>
                 <div className="rounded-lg border-l-4 border-amber-400/70 bg-amber-50 dark:bg-amber-500/5 px-3 py-2.5 space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">Problem</span>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">Problem</h3>
                   <p className="text-xs text-amber-900 dark:text-amber-200/80 leading-relaxed whitespace-pre-wrap">
                     {ticket.problem.replace(/^#+\s*/gm, '').replace(/\*\*/g, '')}
                   </p>
                 </div>
                 <div className="rounded-lg border-l-4 border-emerald-400/70 bg-emerald-50 dark:bg-emerald-500/5 px-3 py-2.5 space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Solution</span>
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Solution</h3>
                   <p className="text-xs text-emerald-900 dark:text-emerald-200/80 leading-relaxed whitespace-pre-wrap">
                     {ticket.solution.replace(/^#+\s*/gm, '').replace(/\*\*/g, '')}
                   </p>

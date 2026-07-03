@@ -91,18 +91,18 @@ function resolveCanonicalSlug(track: string): string {
 
 // Maps form track strings to the exact domain labels used by CurriculumDashboard filters
 const SLUG_TO_STUDY_CATEGORY: Record<string, string> = {
-  'core1-mobile':          'CompTIA A+ Core 1 — Domain 1.0 (Mobile Devices)',
-  'core1-networking':      'CompTIA A+ Core 1 — Domain 2.0 (Networking)',
-  'core1-hardware':        'CompTIA A+ Core 1 — Domain 3.0 (Hardware)',
-  'core1-virtualization':  'CompTIA A+ Core 1 — Domain 4.0 (Cloud)',
-  'core1-troubleshooting': 'CompTIA A+ Core 1 — Domain 5.0 (Troubleshooting)',
-  'core2-os':              'CompTIA A+ Core 2 — Domain 1.0 (Operating Systems)',
-  'core2-security':        'CompTIA A+ Core 2 — Domain 2.0 (Security)',
-  'core2-software':        'CompTIA A+ Core 2 — Domain 3.0 (Software Troubleshooting)',
-  'core2-operations':      'CompTIA A+ Core 2 — Domain 4.0 (Operational Procedures)',
-  'healthcare-ehr':        'Advanced Healthcare IT — EHR Architecture',
-  'healthcare-hipaa':      'Advanced Healthcare IT — HIPAA Data Security',
-  'healthcare-clinical':   'Advanced Healthcare IT — Clinical Workflows',
+  'core1-mobile':          'CompTIA A+ Core 1  - Domain 1.0 (Mobile Devices)',
+  'core1-networking':      'CompTIA A+ Core 1  - Domain 2.0 (Networking)',
+  'core1-hardware':        'CompTIA A+ Core 1  - Domain 3.0 (Hardware)',
+  'core1-virtualization':  'CompTIA A+ Core 1  - Domain 4.0 (Cloud)',
+  'core1-troubleshooting': 'CompTIA A+ Core 1  - Domain 5.0 (Troubleshooting)',
+  'core2-os':              'CompTIA A+ Core 2  - Domain 1.0 (Operating Systems)',
+  'core2-security':        'CompTIA A+ Core 2  - Domain 2.0 (Security)',
+  'core2-software':        'CompTIA A+ Core 2  - Domain 3.0 (Software Troubleshooting)',
+  'core2-operations':      'CompTIA A+ Core 2  - Domain 4.0 (Operational Procedures)',
+  'healthcare-ehr':        'Advanced Healthcare IT  - EHR Architecture',
+  'healthcare-hipaa':      'Advanced Healthcare IT  - HIPAA Data Security',
+  'healthcare-clinical':   'Advanced Healthcare IT  - Clinical Workflows',
 };
 
 function resolveStudyCategory(track: string): string {
@@ -175,7 +175,7 @@ function LoginScreen({ onAuth }: { onAuth: () => void }) {
             <Lock className="w-8 h-8 text-sky-400" />
           </div>
           <h1 className="text-2xl font-bold text-zinc-100">Cohort Admin Portal</h1>
-          <p className="text-sm text-zinc-500 mt-1">Per Scholas — 2026-RTT-23</p>
+          <p className="text-sm text-zinc-500 mt-1">Per Scholas  - 2026-RTT-23</p>
         </div>
 
         <form
@@ -358,6 +358,21 @@ function SubmissionCard({
                 {sub.content}
               </a>
             </div>
+          ) : /Problem:/i.test(sub.content) && /Solution:/i.test(sub.content) ? (
+            <div className="mt-2 space-y-2">
+              <div className="rounded-lg border-l-4 border-amber-400/70 bg-amber-500/5 px-3 py-2.5 space-y-1">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-amber-400">Problem</h3>
+                <p className="text-xs text-amber-200/80 leading-relaxed whitespace-pre-wrap">
+                  {sub.content.match(/Problem:\s*([\s\S]*?)(?=Solution:|$)/i)?.[1]?.trim() ?? ''}
+                </p>
+              </div>
+              <div className="rounded-lg border-l-4 border-emerald-400/70 bg-emerald-500/5 px-3 py-2.5 space-y-1">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-400">Solution</h3>
+                <p className="text-xs text-emerald-200/80 leading-relaxed whitespace-pre-wrap">
+                  {sub.content.match(/Solution:\s*([\s\S]*)/i)?.[1]?.trim() ?? ''}
+                </p>
+              </div>
+            </div>
           ) : (
             <pre className="mt-2 p-3 bg-zinc-950 rounded-lg text-[11px] text-zinc-400 font-mono whitespace-pre-wrap break-all max-h-48 overflow-y-auto border border-zinc-800">
               {sub.content}
@@ -504,7 +519,7 @@ function AdminPanel() {
         .eq('id', openSlot.id);
       if (updateError) throw updateError;
     } else {
-      // No open slot — insert a new article row
+      // No open slot  - insert a new article row
       const baseSlug = `${sectionPrefix}/${slugify(cleanedTitle || `contribution-${Date.now()}`)}`;
       const uniqueSlug = await ensureUniqueSlug(baseSlug);
 
@@ -553,7 +568,7 @@ function AdminPanel() {
             </div>
             <div>
               <h1 className="text-base font-bold text-zinc-100 leading-none">Admin Control Panel</h1>
-              <p className="text-[11px] text-zinc-500 mt-0.5">Per Scholas — 2026-RTT-23 Cohort</p>
+              <p className="text-[11px] text-zinc-500 mt-0.5">Per Scholas  - 2026-RTT-23 Cohort</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -644,7 +659,7 @@ function AdminPanel() {
 }
 
 // ---------------------------------------------------------------------------
-// Root export — auth gate + panel
+// Root export  - auth gate + panel
 // ---------------------------------------------------------------------------
 export default function AdminControlPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

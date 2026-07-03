@@ -2,7 +2,7 @@ export function FirewallNetworkSegmentationDiagram({ className }: { className?: 
   return (
     <div className={`w-full overflow-x-auto ${className ?? ''}`}>
       <p className="text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-2">
-        Figure 1 — Network Segmentation Architecture
+        Figure 1  - Network Segmentation Architecture
       </p>
       <svg viewBox="0 0 800 220" className="w-full h-auto" preserveAspectRatio="xMidYMid meet">
         {/* Left: Internet/WAN */}
@@ -92,7 +92,7 @@ export function FirewallPacketInspectionDiagram({ className }: { className?: str
   return (
     <div className={`w-full overflow-x-auto ${className ?? ''}`}>
       <p className="text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-2">
-        Figure 2 — Packet Inspection Lifecycle
+        Figure 2  - Packet Inspection Lifecycle
       </p>
       <svg viewBox="0 0 900 140" className="w-full h-auto" preserveAspectRatio="xMidYMid meet">
         <defs>
@@ -151,7 +151,7 @@ export function HealthcareCloudHierarchyDiagram({ className }: { className?: str
   return (
     <div className={`w-full overflow-x-auto ${className ?? ''}`}>
       <p className="text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-2">
-        Healthcare Cloud Hierarchy — Service Model Comparison
+        Healthcare Cloud Hierarchy  - Service Model Comparison
       </p>
       <div className={`flex flex-col-reverse gap-3 ${className ?? ''}`}>
         {/* IaaS (bottom) */}
@@ -187,7 +187,7 @@ export function HealthcareCloudHierarchyDiagram({ className }: { className?: str
         {/* BAA Compliance Boundary Annotation */}
         <div className="mt-4 p-3 border-l-4 border-sky-400 bg-sky-50 dark:bg-sky-950/20 rounded">
           <p className="text-xs font-semibold text-sky-700 dark:text-sky-300">
-            🔒 BAA Compliance Boundary — Customer-managed zones
+            🔒 BAA Compliance Boundary  - Customer-managed zones
           </p>
         </div>
       </div>
@@ -199,7 +199,7 @@ export function TRACEPromptPipelineDiagram({ className }: { className?: string }
   return (
     <div className={`w-full overflow-x-auto ${className ?? ''}`}>
       <p className="text-xs font-bold uppercase tracking-widest text-zinc-500 dark:text-zinc-400 mb-2">
-        TRACE Prompt Framework — PHI-Safe Pipeline
+        TRACE Prompt Framework  - PHI-Safe Pipeline
       </p>
       <svg viewBox="0 0 1000 140" className="w-full h-auto" preserveAspectRatio="xMidYMid meet">
         <defs>

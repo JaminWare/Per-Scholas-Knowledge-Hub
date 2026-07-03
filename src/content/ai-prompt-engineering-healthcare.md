@@ -45,13 +45,13 @@ Before using any AI-generated clinical or administrative output, apply the TRACE
 
 | Letter | Check |
 |--------|-------|
-| **T** | **Truthful** — Is this factually accurate? Can it be verified? |
-| **R** | **Relevant** — Does this directly address the query? |
-| **A** | **Actionable** — Can a clinician or IT professional act on this? |
-| **C** | **Complete** — Is any critical information missing? |
-| **E** | **Ethical** — Does this respect patient privacy and professional standards? |
+| **T** | **Truthful**  - Is this factually accurate? Can it be verified? |
+| **R** | **Relevant**  - Does this directly address the query? |
+| **A** | **Actionable**  - Can a clinician or IT professional act on this? |
+| **C** | **Complete**  - Is any critical information missing? |
+| **E** | **Ethical**  - Does this respect patient privacy and professional standards? |
 
 ## References & Citations
 
-- **OpenAI:** [Prompt Engineering Best Practices](https://platform.openai.com/docs/guides/prompt-engineering) — *Official documentation for maximizing model accuracy and reducing hallucinations.*
-- **HealthIT.gov:** [Artificial Intelligence in Health and Human Services](https://www.healthit.gov/topic/artificial-intelligence) — *Federal perspectives on the safe and responsible use of AI in healthcare data environments.*
+- **OpenAI:** [Prompt Engineering Best Practices](https://platform.openai.com/docs/guides/prompt-engineering)  - *Official documentation for maximizing model accuracy and reducing hallucinations.*
+- **HealthIT.gov:** [Artificial Intelligence in Health and Human Services](https://www.healthit.gov/topic/artificial-intelligence)  - *Federal perspectives on the safe and responsible use of AI in healthcare data environments.*

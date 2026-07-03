@@ -102,7 +102,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
   const recentArticles   = useMemo(() => sortedData.slice(0, 6), [sortedData]);
 
   const handleSubmitted = (submission: NewSubmission) => {
-    setToastMessage(`${submission.full_name} — "${submission.title}" added to the wall!`);
+    setToastMessage(`${submission.full_name}  - "${submission.title}" added to the wall!`);
     setToastVisible(true);
   };
 
@@ -136,15 +136,16 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                 <span className="font-mono text-xs tracking-wider text-emerald-400/90">COHORT 2026-RTT-23 | STATUS: ACTIVE</span>
               </div>
               <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
-                Per Scholas — Cohort Survival Guide
+                Per Scholas
+                <span className="block text-white mt-1">Cohort Survival Guide</span>
                 <span className="block bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-sky-300 mt-1">
-                  AI-Enabled Healthcare IT
+                  AI Enabled Healthcare IT
                 </span>
               </h1>
               <p className="text-lg text-zinc-300 max-w-2xl mb-8">
                 Welcome to the collaborative resource hub for the{' '}
                 <strong className="text-sky-400">2026-RTT-23 cohort</strong> of AI-Enabled Healthcare IT
-                students. Find CompTIA A+ guides, EHR integration blueprints, and community hacks — all in
+                students. Find CompTIA A+ guides, EHR integration blueprints, and community hacks - all in
                 one place.
               </p>
               <Link
@@ -259,7 +260,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
             <ArrowDown className="animate-bounce text-sky-400 w-10 h-10 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)]" />
           </div>
 
-          {/* Widget 1 — Contribute Placard (opens modal) */}
+          {/* Widget 1  - Contribute Placard (opens modal) */}
           <button
             onClick={() => setModalOpen(true)}
             className="w-full min-w-[260px] flex flex-row items-center justify-start text-left p-6 min-h-[160px] h-auto bg-gradient-to-r from-sky-50 to-sky-50 dark:from-zinc-800 dark:to-zinc-900 border border-sky-200 dark:border-zinc-700/60 rounded-xl cursor-pointer shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] hover:border-sky-300 dark:hover:border-sky-700/50 transition-all duration-200 group"
@@ -280,7 +281,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
             </div>
           </button>
 
-          {/* Widget 2 — View Detailed Portfolios emblem */}
+          {/* Widget 2  - View Detailed Portfolios emblem */}
           <Link
             to="/recognition"
             className="block w-full min-w-[260px] flex flex-row items-center justify-start text-left p-6 min-h-[160px] h-auto bg-gradient-to-r from-sky-50 to-slate-50 dark:from-zinc-800 dark:to-zinc-900 border border-sky-200 dark:border-zinc-700/60 rounded-xl hover:shadow-lg hover:shadow-sky-500/10 hover:border-sky-300 dark:hover:border-sky-700/60 transition-all duration-200 group"

@@ -18,17 +18,17 @@ const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ c
   'study-tips/core1-overview': { title: 'Core 1 Overview', icon: Lightbulb, track: 'CompTIA A+ Core 1' },
   'study-tips/acronyms': { title: 'Acronym Master Directory', icon: Bookmark, track: 'CompTIA A+ Core 1' },
   'core1-networking/pbq-prompts': { title: 'PBQ Simulation Prompts', icon: Sparkles, track: 'CompTIA A+ Core 1' },
-  'core1-mobile':          { title: 'Domain 1.0 — Mobile Devices', icon: Laptop, track: 'CompTIA A+ Core 1' },
-  'core1-networking':      { title: 'Domain 2.0 — Networking', icon: Network, track: 'CompTIA A+ Core 1' },
-  'core1-hardware':        { title: 'Domain 3.0 — Hardware', icon: Cpu, track: 'CompTIA A+ Core 1' },
-  'core1-cloud':           { title: 'Domain 4.0 — Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
-  'core1-virtualization':  { title: 'Domain 4.0 — Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
-  'core1-troubleshooting': { title: 'Domain 5.0 — HW & Network Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 1' },
-  'core2-os':              { title: 'Domain 1.0 — Operating Systems', icon: Monitor, track: 'CompTIA A+ Core 2' },
+  'core1-mobile':          { title: 'Domain 1.0  - Mobile Devices', icon: Laptop, track: 'CompTIA A+ Core 1' },
+  'core1-networking':      { title: 'Domain 2.0  - Networking', icon: Network, track: 'CompTIA A+ Core 1' },
+  'core1-hardware':        { title: 'Domain 3.0  - Hardware', icon: Cpu, track: 'CompTIA A+ Core 1' },
+  'core1-cloud':           { title: 'Domain 4.0  - Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
+  'core1-virtualization':  { title: 'Domain 4.0  - Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
+  'core1-troubleshooting': { title: 'Domain 5.0  - HW & Network Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 1' },
+  'core2-os':              { title: 'Domain 1.0  - Operating Systems', icon: Monitor, track: 'CompTIA A+ Core 2' },
   'core2-os/cli-runbook': { title: 'CLI Command Runbook', icon: Monitor, track: 'CompTIA A+ Core 2' },
-  'core2-security':        { title: 'Domain 2.0 — Security', icon: Shield, track: 'CompTIA A+ Core 2' },
-  'core2-software':        { title: 'Domain 3.0 — Software Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 2' },
-  'core2-operations':      { title: 'Domain 4.0 — Operational Procedures', icon: Users, track: 'CompTIA A+ Core 2' },
+  'core2-security':        { title: 'Domain 2.0  - Security', icon: Shield, track: 'CompTIA A+ Core 2' },
+  'core2-software':        { title: 'Domain 3.0  - Software Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 2' },
+  'core2-operations':      { title: 'Domain 4.0  - Operational Procedures', icon: Users, track: 'CompTIA A+ Core 2' },
   'healthcare-ehr':        { title: 'EHR Architecture', icon: Database, track: 'Advanced Healthcare IT' },
   'healthcare-hipaa':      { title: 'HIPAA Data Security', icon: Lock, track: 'Advanced Healthcare IT' },
   'healthcare-clinical':   { title: 'Clinical Workflows', icon: Heart, track: 'Advanced Healthcare IT' },
@@ -61,18 +61,18 @@ const KNOWN_AUTHORS: Record<string, string> = {
 };
 
 const CANONICAL_DOMAINS: Record<string, string> = {
-  'Domain 1.0 — Mobile Devices': 'CompTIA A+ Core 1 — Domain 1.0 (Mobile Devices)',
-  'Domain 2.0 — Networking': 'CompTIA A+ Core 1 — Domain 2.0 (Networking)',
-  'Domain 3.0 — Hardware': 'CompTIA A+ Core 1 — Domain 3.0 (Hardware)',
-  'Domain 4.0 — Virtualization & Cloud': 'CompTIA A+ Core 1 — Domain 4.0 (Cloud)',
-  'Domain 5.0 — Hardware & Network Troubleshooting': 'CompTIA A+ Core 1 — Domain 5.0 (Troubleshooting)',
-  'Domain 1.0 — Operating Systems': 'CompTIA A+ Core 2 — Domain 1.0 (Operating Systems)',
-  'Domain 2.0 — Security': 'CompTIA A+ Core 2 — Domain 2.0 (Security)',
-  'Domain 3.0 — Software Troubleshooting': 'CompTIA A+ Core 2 — Domain 3.0 (Software Troubleshooting)',
-  'Domain 4.0 — Operational Procedures': 'CompTIA A+ Core 2 — Domain 4.0 (Operational Procedures)',
-  'EHR Architecture': 'Advanced Healthcare IT — EHR Architecture',
-  'HIPAA Data Security': 'Advanced Healthcare IT — HIPAA Data Security',
-  'Clinical Workflows': 'Advanced Healthcare IT — Clinical Workflows',
+  'Domain 1.0  - Mobile Devices': 'CompTIA A+ Core 1  - Domain 1.0 (Mobile Devices)',
+  'Domain 2.0  - Networking': 'CompTIA A+ Core 1  - Domain 2.0 (Networking)',
+  'Domain 3.0  - Hardware': 'CompTIA A+ Core 1  - Domain 3.0 (Hardware)',
+  'Domain 4.0  - Virtualization & Cloud': 'CompTIA A+ Core 1  - Domain 4.0 (Cloud)',
+  'Domain 5.0  - Hardware & Network Troubleshooting': 'CompTIA A+ Core 1  - Domain 5.0 (Troubleshooting)',
+  'Domain 1.0  - Operating Systems': 'CompTIA A+ Core 2  - Domain 1.0 (Operating Systems)',
+  'Domain 2.0  - Security': 'CompTIA A+ Core 2  - Domain 2.0 (Security)',
+  'Domain 3.0  - Software Troubleshooting': 'CompTIA A+ Core 2  - Domain 3.0 (Software Troubleshooting)',
+  'Domain 4.0  - Operational Procedures': 'CompTIA A+ Core 2  - Domain 4.0 (Operational Procedures)',
+  'EHR Architecture': 'Advanced Healthcare IT  - EHR Architecture',
+  'HIPAA Data Security': 'Advanced Healthcare IT  - HIPAA Data Security',
+  'Clinical Workflows': 'Advanced Healthcare IT  - Clinical Workflows',
 };
 
 const CURRICULUM_TRACKS = [
@@ -81,11 +81,11 @@ const CURRICULUM_TRACKS = [
     icon: Laptop,
     color: 'sky' as const,
     domains: [
-      'Domain 1.0 — Mobile Devices',
-      'Domain 2.0 — Networking',
-      'Domain 3.0 — Hardware',
-      'Domain 4.0 — Virtualization & Cloud',
-      'Domain 5.0 — Hardware & Network Troubleshooting',
+      'Domain 1.0  - Mobile Devices',
+      'Domain 2.0  - Networking',
+      'Domain 3.0  - Hardware',
+      'Domain 4.0  - Virtualization & Cloud',
+      'Domain 5.0  - Hardware & Network Troubleshooting',
     ],
   },
   {
@@ -93,10 +93,10 @@ const CURRICULUM_TRACKS = [
     icon: Monitor,
     color: 'teal' as const,
     domains: [
-      'Domain 1.0 — Operating Systems',
-      'Domain 2.0 — Security',
-      'Domain 3.0 — Software Troubleshooting',
-      'Domain 4.0 — Operational Procedures',
+      'Domain 1.0  - Operating Systems',
+      'Domain 2.0  - Security',
+      'Domain 3.0  - Software Troubleshooting',
+      'Domain 4.0  - Operational Procedures',
     ],
   },
   {
@@ -112,16 +112,16 @@ const CURRICULUM_TRACKS = [
 ] as const;
 
 const SLUG_TO_DOMAIN: Record<string, { domain: string; trackIndex: number }> = {
-  'core1-mobile':          { domain: 'Domain 1.0 — Mobile Devices', trackIndex: 0 },
-  'core1-networking':      { domain: 'Domain 2.0 — Networking', trackIndex: 0 },
-  'core1-hardware':        { domain: 'Domain 3.0 — Hardware', trackIndex: 0 },
-  'core1-cloud':           { domain: 'Domain 4.0 — Virtualization & Cloud', trackIndex: 0 },
-  'core1-virtualization':  { domain: 'Domain 4.0 — Virtualization & Cloud', trackIndex: 0 },
-  'core1-troubleshooting': { domain: 'Domain 5.0 — Hardware & Network Troubleshooting', trackIndex: 0 },
-  'core2-os':              { domain: 'Domain 1.0 — Operating Systems', trackIndex: 1 },
-  'core2-security':        { domain: 'Domain 2.0 — Security', trackIndex: 1 },
-  'core2-software':        { domain: 'Domain 3.0 — Software Troubleshooting', trackIndex: 1 },
-  'core2-operations':      { domain: 'Domain 4.0 — Operational Procedures', trackIndex: 1 },
+  'core1-mobile':          { domain: 'Domain 1.0  - Mobile Devices', trackIndex: 0 },
+  'core1-networking':      { domain: 'Domain 2.0  - Networking', trackIndex: 0 },
+  'core1-hardware':        { domain: 'Domain 3.0  - Hardware', trackIndex: 0 },
+  'core1-cloud':           { domain: 'Domain 4.0  - Virtualization & Cloud', trackIndex: 0 },
+  'core1-virtualization':  { domain: 'Domain 4.0  - Virtualization & Cloud', trackIndex: 0 },
+  'core1-troubleshooting': { domain: 'Domain 5.0  - Hardware & Network Troubleshooting', trackIndex: 0 },
+  'core2-os':              { domain: 'Domain 1.0  - Operating Systems', trackIndex: 1 },
+  'core2-security':        { domain: 'Domain 2.0  - Security', trackIndex: 1 },
+  'core2-software':        { domain: 'Domain 3.0  - Software Troubleshooting', trackIndex: 1 },
+  'core2-operations':      { domain: 'Domain 4.0  - Operational Procedures', trackIndex: 1 },
   'healthcare-ehr':        { domain: 'EHR Architecture', trackIndex: 2 },
   'healthcare-hipaa':      { domain: 'HIPAA Data Security', trackIndex: 2 },
   'healthcare-clinical':   { domain: 'Clinical Workflows', trackIndex: 2 },
@@ -400,135 +400,98 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
     ?? (isSample ? '[OPEN SLOT]' : 'Knowledge Base');
 
   const widthClass = gridMode ? 'w-full' : CARD_WIDTH;
+  const isExternalLink = article.content?.startsWith('http://') || article.content?.startsWith('https://');
+
+  const formattedDate = new Date(article.created_at).toLocaleDateString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric',
+  });
 
   const cardContent = (
     <>
-      <div
-        className={`flex items-center justify-between px-3 py-1.5 ${
-          isSample ? 'bg-zinc-800 dark:bg-zinc-900/80' : 'bg-zinc-800 dark:bg-zinc-900'
-        }`}
-        style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
-      >
-        <div className="flex items-center gap-2">
-          {isSample ? (
-            <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse flex-shrink-0" />
-          ) : (
-            <span className="text-[11px] font-mono font-bold text-sky-400 select-none">{`</>`}</span>
-          )}
-          <span className="text-[10px] font-mono text-zinc-500 truncate max-w-[120px]">
-            {article.slug?.split('/').pop() || 'resource'}
+      {isSample && (
+        <div className="flex justify-end mb-2">
+          <span className="px-2 py-1 text-xs font-medium bg-sky-100/70 dark:bg-sky-500/20 text-sky-800 dark:text-sky-300 rounded-full">
+            Open Slot
           </span>
         </div>
-        <span className={`text-[9px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wide flex-shrink-0 ${
-          isSample
-            ? 'bg-sky-500/20 text-sky-400 border border-sky-500/20'
-            : 'bg-sky-500/15 text-sky-400 border border-sky-500/20'
-        }`} style={isSample ? { textShadow: '0 0 8px rgba(56,189,248,0.8)' } : undefined}>
-          {isSample ? '[OPEN SLOT]' : '[Verified Peer Build]'}
-        </span>
-      </div>
-
-      <div className="flex flex-col gap-3 p-4">
-        <div className="flex items-start gap-3">
-          <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${
-            isSample ? 'bg-gradient-to-br from-sky-400 to-sky-500 shadow-sky-500/20' : 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20'
-          }`}>
-            <BookOpen className="w-4 h-4 text-white" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className={`font-semibold text-sm leading-snug line-clamp-2 transition-colors duration-200 ${
-              isSample
-                ? 'text-sky-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-zinc-50'
-                : 'text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-zinc-50'
-            }`}>
-              {article.title}
-              {!isSample && (
-                <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 transition-colors duration-200 group-hover:text-zinc-400 dark:group-hover:text-zinc-300 mt-1">
-                  Contributed by {article.author || authorName}
-                </p>
-              )}
-            </h3>
-          </div>
+      )}
+      <h3 className="font-semibold text-zinc-800 dark:text-zinc-100 transition-colors">
+        {article.title}
+      </h3>
+      {!isSample && (
+        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+          by {article.author || authorName}
+        </p>
+      )}
+      {!isSample && article.excerpt && !article.excerpt.startsWith('Contributed by ') && (
+        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">{article.excerpt}</p>
+      )}
+      {isSample && (
+        <p className="mt-2 text-sm text-sky-600 dark:text-sky-400">
+          This curriculum endpoint is open for peer contribution.
+        </p>
+      )}
+      <div className="mt-4 flex items-center justify-between">
+        <div className="flex items-center gap-2 text-xs text-zinc-400 dark:text-zinc-500">
+          <span>{formattedDate}</span>
         </div>
-
-        {!isSample && article.excerpt && !article.excerpt.startsWith('Contributed by ') && (
-          <p className="text-xs text-zinc-500 dark:text-slate-400 transition-colors duration-200 line-clamp-2 leading-relaxed">{article.excerpt}</p>
-        )}
-
         {!isSample && article.tags?.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {article.tags.slice(0, 3).map((tag) => (
-              <span key={tag} className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700 border border-zinc-300/60 dark:border-zinc-300">
-                {tag}
-              </span>
-            ))}
+          <div className="flex items-center gap-1">
+            <span className="text-xs text-zinc-500 dark:text-zinc-500">{article.tags[0]}</span>
           </div>
-        )}
-
-        {isSample && (
-          <p className="text-[11px] text-sky-600 dark:text-sky-400 bg-sky-100/60 dark:bg-sky-500/10 rounded-lg px-2.5 py-2 border border-sky-200/60 dark:border-sky-500/20" style={{ textShadow: '0 0 6px rgba(56,189,248,0.4)' }}>
-            This curriculum endpoint is currently open for peer review and documentation.
-          </p>
         )}
       </div>
     </>
   );
 
   return (
-    <div className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-in-out ${
-      isSample
-        ? 'bg-zinc-100/60 dark:bg-zinc-950/50 border-sky-200/60 dark:border-zinc-800 hover:-translate-y-1 hover:border-sky-400/70 dark:hover:border-zinc-600 hover:shadow-xl hover:shadow-cyan-500/10'
-        : 'bg-white dark:bg-zinc-900/80 border-slate-200 dark:border-zinc-800 hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/10 hover:border-cyan-500/30'
-    }`}>
-      <div className="cursor-zoom-in" onClick={() => setZoomed(true)}>
+    <div className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out bg-white dark:bg-zinc-900/80 border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-600 hover:shadow-md dark:hover:shadow-[0_4px_20px_rgba(255,255,255,0.04)]`}>
+      <div
+        className="cursor-zoom-in p-5 pb-0"
+        onClick={() => setZoomed(true)}
+      >
         {cardContent}
       </div>
-
-      <div className="px-4 pb-4 mt-auto">
-        {article.submission_type === 'Resource Link' ? (
+      <div className="px-5 pb-5 pt-3 mt-auto">
+        {isExternalLink || article.submission_type === 'Resource Link' ? (
           <a
             href={article.content}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-sky-50/50 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 hover:shadow-[0_0_15px_rgba(56,189,248,0.3)]"
+            className="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 text-sm font-medium hover:gap-2 transition-all"
           >
-            View Resource ↗
+            Open resource <ArrowRight className="w-4 h-4" />
           </a>
         ) : (
           <Link
             to={`/article/${article.slug}`}
-            className={`inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border ${
-              isSample
-                ? 'bg-sky-500/10 hover:bg-sky-500 text-sky-700 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 hover:shadow-[0_0_15px_rgba(56,189,248,0.4)]'
-                : 'bg-sky-500/10 hover:bg-sky-500 text-sky-600 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 hover:shadow-md hover:shadow-sky-500/20'
-            }`}
+            className="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 text-sm font-medium hover:gap-2 transition-all"
           >
-            Read Mission Brief
+            Read more <ArrowRight className="w-4 h-4" />
           </Link>
         )}
       </div>
-
       <CardZoomOverlay open={zoomed} onClose={() => setZoomed(false)}>
-        <div className="rounded-xl overflow-hidden">
+        <div className="p-5">
           {cardContent}
-          <div className="px-4 pb-4 pt-2 border-t border-zinc-200/60 dark:border-zinc-700/50">
-            {article.submission_type === 'Resource Link' ? (
+          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-zinc-700/60">
+            {isExternalLink || article.submission_type === 'Resource Link' ? (
               <a
                 href={article.content}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-white bg-sky-500/10 hover:bg-sky-500 border border-sky-500/20 hover:border-sky-500 transition-all duration-200"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 hover:gap-2.5 transition-all duration-200"
               >
-                View Resource ↗
+                Open resource <ArrowRight className="w-4 h-4" />
               </a>
             ) : (
               <Link
                 to={`/article/${article.slug}`}
                 onClick={(e) => e.stopPropagation()}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-white bg-sky-500/10 hover:bg-sky-500 border border-sky-500/20 hover:border-sky-500 transition-all duration-200"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 hover:gap-2.5 transition-all duration-200"
               >
-                Read Mission Brief <ArrowRight className="w-4 h-4" />
+                Read full article <ArrowRight className="w-4 h-4" />
               </Link>
             )}
           </div>
@@ -580,7 +543,7 @@ function OpenSlotPlaceholder({ domain, context, onContribute, gridMode = false }
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-sm leading-snug text-slate-900 dark:text-white transition-colors duration-200 group-hover:text-sky-600 dark:group-hover:text-sky-400">
-              {domain} — {context}
+              {domain}  - {context}
             </h3>
             <div className="flex items-center gap-1.5 mt-1">
               <div className="w-4 h-4 rounded bg-gradient-to-br from-sky-400 to-sky-500 flex items-center justify-center flex-shrink-0">

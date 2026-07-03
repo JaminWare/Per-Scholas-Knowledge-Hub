@@ -33,22 +33,22 @@ const LX_TRACK_VALUE = 'Learner Experience & FAQs';
 const MASTER_CATEGORIES = [
   { label: 'Learner Experience & FAQs', badge: 'Community Contributor', sub: [] as string[] },
   { label: 'CompTIA A+ Core 1', badge: 'Core 1 Expert', sub: [
-    'CompTIA A+ Core 1 — Domain 1.0 (Mobile Devices)',
-    'CompTIA A+ Core 1 — Domain 2.0 (Networking)',
-    'CompTIA A+ Core 1 — Domain 3.0 (Hardware)',
-    'CompTIA A+ Core 1 — Domain 4.0 (Cloud)',
-    'CompTIA A+ Core 1 — Domain 5.0 (Troubleshooting)',
+    'CompTIA A+ Core 1  - Domain 1.0 (Mobile Devices)',
+    'CompTIA A+ Core 1  - Domain 2.0 (Networking)',
+    'CompTIA A+ Core 1  - Domain 3.0 (Hardware)',
+    'CompTIA A+ Core 1  - Domain 4.0 (Cloud)',
+    'CompTIA A+ Core 1  - Domain 5.0 (Troubleshooting)',
   ]},
   { label: 'CompTIA A+ Core 2', badge: 'Core 2 Expert', sub: [
-    'CompTIA A+ Core 2 — Domain 1.0 (Operating Systems)',
-    'CompTIA A+ Core 2 — Domain 2.0 (Security)',
-    'CompTIA A+ Core 2 — Domain 3.0 (Software Troubleshooting)',
-    'CompTIA A+ Core 2 — Domain 4.0 (Operational Procedures)',
+    'CompTIA A+ Core 2  - Domain 1.0 (Operating Systems)',
+    'CompTIA A+ Core 2  - Domain 2.0 (Security)',
+    'CompTIA A+ Core 2  - Domain 3.0 (Software Troubleshooting)',
+    'CompTIA A+ Core 2  - Domain 4.0 (Operational Procedures)',
   ]},
   { label: 'Advanced Healthcare IT', badge: 'Healthcare IT Specialist', sub: [
-    'Advanced Healthcare IT — EHR Architecture',
-    'Advanced Healthcare IT — HIPAA Data Security',
-    'Advanced Healthcare IT — Clinical Workflows',
+    'Advanced Healthcare IT  - EHR Architecture',
+    'Advanced Healthcare IT  - HIPAA Data Security',
+    'Advanced Healthcare IT  - Clinical Workflows',
   ]},
 ];
 
@@ -444,7 +444,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     let payloadBadge = autoBadge;
     if (isLearnerExperience) {
       const stageTab = LX_STAGES.find((t) => t.id === lxStage);
-      payloadTrack = `Learner Experience \u2014 ${stageTab?.label || lxStage}`;
+      payloadTrack = `Learner Experience - ${stageTab?.label || lxStage}`;
       payloadBadge = 'Community Contributor';
     }
 

@@ -12,7 +12,7 @@ The core of this security model relies on the **CIA Triad**:
 
 ## Endpoint and Network Protections
 
-With the rise of telehealth and mobile nursing stations (WOWs — Workstations on Wheels), endpoint security is paramount. Modern healthcare environments utilize heavily managed endpoints with Mobile Device Management (MDM) profiles, encrypted hard drives, and aggressive screen-lock timeouts to prevent "shoulder surfing" in busy corridors.
+With the rise of telehealth and mobile nursing stations (WOWs  - Workstations on Wheels), endpoint security is paramount. Modern healthcare environments utilize heavily managed endpoints with Mobile Device Management (MDM) profiles, encrypted hard drives, and aggressive screen-lock timeouts to prevent "shoulder surfing" in busy corridors.
 
 > **Key Rule:** A system left unlocked in a clinical environment is an immediate HIPAA violation.
 
@@ -29,10 +29,10 @@ Beyond technical controls, HIPAA mandates robust administrative safeguards:
 Physical security is often underestimated in healthcare IT. Critical controls include:
 
 - **Workstation Use Policies:** Clear procedures for how and where workstations can be used, especially in shared clinical spaces.
-- **Device Controls:** Policies governing the transfer and disposal of PHI stored on physical media (hard drives, USB drives) — including mandatory degaussing or physical destruction before disposal.
+- **Device Controls:** Policies governing the transfer and disposal of PHI stored on physical media (hard drives, USB drives)  - including mandatory degaussing or physical destruction before disposal.
 - **Facility Access Controls:** Badge-controlled access to server rooms and data centers; visitor logs maintained for all access.
 
 ## References & Citations
 
-- **HHS.gov:** [Summary of the HIPAA Security Rule](https://www.hhs.gov/hipaa/for-professionals/security/laws-regulations/index.html) — *Official guidelines on administrative, physical, and technical safeguards.*
-- **NIST:** [Cybersecurity Framework for Healthcare (SP 800-66)](https://csrc.nist.gov/publications/detail/sp/800-66/rev-2/final) — *Implementing the HIPAA Security Rule using the NIST framework.*
+- **HHS.gov:** [Summary of the HIPAA Security Rule](https://www.hhs.gov/hipaa/for-professionals/security/laws-regulations/index.html)  - *Official guidelines on administrative, physical, and technical safeguards.*
+- **NIST:** [Cybersecurity Framework for Healthcare (SP 800-66)](https://csrc.nist.gov/publications/detail/sp/800-66/rev-2/final)  - *Implementing the HIPAA Security Rule using the NIST framework.*

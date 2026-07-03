@@ -1,11 +1,11 @@
 export const COMPTIA_OBJECTIVES: Record<string, string[]> = {
-  'CompTIA A+ Core 1 — Domain 1.0 (Mobile Devices)': [
+  'CompTIA A+ Core 1  - Domain 1.0 (Mobile Devices)': [
     '1.1 Laptop Hardware',
     '1.2 Mobile Displays',
     '1.3 Accessories & Ports',
     '1.4 Network Connectivity',
   ],
-  'CompTIA A+ Core 1 — Domain 2.0 (Networking)': [
+  'CompTIA A+ Core 1  - Domain 2.0 (Networking)': [
     '2.1 Ports & Protocols',
     '2.2 Network Equipment',
     '2.3 Wireless Protocols',
@@ -14,7 +14,7 @@ export const COMPTIA_OBJECTIVES: Record<string, string[]> = {
     '2.6 SOHO Networks',
     '2.7 Network Configs',
   ],
-  'CompTIA A+ Core 1 — Domain 3.0 (Hardware)': [
+  'CompTIA A+ Core 1  - Domain 3.0 (Hardware)': [
     '3.1 Cables & Connectors',
     '3.2 RAM',
     '3.3 Storage Devices',
@@ -23,11 +23,11 @@ export const COMPTIA_OBJECTIVES: Record<string, string[]> = {
     '3.6 Custom PC Configurations',
     '3.7 Printers',
   ],
-  'CompTIA A+ Core 1 — Domain 4.0 (Cloud)': [
+  'CompTIA A+ Core 1  - Domain 4.0 (Cloud)': [
     '4.1 Cloud Computing Concepts',
     '4.2 Client-Side Virtualization',
   ],
-  'CompTIA A+ Core 1 — Domain 5.0 (Troubleshooting)': [
+  'CompTIA A+ Core 1  - Domain 5.0 (Troubleshooting)': [
     '5.1 Troubleshooting Methodology',
     '5.2 Motherboard/RAM/CPU Issues',
     '5.3 Storage Issues',
@@ -36,7 +36,7 @@ export const COMPTIA_OBJECTIVES: Record<string, string[]> = {
     '5.6 Printer Issues',
     '5.7 Network Issues',
   ],
-  'CompTIA A+ Core 2 — Domain 1.0 (Operating Systems)': [
+  'CompTIA A+ Core 2  - Domain 1.0 (Operating Systems)': [
     '1.1 Windows Editions',
     '1.2 Command-Line Tools',
     '1.3 Windows 10 Features',
@@ -49,7 +49,7 @@ export const COMPTIA_OBJECTIVES: Record<string, string[]> = {
     '1.10 macOS Features/Tools',
     '1.11 Linux Features/Tools',
   ],
-  'CompTIA A+ Core 2 — Domain 2.0 (Security)': [
+  'CompTIA A+ Core 2  - Domain 2.0 (Security)': [
     '2.1 Security Measures',
     '2.2 Wireless Security',
     '2.3 Malware Detection',
@@ -61,14 +61,14 @@ export const COMPTIA_OBJECTIVES: Record<string, string[]> = {
     '2.9 SOHO Network Security',
     '2.10 Browser Security',
   ],
-  'CompTIA A+ Core 2 — Domain 3.0 (Software Troubleshooting)': [
+  'CompTIA A+ Core 2  - Domain 3.0 (Software Troubleshooting)': [
     '3.1 Windows OS Issues',
     '3.2 PC Security Issues',
     '3.3 Malware Removal Best Practices',
     '3.4 Mobile OS/App Issues',
     '3.5 Mobile Security Issues',
   ],
-  'CompTIA A+ Core 2 — Domain 4.0 (Operational Procedures)': [
+  'CompTIA A+ Core 2  - Domain 4.0 (Operational Procedures)': [
     '4.1 IT Documentation',
     '4.2 Change Management',
     '4.3 Disaster Recovery',
@@ -79,13 +79,13 @@ export const COMPTIA_OBJECTIVES: Record<string, string[]> = {
     '4.8 Scripting Basics',
     '4.9 Remote Access Tech',
   ],
-  'Advanced Healthcare IT — EHR Architecture': [
+  'Advanced Healthcare IT  - EHR Architecture': [
     'EHR Integrations & Sandboxes', 'Data Interoperability (HL7/FHIR)', 'Database Management', 'System Downtime Procedures',
   ],
-  'Advanced Healthcare IT — HIPAA Data Security': [
+  'Advanced Healthcare IT  - HIPAA Data Security': [
     'PHI Protection Strategies', 'Access Controls & Auditing', 'Threat Detection & Response', 'Compliance Documentation',
   ],
-  'Advanced Healthcare IT — Clinical Workflows': [
+  'Advanced Healthcare IT  - Clinical Workflows': [
     'Patient Admission to Discharge', 'Order Entry Systems (CPOE)', 'Telehealth Integrations', 'Medical IoT Troubleshooting',
   ],
 };

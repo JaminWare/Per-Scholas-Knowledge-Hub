@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, Tag, ArrowRight } from 'lucide-react';
+import { Clock, Tag, ArrowRight, ExternalLink } from 'lucide-react';
 import CardZoomOverlay from './CardZoomOverlay';
 import type { Article } from '../types/database';
 
@@ -15,6 +15,8 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
   const formattedDate = new Date(article.created_at).toLocaleDateString('en-US', {
     month: 'short', day: 'numeric', year: 'numeric',
   });
+
+  const isExternalLink = article.content?.startsWith('http://') || article.content?.startsWith('https://');
 
   const articlePath = article.section
     ? `/${article.section.slug}/${article.slug}`
@@ -56,15 +58,29 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
     </>
   );
 
+  const linkElement = isExternalLink ? (
+    <a
+      href={article.content}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={(e) => e.stopPropagation()}
+      className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 hover:gap-2.5 transition-all duration-200"
+    >
+      Open resource <ExternalLink className="w-4 h-4" />
+    </a>
+  ) : (
+    <Link
+      to={articlePath}
+      onClick={(e) => e.stopPropagation()}
+      className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 hover:gap-2.5 transition-all duration-200"
+    >
+      Read full article <ArrowRight className="w-4 h-4" />
+    </Link>
+  );
+
   const overlayFooter = (
     <div className="mt-4 pt-4 border-t border-slate-100 dark:border-zinc-700/60">
-      <Link
-        to={articlePath}
-        onClick={(e) => e.stopPropagation()}
-        className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 hover:gap-2.5 transition-all duration-200"
-      >
-        Read full article <ArrowRight className="w-4 h-4" />
-      </Link>
+      {linkElement}
     </div>
   );
 
@@ -79,12 +95,23 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
             {cardContent}
           </div>
           <div className="px-6 pb-6 pt-4 mt-auto">
-            <Link
-              to={articlePath}
-              className="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 text-sm font-medium hover:gap-2 transition-all"
-            >
-              Read more <ArrowRight className="w-4 h-4" />
-            </Link>
+            {isExternalLink ? (
+              <a
+                href={article.content}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 text-sm font-medium hover:gap-2 transition-all"
+              >
+                Open resource <ExternalLink className="w-4 h-4" />
+              </a>
+            ) : (
+              <Link
+                to={articlePath}
+                className="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 text-sm font-medium hover:gap-2 transition-all"
+              >
+                Read more <ArrowRight className="w-4 h-4" />
+              </Link>
+            )}
           </div>
         </div>
         <CardZoomOverlay open={zoomed} onClose={() => setZoomed(false)}>
@@ -106,12 +133,23 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
         {cardContent}
       </div>
       <div className="px-5 pb-5 pt-3 mt-auto">
-        <Link
-          to={articlePath}
-          className="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 text-sm font-medium hover:gap-2 transition-all"
-        >
-          Read more <ArrowRight className="w-4 h-4" />
-        </Link>
+        {isExternalLink ? (
+          <a
+            href={article.content}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 text-sm font-medium hover:gap-2 transition-all"
+          >
+            Open resource <ExternalLink className="w-4 h-4" />
+          </a>
+        ) : (
+          <Link
+            to={articlePath}
+            className="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 text-sm font-medium hover:gap-2 transition-all"
+          >
+            Read more <ArrowRight className="w-4 h-4" />
+          </Link>
+        )}
       </div>
       <CardZoomOverlay open={zoomed} onClose={() => setZoomed(false)}>
         <div className="p-5">

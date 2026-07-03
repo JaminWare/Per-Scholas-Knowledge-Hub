@@ -30,11 +30,11 @@ const tracks: TrackSection[] = [
     sublabel: '220-1201',
     color: 'sky',
     domains: [
-      { title: 'Domain 1.0 — Mobile Devices',              slug: 'core1-mobile',         icon: Laptop   },
-      { title: 'Domain 2.0 — Networking',                  slug: 'core1-networking',     icon: Network  },
-      { title: 'Domain 3.0 — Hardware',                    slug: 'core1-hardware',       icon: Cpu      },
-      { title: 'Domain 4.0 — Cloud',           slug: 'core1-virtualization', icon: Cloud    },
-      { title: 'Domain 5.0 — Troubleshooting', slug: 'core1-troubleshooting',icon: Wrench   },
+      { title: 'Domain 1.0  - Mobile Devices',              slug: 'core1-mobile',         icon: Laptop   },
+      { title: 'Domain 2.0  - Networking',                  slug: 'core1-networking',     icon: Network  },
+      { title: 'Domain 3.0  - Hardware',                    slug: 'core1-hardware',       icon: Cpu      },
+      { title: 'Domain 4.0  - Cloud',           slug: 'core1-virtualization', icon: Cloud    },
+      { title: 'Domain 5.0  - Troubleshooting', slug: 'core1-troubleshooting',icon: Wrench   },
     ],
   },
   {
@@ -43,10 +43,10 @@ const tracks: TrackSection[] = [
     sublabel: '220-1202',
     color: 'teal',
     domains: [
-      { title: 'Domain 1.0 — OS',               slug: 'core2-os',         icon: Monitor },
-      { title: 'Domain 2.0 — Security',          slug: 'core2-security',   icon: Shield  },
-      { title: 'Domain 3.0 — Troubleshooting',    slug: 'core2-software',   icon: Wrench  },
-      { title: 'Domain 4.0 — SOP',               slug: 'core2-operations', icon: Users   },
+      { title: 'Domain 1.0  - OS',               slug: 'core2-os',         icon: Monitor },
+      { title: 'Domain 2.0  - Security',          slug: 'core2-security',   icon: Shield  },
+      { title: 'Domain 3.0  - Troubleshooting',    slug: 'core2-software',   icon: Wrench  },
+      { title: 'Domain 4.0  - SOP',               slug: 'core2-operations', icon: Users   },
     ],
   },
   {
@@ -164,17 +164,15 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           <LifeBuoy className="w-4 h-4 flex-shrink-0" />
           <span className="flex-1 truncate">Learner Experience & FAQs</span>
         </Link>
-        <Link
-          to="/deskolas"
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 ${
-            location.pathname === '/deskolas'
-              ? 'bg-sky-500 text-white shadow-md shadow-sky-500/30'
-              : 'bg-sky-500/10 text-sky-300 border border-sky-500/20 hover:bg-sky-500/20 hover:border-sky-400/40'
-          }`}
+        <a
+          href="https://deskolas.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 bg-sky-500/10 text-sky-300 border border-sky-500/20 hover:bg-sky-500/20 hover:border-sky-400/40"
         >
           <Headphones className="w-4 h-4 flex-shrink-0" />
           <span className="flex-1 truncate">Deskolas</span>
-        </Link>
+        </a>
         <div className="my-2 border-t border-sky-500/20" />
         {/* ── end START HERE block ─────────────────────────── */}
 

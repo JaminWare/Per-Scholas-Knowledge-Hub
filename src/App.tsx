@@ -8,7 +8,6 @@ import ArticlePage from './pages/ArticlePage';
 import SectionPage from './pages/SectionPage';
 import RecognitionPage from './pages/RecognitionPage';
 import LearnerExperiencePage from './pages/LearnerExperiencePage';
-import DeskolasPage from './pages/DeskolasPage';
 import AdminControlPage from './pages/AdminControlPage';
 import { PanelLeftOpen, PanelLeftClose, Sun, Moon } from 'lucide-react';
 
@@ -27,38 +26,10 @@ function AppContent() {
   const mainRef = useRef<HTMLElement>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
-  const [mousePos, setMousePos] = useState({ x: '50%', y: '50%' });
-
-  useEffect(() => {
-    function handleMouseMove(e: MouseEvent) {
-      setMousePos({ x: `${e.clientX}px`, y: `${e.clientY}px` });
-    }
-    document.addEventListener('mousemove', handleMouseMove);
-    return () => document.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-200 dark:bg-[#2b2e33] text-zinc-800 dark:text-slate-200 cursor-none">
-      {/* Dark mode spotlight glow */}
-      <div
-        className="pointer-events-none fixed inset-0 z-0 opacity-0 dark:opacity-100 transition-opacity duration-300"
-        style={{ background: `radial-gradient(600px at ${mousePos.x} ${mousePos.y}, rgba(56,189,248,0.06), transparent 80%)` }}
-      />
-      {/* Dark mode cursor orb — white glow */}
-      {theme === 'dark' && (
-        <div
-          className="pointer-events-none fixed z-[9999] w-6 h-6 rounded-full bg-white/40 blur-sm -translate-x-1/2 -translate-y-1/2"
-          style={{ left: mousePos.x, top: mousePos.y }}
-        />
-      )}
-      {/* Light mode cursor orb — soft blue */}
-      {theme === 'light' && (
-        <div
-          className="pointer-events-none fixed z-[9999] w-8 h-8 rounded-full bg-sky-400/50 blur-sm -translate-x-1/2 -translate-y-1/2"
-          style={{ left: mousePos.x, top: mousePos.y }}
-        />
-      )}
-      {/* ── Sidebar ─────────────────────────────────── */}
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-200 dark:bg-[#2b2e33] text-zinc-800 dark:text-slate-200">
+      {/* Sidebar */}
       <div
         className={`flex-shrink-0 border-r border-sky-500/10 h-full overflow-hidden transition-all duration-300 ease-in-out ${
           sidebarOpen ? 'w-72' : 'w-0'
@@ -69,9 +40,8 @@ function AppContent() {
         </div>
       </div>
 
-      {/* ── Main area ───────────────────────────────── */}
+      {/* Main area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
-        {/* Sticky header — always dark charcoal in both modes */}
         <header className="flex-shrink-0 z-30 bg-zinc-800/95 dark:bg-[#2b2e33]/90 backdrop-blur-lg border-b border-zinc-200 dark:border-slate-700">
           <div className="flex items-center gap-3 px-4 py-3">
             <button
@@ -102,14 +72,12 @@ function AppContent() {
           </div>
         </header>
 
-        {/* Scrollable page content */}
         <main ref={mainRef} className="flex-1 overflow-y-auto p-4 md:p-6">
           <ScrollToTop scrollRef={mainRef} />
           <Routes>
             <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
             <Route path="/recognition" element={<RecognitionPage />} />
             <Route path="/learner-experience" element={<LearnerExperiencePage />} />
-            <Route path="/deskolas" element={<DeskolasPage />} />
             <Route path="/article/:slug" element={<ArticlePage />} />
             <Route path="/article/:slug/*" element={<ArticlePage />} />
             <Route path="/:slug/*" element={<SectionPage refreshKey={refreshKey} />} />
@@ -117,10 +85,9 @@ function AppContent() {
           </Routes>
         </main>
 
-        {/* Footer */}
         <footer className="flex-shrink-0 border-t border-zinc-700/40 dark:border-slate-800/80 py-3 px-5">
           <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-zinc-500 dark:text-zinc-500">
-            <p>Per Scholas — Learners Knowledge Base: AI-Enabled Healthcare IT</p>
+            <p>Per Scholas - Learners Knowledge Base: AI-Enabled Healthcare IT</p>
             <p>Pioneering Cohort 2026-RTT-23</p>
           </div>
         </footer>
@@ -130,7 +97,6 @@ function AppContent() {
 }
 
 function App() {
-  // Admin portal intercept — accessible at /cohort-admin (literal pathname)
   if (window.location.pathname === '/cohort-admin') {
     return <AdminControlPage />;
   }

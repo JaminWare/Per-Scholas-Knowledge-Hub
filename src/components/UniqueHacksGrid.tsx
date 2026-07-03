@@ -45,7 +45,7 @@ export default function UniqueHacksGrid() {
           </div>
           <div>
             <h2 className="text-lg font-bold text-zinc-800 dark:text-zinc-100">Unique Hacks Quick-Reference Grid</h2>
-            <p className="text-sm text-zinc-500">Jump directly into a Control Panel — no searching required</p>
+            <p className="text-sm text-zinc-500">Jump directly into a Control Panel  - no searching required</p>
           </div>
         </div>
 

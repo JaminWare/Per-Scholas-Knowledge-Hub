@@ -36,5 +36,5 @@ Cloud migration dramatically improves healthcare disaster recovery capabilities:
 
 ## References & Citations
 
-- **AWS:** [Architecting for HIPAA Security and Compliance on Amazon Web Services](https://aws.amazon.com/health/healthcare-compliance/hipaa/) — *Whitepaper on cloud infrastructure compliance and BAA guidance.*
-- **Microsoft:** [Azure compliance documentation for HIPAA/HITECH](https://learn.microsoft.com/en-us/azure/compliance/offerings/offering-hipaa-hitech) — *Guidelines for deploying secure, compliant workloads in Azure.*
+- **AWS:** [Architecting for HIPAA Security and Compliance on Amazon Web Services](https://aws.amazon.com/health/healthcare-compliance/hipaa/)  - *Whitepaper on cloud infrastructure compliance and BAA guidance.*
+- **Microsoft:** [Azure compliance documentation for HIPAA/HITECH](https://learn.microsoft.com/en-us/azure/compliance/offerings/offering-hipaa-hitech)  - *Guidelines for deploying secure, compliant workloads in Azure.*
