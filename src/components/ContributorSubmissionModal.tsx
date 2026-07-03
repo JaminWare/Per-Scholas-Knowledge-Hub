@@ -200,36 +200,33 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const autoDetectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const runAutoDetect = useCallback(() => {
-    if (userOverride) return;
+    if (userOverride || masterCategory || track) return;
     const textBody = [concept, aPlusRelevance, promptText, promptRole].filter(Boolean).join(' ');
     const result = autoCategorizeSubmission(title, textBody);
-    if (!result) {
-      setAutoDetected(false);
-      return;
-    }
-    if (result.submissionType && submissionType !== result.submissionType) {
+    if (!result) return;
+    if (result.submissionType) {
       setSubmissionType(result.submissionType);
     }
-    if (result.masterCategory && result.masterCategory !== masterCategory) {
+    if (result.masterCategory) {
       setMasterCategory(result.masterCategory);
     }
-    if (result.track && result.track !== track) {
+    if (result.track) {
       setTrack(result.track);
     }
-    if (result.compObjective && result.compObjective !== compObjective) {
+    if (result.compObjective) {
       setCompObjective(result.compObjective);
     }
     if (result.masterCategory || result.track) {
       setAutoDetected(true);
     }
-  }, [title, concept, aPlusRelevance, promptText, promptRole, userOverride, submissionType, masterCategory, track, compObjective]);
+  }, [title, concept, aPlusRelevance, promptText, promptRole, userOverride, masterCategory, track]);
 
   useEffect(() => {
-    if (userOverride) return;
+    if (userOverride || masterCategory || track) return;
     if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current);
     autoDetectTimer.current = setTimeout(runAutoDetect, 400);
     return () => { if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current); };
-  }, [title, concept, aPlusRelevance, promptText, promptRole, runAutoDetect, userOverride]);
+  }, [title, concept, aPlusRelevance, promptText, promptRole, runAutoDetect, userOverride, masterCategory, track]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -618,7 +615,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                       <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Specific Objective</label>
                       <select
                         value={compObjective}
-                        onChange={(e) => setCompObjective(e.target.value)}
+                        onChange={(e) => { setCompObjective(e.target.value); setUserOverride(true); setAutoDetected(false); }}
                         className={selectCls('compObjective')}
                       >
                         <option value="">Select an objective (optional)...</option>

@@ -69,9 +69,9 @@ const KNOWN_TRACK_ORDER = ['CompTIA A+ Core 1', 'CompTIA A+ Core 2', 'Advanced H
 
 function resolveTrack(track: string, slug?: string): string {
   if (!track && slug) {
-    if (slug.startsWith('core1-') || slug.includes('networking')) return 'CompTIA A+ Core 1';
-    if (slug === 'snap-in' || slug === 'command-documentation' || slug.includes('firewall')) return 'CompTIA A+ Core 2';
-    if (slug.includes('healthcare') || slug.includes('cloud-computing') || slug.includes('ai-prompt')) return 'Advanced Healthcare IT';
+    if (slug.startsWith('core1-')) return 'CompTIA A+ Core 1';
+    if (slug.startsWith('core2-')) return 'CompTIA A+ Core 2';
+    if (slug.startsWith('healthcare-') || slug.includes('ai-prompt')) return 'Advanced Healthcare IT';
     return 'Other Contributions';
   }
   if (track.includes('Core 1')) return 'CompTIA A+ Core 1';

@@ -34,8 +34,8 @@ const sectionTrackLabels: Record<string, string> = {
 
 // Slugs that must never fall through to "Article Not Found"
 const FOUNDER_SLUGS = new Set([
-  'firewall-basics', 'command-documentation', 'snap-in',
-  'intro-healthcare-it-security', 'cloud-computing-healthcare',
+  'core1-networking/firewall-basics', 'core1-troubleshooting/command-documentation', 'core2-os/snap-in',
+  'healthcare-hipaa/intro-healthcare-it-security', 'healthcare-ehr/cloud-computing-healthcare',
   'ai-prompt-engineering-healthcare',
   'core1-networking/network-topology-architecture', 'core1-networking/osi-pdu-flow',
   'core1-networking/sample-protocols',
@@ -83,7 +83,7 @@ function deriveAuthorName(contributor: Contributor | null, article: Article): st
   if (contributor?.name) return contributor.name;
   if (article.author_name) return article.author_name;
   if (FOUNDER_SLUGS.has(article.slug)) return 'Jamin Ware';
-  const featuredSlugs = ['firewall-basics', 'command-documentation', 'snap-in', 'intro-healthcare-it-security', 'cloud-computing-healthcare', 'ai-prompt-engineering-healthcare'];
+  const featuredSlugs = ['core1-networking/firewall-basics', 'core1-troubleshooting/command-documentation', 'core2-os/snap-in', 'healthcare-hipaa/intro-healthcare-it-security', 'healthcare-ehr/cloud-computing-healthcare', 'ai-prompt-engineering-healthcare'];
   if (featuredSlugs.includes(article.slug)) return 'Jamin Ware';
   return 'Knowledge Base';
 }

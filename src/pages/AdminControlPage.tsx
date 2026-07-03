@@ -19,6 +19,7 @@ interface PendingSubmission {
   content: string;
   submission_type: string;
   formatted_content: string | null;
+  comp_objective: string | null;
   is_approved: boolean;
   created_at: string;
 }
@@ -471,9 +472,12 @@ function AdminPanel() {
       ? `Contributed by ${sub.full_name}`
       : deriveExcerpt(publishContent);
 
+    const isLX = sub.track.toLowerCase().includes('learner experience');
+    const sectionPrefix = isLX ? 'learner-experience' : resolveCanonicalSlug(sub.track);
+
     if (openSlot) {
       // Overwrite the placeholder slot
-      const baseSlug = slugify(cleanedTitle || `contribution-${Date.now()}`);
+      const baseSlug = `${sectionPrefix}/${slugify(cleanedTitle || `contribution-${Date.now()}`)}`;
       const uniqueSlug = await ensureUniqueSlug(baseSlug);
       const { error: updateError } = await supabase
         .from('articles')
@@ -487,6 +491,7 @@ function AdminPanel() {
           is_featured: false,
           submission_type: sub.submission_type,
           author_name: sub.full_name,
+          comp_objective: sub.comp_objective || null,
           excerpt,
           updated_at: new Date().toISOString(),
         })
@@ -494,7 +499,7 @@ function AdminPanel() {
       if (updateError) throw updateError;
     } else {
       // No open slot — insert a new article row
-      const baseSlug = slugify(cleanedTitle || `contribution-${Date.now()}`);
+      const baseSlug = `${sectionPrefix}/${slugify(cleanedTitle || `contribution-${Date.now()}`)}`;
       const uniqueSlug = await ensureUniqueSlug(baseSlug);
 
       const { error: insertError } = await supabase
@@ -509,6 +514,7 @@ function AdminPanel() {
           is_featured: false,
           submission_type: sub.submission_type,
           author_name: sub.full_name,
+          comp_objective: sub.comp_objective || null,
           excerpt,
           tags: [],
         });

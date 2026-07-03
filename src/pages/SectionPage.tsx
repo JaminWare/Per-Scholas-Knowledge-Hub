@@ -45,17 +45,17 @@ const roleColors: Record<string, string> = {
 };
 
 const KNOWN_AUTHORS: Record<string, string> = {
-  'firewall-basics':               'Jamin Ware',
-  'command-documentation':         'Jamin Ware',
-  'snap-in':                       'Jamin Ware',
-  'intro-healthcare-it-security':  'Jamin Ware',
-  'cloud-computing-healthcare':    'Jamin Ware',
-  'ai-prompt-engineering-healthcare': 'Jamin Ware',
-  'core2-os/cli-runbook':          'Jamin Ware',
-  'study-tips/acronyms':           'Cohort Lead',
-  'healthcare-ehr':                'Jamin Ware',
-  'healthcare-ehr/integration':    'Jamin Ware',
-  'healthcare-clinical/cpoe':      'Jamin Ware',
+  'core1-networking/firewall-basics':               'Jamin Ware',
+  'core1-troubleshooting/command-documentation':    'Jamin Ware',
+  'core2-os/snap-in':                              'Jamin Ware',
+  'healthcare-hipaa/intro-healthcare-it-security':  'Jamin Ware',
+  'healthcare-ehr/cloud-computing-healthcare':      'Jamin Ware',
+  'ai-prompt-engineering-healthcare':               'Jamin Ware',
+  'core2-os/cli-runbook':                           'Jamin Ware',
+  'study-tips/acronyms':                            'Cohort Lead',
+  'healthcare-ehr':                                 'Jamin Ware',
+  'healthcare-ehr/integration':                     'Jamin Ware',
+  'healthcare-clinical/cpoe':                       'Jamin Ware',
   'learner-experience/navigation':  'Jamin Ware',
   'learner-experience/adding-intel': 'Jamin Ware',
 };
