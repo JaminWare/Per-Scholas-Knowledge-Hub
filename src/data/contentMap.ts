@@ -7,6 +7,7 @@ export interface LocalArticle {
   tags: string[];
   studyCategory?: string;
   isFeatured?: boolean;
+  date?: string;
   content: ContentBlock[];
 }
 
@@ -687,6 +688,7 @@ and explain why each answer is correct or incorrect.` },
     cohort: '2026-RTT-23',
     tags: ['onboarding', 'navigation', 'faq'],
     isFeatured: true,
+    date: '2026-07-02T12:00:00Z',
     content: [
       {
         type: 'intro',
@@ -756,6 +758,7 @@ and explain why each answer is correct or incorrect.` },
     cohort: '2026-RTT-23',
     tags: ['contribution', 'adding-intel', 'faq'],
     isFeatured: true,
+    date: '2026-07-02T12:00:00Z',
     content: [
       {
         type: 'intro',

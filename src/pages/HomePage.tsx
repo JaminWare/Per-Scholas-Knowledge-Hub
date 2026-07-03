@@ -34,8 +34,8 @@ function buildPinnedArticles() {
       author_name: entry?.contributor ?? null,
       submission_type: 'Quick Reference',
       comp_objective: null,
-      created_at: new Date(0).toISOString(),
-      updated_at: new Date(0).toISOString(),
+      created_at: entry?.date || new Date().toISOString(),
+      updated_at: entry?.date || new Date().toISOString(),
     };
   });
 }
