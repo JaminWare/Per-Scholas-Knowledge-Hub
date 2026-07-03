@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
-import { normalizeUrl } from '../utils/normalizeUrl';
+import { checkForDuplicate } from '../utils/duplicateCheck';
 import { JOURNEY_TABS, CATEGORY_FILTERS } from '../pages/LearnerExperiencePage';
 import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 
@@ -395,30 +395,18 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
     setIsSubmitting(true);
 
-    // Duplicate detection
+    // Pre-flight duplication check (fuzzy title + URL + content)
     try {
-      if (isResourceLink) {
-        const normalizedInput = normalizeUrl(resourceUrl);
-        const [{ data: existingArticles }, { data: pendingSubs }] = await Promise.all([
-          supabase.from('articles').select('content').eq('submission_type', 'Resource Link').eq('is_sample', false),
-          supabase.from('submissions').select('content').eq('submission_type', 'Resource Link').eq('is_approved', false),
-        ]);
-        const allUrls = [...(existingArticles ?? []), ...(pendingSubs ?? [])];
-        if (allUrls.some((row) => normalizeUrl(row.content ?? '') === normalizedInput)) {
-          setFormError('This specific resource or title has already been submitted or published to the Hub!');
-          setIsSubmitting(false);
-          return;
-        }
-      } else {
-        const [{ data: existingArticles }, { data: pendingSubs }] = await Promise.all([
-          supabase.from('articles').select('title').ilike('title', title.trim()).eq('is_sample', false),
-          supabase.from('submissions').select('title').ilike('title', title.trim()).eq('is_approved', false),
-        ]);
-        if ((existingArticles ?? []).length > 0 || (pendingSubs ?? []).length > 0) {
-          setFormError('This specific resource or title has already been submitted or published to the Hub!');
-          setIsSubmitting(false);
-          return;
-        }
+      const duplicateError = await checkForDuplicate(
+        title.trim(),
+        rawContent,
+        isResourceLink ? resourceUrl.trim() : undefined,
+        submissionType,
+      );
+      if (duplicateError) {
+        setFormError(duplicateError);
+        setIsSubmitting(false);
+        return;
       }
     } catch {
       // Non-blocking: if the duplicate check fails, allow submission to proceed
