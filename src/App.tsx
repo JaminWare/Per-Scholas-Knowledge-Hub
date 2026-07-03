@@ -87,7 +87,7 @@ function AppContent() {
 
         <footer className="flex-shrink-0 border-t border-zinc-700/40 dark:border-slate-800/80 py-3 px-5">
           <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-zinc-500 dark:text-zinc-500">
-            <p>Per Scholas - Learners Knowledge Base: AI-Enabled Healthcare IT</p>
+            <p>Per Scholas Learners Knowledge Base: AI-Enabled Healthcare IT</p>
             <p>Pioneering Cohort 2026-RTT-23</p>
           </div>
         </footer>

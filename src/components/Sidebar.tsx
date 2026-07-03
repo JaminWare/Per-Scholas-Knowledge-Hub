@@ -30,11 +30,11 @@ const tracks: TrackSection[] = [
     sublabel: '220-1201',
     color: 'sky',
     domains: [
-      { title: 'Domain 1.0  - Mobile Devices',              slug: 'core1-mobile',         icon: Laptop   },
-      { title: 'Domain 2.0  - Networking',                  slug: 'core1-networking',     icon: Network  },
-      { title: 'Domain 3.0  - Hardware',                    slug: 'core1-hardware',       icon: Cpu      },
-      { title: 'Domain 4.0  - Cloud',           slug: 'core1-virtualization', icon: Cloud    },
-      { title: 'Domain 5.0  - Troubleshooting', slug: 'core1-troubleshooting',icon: Wrench   },
+      { title: 'Domain 1.0 Mobile Devices',              slug: 'core1-mobile',         icon: Laptop   },
+      { title: 'Domain 2.0 Networking',                  slug: 'core1-networking',     icon: Network  },
+      { title: 'Domain 3.0 Hardware',                    slug: 'core1-hardware',       icon: Cpu      },
+      { title: 'Domain 4.0 Cloud',           slug: 'core1-virtualization', icon: Cloud    },
+      { title: 'Domain 5.0 Troubleshooting', slug: 'core1-troubleshooting',icon: Wrench   },
     ],
   },
   {
@@ -43,10 +43,10 @@ const tracks: TrackSection[] = [
     sublabel: '220-1202',
     color: 'teal',
     domains: [
-      { title: 'Domain 1.0  - OS',               slug: 'core2-os',         icon: Monitor },
-      { title: 'Domain 2.0  - Security',          slug: 'core2-security',   icon: Shield  },
-      { title: 'Domain 3.0  - Troubleshooting',    slug: 'core2-software',   icon: Wrench  },
-      { title: 'Domain 4.0  - SOP',               slug: 'core2-operations', icon: Users   },
+      { title: 'Domain 1.0 OS',               slug: 'core2-os',         icon: Monitor },
+      { title: 'Domain 2.0 Security',          slug: 'core2-security',   icon: Shield  },
+      { title: 'Domain 3.0 Troubleshooting',    slug: 'core2-software',   icon: Wrench  },
+      { title: 'Domain 4.0 SOP',               slug: 'core2-operations', icon: Users   },
     ],
   },
   {

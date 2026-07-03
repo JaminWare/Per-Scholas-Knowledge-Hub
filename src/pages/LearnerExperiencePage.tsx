@@ -4,7 +4,6 @@ import {
   LifeBuoy, Lightbulb, BookOpen, Flame, Shield, Briefcase, Compass, Plus, ChevronRight,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { parseTicketContent } from '../utils/normalizeDeskolas';
 import { formatRelativeTime } from '../utils/formatRelativeTime';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import CardZoomOverlay from '../components/CardZoomOverlay';
@@ -165,22 +164,6 @@ interface LearnerEntry {
   lx_focus: string | null;
 }
 
-// ─── Content parser ──────────────────────────────────────────
-
-function parseHardshipBreakthrough(content: string): { hardship: string; breakthrough: string | null } {
-  const separators = ['---', '## Breakthrough', '## The Breakthrough', '**Breakthrough:**', '**The Breakthrough:**'];
-  for (const sep of separators) {
-    const idx = content.indexOf(sep);
-    if (idx > 0) {
-      return {
-        hardship: content.slice(0, idx).trim(),
-        breakthrough: content.slice(idx + sep.length).trim() || null,
-      };
-    }
-  }
-  return { hardship: content.trim(), breakthrough: null };
-}
-
 // ─── Main page component ─────────────────────────────────────
 
 export default function LearnerExperiencePage() {
@@ -283,7 +266,7 @@ export default function LearnerExperiencePage() {
         // Fallback for legacy entries without lx_stage
         const suffix = currentTab.trackSuffix;
         if (!suffix) return true;
-        const target = `Learner Experience - ${suffix}`.toLowerCase();
+        const target = `Learner Experience ${suffix}`.toLowerCase();
         return e.track.toLowerCase().includes(target) || e.track.toLowerCase().includes(suffix.toLowerCase());
       });
     }
@@ -329,7 +312,7 @@ export default function LearnerExperiencePage() {
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Learner Experience & FAQs</h1>
-              <p className="text-sm md:text-base text-zinc-400 mt-1 leading-relaxed">The cohort survival guide&mdash;built by peers who figured it out the hard way.</p>
+              <p className="text-sm md:text-base text-zinc-400 mt-1 leading-relaxed">The cohort survival guide built by peers who figured it out the hard way.</p>
             </div>
           </div>
 
@@ -458,8 +441,11 @@ export default function LearnerExperiencePage() {
 function BreakthroughCard({ entry }: { entry: LearnerEntry }) {
   const [zoomed, setZoomed] = useState(false);
   const hasTicketFormat = /Problem:/i.test(entry.content) && /Solution:/i.test(entry.content);
-  const ticket = hasTicketFormat ? parseTicketContent(entry.content) : null;
-  const { hardship, breakthrough } = !hasTicketFormat ? parseHardshipBreakthrough(entry.content) : { hardship: '', breakthrough: null };
+
+  const snippetText = useMemo(() => {
+    const raw = entry.content.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').replace(/Problem:|Solution:/gi, '').trim();
+    return raw.slice(0, 160);
+  }, [entry.content]);
 
   const cardInner = (expanded = false) => (
     <>
@@ -488,55 +474,9 @@ function BreakthroughCard({ entry }: { entry: LearnerEntry }) {
           {entry.title}
         </h3>
 
-        {ticket ? (
-          <>
-            {/* Solution snippet (card face) */}
-            {!expanded && (
-              <p className="text-xs text-zinc-600 dark:text-slate-400 leading-relaxed line-clamp-3">
-                {ticket.solution.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').slice(0, 180)}
-              </p>
-            )}
-
-            {/* Expanded: structured Problem/Solution blocks */}
-            {expanded && (
-              <>
-                <div className="rounded-lg border-l-4 border-amber-400/70 bg-amber-50 dark:bg-amber-500/5 px-3 py-2.5 space-y-1">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">Problem</h3>
-                  <p className="text-xs text-amber-900 dark:text-amber-200/80 leading-relaxed whitespace-pre-wrap">
-                    {ticket.problem.replace(/^#+\s*/gm, '').replace(/\*\*/g, '')}
-                  </p>
-                </div>
-                <div className="rounded-lg border-l-4 border-emerald-400/70 bg-emerald-50 dark:bg-emerald-500/5 px-3 py-2.5 space-y-1">
-                  <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Solution</h3>
-                  <p className="text-xs text-emerald-900 dark:text-emerald-200/80 leading-relaxed whitespace-pre-wrap">
-                    {ticket.solution.replace(/^#+\s*/gm, '').replace(/\*\*/g, '')}
-                  </p>
-                </div>
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <div className="space-y-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">The Breakthrough</span>
-              <p className={`text-xs text-zinc-600 dark:text-slate-400 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
-                {hardship.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').slice(0, expanded ? undefined : 180)}
-              </p>
-            </div>
-
-            {breakthrough && (
-              <div className="space-y-1">
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
-                  <Lightbulb className="w-2.5 h-2.5" />
-                  The Breakthrough
-                </span>
-                <p className={`text-xs text-sky-700 dark:text-sky-300 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
-                  {breakthrough.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').slice(0, expanded ? undefined : 180)}
-                </p>
-              </div>
-            )}
-          </>
-        )}
+        <p className={`text-xs text-zinc-600 dark:text-slate-400 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
+          {snippetText}{snippetText.length >= 160 ? '...' : ''}
+        </p>
 
         {/* Footer */}
         <div className="mt-auto pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between gap-2">

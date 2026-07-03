@@ -18,18 +18,18 @@ import ArticleRenderer from '../components/ArticleRenderer';
 import type { Article, Contributor } from '../types/database';
 
 const sectionTrackLabels: Record<string, string> = {
-  'core1-networking':      'COMPTIA A+ CORE 1  - NETWORKING',
-  'core1-troubleshooting': 'COMPTIA A+ CORE 1  - TROUBLESHOOTING',
-  'core1-mobile':          'COMPTIA A+ CORE 1  - MOBILE DEVICES',
-  'core1-hardware':        'COMPTIA A+ CORE 1  - HARDWARE',
-  'core1-cloud':           'COMPTIA A+ CORE 1  - CLOUD',
-  'core2-os':              'COMPTIA A+ CORE 2  - OPERATING SYSTEMS',
-  'core2-security':        'COMPTIA A+ CORE 2  - SECURITY',
-  'core2-software':        'COMPTIA A+ CORE 2  - SOFTWARE TROUBLESHOOTING',
-  'core2-operations':      'COMPTIA A+ CORE 2  - OPERATIONS',
-  'healthcare-hipaa':      'ADVANCED HEALTHCARE IT  - HIPAA SECURITY',
-  'healthcare-ehr':        'ADVANCED HEALTHCARE IT  - EHR ARCHITECTURE',
-  'healthcare-clinical':   'ADVANCED HEALTHCARE IT  - CLINICAL WORKFLOWS',
+  'core1-networking':      'COMPTIA A+ CORE 1 NETWORKING',
+  'core1-troubleshooting': 'COMPTIA A+ CORE 1 TROUBLESHOOTING',
+  'core1-mobile':          'COMPTIA A+ CORE 1 MOBILE DEVICES',
+  'core1-hardware':        'COMPTIA A+ CORE 1 HARDWARE',
+  'core1-cloud':           'COMPTIA A+ CORE 1 CLOUD',
+  'core2-os':              'COMPTIA A+ CORE 2 OPERATING SYSTEMS',
+  'core2-security':        'COMPTIA A+ CORE 2 SECURITY',
+  'core2-software':        'COMPTIA A+ CORE 2 SOFTWARE TROUBLESHOOTING',
+  'core2-operations':      'COMPTIA A+ CORE 2 OPERATIONS',
+  'healthcare-hipaa':      'ADVANCED HEALTHCARE IT HIPAA SECURITY',
+  'healthcare-ehr':        'ADVANCED HEALTHCARE IT EHR ARCHITECTURE',
+  'healthcare-clinical':   'ADVANCED HEALTHCARE IT CLINICAL WORKFLOWS',
 };
 
 // Slugs that must never fall through to "Article Not Found"
@@ -100,7 +100,7 @@ function NetworkTopologyArticleDiagrams() {
       </div>
       <div className="prose-style space-y-4 text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
         <p>The three-tier network topology model divides enterprise switching infrastructure into three distinct functional layers. The <strong className="text-zinc-800 dark:text-zinc-200">Core Layer</strong> provides high-speed backbone connectivity between distribution switches with sub-millisecond failover. The <strong className="text-zinc-800 dark:text-zinc-200">Distribution Layer</strong> enforces routing policy, VLAN segmentation, and inter-subnet ACLs. The <strong className="text-zinc-800 dark:text-zinc-200">Access Layer</strong> connects end-user devices with port security, 802.1X authentication, and Power over Ethernet (PoE).</p>
-        <p>The firewall segmentation diagram above illustrates how the DMZ acts as a controlled buffer zone. Public-facing services (web servers, DNS resolvers) sit in the DMZ  - reachable from the internet but fully isolated from the private LAN. Stateful Packet Inspection (SPI) tracks each TCP/UDP session in a state table, allowing return traffic for established connections while silently dropping unsolicited inbound probes.</p>
+        <p>The firewall segmentation diagram above illustrates how the DMZ acts as a controlled buffer zone. Public-facing services (web servers, DNS resolvers) sit in the DMZ reachable from the internet but fully isolated from the private LAN. Stateful Packet Inspection (SPI) tracks each TCP/UDP session in a state table, allowing return traffic for established connections while silently dropping unsolicited inbound probes.</p>
       </div>
 
       {/* Citations */}
@@ -170,7 +170,7 @@ function OSIPDUArticleDiagrams() {
             <span className="text-zinc-600 dark:text-zinc-400">
               <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Cisco Press:</strong>{' '}
               <a href="https://www.ciscopress.com/store/interconnecting-cisco-network-devices-part-1-icnd1-9780132877435" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
-                Interconnecting Cisco Network Devices  - Data Encapsulation and Segment-to-Bit Flowcharts
+                Interconnecting Cisco Network Devices Data Encapsulation and Segment-to-Bit Flowcharts
               </a>
             </span>
           </li>
@@ -184,7 +184,7 @@ function TCPIPArticleContent() {
   return (
     <div className="space-y-8">
       <div className="space-y-5 text-zinc-700 dark:text-zinc-300 text-sm leading-relaxed">
-        <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-800 pb-2">TCP/IP Protocol Suite  - Four-Layer Model</h2>
+        <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-800 pb-2">TCP/IP Protocol Suite Four-Layer Model</h2>
 
         <p>The <strong className="font-semibold text-zinc-900 dark:text-zinc-100">TCP/IP model</strong> is the practical implementation framework for internet communication, developed by DARPA in the 1970s and formally standardized through IETF RFCs. Unlike the theoretical 7-layer OSI model, TCP/IP collapses communication into four functional layers, each of which maps to one or more OSI layers.</p>
 
@@ -249,18 +249,18 @@ function TCPIPArticleContent() {
         </div>
 
         <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mt-6">Stateful vs. Stateless Packet Transmission</h3>
-        <p>The two primary Transport layer protocols  - TCP and UDP  - represent the fundamental trade-off between reliability and performance in packet delivery.</p>
+        <p>The two primary Transport layer protocols TCP and UDP represent the fundamental trade-off between reliability and performance in packet delivery.</p>
 
         <div className="grid md:grid-cols-2 gap-4 my-4">
           <div className="rounded-lg border border-sky-200 dark:border-sky-500/30 bg-sky-50/60 dark:bg-sky-500/5 p-4">
-            <h4 className="font-bold text-sky-800 dark:text-sky-300 text-sm mb-2">TCP  - Stateful / Connection-Oriented</h4>
+            <h4 className="font-bold text-sky-800 dark:text-sky-300 text-sm mb-2">TCP Stateful / Connection-Oriented</h4>
             <ul className="space-y-1.5 text-[12px] text-zinc-600 dark:text-zinc-400">
               {[
                 'Three-way handshake (SYN → SYN-ACK → ACK) before data transfer',
-                'Sequence numbers track every byte  - out-of-order segments are reordered',
+                'Sequence numbers track every byteout-of-order segments are reordered',
                 'Acknowledgements confirm receipt; unacknowledged segments are retransmitted',
                 'Flow control via sliding window prevents receiver buffer overflow',
-                'Used by: HTTP/S, FTP, SMTP, SSH  - any protocol requiring guaranteed delivery',
+                'Used by: HTTP/S, FTP, SMTP, SSHany protocol requiring guaranteed delivery',
               ].map((item, i) => (
                 <li key={i} className="flex gap-2 items-start">
                   <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-sky-500" />
@@ -270,10 +270,10 @@ function TCPIPArticleContent() {
             </ul>
           </div>
           <div className="rounded-lg border border-teal-200 dark:border-teal-500/30 bg-teal-50/60 dark:bg-teal-500/5 p-4">
-            <h4 className="font-bold text-teal-800 dark:text-teal-300 text-sm mb-2">UDP  - Stateless / Connectionless</h4>
+            <h4 className="font-bold text-teal-800 dark:text-teal-300 text-sm mb-2">UDP Stateless / Connectionless</h4>
             <ul className="space-y-1.5 text-[12px] text-zinc-600 dark:text-zinc-400">
               {[
-                'No handshake  - datagrams sent immediately without session establishment',
+                'No handshake datagrams sent immediately without session establishment',
                 'No sequence numbers, no acknowledgements, no retransmission',
                 'Receiver gets data in arrival order, not transmission order',
                 'Minimal header overhead (8 bytes vs. TCP\'s 20+ bytes)',
@@ -289,7 +289,7 @@ function TCPIPArticleContent() {
         </div>
 
         <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mt-6">CompTIA A+ Core 1 Exam Focus Areas</h3>
-        <p>CompTIA A+ Core 1 (220-1201) Section 2.1  - Protocol Suites tests your ability to:</p>
+        <p>CompTIA A+ Core 1 (220-1201) Section 2.1 Protocol Suites tests your ability to:</p>
         <ul className="space-y-1.5 pl-0 list-none">
           {[
             'Distinguish between the 4-layer TCP/IP model and the 7-layer OSI model and map protocols to their correct layers',
@@ -324,7 +324,7 @@ function TCPIPArticleContent() {
               <a href="https://www.rfc-editor.org/rfc/rfc793" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
                 RFC 793 (Transmission Control Protocol)
               </a>
-              {'  - Core standard documentations.'}
+              {'Core standard documentation.'}
             </span>
           </li>
           <li className="flex gap-2.5 items-start text-sm">
@@ -332,11 +332,38 @@ function TCPIPArticleContent() {
             <span className="text-zinc-600 dark:text-zinc-400">
               <strong className="font-semibold text-zinc-800 dark:text-zinc-200">CompTIA Official:</strong>{' '}
               <a href="https://www.comptia.org/certifications/a" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
-                CompTIA A+ Core 1 (220-1201) Exam Blueprint  - Section 2.1 Protocol Suites
+                CompTIA A+ Core 1 (220-1201) Exam BlueprintSection 2.1 Protocol Suites
               </a>
             </span>
           </li>
         </ul>
+      </div>
+    </div>
+  );
+}
+
+function TicketOrMarkdownContent({ content }: { content: string }) {
+  const hasTicketFormat = /Problem:/i.test(content) && /Solution:/i.test(content);
+  if (!hasTicketFormat) return <MarkdownRenderer content={content} />;
+
+  const problemMatch = content.match(/Problem:\s*([\s\S]*?)(?=Solution:)/i);
+  const solutionMatch = content.match(/Solution:\s*([\s\S]*?)$/i);
+  const problem = problemMatch?.[1]?.trim() || '';
+  const solution = solutionMatch?.[1]?.trim() || '';
+
+  return (
+    <div className="space-y-6">
+      <div className="rounded-xl border-l-4 border-amber-400/70 bg-amber-50 dark:bg-amber-500/5 px-5 py-4 space-y-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">Problem</h3>
+        <div className="text-sm text-amber-900 dark:text-amber-200/80 leading-relaxed whitespace-pre-wrap">
+          {problem.replace(/^#+\s*/gm, '').replace(/\*\*/g, '')}
+        </div>
+      </div>
+      <div className="rounded-xl border-l-4 border-emerald-400/70 bg-emerald-50 dark:bg-emerald-500/5 px-5 py-4 space-y-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Solution</h3>
+        <div className="text-sm text-emerald-900 dark:text-emerald-200/80 leading-relaxed whitespace-pre-wrap">
+          {solution.replace(/^#+\s*/gm, '').replace(/\*\*/g, '')}
+        </div>
       </div>
     </div>
   );
@@ -460,7 +487,7 @@ export default function ArticlePage() {
   const isFounderSlug = FOUNDER_SLUGS.has(article.slug) || authorName === 'Jamin Ware';
   const effectiveIsSample = isSample && !isFounderSlug;
 
-  // Full-page diagram panel routing  - each is suppressed when title matches [Sample]
+  // Full-page diagram panel routingeach is suppressed when title matches [Sample]
   const isNetworkTopologyArticle = article.slug === 'core1-networking/network-topology-architecture' && !strictlyIsSample;
   const isOSIPDUArticle          = article.slug === 'core1-networking/osi-pdu-flow' && !strictlyIsSample;
   const isTCPIPArticle           = article.slug === 'core1-networking/sample-protocols' && !strictlyIsSample;
@@ -468,6 +495,8 @@ export default function ArticlePage() {
   function handleBack() {
     if (article?.section?.slug) {
       navigate('/' + article.section.slug);
+    } else if (article?.slug?.startsWith('learner-experience/') || article?.study_category?.startsWith('Learner Experience')) {
+      navigate('/learner-experience');
     } else {
       navigate(-1);
     }
@@ -623,7 +652,7 @@ export default function ArticlePage() {
             <ExternalLink className="w-4 h-4 text-zinc-500 group-hover:text-sky-400 flex-shrink-0 transition-colors" />
           </a>
         ) : (
-          <MarkdownRenderer content={markdownContent} />
+          <TicketOrMarkdownContent content={markdownContent} />
         )}
       </div>
 
@@ -641,7 +670,7 @@ export default function ArticlePage() {
         </div>
       )}
 
-      {/* References & Citations  - only for live non-founder-diagram articles */}
+      {/* References & Citationsonly for live non-founder-diagram articles */}
       {!effectiveIsSample && !isNetworkTopologyArticle && !isOSIPDUArticle && !isTCPIPArticle && (
         <div className="mt-8 rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
           <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">

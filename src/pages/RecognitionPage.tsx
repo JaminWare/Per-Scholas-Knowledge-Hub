@@ -117,7 +117,7 @@ function groupItemsByTrack(items: PortfolioItem[]): Map<string, PortfolioItem[]>
     if (!map.has(bucket)) map.set(bucket, []);
     map.get(bucket)!.push(s);
   }
-  // Sort each bucket by created_at ascending (FIFO  - oldest first)
+  // Sort each bucket by created_at ascending (FIFOoldest first)
   for (const [, val] of map) {
     val.sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''));
   }
@@ -404,7 +404,7 @@ export default function RecognitionPage() {
         if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
       }
 
-      // Group by author using reduce  - build dynamic typeCounts
+      // Group by author using reducebuild dynamic typeCounts
       const grouped = allEntries.reduce<Record<string, ContributorGroup>>((acc, item) => {
         const key = item.full_name.trim().toLowerCase();
         if (!acc[key]) {
@@ -467,7 +467,7 @@ export default function RecognitionPage() {
               <Award className="w-6 h-6 text-sky-400" />
             </div>
             <span className="text-xs font-bold text-sky-400 uppercase tracking-widest">
-              Per Scholas  - 2026-RTT-23
+              Per Scholas2026-RTT-23
             </span>
           </div>
           <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-[0_0_12px_rgba(56,189,248,0.75)] mb-3">
@@ -480,7 +480,7 @@ export default function RecognitionPage() {
         </div>
       </section>
 
-      {/* Contributors section  - tighter to banner */}
+      {/* Contributors sectiontighter to banner */}
       <section className="max-w-4xl mx-auto px-4 mt-6">
         <div className="flex items-center gap-2 mb-3">
           <Award className="w-4 h-4 text-sky-500" />

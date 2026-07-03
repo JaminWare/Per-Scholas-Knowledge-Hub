@@ -18,17 +18,17 @@ const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ c
   'study-tips/core1-overview': { title: 'Core 1 Overview', icon: Lightbulb, track: 'CompTIA A+ Core 1' },
   'study-tips/acronyms': { title: 'Acronym Master Directory', icon: Bookmark, track: 'CompTIA A+ Core 1' },
   'core1-networking/pbq-prompts': { title: 'PBQ Simulation Prompts', icon: Sparkles, track: 'CompTIA A+ Core 1' },
-  'core1-mobile':          { title: 'Domain 1.0  - Mobile Devices', icon: Laptop, track: 'CompTIA A+ Core 1' },
-  'core1-networking':      { title: 'Domain 2.0  - Networking', icon: Network, track: 'CompTIA A+ Core 1' },
-  'core1-hardware':        { title: 'Domain 3.0  - Hardware', icon: Cpu, track: 'CompTIA A+ Core 1' },
-  'core1-cloud':           { title: 'Domain 4.0  - Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
-  'core1-virtualization':  { title: 'Domain 4.0  - Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
-  'core1-troubleshooting': { title: 'Domain 5.0  - HW & Network Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 1' },
-  'core2-os':              { title: 'Domain 1.0  - Operating Systems', icon: Monitor, track: 'CompTIA A+ Core 2' },
+  'core1-mobile':          { title: 'Domain 1.0 Mobile Devices', icon: Laptop, track: 'CompTIA A+ Core 1' },
+  'core1-networking':      { title: 'Domain 2.0 Networking', icon: Network, track: 'CompTIA A+ Core 1' },
+  'core1-hardware':        { title: 'Domain 3.0 Hardware', icon: Cpu, track: 'CompTIA A+ Core 1' },
+  'core1-cloud':           { title: 'Domain 4.0 Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
+  'core1-virtualization':  { title: 'Domain 4.0 Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
+  'core1-troubleshooting': { title: 'Domain 5.0 HW & Network Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 1' },
+  'core2-os':              { title: 'Domain 1.0 Operating Systems', icon: Monitor, track: 'CompTIA A+ Core 2' },
   'core2-os/cli-runbook': { title: 'CLI Command Runbook', icon: Monitor, track: 'CompTIA A+ Core 2' },
-  'core2-security':        { title: 'Domain 2.0  - Security', icon: Shield, track: 'CompTIA A+ Core 2' },
-  'core2-software':        { title: 'Domain 3.0  - Software Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 2' },
-  'core2-operations':      { title: 'Domain 4.0  - Operational Procedures', icon: Users, track: 'CompTIA A+ Core 2' },
+  'core2-security':        { title: 'Domain 2.0 Security', icon: Shield, track: 'CompTIA A+ Core 2' },
+  'core2-software':        { title: 'Domain 3.0 Software Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 2' },
+  'core2-operations':      { title: 'Domain 4.0 Operational Procedures', icon: Users, track: 'CompTIA A+ Core 2' },
   'healthcare-ehr':        { title: 'EHR Architecture', icon: Database, track: 'Advanced Healthcare IT' },
   'healthcare-hipaa':      { title: 'HIPAA Data Security', icon: Lock, track: 'Advanced Healthcare IT' },
   'healthcare-clinical':   { title: 'Clinical Workflows', icon: Heart, track: 'Advanced Healthcare IT' },
@@ -61,18 +61,18 @@ const KNOWN_AUTHORS: Record<string, string> = {
 };
 
 const CANONICAL_DOMAINS: Record<string, string> = {
-  'Domain 1.0  - Mobile Devices': 'CompTIA A+ Core 1  - Domain 1.0 (Mobile Devices)',
-  'Domain 2.0  - Networking': 'CompTIA A+ Core 1  - Domain 2.0 (Networking)',
-  'Domain 3.0  - Hardware': 'CompTIA A+ Core 1  - Domain 3.0 (Hardware)',
-  'Domain 4.0  - Virtualization & Cloud': 'CompTIA A+ Core 1  - Domain 4.0 (Cloud)',
-  'Domain 5.0  - Hardware & Network Troubleshooting': 'CompTIA A+ Core 1  - Domain 5.0 (Troubleshooting)',
-  'Domain 1.0  - Operating Systems': 'CompTIA A+ Core 2  - Domain 1.0 (Operating Systems)',
-  'Domain 2.0  - Security': 'CompTIA A+ Core 2  - Domain 2.0 (Security)',
-  'Domain 3.0  - Software Troubleshooting': 'CompTIA A+ Core 2  - Domain 3.0 (Software Troubleshooting)',
-  'Domain 4.0  - Operational Procedures': 'CompTIA A+ Core 2  - Domain 4.0 (Operational Procedures)',
-  'EHR Architecture': 'Advanced Healthcare IT  - EHR Architecture',
-  'HIPAA Data Security': 'Advanced Healthcare IT  - HIPAA Data Security',
-  'Clinical Workflows': 'Advanced Healthcare IT  - Clinical Workflows',
+  'Domain 1.0 Mobile Devices': 'CompTIA A+ Core 1 Domain 1.0 (Mobile Devices)',
+  'Domain 2.0 Networking': 'CompTIA A+ Core 1 Domain 2.0 (Networking)',
+  'Domain 3.0 Hardware': 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
+  'Domain 4.0 Virtualization & Cloud': 'CompTIA A+ Core 1 Domain 4.0 (Cloud)',
+  'Domain 5.0 Hardware & Network Troubleshooting': 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
+  'Domain 1.0 Operating Systems': 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
+  'Domain 2.0 Security': 'CompTIA A+ Core 2 Domain 2.0 (Security)',
+  'Domain 3.0 Software Troubleshooting': 'CompTIA A+ Core 2 Domain 3.0 (Software Troubleshooting)',
+  'Domain 4.0 Operational Procedures': 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
+  'EHR Architecture': 'Advanced Healthcare IT EHR Architecture',
+  'HIPAA Data Security': 'Advanced Healthcare IT HIPAA Data Security',
+  'Clinical Workflows': 'Advanced Healthcare IT Clinical Workflows',
 };
 
 const CURRICULUM_TRACKS = [
@@ -81,11 +81,11 @@ const CURRICULUM_TRACKS = [
     icon: Laptop,
     color: 'sky' as const,
     domains: [
-      'Domain 1.0  - Mobile Devices',
-      'Domain 2.0  - Networking',
-      'Domain 3.0  - Hardware',
-      'Domain 4.0  - Virtualization & Cloud',
-      'Domain 5.0  - Hardware & Network Troubleshooting',
+      'Domain 1.0 Mobile Devices',
+      'Domain 2.0 Networking',
+      'Domain 3.0 Hardware',
+      'Domain 4.0 Virtualization & Cloud',
+      'Domain 5.0 Hardware & Network Troubleshooting',
     ],
   },
   {
@@ -93,10 +93,10 @@ const CURRICULUM_TRACKS = [
     icon: Monitor,
     color: 'teal' as const,
     domains: [
-      'Domain 1.0  - Operating Systems',
-      'Domain 2.0  - Security',
-      'Domain 3.0  - Software Troubleshooting',
-      'Domain 4.0  - Operational Procedures',
+      'Domain 1.0 Operating Systems',
+      'Domain 2.0 Security',
+      'Domain 3.0 Software Troubleshooting',
+      'Domain 4.0 Operational Procedures',
     ],
   },
   {
@@ -112,16 +112,16 @@ const CURRICULUM_TRACKS = [
 ] as const;
 
 const SLUG_TO_DOMAIN: Record<string, { domain: string; trackIndex: number }> = {
-  'core1-mobile':          { domain: 'Domain 1.0  - Mobile Devices', trackIndex: 0 },
-  'core1-networking':      { domain: 'Domain 2.0  - Networking', trackIndex: 0 },
-  'core1-hardware':        { domain: 'Domain 3.0  - Hardware', trackIndex: 0 },
-  'core1-cloud':           { domain: 'Domain 4.0  - Virtualization & Cloud', trackIndex: 0 },
-  'core1-virtualization':  { domain: 'Domain 4.0  - Virtualization & Cloud', trackIndex: 0 },
-  'core1-troubleshooting': { domain: 'Domain 5.0  - Hardware & Network Troubleshooting', trackIndex: 0 },
-  'core2-os':              { domain: 'Domain 1.0  - Operating Systems', trackIndex: 1 },
-  'core2-security':        { domain: 'Domain 2.0  - Security', trackIndex: 1 },
-  'core2-software':        { domain: 'Domain 3.0  - Software Troubleshooting', trackIndex: 1 },
-  'core2-operations':      { domain: 'Domain 4.0  - Operational Procedures', trackIndex: 1 },
+  'core1-mobile':          { domain: 'Domain 1.0 Mobile Devices', trackIndex: 0 },
+  'core1-networking':      { domain: 'Domain 2.0 Networking', trackIndex: 0 },
+  'core1-hardware':        { domain: 'Domain 3.0 Hardware', trackIndex: 0 },
+  'core1-cloud':           { domain: 'Domain 4.0 Virtualization & Cloud', trackIndex: 0 },
+  'core1-virtualization':  { domain: 'Domain 4.0 Virtualization & Cloud', trackIndex: 0 },
+  'core1-troubleshooting': { domain: 'Domain 5.0 Hardware & Network Troubleshooting', trackIndex: 0 },
+  'core2-os':              { domain: 'Domain 1.0 Operating Systems', trackIndex: 1 },
+  'core2-security':        { domain: 'Domain 2.0 Security', trackIndex: 1 },
+  'core2-software':        { domain: 'Domain 3.0 Software Troubleshooting', trackIndex: 1 },
+  'core2-operations':      { domain: 'Domain 4.0 Operational Procedures', trackIndex: 1 },
   'healthcare-ehr':        { domain: 'EHR Architecture', trackIndex: 2 },
   'healthcare-hipaa':      { domain: 'HIPAA Data Security', trackIndex: 2 },
   'healthcare-clinical':   { domain: 'Clinical Workflows', trackIndex: 2 },
@@ -543,7 +543,7 @@ function OpenSlotPlaceholder({ domain, context, onContribute, gridMode = false }
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-sm leading-snug text-slate-900 dark:text-white transition-colors duration-200 group-hover:text-sky-600 dark:group-hover:text-sky-400">
-              {domain}  - {context}
+              {domain}{context}
             </h3>
             <div className="flex items-center gap-1.5 mt-1">
               <div className="w-4 h-4 rounded bg-gradient-to-br from-sky-400 to-sky-500 flex items-center justify-center flex-shrink-0">
