@@ -128,7 +128,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 text-xs font-medium">
                     <TrendingUp className="w-3.5 h-3.5" />
-                    <span>Pioneering Cohort</span>
+                    <span>Per Scholas</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="relative flex h-2 w-2">
@@ -139,7 +139,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                   </div>
                 </div>
                 <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">
-                  Per Scholas Cohort Survival Guide
+                  Cohort Guide
                   <span className="block bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-sky-300 text-base md:text-lg font-semibold mt-0.5">
                     AI Enabled Healthcare IT
                   </span>
