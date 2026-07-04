@@ -132,7 +132,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                 <div className="flex items-center gap-3 mt-1">
                   <p className="text-sm text-zinc-400">Welcome to the collaborative resource hub!</p>
                   <Link
-                    to="/learner-experience?tab=onboarding"
+                    to="/learner-experience"
                     className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs transition-all shadow-md shadow-sky-500/30 hover:shadow-sky-400/40 hover:scale-[1.02] whitespace-nowrap flex-shrink-0"
                   >
                     <LifeBuoy className="w-3.5 h-3.5" />
