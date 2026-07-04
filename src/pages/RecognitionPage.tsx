@@ -442,10 +442,10 @@ export default function RecognitionPage() {
 
   const TRACK_FILTER_OPTIONS = [
     { value: 'All', label: 'All Tracks', icon: Layers },
+    { value: 'Learner Experience', label: 'Learner Experience', icon: LifeBuoy },
     { value: 'CompTIA A+ Core 1', label: 'Core 1', icon: Laptop },
     { value: 'CompTIA A+ Core 2', label: 'Core 2', icon: Monitor },
     { value: 'Advanced Healthcare IT', label: 'Healthcare IT', icon: Heart },
-    { value: 'Learner Experience', label: 'Learner Experience', icon: LifeBuoy },
   ] as const;
 
   const filteredContributors = useMemo(() => {
