@@ -17,6 +17,7 @@ const SHORT_FORM_ALIASES: Record<string, string> = {
   'EHR Architecture': 'Advanced Healthcare IT EHR Architecture',
   'HIPAA Data Security': 'Advanced Healthcare IT HIPAA Data Security',
   'Clinical Workflows': 'Advanced Healthcare IT Clinical Workflows',
+  'Software & IDEs': 'CompTIA A+ Core 2 Domain 3.0 (Software Troubleshooting)',
 };
 
 type Rule = { test: (s: string) => boolean; target: string };
