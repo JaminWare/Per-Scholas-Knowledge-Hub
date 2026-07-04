@@ -226,7 +226,7 @@ function SubmissionCard({
   onDelete,
 }: {
   sub: PendingSubmission;
-  onApprove: (id: string, domainOverride?: string, editedContent?: string) => Promise<void>;
+  onApprove: (id: string, domainOverride?: string, editedContent?: string, editedTitle?: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }) {
   const [approving, setApproving] = useState(false);
@@ -238,7 +238,8 @@ function SubmissionCard({
 
   const initialContent = sub.formatted_content ?? sub.content;
   const [editedContent, setEditedContent] = useState(initialContent);
-  const hasEdits = editedContent !== initialContent;
+  const [editedTitle, setEditedTitle] = useState(sub.title);
+  const hasEdits = editedContent !== initialContent || editedTitle !== sub.title;
 
   const needsOverride = !sub.track.toLowerCase().includes('learner experience') && resolveCanonicalSlug(sub.track) === null;
   const [domainOverride, setDomainOverride] = useState('');
@@ -277,7 +278,7 @@ function SubmissionCard({
     setApproving(true);
     setActionError('');
     try {
-      await onApprove(sub.id, needsOverride ? domainOverride : undefined, editedContent);
+      await onApprove(sub.id, needsOverride ? domainOverride : undefined, editedContent, editedTitle !== sub.title ? editedTitle : undefined);
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Approval failed.');
     } finally {
@@ -402,11 +403,22 @@ function SubmissionCard({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setEditedContent(autoFormatContent(editedContent))}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 text-[11px] font-semibold transition-colors"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-900/20 hover:bg-sky-800/30 text-sky-400 border border-sky-800/50 text-[11px] font-semibold transition-all"
                 >
-                  <Wand2 className="w-3 h-3" /> Auto-Format Clean Up
+                  <Wand2 className="w-3 h-3" /> Auto-Format
                 </button>
-                <span className="text-[10px] text-zinc-600">Injects headers, normalizes spacing</span>
+                <span className="text-[10px] text-zinc-600">Smart headers, blockquotes, list cleanup</span>
+              </div>
+              {/* Editable Title */}
+              <div>
+                <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold mb-1.5 block">Title</span>
+                <input
+                  type="text"
+                  value={editedTitle}
+                  onChange={(e) => setEditedTitle(e.target.value)}
+                  placeholder="Edit submission title..."
+                  className="w-full px-4 py-2.5 rounded-lg bg-black border border-zinc-800 text-white text-lg font-semibold placeholder:text-zinc-600 focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 focus:outline-none transition-all"
+                />
               </div>
               {/* Side-by-side panels */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -417,16 +429,14 @@ function SubmissionCard({
                     value={editedContent}
                     onChange={(e) => setEditedContent(e.target.value)}
                     spellCheck={false}
-                    className="flex-1 min-h-[320px] w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs font-mono leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+                    className="flex-1 min-h-[320px] w-full px-4 py-3 rounded-lg bg-black border border-zinc-800 text-zinc-200 text-xs font-mono leading-relaxed resize-y focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 focus:outline-none transition-all"
                   />
                 </div>
                 {/* Preview */}
                 <div className="flex flex-col">
                   <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold mb-1.5">Live Preview</span>
-                  <div className="flex-1 min-h-[320px] max-h-[500px] overflow-y-auto px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800">
-                    <div className="dark">
-                      <MarkdownRenderer content={editedContent} />
-                    </div>
+                  <div className="flex-1 min-h-[320px] max-h-[500px] overflow-y-auto px-5 py-4 rounded-lg bg-black border border-zinc-800">
+                    <MarkdownRenderer content={editedContent} />
                   </div>
                 </div>
               </div>
@@ -528,11 +538,11 @@ function AdminPanel() {
     setTimeout(() => setSuccessMessage(''), 4000);
   };
 
-  const handleApprove = async (id: string, domainOverride?: string, editedContent?: string) => {
+  const handleApprove = async (id: string, domainOverride?: string, editedContent?: string, editedTitle?: string) => {
     const sub = submissions.find((s) => s.id === id);
     if (!sub) return;
 
-    const cleanedTitle = sanitizeTitle(sub.title);
+    const cleanedTitle = sanitizeTitle(editedTitle ?? sub.title);
 
     const effectiveTrack = domainOverride || sub.track;
 
