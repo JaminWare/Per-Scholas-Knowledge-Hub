@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Lightbulb } from 'lucide-react';
+import { ArrowRight, Lightbulb, Pin } from 'lucide-react';
 import CardZoomOverlay from './CardZoomOverlay';
 import type { ArticleWithContributor } from '../hooks/useArticles';
 
@@ -27,7 +27,7 @@ export function parseAuthorFromExcerpt(excerpt: string | null | undefined): stri
   return excerpt.replace('Contributed by ', '').trim() || null;
 }
 
-export function AppletCard({ article, gridMode = false }: { article: ArticleWithContributor; gridMode?: boolean }) {
+export function AppletCard({ article, gridMode = false, isPinned = false }: { article: ArticleWithContributor; gridMode?: boolean; isPinned?: boolean }) {
   const [zoomed, setZoomed] = useState(false);
   const isSample = article.is_sample;
   const authorName = (article.contributor as { name: string } | null)?.name
@@ -70,6 +70,7 @@ export function AppletCard({ article, gridMode = false }: { article: ArticleWith
       )}
       <div className="mt-4 flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs text-zinc-500">
+          {isPinned && <Pin className="w-3 h-3 text-sky-400 flex-shrink-0" />}
           <span>{formattedDate}</span>
         </div>
         {!isSample && article.tags?.length > 0 && (

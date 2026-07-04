@@ -323,6 +323,22 @@ export default function LearnerExperiencePage() {
     return result;
   }, [entries, lxMeta, activeTab, currentTab, filters, activeLevel2, activeLevel3]);
 
+  const PINNED_TITLES = [
+    'Navigating the Hub: Search, Domains & Filtering',
+    'Adding Intel: How to Submit Your Field Notes',
+  ];
+
+  const { displayEntries, pinnedSet } = useMemo(() => {
+    if (activeTab !== 'all') return { displayEntries: filteredEntries, pinnedSet: new Set<string>() };
+
+    const pinned = PINNED_TITLES
+      .map((t) => filteredEntries.find((e) => e.title === t))
+      .filter((e): e is ArticleWithContributor => e !== undefined);
+    const pinnedIds = new Set(pinned.map((e) => e.id));
+    const rest = filteredEntries.filter((e) => !pinnedIds.has(e.id));
+    return { displayEntries: [...pinned, ...rest], pinnedSet: pinnedIds };
+  }, [filteredEntries, activeTab]);
+
   return (
     <div className="space-y-8">
       {/* ─── Banner ─── */}
@@ -432,8 +448,8 @@ export default function LearnerExperiencePage() {
         </div>
       ) : filteredEntries.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredEntries.map((entry) => (
-            <AppletCard key={entry.id} article={entry} gridMode />
+          {displayEntries.map((entry) => (
+            <AppletCard key={entry.id} article={entry} gridMode isPinned={pinnedSet.has(entry.id)} />
           ))}
         </div>
       ) : (
