@@ -1,4 +1,4 @@
-import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Sidebar from './components/Sidebar';
 import SearchBar from './components/SearchBar';
@@ -8,6 +8,7 @@ import SectionPage from './pages/SectionPage';
 import RecognitionPage from './pages/RecognitionPage';
 import LearnerExperiencePage from './pages/LearnerExperiencePage';
 import AdminControlPage from './pages/AdminControlPage';
+import NotFoundPage from './pages/NotFoundPage';
 import { PanelLeftOpen, PanelLeftClose } from 'lucide-react';
 
 function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | null> }) {
@@ -66,7 +67,7 @@ function AppContent() {
             <Route path="/article/:slug" element={<ArticlePage />} />
             <Route path="/article/:slug/*" element={<ArticlePage />} />
             <Route path="/:slug/*" element={<SectionPage refreshKey={refreshKey} />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>
 

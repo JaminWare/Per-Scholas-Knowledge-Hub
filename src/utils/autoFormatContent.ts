@@ -35,53 +35,57 @@ function isHeading(block: string): boolean {
 }
 
 export function autoFormatContent(raw: string): string {
-  let text = raw.trim();
-  if (!text) return text;
+  try {
+    let text = raw.trim();
+    if (!text) return text;
 
-  // Collapse 3+ consecutive newlines to exactly 2
-  text = text.replace(/\n{3,}/g, '\n\n');
+    // Collapse 3+ consecutive newlines to exactly 2
+    text = text.replace(/\n{3,}/g, '\n\n');
 
-  // Split into discrete blocks by double newlines
-  const blocks = text.split(/\n\n/).map((b) => b.trim()).filter(Boolean);
-  const output: string[] = [];
+    // Split into discrete blocks by double newlines
+    const blocks = text.split(/\n\n/).map((b) => b.trim()).filter(Boolean);
+    const output: string[] = [];
 
-  for (const block of blocks) {
-    if (isHeading(block)) {
-      output.push(block);
-    } else if (isListBlock(block)) {
-      const cleaned = block
-        .split('\n')
-        .map((line) => {
-          const match = line.match(/^\s*[-*]\s+(.*)/);
-          return match ? `- ${match[1].trim()}` : line;
-        })
-        .join('\n');
-      output.push(cleaned);
-    } else if (wordCount(block) < 15) {
-      const quoted = block
-        .split('\n')
-        .map((line) => `> ${line}`)
-        .join('\n');
-      output.push(quoted);
-    } else {
-      const header = `### ${extractHeaderPhrase(block)}`;
-      output.push(`${header}\n\n${block}`);
+    for (const block of blocks) {
+      if (isHeading(block)) {
+        output.push(block);
+      } else if (isListBlock(block)) {
+        const cleaned = block
+          .split('\n')
+          .map((line) => {
+            const match = line.match(/^\s*[-*]\s+(.*)/);
+            return match ? `- ${match[1].trim()}` : line;
+          })
+          .join('\n');
+        output.push(cleaned);
+      } else if (wordCount(block) < 15) {
+        const quoted = block
+          .split('\n')
+          .map((line) => `> ${line}`)
+          .join('\n');
+        output.push(quoted);
+      } else {
+        const header = `### ${extractHeaderPhrase(block)}`;
+        output.push(`${header}\n\n${block}`);
+      }
     }
+
+    let result = output.join('\n\n');
+
+    // Ensure a blank line after a heading if missing
+    result = result.replace(/^(#{1,6}\s.+)\n(?!\n)/gm, '$1\n\n');
+
+    // Ensure a blank line before the first list item when preceded by a paragraph
+    result = result.replace(/([^\n])\n([-*] |\d+[.)]\s)/g, '$1\n\n$2');
+
+    // Trim trailing whitespace on each line
+    result = result
+      .split('\n')
+      .map((line) => line.trimEnd())
+      .join('\n');
+
+    return result.trim();
+  } catch {
+    return raw;
   }
-
-  let result = output.join('\n\n');
-
-  // Ensure a blank line after a heading if missing
-  result = result.replace(/^(#{1,6}\s.+)\n(?!\n)/gm, '$1\n\n');
-
-  // Ensure a blank line before the first list item when preceded by a paragraph
-  result = result.replace(/([^\n])\n([-*] |\d+[.)]\s)/g, '$1\n\n$2');
-
-  // Trim trailing whitespace on each line
-  result = result
-    .split('\n')
-    .map((line) => line.trimEnd())
-    .join('\n');
-
-  return result.trim();
 }

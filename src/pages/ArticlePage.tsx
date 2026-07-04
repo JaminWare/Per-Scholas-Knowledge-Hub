@@ -393,7 +393,7 @@ function makeLocalArticle(slug: string, title?: string): Article {
 
 export default function ArticlePage() {
   const location = useLocation();
-  const slug = location.pathname.replace(/^\/article\//, '').replace(/\/$/, '');
+  const slug = decodeURIComponent(location.pathname.replace(/^\/article\//, '').replace(/\/$/, ''));
   const [article, setArticle] = useState<Article | null>(null);
   const [contributor, setContributor] = useState<Contributor | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);

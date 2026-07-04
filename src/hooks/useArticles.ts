@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { normalizeCategory } from '../utils/normalizeCategory';
 import type { Article } from '../types/database';
@@ -8,9 +8,15 @@ export type ArticleWithContributor = Article & { contributor?: { name: string } 
 export function useArticles(refreshKey: number = 0) {
   const [articles, setArticles] = useState<ArticleWithContributor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const abortRef = useRef(false);
 
   useEffect(() => {
-    async function fetch() {
+    abortRef.current = false;
+
+    async function fetchData() {
+      setIsLoading(true);
+      setError(null);
       try {
         const [articlesRes, subsRes] = await Promise.all([
           supabase
@@ -22,6 +28,11 @@ export function useArticles(refreshKey: number = 0) {
             .select('*')
             .eq('is_approved', true),
         ]);
+
+        if (abortRef.current) return;
+
+        if (articlesRes.error) throw articlesRes.error;
+        if (subsRes.error) throw subsRes.error;
 
         const dbArticles: ArticleWithContributor[] = (articlesRes.data ?? []).map((a: any) => ({
           ...a,
@@ -57,15 +68,25 @@ export function useArticles(refreshKey: number = 0) {
           ...dbArticles,
           ...approvedSubs.filter((s) => !existingTitles.has((s.title ?? '').toLowerCase().trim())),
         ];
-        setArticles(merged);
-      } catch (e) {
+
+        if (!abortRef.current) {
+          setArticles(merged);
+        }
+      } catch (e: any) {
         console.error('useArticles fetch error:', e);
+        if (!abortRef.current) {
+          setError(e?.message ?? 'Failed to load articles');
+        }
       } finally {
-        setIsLoading(false);
+        if (!abortRef.current) {
+          setIsLoading(false);
+        }
       }
     }
-    fetch();
+    fetchData();
+
+    return () => { abortRef.current = true; };
   }, [refreshKey]);
 
-  return { articles, isLoading };
+  return { articles, isLoading, error };
 }

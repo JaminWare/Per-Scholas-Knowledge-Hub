@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   LifeBuoy, Lightbulb, BookOpen, Flame, Shield, Briefcase, Compass, Plus,
@@ -196,7 +196,9 @@ export default function LearnerExperiencePage() {
   const [entries, setEntries] = useState<ArticleWithContributor[]>([]);
   const [lxMeta, setLxMeta] = useState<Map<string, LxMeta>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const abortRef = useRef(false);
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
@@ -220,7 +222,10 @@ export default function LearnerExperiencePage() {
   }, [searchParams]);
 
   useEffect(() => {
+    abortRef.current = false;
     async function fetchEntries() {
+      setIsLoading(true);
+      setFetchError(null);
       try {
         const [subsRes, articlesRes] = await Promise.all([
           supabase
@@ -233,6 +238,10 @@ export default function LearnerExperiencePage() {
             .select('*')
             .ilike('study_category', 'Learner Experience%'),
         ]);
+
+        if (abortRef.current) return;
+        if (subsRes.error) throw subsRes.error;
+        if (articlesRes.error) throw articlesRes.error;
 
         const metaMap = new Map<string, LxMeta>();
 
@@ -262,8 +271,6 @@ export default function LearnerExperiencePage() {
           });
         });
 
-        // If an article has null LX metadata but a matching submission has it,
-        // inherit the submission's metadata so nested filters work.
         const subMetaByTitle = new Map<string, LxMeta>();
         for (const s of (subsRes.data ?? [])) {
           if (s.lx_stage) {
@@ -284,15 +291,24 @@ export default function LearnerExperiencePage() {
           ...fromSubs.filter((s) => !existingTitles.has(s.title.toLowerCase())),
         ];
         merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-        setEntries(merged);
-        setLxMeta(metaMap);
-      } catch (e) {
+
+        if (!abortRef.current) {
+          setEntries(merged);
+          setLxMeta(metaMap);
+        }
+      } catch (e: any) {
         console.error('LearnerExperiencePage fetch error:', e);
+        if (!abortRef.current) {
+          setFetchError(e?.message ?? 'Failed to load entries');
+        }
       } finally {
-        setIsLoading(false);
+        if (!abortRef.current) {
+          setIsLoading(false);
+        }
       }
     }
     fetchEntries();
+    return () => { abortRef.current = true; };
   }, []);
 
   const currentTab = JOURNEY_TABS.find((t) => t.id === activeTab) ?? JOURNEY_TABS[0];

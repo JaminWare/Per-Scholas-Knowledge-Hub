@@ -715,7 +715,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       Description / Core Concept <span className="text-red-400">*</span>
                     </label>
-                    <textarea value={concept} onChange={(e) => setConcept(e.target.value)} placeholder="Explain the tip, concept, or describe the diagram..." rows={4} className={`${inputCls('concept')} font-mono resize-y custom-scrollbar`} />
+                    <textarea value={concept} onChange={(e) => setConcept(e.target.value)} placeholder="Explain the tip, concept, or describe the diagram..." rows={4} maxLength={5000} className={`${inputCls('concept')} font-mono resize-y custom-scrollbar`} />
                     {errors.concept && <p className="mt-1 text-xs text-red-500">{errors.concept}</p>}
                   </div>
                   <div>
@@ -732,14 +732,14 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       The Breakthrough / The Challenge <span className="text-red-400">*</span>
                     </label>
-                    <textarea value={hardship} onChange={(e) => setHardship(e.target.value)} placeholder="Describe the specific challenge, breakthrough moment, or lesson learned..." rows={4} className={`${inputCls('hardship')} font-mono resize-y custom-scrollbar`} />
+                    <textarea value={hardship} onChange={(e) => setHardship(e.target.value)} placeholder="Describe the specific challenge, breakthrough moment, or lesson learned..." rows={4} maxLength={5000} className={`${inputCls('hardship')} font-mono resize-y custom-scrollbar`} />
                     {errors.hardship && <p className="mt-1 text-xs text-red-500">{errors.hardship}</p>}
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       The Breakthrough / Field Notes <span className="text-red-400">*</span>
                     </label>
-                    <textarea value={breakthrough} onChange={(e) => setBreakthrough(e.target.value)} placeholder="How did you solve it? What is your tactical advice for the next peer?" rows={6} className={`${inputCls('breakthrough')} font-mono resize-y custom-scrollbar`} />
+                    <textarea value={breakthrough} onChange={(e) => setBreakthrough(e.target.value)} placeholder="How did you solve it? What is your tactical advice for the next peer?" rows={6} maxLength={5000} className={`${inputCls('breakthrough')} font-mono resize-y custom-scrollbar`} />
                     {errors.breakthrough && <p className="mt-1 text-xs text-red-500">{errors.breakthrough}</p>}
                   </div>
                 </div>
@@ -749,21 +749,21 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       System Role & Context <span className="text-red-400">*</span>
                     </label>
-                    <textarea value={promptRole} onChange={(e) => setPromptRole(e.target.value)} placeholder="e.g., Act as a senior network engineer troubleshooting Active Directory..." rows={3} className={`${inputCls('promptRole')} font-mono resize-y custom-scrollbar`} />
+                    <textarea value={promptRole} onChange={(e) => setPromptRole(e.target.value)} placeholder="e.g., Act as a senior network engineer troubleshooting Active Directory..." rows={3} maxLength={2000} className={`${inputCls('promptRole')} font-mono resize-y custom-scrollbar`} />
                     {errors.promptRole && <p className="mt-1 text-xs text-red-500">{errors.promptRole}</p>}
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       The Prompt Template <span className="text-red-400">*</span>
                     </label>
-                    <textarea value={promptText} onChange={(e) => setPromptText(e.target.value)} placeholder="Paste the exact prompt text here..." rows={4} className={`${inputCls('promptText')} font-mono resize-y custom-scrollbar`} />
+                    <textarea value={promptText} onChange={(e) => setPromptText(e.target.value)} placeholder="Paste the exact prompt text here..." rows={4} maxLength={5000} className={`${inputCls('promptText')} font-mono resize-y custom-scrollbar`} />
                     {errors.promptText && <p className="mt-1 text-xs text-red-500">{errors.promptText}</p>}
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       Use Case & Expected Output <span className="text-red-400">*</span>
                     </label>
-                    <textarea value={promptUseCase} onChange={(e) => setPromptUseCase(e.target.value)} placeholder="When should the cohort use this prompt and what will it generate?" rows={3} className={`${inputCls('promptUseCase')} font-mono resize-y custom-scrollbar`} />
+                    <textarea value={promptUseCase} onChange={(e) => setPromptUseCase(e.target.value)} placeholder="When should the cohort use this prompt and what will it generate?" rows={3} maxLength={2000} className={`${inputCls('promptUseCase')} font-mono resize-y custom-scrollbar`} />
                     {errors.promptUseCase && <p className="mt-1 text-xs text-red-500">{errors.promptUseCase}</p>}
                   </div>
                 </div>
@@ -774,7 +774,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       1. Guided Description <span className="text-red-400">*</span>
                     </label>
-                    <textarea value={concept} onChange={(e) => setConcept(e.target.value)} placeholder="Explain the main idea, textbook definition, or step-by-step process..." rows={4} className={`${inputCls('concept')} font-mono resize-y custom-scrollbar`} />
+                    <textarea value={concept} onChange={(e) => setConcept(e.target.value)} placeholder="Explain the main idea, textbook definition, or step-by-step process..." rows={4} maxLength={5000} className={`${inputCls('concept')} font-mono resize-y custom-scrollbar`} />
                     {errors.concept && <p className="mt-1 text-xs text-red-500">{errors.concept}</p>}
                     <p className="mt-1.5 text-[10px] text-zinc-500 dark:text-zinc-400">Building a network map or timeline? Use <a href="https://mermaid.live" target="_blank" rel="noopener noreferrer" className="text-sky-500 hover:text-sky-400 underline">Mermaid Live Editor</a> to visually generate your diagram, then paste the markdown code block here.</p>
                   </div>
@@ -783,7 +783,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       2. CompTIA A+ Relevance <span className="text-red-400">*</span>
                     </label>
-                    <textarea value={aPlusRelevance} onChange={(e) => setAPlusRelevance(e.target.value)} placeholder="How does this topic map to the CompTIA A+ exam objectives (Core 1 / Core 2)?" rows={3} className={`${inputCls('aPlusRelevance')} font-mono resize-y custom-scrollbar`} />
+                    <textarea value={aPlusRelevance} onChange={(e) => setAPlusRelevance(e.target.value)} placeholder="How does this topic map to the CompTIA A+ exam objectives (Core 1 / Core 2)?" rows={3} maxLength={3000} className={`${inputCls('aPlusRelevance')} font-mono resize-y custom-scrollbar`} />
                     {errors.aPlusRelevance && <p className="mt-1 text-xs text-red-500">{errors.aPlusRelevance}</p>}
                   </div>
 
@@ -791,7 +791,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       3. Clinical / Healthcare Impact <span className="text-red-400">*</span>
                     </label>
-                    <textarea value={impact} onChange={(e) => setImpact(e.target.value)} placeholder="How does this apply to clinical workflows, hospital networks, or patient care?" rows={3} className={`${inputCls('impact')} font-mono resize-y custom-scrollbar`} />
+                    <textarea value={impact} onChange={(e) => setImpact(e.target.value)} placeholder="How does this apply to clinical workflows, hospital networks, or patient care?" rows={3} maxLength={3000} className={`${inputCls('impact')} font-mono resize-y custom-scrollbar`} />
                     {errors.impact && <p className="mt-1 text-xs text-red-500">{errors.impact}</p>}
                   </div>
 
@@ -799,7 +799,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">
                       4. References and Citations <span className="text-red-400">*</span>
                     </label>
-                    <textarea value={references} onChange={(e) => setReferences(e.target.value)} placeholder="Paste links (e.g., https://...) or cite your sources here..." rows={2} className={`${inputCls('references')} font-mono resize-y custom-scrollbar`} />
+                    <textarea value={references} onChange={(e) => setReferences(e.target.value)} placeholder="Paste links (e.g., https://...) or cite your sources here..." rows={2} maxLength={2000} className={`${inputCls('references')} font-mono resize-y custom-scrollbar`} />
                     {errors.references && <p className="mt-1 text-xs text-red-500">{errors.references}</p>}
                   </div>
 
