@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { normalizeUrl } from '../utils/normalizeUrl';
+import { autoFormatContent } from '../utils/autoFormatContent';
 import {
   DOMAIN_REGISTRY, SLUG_TO_CANONICAL, CANONICAL_TO_SLUG,
   resolveToCanonical, resolveToSlug,
 } from '../lib/domainRegistry';
+import MarkdownRenderer from '../components/MarkdownRenderer';
 import {
   Lock, ShieldCheck, CheckCircle2, Trash2, Loader2,
   AlertCircle, Eye, EyeOff, RefreshCw, FileText, Link2,
-  GitBranch, Zap, BookOpen, Tag, User, Calendar,
+  GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
+  Pencil, SplitSquareHorizontal,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -220,14 +223,19 @@ function SubmissionCard({
   onDelete,
 }: {
   sub: PendingSubmission;
-  onApprove: (id: string, domainOverride?: string) => Promise<void>;
+  onApprove: (id: string, domainOverride?: string, editedContent?: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }) {
   const [approving, setApproving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [actionError, setActionError] = useState('');
   const [isDuplicate, setIsDuplicate] = useState(false);
+
+  const initialContent = sub.formatted_content ?? sub.content;
+  const [editedContent, setEditedContent] = useState(initialContent);
+  const hasEdits = editedContent !== initialContent;
 
   const needsOverride = !sub.track.toLowerCase().includes('learner experience') && resolveCanonicalSlug(sub.track) === null;
   const [domainOverride, setDomainOverride] = useState('');
@@ -266,7 +274,7 @@ function SubmissionCard({
     setApproving(true);
     setActionError('');
     try {
-      await onApprove(sub.id, needsOverride ? domainOverride : undefined);
+      await onApprove(sub.id, needsOverride ? domainOverride : undefined, editedContent);
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Approval failed.');
     } finally {
@@ -347,14 +355,32 @@ function SubmissionCard({
         </div>
       </div>
 
-      {/* Content preview toggle */}
+      {/* Content preview & editor toggle */}
       <div className="px-5 pb-3">
-        <button
-          onClick={() => setExpanded((v) => !v)}
-          className="text-[11px] text-sky-500 hover:text-sky-400 font-medium transition-colors"
-        >
-          {expanded ? 'Hide content preview' : 'Show content preview'}
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setExpanded((v) => !v)}
+            className="text-[11px] text-sky-500 hover:text-sky-400 font-medium transition-colors"
+          >
+            {expanded ? 'Hide content' : 'Show content'}
+          </button>
+          {expanded && !isResource && (
+            <button
+              onClick={() => setIsEditing((v) => !v)}
+              className={`flex items-center gap-1.5 text-[11px] font-medium transition-colors ${
+                isEditing ? 'text-amber-400 hover:text-amber-300' : 'text-zinc-500 hover:text-zinc-300'
+              }`}
+            >
+              {isEditing ? <><SplitSquareHorizontal className="w-3 h-3" /> Editor</> : <><Pencil className="w-3 h-3" /> Edit</>}
+            </button>
+          )}
+          {hasEdits && (
+            <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide bg-amber-500/15 text-amber-400 border border-amber-500/30">
+              Modified
+            </span>
+          )}
+        </div>
+
         {expanded && (
           isResource ? (
             <div className="mt-2 p-3 bg-zinc-950 rounded-lg border border-zinc-800">
@@ -367,25 +393,64 @@ function SubmissionCard({
                 {sub.content}
               </a>
             </div>
-          ) : /Problem:/i.test(sub.content) && /Solution:/i.test(sub.content) ? (
-            <div className="mt-2 space-y-2">
-              <div className="rounded-lg border-l-4 border-amber-400/70 bg-amber-500/5 px-3 py-2.5 space-y-1">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-amber-400">Problem</h3>
-                <p className="text-xs text-amber-200/80 leading-relaxed whitespace-pre-wrap">
-                  {sub.content.match(/Problem:\s*([\s\S]*?)(?=Solution:|$)/i)?.[1]?.trim() ?? ''}
-                </p>
+          ) : isEditing ? (
+            <div className="mt-3 space-y-3">
+              {/* Toolbar */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setEditedContent(autoFormatContent(editedContent))}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 text-[11px] font-semibold transition-colors"
+                >
+                  <Wand2 className="w-3 h-3" /> Auto-Format Clean Up
+                </button>
+                <span className="text-[10px] text-zinc-600">Injects headers, normalizes spacing</span>
               </div>
-              <div className="rounded-lg border-l-4 border-emerald-400/70 bg-emerald-500/5 px-3 py-2.5 space-y-1">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-400">Solution</h3>
-                <p className="text-xs text-emerald-200/80 leading-relaxed whitespace-pre-wrap">
-                  {sub.content.match(/Solution:\s*([\s\S]*)/i)?.[1]?.trim() ?? ''}
-                </p>
+              {/* Side-by-side panels */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                {/* Editor */}
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold mb-1.5">Raw Markdown</span>
+                  <textarea
+                    value={editedContent}
+                    onChange={(e) => setEditedContent(e.target.value)}
+                    spellCheck={false}
+                    className="flex-1 min-h-[320px] w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs font-mono leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+                  />
+                </div>
+                {/* Preview */}
+                <div className="flex flex-col">
+                  <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold mb-1.5">Live Preview</span>
+                  <div className="flex-1 min-h-[320px] max-h-[500px] overflow-y-auto px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800">
+                    <div className="dark">
+                      <MarkdownRenderer content={editedContent} />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           ) : (
-            <pre className="mt-2 p-3 bg-zinc-950 rounded-lg text-[11px] text-zinc-400 font-mono whitespace-pre-wrap break-all max-h-48 overflow-y-auto border border-zinc-800">
-              {sub.content}
-            </pre>
+            <div className="mt-2">
+              {/Problem:/i.test(editedContent) && /Solution:/i.test(editedContent) ? (
+                <div className="space-y-2">
+                  <div className="rounded-lg border-l-4 border-amber-400/70 bg-amber-500/5 px-3 py-2.5 space-y-1">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-amber-400">Problem</h3>
+                    <p className="text-xs text-amber-200/80 leading-relaxed whitespace-pre-wrap">
+                      {editedContent.match(/Problem:\s*([\s\S]*?)(?=Solution:|$)/i)?.[1]?.trim() ?? ''}
+                    </p>
+                  </div>
+                  <div className="rounded-lg border-l-4 border-emerald-400/70 bg-emerald-500/5 px-3 py-2.5 space-y-1">
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-400">Solution</h3>
+                    <p className="text-xs text-emerald-200/80 leading-relaxed whitespace-pre-wrap">
+                      {editedContent.match(/Solution:\s*([\s\S]*)/i)?.[1]?.trim() ?? ''}
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <pre className="p-3 bg-zinc-950 rounded-lg text-[11px] text-zinc-400 font-mono whitespace-pre-wrap break-all max-h-48 overflow-y-auto border border-zinc-800">
+                  {editedContent}
+                </pre>
+              )}
+            </div>
           )
         )}
       </div>
@@ -460,7 +525,7 @@ function AdminPanel() {
     setTimeout(() => setSuccessMessage(''), 4000);
   };
 
-  const handleApprove = async (id: string, domainOverride?: string) => {
+  const handleApprove = async (id: string, domainOverride?: string, editedContent?: string) => {
     const sub = submissions.find((s) => s.id === id);
     if (!sub) return;
 
@@ -493,7 +558,7 @@ function AdminPanel() {
       openSlot = data as { id: string } | null;
     }
 
-    const publishContent = sub.formatted_content ?? sub.content;
+    const publishContent = editedContent ?? sub.formatted_content ?? sub.content;
     const isResourceLink = sub.submission_type === 'Resource Link';
     const excerpt = isResourceLink
       ? `Contributed by ${sub.full_name}`
