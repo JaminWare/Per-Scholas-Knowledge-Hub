@@ -168,7 +168,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           target="_blank"
           rel="noopener noreferrer"
           title="Opens in a new tab"
-          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 hover:scale-[1.02] active:scale-95 bg-sky-500/10 text-white border border-sky-500/20 hover:bg-sky-500/20 hover:border-sky-400/40"
+          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 hover:scale-[1.02] active:scale-95 text-white hover:bg-sky-500/10"
         >
           <Headphones className="w-4 h-4 flex-shrink-0" />
           <span className="flex-1 truncate">Deskolas</span>

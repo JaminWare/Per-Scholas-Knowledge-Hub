@@ -61,7 +61,7 @@ const survivalGuideCards = [
   },
   {
     id: 'mid-program',
-    title: 'The Mid-Program Slump',
+    title: 'The Mid Program Slump',
     description: 'Mental endurance, imposter syndrome, and time management.',
     icon: Flame,
     accentClass: 'hover:border-amber-400/50 dark:hover:border-amber-500/40',
