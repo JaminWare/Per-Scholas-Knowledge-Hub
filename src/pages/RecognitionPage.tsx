@@ -182,7 +182,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
   return (
     <div className={`rounded-xl border overflow-hidden transition-all ${
       isFounder
-        ? 'border-amber-400/50 bg-gradient-to-r from-zinc-900 to-zinc-950 shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] transition-shadow duration-500'
+        ? 'border-sky-500/30 bg-gradient-to-r from-zinc-900 to-zinc-950 shadow-[0_0_15px_rgba(14,165,233,0.15)] hover:shadow-[0_0_25px_rgba(14,165,233,0.25)] transition-shadow duration-500'
         : isOpen
           ? 'border-sky-500/30 bg-gradient-to-r from-zinc-900 to-zinc-950'
           : 'border-zinc-700/60 bg-gradient-to-r from-zinc-900 to-zinc-950 hover:border-zinc-600'
@@ -194,10 +194,10 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
           onClick={onToggle}
           className="w-full flex items-center gap-3 text-left"
         >
-          {isFounder && <Crown className="w-5 h-5 text-amber-500 flex-shrink-0" />}
+          {isFounder && <Crown className="w-5 h-5 text-sky-400 flex-shrink-0" />}
           <div className={`${isFounder ? 'w-12 h-12' : 'w-10 h-10'} rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white ${isFounder ? 'text-lg' : 'text-sm'} ${
             isFounder
-              ? 'bg-gradient-to-br from-amber-500 to-amber-400 shadow-md shadow-amber-500/20'
+              ? 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-md shadow-sky-500/20'
               : isNew
                 ? 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-md shadow-sky-500/20'
                 : 'bg-gradient-to-br from-zinc-500 to-zinc-400'
@@ -207,8 +207,11 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className={`${isFounder ? 'font-bold' : 'font-semibold'} text-white text-sm`}>{group.name}</span>
+              {isFounder && (
+                <span className="text-sky-400 text-xs font-bold tracking-widest">[FOUNDER]</span>
+              )}
               {!isFounder && tierBadge !== group.topBadge && <BadgeTag badge={tierBadge} />}
-              <BadgeTag badge={group.topBadge} />
+              {!isFounder && <BadgeTag badge={group.topBadge} />}
               {isNew && !isFounder && (
                 <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold bg-sky-500 text-white rounded-full">
                   <Star className="w-2 h-2" /> NEW
@@ -453,20 +456,22 @@ export default function RecognitionPage() {
             Back to Previous Page
           </button>
 
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2.5 rounded-xl bg-sky-500/20 border border-sky-500/30">
-              <Award className="w-6 h-6 text-sky-400" />
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="p-2 rounded-xl bg-sky-500/20 border border-sky-500/30">
+                <Award className="w-5 h-5 text-sky-400" />
+              </div>
+              <span className="text-xs font-bold text-sky-400 uppercase tracking-widest">
+                Per Scholas
+              </span>
             </div>
-            <span className="text-xs font-bold text-sky-400 uppercase tracking-widest">
-              Per Scholas 2026-RTT-23
-            </span>
+            <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+              Recognition Wall
+            </h1>
+            <p className="text-sky-100/80 leading-relaxed text-sm">
+              Celebrating every learner who has contributed research, documentation, and knowledge to the collective!
+            </p>
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-[0_0_12px_rgba(56,189,248,0.75)] mb-3">
-            Recognition Wall
-          </h1>
-          <p className="text-sky-100/80 max-w-xl leading-relaxed text-sm md:text-base">
-            Celebrating every learner who has contributed research, documentation, and knowledge to the collective!
-          </p>
         </div>
       </section>
 
