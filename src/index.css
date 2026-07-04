@@ -5,12 +5,12 @@
 @layer base {
   * {
     scrollbar-width: thin;
-    scrollbar-color: theme('colors.sky.500') transparent;
+    scrollbar-color: #27272a transparent;
   }
 
   *::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
 
   *::-webkit-scrollbar-track {
@@ -18,8 +18,12 @@
   }
 
   *::-webkit-scrollbar-thumb {
-    background-color: theme('colors.sky.500');
-    border-radius: 3px;
+    background-color: #27272a;
+    border-radius: 8px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: #52525b;
   }
 
   html.dark body {
