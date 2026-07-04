@@ -393,12 +393,25 @@ function makeLocalArticle(slug: string, title?: string): Article {
 
 export default function ArticlePage() {
   const location = useLocation();
-  const slug = decodeURIComponent(location.pathname.replace(/^\/article\//, '').replace(/\/$/, ''));
+  let slug = '';
+  try {
+    slug = decodeURIComponent(location.pathname.replace(/^\/article\//, '').replace(/\/$/, ''));
+  } catch {
+    slug = location.pathname.replace(/^\/article\//, '').replace(/\/$/, '');
+  }
   const [article, setArticle] = useState<Article | null>(null);
   const [contributor, setContributor] = useState<Contributor | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+
+  const backFallback = useMemo(() => {
+    if (!article) return '/';
+    if ((article as any)?.section?.slug) return '/' + (article as any).section.slug;
+    if (article.slug?.startsWith('learner-experience/') || article.study_category?.startsWith('Learner Experience')) return '/learner-experience';
+    return '/';
+  }, [article]);
+  const { goBack } = useSmartBack(backFallback);
 
   useEffect(() => {
     async function fetchArticle() {
@@ -484,21 +497,12 @@ export default function ArticlePage() {
   const trackLabel = localContentEntry?.trackLabel?.toUpperCase() ?? deriveTrackLabel(article);
   const authorInitial = authorName.charAt(0).toUpperCase();
 
-  // Founder bypass: never render sample gateway for known founder slugs
   const isFounderSlug = FOUNDER_SLUGS.has(article.slug) || authorName === 'Jamin Ware';
   const effectiveIsSample = isSample && !isFounderSlug;
 
-  // Full-page diagram panel routingeach is suppressed when title matches [Sample]
   const isNetworkTopologyArticle = article.slug === 'core1-networking/network-topology-architecture' && !strictlyIsSample;
   const isOSIPDUArticle          = article.slug === 'core1-networking/osi-pdu-flow' && !strictlyIsSample;
   const isTCPIPArticle           = article.slug === 'core1-networking/sample-protocols' && !strictlyIsSample;
-
-  const backFallback = useMemo(() => {
-    if (article?.section?.slug) return '/' + article.section.slug;
-    if (article?.slug?.startsWith('learner-experience/') || article?.study_category?.startsWith('Learner Experience')) return '/learner-experience';
-    return '/';
-  }, [article]);
-  const { goBack } = useSmartBack(backFallback);
 
   return (
     <div className="max-w-4xl mx-auto">

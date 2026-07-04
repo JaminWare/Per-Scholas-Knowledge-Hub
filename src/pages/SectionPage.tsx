@@ -656,7 +656,9 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const slug = decodeURIComponent(location.pathname.replace(/^\//, '').replace(/\/$/, ''));
+  const rawPath = location.pathname.replace(/^\//, '').replace(/\/$/, '');
+  let slug = rawPath;
+  try { slug = decodeURIComponent(rawPath); } catch { /* malformed URI -- use raw */ }
 
   const parentSlug = slug.includes('/') ? '/' + slug.split('/')[0] : '/';
   const { goBack } = useSmartBack(parentSlug);
