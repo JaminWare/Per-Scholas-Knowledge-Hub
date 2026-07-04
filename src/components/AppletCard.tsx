@@ -82,7 +82,7 @@ export function AppletCard({ article, gridMode = false }: { article: ArticleWith
   );
 
   return (
-    <div className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out bg-gradient-to-r from-zinc-800 to-zinc-900 border-zinc-700/60 hover:border-zinc-600`}>
+    <div className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out bg-gradient-to-r from-zinc-900 to-zinc-950 border-zinc-700/60 hover:border-zinc-600`}>
       <div
         className="cursor-zoom-in p-5 pb-0"
         onClick={() => setZoomed(true)}

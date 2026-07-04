@@ -533,7 +533,7 @@ export default function ArticlePage() {
       </nav>
 
       {/* ── Hero Banner ──────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-zinc-800 to-zinc-900 border border-zinc-700/60 p-8 mb-8">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-950 border border-zinc-700/60 p-8 mb-8">
         <div className="relative">
           {/* Track label */}
           <div className="flex items-center gap-3 mb-4">

@@ -353,7 +353,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     }
 
     if (submissionType === 'Article' && isLearnerExperience) {
-      return `**THE HARDSHIP:**\n${hardship.trim()}\n\n---\n\n**THE BREAKTHROUGH:**\n${breakthrough.trim()}`;
+      return `### PROBLEM\n\n> ${hardship.trim()}\n\n### SOLUTION\n\n> ${breakthrough.trim()}`;
     }
 
     if (isLightweight) {

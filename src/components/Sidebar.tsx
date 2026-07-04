@@ -181,11 +181,11 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           to="/recognition"
           className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 ${
             location.pathname === '/recognition'
-              ? 'bg-zinc-800 text-white border border-zinc-600 shadow-[0_0_20px_rgba(234,179,8,0.25)]'
-              : 'bg-zinc-900 text-zinc-300 border border-zinc-700/60 shadow-[0_0_12px_rgba(234,179,8,0.12)] hover:border-zinc-600 hover:shadow-[0_0_20px_rgba(234,179,8,0.25)] hover:bg-zinc-800 hover:text-white'
+              ? 'bg-zinc-800 text-white border border-zinc-600'
+              : 'bg-zinc-900 text-zinc-300 border border-zinc-700/60 hover:border-zinc-600 hover:bg-zinc-800 hover:text-white'
           }`}
         >
-          <Award className="w-4 h-4 flex-shrink-0 text-yellow-400" />
+          <Award className="w-4 h-4 flex-shrink-0 text-zinc-400" />
           <span className="flex-1 truncate">Cohort Recognition</span>
         </Link>
 

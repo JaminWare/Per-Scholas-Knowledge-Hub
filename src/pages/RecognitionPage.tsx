@@ -182,10 +182,10 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
   return (
     <div className={`rounded-xl border overflow-hidden transition-all ${
       isFounder
-        ? 'border-amber-400/50 bg-gradient-to-r from-zinc-800 to-zinc-900 shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] transition-shadow duration-500'
+        ? 'border-amber-400/50 bg-gradient-to-r from-zinc-900 to-zinc-950 shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] transition-shadow duration-500'
         : isOpen
-          ? 'border-sky-500/30 bg-gradient-to-r from-zinc-800 to-zinc-900'
-          : 'border-zinc-700/60 bg-gradient-to-r from-zinc-800 to-zinc-900 hover:border-zinc-600'
+          ? 'border-sky-500/30 bg-gradient-to-r from-zinc-900 to-zinc-950'
+          : 'border-zinc-700/60 bg-gradient-to-r from-zinc-900 to-zinc-950 hover:border-zinc-600'
     }`}>
 
       {/* Header */}
@@ -442,7 +442,7 @@ export default function RecognitionPage() {
     <div className="pb-32">
 
       {/* Full-bleed cinematic hero banner */}
-      <section className="relative overflow-hidden rounded-2xl border border-zinc-700/60 bg-gradient-to-r from-zinc-800 to-zinc-900">
+      <section className="relative overflow-hidden rounded-2xl border border-zinc-700/60 bg-gradient-to-r from-zinc-900 to-zinc-950">
         <div className="relative px-6 py-4 md:px-8 md:py-5">
           {/* Back button inside the banner */}
           <button
