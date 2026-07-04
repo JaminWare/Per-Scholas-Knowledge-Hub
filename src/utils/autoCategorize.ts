@@ -41,14 +41,14 @@ const RULES: Rule[] = [
   {
     keywords: ['cloud', 'virtualization', 'virtual machine', 'vm', 'hypervisor', 'iaas', 'paas', 'saas', 'vmware', 'hyper-v', 'container', 'docker'],
     masterCategory: 'CompTIA A+ Core 1',
-    track: 'CompTIA A+ Core 1 Domain 4.0 (Virtualization & Cloud)',
+    track: 'CompTIA A+ Core 1 Domain 4.0 (Cloud)',
     compObjective: '4.1 Cloud Computing Concepts',
   },
   // Core 1 Domain 5.0 Troubleshooting
   {
     keywords: ['troubleshoot', 'blue screen', 'bsod', 'no post', 'boot failure', 'overheating', 'beep code'],
     masterCategory: 'CompTIA A+ Core 1',
-    track: 'CompTIA A+ Core 1 Domain 5.0 (HW & Network Troubleshooting)',
+    track: 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
     compObjective: '5.2 Motherboard/RAM/CPU Issues',
   },
   // Core 2 Domain 1.0 Operating Systems
