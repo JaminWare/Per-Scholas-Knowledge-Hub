@@ -158,7 +158,7 @@ const LX_STAGES = JOURNEY_TABS.filter((t) => t.id !== 'all');
 
 export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh }: { isOpen: boolean; onClose: () => void; onSubmitted: (s: NewSubmission) => void; onRefresh?: () => void; }) {
   const [fullName, setFullName] = useState('');
-  const [submissionType, setSubmissionType] = useState<SubmissionType>('Article');
+  const [submissionType, setSubmissionType] = useState<SubmissionType>('Resource Link');
 
   const [masterCategory, setMasterCategory] = useState('');
   const [track, setTrack] = useState('');
