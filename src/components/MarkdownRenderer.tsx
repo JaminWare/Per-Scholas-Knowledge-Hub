@@ -112,15 +112,31 @@ function isAlignmentRow(row: string): boolean {
 }
 
 function parseBlocks(content: string): Block[] {
-  const lines = content.split('\n');
+  const lines = content.replace(/\r\n/g, '\n').split('\n');
   const blocks: Block[] = [];
   let i = 0;
   let pendingDiagramAfterTable: string | null = null;
+
+  const isListLine = (t: string) =>
+    t.startsWith('* ') || t.startsWith('- ') || t.startsWith('\u2022 ') || /^\d+[.)]\s/.test(t);
+
+  const stripListMarker = (t: string) => {
+    if (t.startsWith('* ') || t.startsWith('- ')) return t.slice(2);
+    if (t.startsWith('\u2022 ')) return t.slice(2);
+    return t.replace(/^\d+[.)]\s/, '');
+  };
 
   while (i < lines.length) {
     const trimmed = lines[i].trim();
 
     if (!trimmed) {
+      i++;
+      continue;
+    }
+
+    // Horizontal rule
+    if (/^[-*_]{3,}$/.test(trimmed)) {
+      blocks.push({ type: 'paragraph', content: '---' });
       i++;
       continue;
     }
@@ -139,35 +155,43 @@ function parseBlocks(content: string): Block[] {
       continue;
     }
 
-    if (trimmed.startsWith('## ')) {
-      const heading = trimmed.slice(3).trim();
-      if (heading === 'References & Citations') {
-        i++;
-        const citationItems: string[] = [];
-        while (i < lines.length && !lines[i].trim().startsWith('## ')) {
-          const t = lines[i].trim();
-          if (t.startsWith('* ') || t.startsWith('- ')) {
-            citationItems.push(t.slice(2));
+    // Headings (h1-h4)
+    if (/^#{1,4}\s/.test(trimmed)) {
+      const level = trimmed.match(/^(#{1,4})\s/)![1].length;
+      const headingText = trimmed.slice(level + 1).trim();
+
+      if (level <= 2) {
+        if (headingText === 'References & Citations' || headingText.replace(/[^\w\s&]/g, '').trim() === 'References & Citations') {
+          i++;
+          const citationItems: string[] = [];
+          while (i < lines.length && !/^#{1,2}\s/.test(lines[i].trim())) {
+            const t = lines[i].trim();
+            if (isListLine(t)) {
+              citationItems.push(stripListMarker(t));
+            }
+            i++;
           }
+          blocks.push({ type: 'citations', items: citationItems });
+        } else if (headingText === 'Cloud Service Models in Healthcare') {
+          pendingDiagramAfterTable = 'healthcare-cloud-hierarchy';
+          blocks.push({ type: 'h2', content: headingText });
+          i++;
+        } else if (headingText === 'Evaluating AI Output Quality') {
+          blocks.push({ type: 'h2', content: headingText });
+          blocks.push({ type: 'diagram', id: 'trace-pipeline' });
+          i++;
+        } else {
+          blocks.push({ type: 'h2', content: headingText });
           i++;
         }
-        blocks.push({ type: 'citations', items: citationItems });
-      } else if (heading === 'Cloud Service Models in Healthcare') {
-        pendingDiagramAfterTable = 'healthcare-cloud-hierarchy';
-        blocks.push({ type: 'h2', content: heading });
-        i++;
-      } else if (heading === 'Evaluating AI Output Quality') {
-        blocks.push({ type: 'h2', content: heading });
-        blocks.push({ type: 'diagram', id: 'trace-pipeline' });
-        i++;
       } else {
-        blocks.push({ type: 'h2', content: heading });
+        blocks.push({ type: 'h3', content: headingText });
         i++;
       }
-    } else if (trimmed.startsWith('### ')) {
-      blocks.push({ type: 'h3', content: trimmed.slice(4) });
-      i++;
-    } else if (trimmed.startsWith('> ')) {
+      continue;
+    }
+
+    if (trimmed.startsWith('> ')) {
       const bqContent = trimmed.slice(2);
       if (bqContent.includes('**Figure 1:**')) {
         blocks.push({ type: 'diagram', id: 'firewall-fig1' });
@@ -179,12 +203,12 @@ function parseBlocks(content: string): Block[] {
         blocks.push({ type: 'blockquote', content: bqContent });
         i++;
       }
-    } else if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
+    } else if (isListLine(trimmed)) {
       const items: string[] = [];
       while (i < lines.length) {
         const t = lines[i].trim();
-        if (t.startsWith('* ') || t.startsWith('- ')) {
-          items.push(t.slice(2));
+        if (isListLine(t)) {
+          items.push(stripListMarker(t));
           i++;
         } else {
           break;
@@ -213,7 +237,7 @@ function parseBlocks(content: string): Block[] {
       i++;
     } else {
       const paragraphLines: string[] = [];
-      while (i < lines.length && lines[i].trim()) {
+      while (i < lines.length && lines[i].trim() && !/^#{1,4}\s/.test(lines[i].trim()) && !lines[i].trim().startsWith('```') && !lines[i].trim().startsWith('> ') && !isListLine(lines[i].trim()) && !lines[i].trim().startsWith('|') && !/^!\[/.test(lines[i].trim()) && !/^[-*_]{3,}$/.test(lines[i].trim())) {
         paragraphLines.push(lines[i].trim());
         i++;
       }
@@ -377,6 +401,9 @@ export default function MarkdownRenderer({ content }: Props) {
               </div>
             );
           case 'paragraph':
+            if (block.content === '---') {
+              return <hr key={idx} className="border-zinc-200 dark:border-zinc-700 my-6" />;
+            }
             return (
               <p key={idx} className="text-zinc-600 dark:text-zinc-400 leading-7">
                 {renderInline(block.content)}
