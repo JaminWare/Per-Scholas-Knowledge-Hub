@@ -19,10 +19,10 @@ const PROFANITY_PATTERN = new RegExp(
 );
 
 const SUBMISSION_TYPES = [
+  { value: 'Resource Link' as SubmissionType, label: 'Resource Link', icon: Link2 },
   { value: 'Article' as SubmissionType, label: 'Article', icon: FileText },
   { value: 'Study Tip' as SubmissionType, label: 'Pro-Tip', icon: BookOpen },
   { value: 'Diagram' as SubmissionType, label: 'Diagram', icon: GitBranch },
-  { value: 'Resource Link' as SubmissionType, label: 'Resource Link', icon: Link2 },
   { value: 'Prompt Playbook' as SubmissionType, label: 'Playbook', icon: Sparkles },
 ];
 

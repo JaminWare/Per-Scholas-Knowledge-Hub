@@ -119,7 +119,7 @@ const TRACK_COLORS = {
 
 const DASHBOARD_CONTEXTS: Record<string, string> = {};
 
-const RESOURCE_TABS = ['All', 'Articles', 'Pro-Tips', 'Diagrams', 'Resource Links', 'Playbooks'] as const;
+const RESOURCE_TABS = ['All', 'Resource Links', 'Articles', 'Pro-Tips', 'Diagrams', 'Playbooks'] as const;
 type ResourceTab = typeof RESOURCE_TABS[number];
 
 const TAB_ICONS: Record<ResourceTab, React.ComponentType<{ className?: string }>> = {
