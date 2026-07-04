@@ -47,34 +47,34 @@ export function AppletCard({ article, gridMode = false }: { article: ArticleWith
     <>
       {isSample && (
         <div className="flex justify-end mb-2">
-          <span className="px-2 py-1 text-xs font-medium bg-sky-100/70 dark:bg-sky-500/20 text-sky-800 dark:text-sky-300 rounded-full">
+          <span className="px-2 py-1 text-xs font-medium bg-sky-500/20 text-sky-300 rounded-full">
             Open Slot
           </span>
         </div>
       )}
-      <h3 className="font-semibold text-zinc-800 dark:text-zinc-100 transition-colors">
+      <h3 className="font-semibold text-white transition-colors">
         {article.title}
       </h3>
       {!isSample && (
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+        <p className="text-xs text-zinc-400 mt-1">
           by {article.author || authorName}
         </p>
       )}
       {!isSample && article.excerpt && !article.excerpt.startsWith('Contributed by ') && (
-        <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400 line-clamp-2">{article.excerpt}</p>
+        <p className="mt-2 text-sm text-zinc-400 line-clamp-2">{article.excerpt}</p>
       )}
       {isSample && (
-        <p className="mt-2 text-sm text-sky-600 dark:text-sky-400">
+        <p className="mt-2 text-sm text-sky-400">
           This curriculum endpoint is open for peer contribution.
         </p>
       )}
       <div className="mt-4 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-xs text-zinc-400 dark:text-zinc-500">
+        <div className="flex items-center gap-2 text-xs text-zinc-500">
           <span>{formattedDate}</span>
         </div>
         {!isSample && article.tags?.length > 0 && (
           <div className="flex items-center gap-1">
-            <span className="text-xs text-zinc-500 dark:text-zinc-500">{article.tags[0]}</span>
+            <span className="text-xs text-zinc-500">{article.tags[0]}</span>
           </div>
         )}
       </div>
@@ -82,7 +82,7 @@ export function AppletCard({ article, gridMode = false }: { article: ArticleWith
   );
 
   return (
-    <div className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out bg-white dark:bg-zinc-900/80 border-slate-200 dark:border-zinc-800 hover:border-slate-300 dark:hover:border-zinc-600 hover:shadow-md dark:hover:shadow-[0_4px_20px_rgba(255,255,255,0.04)]`}>
+    <div className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out bg-gradient-to-r from-zinc-800 to-zinc-900 border-zinc-700/60 hover:border-zinc-600`}>
       <div
         className="cursor-zoom-in p-5 pb-0"
         onClick={() => setZoomed(true)}
@@ -95,14 +95,14 @@ export function AppletCard({ article, gridMode = false }: { article: ArticleWith
             href={article.content}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 text-sm font-medium hover:gap-2 transition-all"
+            className="inline-flex items-center gap-1 text-sky-400 text-sm font-medium hover:gap-2 hover:text-sky-300 transition-all"
           >
             Open resource <ArrowRight className="w-4 h-4" />
           </a>
         ) : (
           <Link
             to={`/article/${article.slug}`}
-            className="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 text-sm font-medium hover:gap-2 transition-all"
+            className="inline-flex items-center gap-1 text-sky-400 text-sm font-medium hover:gap-2 hover:text-sky-300 transition-all"
           >
             Read more <ArrowRight className="w-4 h-4" />
           </Link>
@@ -111,14 +111,14 @@ export function AppletCard({ article, gridMode = false }: { article: ArticleWith
       <CardZoomOverlay open={zoomed} onClose={() => setZoomed(false)}>
         <div className="p-5">
           {cardContent}
-          <div className="mt-4 pt-4 border-t border-slate-100 dark:border-zinc-700/60">
+          <div className="mt-4 pt-4 border-t border-zinc-700/60">
             {isExternalLink || article.submission_type === 'Resource Link' ? (
               <a
                 href={article.content}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 hover:gap-2.5 transition-all duration-200"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-400 hover:text-sky-300 hover:gap-2.5 transition-all duration-200"
               >
                 Open resource <ArrowRight className="w-4 h-4" />
               </a>
@@ -126,7 +126,7 @@ export function AppletCard({ article, gridMode = false }: { article: ArticleWith
               <Link
                 to={`/article/${article.slug}`}
                 onClick={(e) => e.stopPropagation()}
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 hover:gap-2.5 transition-all duration-200"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-400 hover:text-sky-300 hover:gap-2.5 transition-all duration-200"
               >
                 Read full article <ArrowRight className="w-4 h-4" />
               </Link>

@@ -442,7 +442,7 @@ export default function RecognitionPage() {
     <div className="pb-32">
 
       {/* Full-bleed cinematic hero banner */}
-      <section className="relative overflow-hidden rounded-2xl border border-zinc-700/60 bg-gradient-to-r from-zinc-800 to-zinc-900 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+      <section className="relative overflow-hidden rounded-2xl border border-zinc-700/60 bg-gradient-to-r from-zinc-800 to-zinc-900">
         <div className="relative px-6 py-8 md:px-8 md:py-10">
           {/* Back button inside the banner */}
           <button

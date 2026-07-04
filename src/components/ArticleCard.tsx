@@ -86,7 +86,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
 
   if (featured) {
     return (
-      <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-zinc-800 to-zinc-900 border border-zinc-700/60 shadow-[0_0_15px_rgba(56,189,248,0.3)] flex flex-col">
+      <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-zinc-800 to-zinc-900 border border-zinc-700/60 flex flex-col">
         <div
           className="cursor-zoom-in p-6 pb-0"
           onClick={() => setZoomed(true)}
@@ -123,7 +123,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
   }
 
   return (
-    <div className="group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out bg-gradient-to-r from-zinc-800 to-zinc-900 border-zinc-700/60 shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.45)] hover:border-zinc-600">
+    <div className="group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out bg-gradient-to-r from-zinc-800 to-zinc-900 border-zinc-700/60 hover:border-zinc-600">
       <div
         className="cursor-zoom-in p-5 pb-0"
         onClick={() => setZoomed(true)}

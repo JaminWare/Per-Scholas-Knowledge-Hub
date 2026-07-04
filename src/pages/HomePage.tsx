@@ -114,7 +114,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         <div className="lg:col-span-2 xl:col-span-3 space-y-10">
 
           {/* Hero */}
-          <section className="relative overflow-hidden rounded-2xl border border-zinc-700/60 bg-gradient-to-r from-zinc-800 to-zinc-900 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
+          <section className="relative overflow-hidden rounded-2xl border border-zinc-700/60 bg-gradient-to-r from-zinc-800 to-zinc-900">
             <div className="relative px-6 py-8 md:px-8 md:py-10">
               <div className="max-w-2xl flex flex-col gap-2">
                 <div className="flex flex-wrap items-center gap-3">
@@ -153,7 +153,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
           {/* The Cohort Survival Guide */}
           <section>
-            <div className="bg-gradient-to-r from-zinc-800 to-zinc-900 border border-zinc-700/60 rounded-xl shadow-[0_0_15px_rgba(56,189,248,0.3)] p-5">
+            <div className="bg-gradient-to-r from-zinc-800 to-zinc-900 border border-zinc-700/60 rounded-xl p-5">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400">
                   <Compass className="w-5 h-5 text-white" />
