@@ -29,6 +29,9 @@ interface PendingSubmission {
   comp_objective: string | null;
   is_approved: boolean;
   created_at: string;
+  lx_stage: string | null;
+  lx_topic: string | null;
+  lx_focus: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -592,6 +595,9 @@ function AdminPanel() {
           submission_type: sub.submission_type,
           author_name: sub.full_name,
           comp_objective: sub.comp_objective || null,
+          lx_stage: sub.lx_stage || null,
+          lx_topic: sub.lx_topic || null,
+          lx_focus: sub.lx_focus || null,
           excerpt,
           updated_at: new Date().toISOString(),
         })
@@ -615,6 +621,9 @@ function AdminPanel() {
           submission_type: sub.submission_type,
           author_name: sub.full_name,
           comp_objective: sub.comp_objective || null,
+          lx_stage: sub.lx_stage || null,
+          lx_topic: sub.lx_topic || null,
+          lx_focus: sub.lx_focus || null,
           excerpt,
           tags: [],
         });

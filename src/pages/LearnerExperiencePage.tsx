@@ -262,6 +262,22 @@ export default function LearnerExperiencePage() {
           });
         });
 
+        // If an article has null LX metadata but a matching submission has it,
+        // inherit the submission's metadata so nested filters work.
+        const subMetaByTitle = new Map<string, LxMeta>();
+        for (const s of (subsRes.data ?? [])) {
+          if (s.lx_stage) {
+            subMetaByTitle.set((s.title ?? '').toLowerCase().trim(), { lx_stage: s.lx_stage, lx_topic: s.lx_topic ?? null, lx_focus: s.lx_focus ?? null });
+          }
+        }
+        for (const art of fromArticles) {
+          const existing = metaMap.get(art.id);
+          if (!existing?.lx_stage) {
+            const fromSub = subMetaByTitle.get(art.title.toLowerCase().trim());
+            if (fromSub) metaMap.set(art.id, fromSub);
+          }
+        }
+
         const existingTitles = new Set(fromArticles.map((a) => a.title.toLowerCase()));
         const merged = [
           ...fromArticles,
