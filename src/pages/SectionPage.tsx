@@ -10,6 +10,7 @@ import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import {
   SECTION_TITLE_TO_CANONICAL, SLUG_TO_CANONICAL,
 } from '../lib/domainRegistry';
+import { useSmartBack } from '../hooks/useSmartBack';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, Sparkles, Laptop, Monitor, Database,
@@ -218,7 +219,7 @@ function CopyLinkButton({ slug }: { slug: string }) {
 }
 
 function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
-  const navigate = useNavigate();
+  const { goBack } = useSmartBack('/');
   if (minimal) {
     return (
       <div className={`${CARD_WIDTH} flex flex-col items-center justify-center gap-3 p-8 bg-white/80 dark:bg-slate-700/60 border border-dashed border-zinc-300 dark:border-slate-600 rounded-xl text-center`}>
@@ -241,7 +242,7 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
         </p>
       </div>
       <button
-        onClick={() => navigate(-1)}
+        onClick={goBack}
         className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 text-sm font-medium transition-all"
       >
         <ArrowLeft className="w-4 h-4" />
@@ -657,6 +658,9 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const [searchParams, setSearchParams] = useSearchParams();
   const slug = location.pathname.replace(/^\//, '').replace(/\/$/, '');
 
+  const parentSlug = slug.includes('/') ? '/' + slug.split('/')[0] : '/';
+  const { goBack } = useSmartBack(parentSlug);
+
   const rawTab = searchParams.get('tab');
   const validatedTab: ResourceTab = RESOURCE_TABS.includes(rawTab as ResourceTab)
     ? (rawTab as ResourceTab)
@@ -714,7 +718,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
     return (
       <div className="max-w-4xl mx-auto">
         <button
-          onClick={() => navigate(-1)}
+          onClick={goBack}
           className="text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200 flex items-center gap-2 mb-6 cursor-pointer text-sm font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -783,7 +787,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
     <div className="space-y-8 max-w-5xl">
       {isSubPage && (
         <button
-          onClick={() => navigate(-1)}
+          onClick={goBack}
           className="text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200 flex items-center gap-2 cursor-pointer text-sm font-medium"
         >
           <ArrowLeft className="w-4 h-4" />

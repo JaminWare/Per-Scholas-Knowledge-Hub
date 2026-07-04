@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
-import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
+import { useLocation, Link } from 'react-router-dom';
 import { ArrowLeft, Share2, Bookmark, BookOpen, ExternalLink, UploadCloud } from 'lucide-react';
 import { supabase } from '../lib/supabase';
+import { useSmartBack } from '../hooks/useSmartBack';
 import ArticleCard from '../components/ArticleCard';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import ContributorSubmissionModal, { type NewSubmission } from '../components/ContributorSubmissionModal';
@@ -392,7 +393,6 @@ function makeLocalArticle(slug: string, title?: string): Article {
 
 export default function ArticlePage() {
   const location = useLocation();
-  const navigate = useNavigate();
   const slug = location.pathname.replace(/^\/article\//, '').replace(/\/$/, '');
   const [article, setArticle] = useState<Article | null>(null);
   const [contributor, setContributor] = useState<Contributor | null>(null);
@@ -493,21 +493,18 @@ export default function ArticlePage() {
   const isOSIPDUArticle          = article.slug === 'core1-networking/osi-pdu-flow' && !strictlyIsSample;
   const isTCPIPArticle           = article.slug === 'core1-networking/sample-protocols' && !strictlyIsSample;
 
-  function handleBack() {
-    if (article?.section?.slug) {
-      navigate('/' + article.section.slug);
-    } else if (article?.slug?.startsWith('learner-experience/') || article?.study_category?.startsWith('Learner Experience')) {
-      navigate('/learner-experience');
-    } else {
-      navigate(-1);
-    }
-  }
+  const backFallback = useMemo(() => {
+    if (article?.section?.slug) return '/' + article.section.slug;
+    if (article?.slug?.startsWith('learner-experience/') || article?.study_category?.startsWith('Learner Experience')) return '/learner-experience';
+    return '/';
+  }, [article]);
+  const { goBack } = useSmartBack(backFallback);
 
   return (
     <div className="max-w-4xl mx-auto">
       {/* Back button */}
       <button
-        onClick={handleBack}
+        onClick={goBack}
         className="inline-flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-sm font-medium mb-5"
       >
         <ArrowLeft className="w-4 h-4" />

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
   Lightbulb, GitBranch, Sparkles, Star, Crown, Link2, UploadCloud,
@@ -8,6 +8,7 @@ import {
 import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
+import { useSmartBack } from '../hooks/useSmartBack';
 
 // ── Badge colour map ──────────────────────────────────────
 
@@ -354,7 +355,7 @@ function buildSlugFromTitle(title: string): string {
 // ── Main page ─────────────────────────────────────────────
 
 export default function RecognitionPage() {
-  const navigate = useNavigate();
+  const { goBack } = useSmartBack('/');
   const [contributors, setContributors] = useState<ContributorGroup[]>([]);
   const [openContributor, setOpenContributor] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -472,7 +473,7 @@ export default function RecognitionPage() {
         <div className="relative px-6 py-4 md:px-8 md:py-5">
           {/* Back button inside the banner */}
           <button
-            onClick={() => navigate(-1)}
+            onClick={goBack}
             className="inline-flex items-center gap-2 text-sky-200/80 hover:text-white transition-colors text-sm font-medium mb-8"
           >
             <ArrowLeft className="w-4 h-4" />
