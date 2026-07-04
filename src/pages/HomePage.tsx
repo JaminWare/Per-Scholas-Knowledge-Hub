@@ -171,17 +171,17 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                     <Link
                       key={card.id}
                       to={`/learner-experience?tab=${card.tab}`}
-                      className={`group flex items-start gap-4 p-4 text-left bg-zinc-500/50 border border-zinc-500 rounded-xl transition-all ${card.accentClass}`}
+                      className="group flex items-start gap-4 p-4 text-left bg-zinc-900/80 border border-zinc-800 rounded-xl transition-all hover:border-zinc-700/60 hover:shadow-[0_0_15px_rgba(56,189,248,0.3)]"
                     >
                       <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${card.iconBg}`}>
                         <Icon className="w-5 h-5 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
-                          <p className="font-semibold text-sm text-zinc-100">
+                          <p className="font-semibold text-sm text-white">
                             {card.title}
                           </p>
-                          <ChevronRight className="w-4 h-4 text-zinc-600 flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                          <ChevronRight className="w-4 h-4 text-zinc-600 flex-shrink-0 group-hover:text-sky-400 group-hover:translate-x-0.5 transition-all" />
                         </div>
                         <p className="text-xs text-zinc-400 mt-1 line-clamp-2">{card.description}</p>
                       </div>
