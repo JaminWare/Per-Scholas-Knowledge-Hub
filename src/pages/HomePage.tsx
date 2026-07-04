@@ -153,14 +153,14 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
           {/* The Cohort Survival Guide */}
           <section>
-            <div className="bg-white dark:bg-zinc-600 border border-slate-200 dark:border-zinc-500 rounded-xl p-5">
+            <div className="bg-gradient-to-r from-zinc-800 to-zinc-900 border border-zinc-700/60 rounded-xl shadow-[0_0_15px_rgba(56,189,248,0.3)] p-5">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-2 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400">
                   <Compass className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-zinc-800 dark:text-zinc-100">Cohort Survival Guide</h2>
-                  <p className="text-sm text-zinc-500">Real talk from learners who've been there</p>
+                  <h2 className="text-lg font-bold text-white">Cohort Survival Guide</h2>
+                  <p className="text-sm text-zinc-400">Real talk from learners who've been there</p>
                 </div>
               </div>
 
@@ -171,29 +171,29 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                     <Link
                       key={card.id}
                       to={`/learner-experience?tab=${card.tab}`}
-                      className={`group flex items-start gap-4 p-4 text-left bg-[#f4f8fa] dark:bg-zinc-500/50 border border-slate-200 dark:border-zinc-500 rounded-xl transition-all ${card.accentClass}`}
+                      className={`group flex items-start gap-4 p-4 text-left bg-zinc-500/50 border border-zinc-500 rounded-xl transition-all ${card.accentClass}`}
                     >
                       <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${card.iconBg}`}>
                         <Icon className="w-5 h-5 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
-                          <p className="font-semibold text-sm text-zinc-800 dark:text-zinc-100">
+                          <p className="font-semibold text-sm text-zinc-100">
                             {card.title}
                           </p>
-                          <ChevronRight className="w-4 h-4 text-zinc-400 dark:text-zinc-600 flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />
+                          <ChevronRight className="w-4 h-4 text-zinc-600 flex-shrink-0 group-hover:translate-x-0.5 transition-transform" />
                         </div>
-                        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 line-clamp-2">{card.description}</p>
+                        <p className="text-xs text-zinc-400 mt-1 line-clamp-2">{card.description}</p>
                       </div>
                     </Link>
                   );
                 })}
               </div>
 
-              <div className="mt-4 pt-4 border-t border-slate-200 dark:border-zinc-500">
+              <div className="mt-4 pt-4 border-t border-zinc-700/60">
                 <Link
                   to="/learner-experience"
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-400 hover:text-sky-300 transition-colors"
                 >
                   Explore the full Learner Experience Hub &rarr;
                   <ChevronRight className="w-4 h-4" />
