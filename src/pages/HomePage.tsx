@@ -114,16 +114,10 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         <div className="lg:col-span-2 xl:col-span-3 space-y-10">
 
           {/* Hero */}
-          <section className="relative overflow-hidden rounded-2xl border border-sky-500/10 dark:border-zinc-800">
-            <img
-              src="/hero-workspace.webp"
-              alt=""
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-sky-950/85 to-slate-900/90" />
+          <section className="relative overflow-hidden rounded-2xl border border-sky-500/10 dark:border-zinc-800 bg-gradient-to-br from-slate-950 via-sky-950 to-slate-900">
             <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/10 rounded-full blur-2xl pointer-events-none" />
-            <div className="relative px-6 py-5 md:px-8 md:py-6">
+            <div className="relative px-6 py-8 md:px-8 md:py-10">
               <div className="max-w-2xl flex flex-col gap-2">
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 text-xs font-medium">

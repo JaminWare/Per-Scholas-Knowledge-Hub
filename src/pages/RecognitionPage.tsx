@@ -442,17 +442,11 @@ export default function RecognitionPage() {
     <div className="pb-32">
 
       {/* Full-bleed cinematic hero banner */}
-      <section className="relative overflow-hidden">
-        <img
-          src="/hero-workspace.webp"
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/90 via-sky-950/85 to-slate-900/90" />
+      <section className="relative overflow-hidden rounded-2xl border border-sky-500/10 dark:border-zinc-800 bg-gradient-to-br from-slate-950 via-sky-950 to-slate-900">
         <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/10 rounded-full blur-2xl pointer-events-none" />
 
-        <div className="relative px-6 md:px-12 pt-6 pb-10 md:pb-14">
+        <div className="relative px-6 py-8 md:px-8 md:py-10">
           {/* Back button inside the banner */}
           <button
             onClick={() => navigate(-1)}
