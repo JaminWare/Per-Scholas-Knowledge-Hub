@@ -30,6 +30,7 @@ const sectionTrackLabels: Record<string, string> = {
   'healthcare-hipaa':      'ADVANCED HEALTHCARE IT HIPAA SECURITY',
   'healthcare-ehr':        'ADVANCED HEALTHCARE IT EHR ARCHITECTURE',
   'healthcare-clinical':   'ADVANCED HEALTHCARE IT CLINICAL WORKFLOWS',
+  'learner-experience':    'LEARNER EXPERIENCE & FAQS',
 };
 
 // Slugs that must never fall through to "Article Not Found"
