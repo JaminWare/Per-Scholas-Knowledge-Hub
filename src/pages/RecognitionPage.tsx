@@ -182,10 +182,10 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
   return (
     <div className={`rounded-xl border overflow-hidden transition-all ${
       isFounder
-        ? 'border-amber-400/50 dark:border-amber-400/40 bg-sky-50/90 dark:bg-zinc-700/80 shadow-[0_0_15px_rgba(245,158,11,0.15)] dark:shadow-[0_0_15px_rgba(245,158,11,0.25)] hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] dark:hover:shadow-[0_0_25px_rgba(245,158,11,0.45)] transition-shadow duration-500'
+        ? 'border-amber-400/50 bg-gradient-to-r from-zinc-800 to-zinc-900 shadow-[0_0_15px_rgba(245,158,11,0.2)] hover:shadow-[0_0_25px_rgba(245,158,11,0.35)] transition-shadow duration-500'
         : isOpen
-          ? 'border-sky-400/40 dark:border-sky-500/30 shadow-md shadow-sky-500/5 bg-white dark:bg-zinc-700'
-          : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 bg-white dark:bg-zinc-700'
+          ? 'border-sky-500/30 bg-gradient-to-r from-zinc-800 to-zinc-900'
+          : 'border-zinc-700/60 bg-gradient-to-r from-zinc-800 to-zinc-900 hover:border-zinc-600'
     }`}>
 
       {/* Header */}
@@ -206,7 +206,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className={`${isFounder ? 'font-bold' : 'font-semibold'} text-zinc-900 dark:text-zinc-100 text-sm`}>{group.name}</span>
+              <span className={`${isFounder ? 'font-bold' : 'font-semibold'} text-white text-sm`}>{group.name}</span>
               {!isFounder && tierBadge !== group.topBadge && <BadgeTag badge={tierBadge} />}
               <BadgeTag badge={group.topBadge} />
               {isNew && !isFounder && (
@@ -235,7 +235,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
                     ? (isFounder
                         ? 'bg-amber-100 border-amber-300 text-amber-800 dark:bg-amber-500/20 dark:border-amber-500/50 dark:text-amber-400'
                         : 'bg-sky-100 border-sky-300 text-sky-800 dark:bg-sky-500/20 dark:border-sky-500/50 dark:text-sky-400')
-                    : 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200 hover:text-slate-900 dark:bg-zinc-800/50 dark:border-zinc-700/50 dark:text-zinc-400 dark:hover:bg-zinc-700 dark:hover:text-zinc-200'
+                    : 'bg-zinc-800 border-zinc-700/60 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
                 }`}
               >
                 {getCategoryIcon(type, isFounder)}
@@ -251,8 +251,8 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
         const categoryItems = group.items.filter((i) => mapToPortalBucket(i.submission_type) === openCategory);
         const trackGroups = groupItemsByTrack(categoryItems);
         return (
-          <div className={`border-t ${isFounder ? 'border-sky-100 dark:border-amber-500/15' : 'border-zinc-200 dark:border-zinc-600'} px-5 py-4`}>
-            <div className="bg-slate-50 dark:bg-zinc-900/50 rounded-lg p-2 border border-slate-200 dark:border-zinc-800/50 max-h-56 overflow-y-auto">
+          <div className={`border-t ${isFounder ? 'border-amber-500/15' : 'border-zinc-700/60'} px-5 py-4`}>
+            <div className="bg-zinc-900/60 rounded-lg p-2 border border-zinc-800 max-h-56 overflow-y-auto">
               {Array.from(trackGroups.entries()).map(([bucket, items]) => (
                 <div key={bucket}>
                   {trackGroups.size > 1 && <span className={SECTION_HDR}>{bucket}</span>}
@@ -443,7 +443,7 @@ export default function RecognitionPage() {
 
       {/* Full-bleed cinematic hero banner */}
       <section className="relative overflow-hidden rounded-2xl border border-zinc-700/60 bg-gradient-to-r from-zinc-800 to-zinc-900">
-        <div className="relative px-6 py-8 md:px-8 md:py-10">
+        <div className="relative px-6 py-4 md:px-8 md:py-5">
           {/* Back button inside the banner */}
           <button
             onClick={() => navigate(-1)}
