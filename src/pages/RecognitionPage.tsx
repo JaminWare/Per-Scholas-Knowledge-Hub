@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
   Lightbulb, GitBranch, Sparkles, Star, Crown, Link2, UploadCloud,
+  Laptop, Monitor, Heart, LifeBuoy, Layers,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
@@ -71,15 +72,17 @@ function mapToPortalBucket(rawType: string | null | undefined): PortalBucket {
 
 // ── Track resolution (single source of truth) ────────────
 
-const KNOWN_TRACK_ORDER = ['CompTIA A+ Core 1', 'CompTIA A+ Core 2', 'Advanced Healthcare IT'];
+const KNOWN_TRACK_ORDER = ['CompTIA A+ Core 1', 'CompTIA A+ Core 2', 'Advanced Healthcare IT', 'Learner Experience'];
 
 function resolveTrack(track: string, slug?: string): string {
   if (!track && slug) {
     if (slug.startsWith('core1-')) return 'CompTIA A+ Core 1';
     if (slug.startsWith('core2-')) return 'CompTIA A+ Core 2';
     if (slug.startsWith('healthcare-') || slug.includes('ai-prompt')) return 'Advanced Healthcare IT';
+    if (slug.startsWith('learner-experience')) return 'Learner Experience';
     return 'Other Contributions';
   }
+  if (track.toLowerCase().includes('learner experience')) return 'Learner Experience';
   if (track.includes('Core 1')) return 'CompTIA A+ Core 1';
   if (track.includes('Core 2')) return 'CompTIA A+ Core 2';
   if (track.toLowerCase().includes('healthcare')) return 'Advanced Healthcare IT';
@@ -356,6 +359,7 @@ export default function RecognitionPage() {
   const [openContributor, setOpenContributor] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [newestName, setNewestName] = useState<string | null>(null);
+  const [trackFilter, setTrackFilter] = useState<string>('All');
 
   useEffect(() => {
     async function fetchFromSupabase() {
@@ -436,7 +440,29 @@ export default function RecognitionPage() {
     fetchFromSupabase();
   }, []);
 
-  const totalContributors = contributors.length;
+  const TRACK_FILTER_OPTIONS = [
+    { value: 'All', label: 'All Tracks', icon: Layers },
+    { value: 'CompTIA A+ Core 1', label: 'Core 1', icon: Laptop },
+    { value: 'CompTIA A+ Core 2', label: 'Core 2', icon: Monitor },
+    { value: 'Advanced Healthcare IT', label: 'Healthcare IT', icon: Heart },
+    { value: 'Learner Experience', label: 'Learner Experience', icon: LifeBuoy },
+  ] as const;
+
+  const filteredContributors = useMemo(() => {
+    if (trackFilter === 'All') return contributors;
+    return contributors
+      .map((g) => {
+        const matchingItems = g.items.filter((item) => resolveTrack(item.track ?? '', item.slug) === trackFilter);
+        if (matchingItems.length === 0) return null;
+        const typeCounts: Record<string, number> = {};
+        for (const item of matchingItems) {
+          const bucket = mapToPortalBucket(item.submission_type);
+          typeCounts[bucket] = (typeCounts[bucket] ?? 0) + 1;
+        }
+        return { ...g, items: matchingItems, typeCounts };
+      })
+      .filter((g): g is ContributorGroup => g !== null);
+  }, [contributors, trackFilter]);
 
   return (
     <div className="pb-32">
@@ -480,13 +506,35 @@ export default function RecognitionPage() {
             Cohort Contributors
           </h2>
           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 dark:bg-zinc-700 text-zinc-500">
-            {totalContributors}
+            {filteredContributors.length}
           </span>
         </div>
 
-        {contributors.length > 0 ? (
+        <div className="flex flex-wrap items-center gap-2 mb-5">
+          {TRACK_FILTER_OPTIONS.map((opt) => {
+            const Icon = opt.icon;
+            const isActive = trackFilter === opt.value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setTrackFilter(opt.value)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                  isActive
+                    ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
+                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {filteredContributors.length > 0 ? (
           <div className="space-y-3">
-            {contributors.map((g) => (
+            {filteredContributors.map((g) => (
               <ContributorCard
                 key={g.name}
                 group={g}
