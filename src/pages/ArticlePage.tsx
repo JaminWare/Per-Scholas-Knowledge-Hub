@@ -85,7 +85,7 @@ function deriveAuthorName(contributor: Contributor | null, article: Article): st
   if (FOUNDER_SLUGS.has(article.slug)) return 'Jamin Ware';
   const featuredSlugs = ['core1-networking/firewall-basics', 'core1-troubleshooting/command-documentation', 'core2-os/snap-in', 'healthcare-hipaa/intro-healthcare-it-security', 'healthcare-ehr/cloud-computing-healthcare', 'ai-prompt-engineering-healthcare'];
   if (featuredSlugs.includes(article.slug)) return 'Jamin Ware';
-  return 'Knowledge Base';
+  return 'Jamin Ware';
 }
 
 // Full-page diagram panels for founder Diagrams articles

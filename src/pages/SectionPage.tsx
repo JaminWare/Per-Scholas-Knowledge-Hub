@@ -397,7 +397,8 @@ function AppletCard({ article, gridMode = false }: { article: ArticleWithContrib
   const authorName = (article.contributor as { name: string } | null)?.name
     ?? KNOWN_AUTHORS[article.slug]
     ?? parseAuthorFromExcerpt(article.excerpt)
-    ?? (isSample ? '[OPEN SLOT]' : 'Knowledge Base');
+    ?? article.author_name
+    ?? (isSample ? '[OPEN SLOT]' : 'Jamin Ware');
 
   const widthClass = gridMode ? 'w-full' : CARD_WIDTH;
   const isExternalLink = article.content?.startsWith('http://') || article.content?.startsWith('https://');

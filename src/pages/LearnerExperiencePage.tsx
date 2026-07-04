@@ -228,7 +228,7 @@ export default function LearnerExperiencePage() {
           id: a.id,
           title: a.title ?? 'Untitled',
           content: a.formatted_content ?? a.content ?? '',
-          author: a.author_name ?? 'Knowledge Base',
+          author: a.author_name ?? 'Jamin Ware',
           track: a.study_category ?? '',
           slug: a.slug ?? `article-${a.id}`,
           created_at: a.created_at,
