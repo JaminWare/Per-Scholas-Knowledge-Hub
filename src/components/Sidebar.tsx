@@ -143,7 +143,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           to="/"
           className={`sidebar-item ${location.hash === '' || location.hash === '#/' ? 'active' : ''}`}
         >
-          <Home className="w-4 h-4 flex-shrink-0" />
+          <Home className="w-4 h-4 flex-shrink-0 text-white" />
           <span className="truncate text-[13px] text-white">Home</span>
         </Link>
 

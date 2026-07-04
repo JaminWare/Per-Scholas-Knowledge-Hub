@@ -10,7 +10,7 @@ import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, Sparkles, Laptop, Monitor, Database,
-  Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight, ArrowDown,
+  Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight,
   Construction, Layers, Target, Bookmark, Compass, FileText, GitBranch,
 } from 'lucide-react';
 
@@ -812,7 +812,6 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
           <h1 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">{displayTitle}</h1>
         </div>
         <div className="flex flex-col items-center gap-1 flex-shrink-0">
-          <ArrowDown className="animate-bounce text-sky-400 w-6 h-6 drop-shadow-[0_0_6px_rgba(56,189,248,0.6)]" />
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
