@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
-  LifeBuoy, Lightbulb, BookOpen, Flame, Shield, Briefcase, Compass, Plus, ChevronRight, ExternalLink,
+  LifeBuoy, Lightbulb, BookOpen, Flame, Shield, Briefcase, Compass, Plus,
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { formatRelativeTime } from '../utils/formatRelativeTime';
+import { AppletCard, AppletSkeleton } from '../components/AppletCard';
+import type { ArticleWithContributor } from '../hooks/useArticles';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
-import CardZoomOverlay from '../components/CardZoomOverlay';
 
 // ─── 3-tier category filter system ─────────────────────────────
 
@@ -149,9 +149,11 @@ export const JOURNEY_TABS: JourneyTab[] = [
   { id: 'job', label: 'Job Hunt Triage', icon: Briefcase, trackSuffix: 'Job Hunt Triage', emptyPrompt: 'Landed an interview or fixed your resume? Drop your advice for the next wave.' },
 ];
 
-// ─── Unified entry shape ─────────────────────────────────────
+// ─── helpers ─────────────────────────────────────────────────
 
-interface LearnerEntry {
+interface LxMeta { lx_stage: string | null; lx_topic: string | null; lx_focus: string | null; }
+
+function entryToArticle(entry: {
   id: string;
   title: string;
   content: string;
@@ -159,9 +161,29 @@ interface LearnerEntry {
   track: string;
   slug: string;
   created_at: string;
-  lx_stage: string | null;
-  lx_topic: string | null;
-  lx_focus: string | null;
+}): ArticleWithContributor {
+  return {
+    id: entry.id,
+    title: entry.title,
+    slug: entry.slug,
+    section_id: null,
+    content: entry.content,
+    formatted_content: null,
+    excerpt: null,
+    contributor_id: null,
+    tags: [],
+    is_featured: false,
+    is_sample: false,
+    study_category: entry.track,
+    source_file: null,
+    author_name: entry.author,
+    author: entry.author,
+    submission_type: null,
+    comp_objective: null,
+    created_at: entry.created_at,
+    updated_at: entry.created_at,
+    contributor: null,
+  };
 }
 
 // ─── Main page component ─────────────────────────────────────
@@ -171,7 +193,8 @@ export default function LearnerExperiencePage() {
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'all');
   const [activeLevel2, setActiveLevel2] = useState('');
   const [activeLevel3, setActiveLevel3] = useState('');
-  const [entries, setEntries] = useState<LearnerEntry[]>([]);
+  const [entries, setEntries] = useState<ArticleWithContributor[]>([]);
+  const [lxMeta, setLxMeta] = useState<Map<string, LxMeta>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -211,31 +234,33 @@ export default function LearnerExperiencePage() {
             .ilike('study_category', 'Learner Experience%'),
         ]);
 
-        const fromSubs: LearnerEntry[] = (subsRes.data ?? []).map((s: any) => ({
-          id: s.id,
-          title: s.title ?? 'Untitled',
-          content: s.formatted_content ?? s.content ?? '',
-          author: s.full_name ?? 'Anonymous',
-          track: s.track ?? '',
-          slug: (s.title ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `entry-${s.id}`,
-          created_at: s.created_at,
-          lx_stage: s.lx_stage ?? null,
-          lx_topic: s.lx_topic ?? null,
-          lx_focus: s.lx_focus ?? null,
-        }));
+        const metaMap = new Map<string, LxMeta>();
 
-        const fromArticles: LearnerEntry[] = (articlesRes.data ?? []).map((a: any) => ({
-          id: a.id,
-          title: a.title ?? 'Untitled',
-          content: a.formatted_content ?? a.content ?? '',
-          author: a.author_name ?? 'Jamin Ware',
-          track: a.study_category ?? '',
-          slug: a.slug ?? `article-${a.id}`,
-          created_at: a.created_at,
-          lx_stage: a.lx_stage ?? null,
-          lx_topic: a.lx_topic ?? null,
-          lx_focus: a.lx_focus ?? null,
-        }));
+        const fromSubs = (subsRes.data ?? []).map((s: any) => {
+          metaMap.set(s.id, { lx_stage: s.lx_stage ?? null, lx_topic: s.lx_topic ?? null, lx_focus: s.lx_focus ?? null });
+          return entryToArticle({
+            id: s.id,
+            title: s.title ?? 'Untitled',
+            content: s.formatted_content ?? s.content ?? '',
+            author: s.full_name ?? 'Anonymous',
+            track: s.track ?? '',
+            slug: (s.title ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || `entry-${s.id}`,
+            created_at: s.created_at,
+          });
+        });
+
+        const fromArticles = (articlesRes.data ?? []).map((a: any) => {
+          metaMap.set(a.id, { lx_stage: a.lx_stage ?? null, lx_topic: a.lx_topic ?? null, lx_focus: a.lx_focus ?? null });
+          return entryToArticle({
+            id: a.id,
+            title: a.title ?? 'Untitled',
+            content: a.formatted_content ?? a.content ?? '',
+            author: a.author_name ?? 'Jamin Ware',
+            track: a.study_category ?? '',
+            slug: a.slug ?? `article-${a.id}`,
+            created_at: a.created_at,
+          });
+        });
 
         const existingTitles = new Set(fromArticles.map((a) => a.title.toLowerCase()));
         const merged = [
@@ -244,6 +269,7 @@ export default function LearnerExperiencePage() {
         ];
         merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
         setEntries(merged);
+        setLxMeta(metaMap);
       } catch (e) {
         console.error('LearnerExperiencePage fetch error:', e);
       } finally {
@@ -257,17 +283,16 @@ export default function LearnerExperiencePage() {
   const filters = CATEGORY_FILTERS[activeTab];
 
   const filteredEntries = useMemo(() => {
-    let result: LearnerEntry[];
-    if (activeTab === 'all') {
-      result = entries;
-    } else {
-      result = entries.filter((e) => {
-        if (e.lx_stage) return e.lx_stage === activeTab;
-        // Fallback for legacy entries without lx_stage
+    let result = entries;
+
+    if (activeTab !== 'all') {
+      result = result.filter((e) => {
+        const meta = lxMeta.get(e.id);
+        if (meta?.lx_stage) return meta.lx_stage === activeTab;
         const suffix = currentTab.trackSuffix;
         if (!suffix) return true;
         const target = `Learner Experience ${suffix}`.toLowerCase();
-        return e.track.toLowerCase().includes(target) || e.track.toLowerCase().includes(suffix.toLowerCase());
+        return (e.study_category ?? '').toLowerCase().includes(target) || (e.study_category ?? '').toLowerCase().includes(suffix.toLowerCase());
       });
     }
 
@@ -275,8 +300,8 @@ export default function LearnerExperiencePage() {
       const sub = filters.find((s) => s.label === activeLevel2);
       if (sub && sub.keywords.length > 0) {
         result = result.filter((e) => {
-          if (e.lx_topic) return e.lx_topic === activeLevel2;
-          // Fallback: keyword scan for legacy entries
+          const meta = lxMeta.get(e.id);
+          if (meta?.lx_topic) return meta.lx_topic === activeLevel2;
           const haystack = `${e.title} ${e.content}`.toLowerCase();
           return sub.keywords.some((kw) => haystack.includes(kw));
         });
@@ -286,8 +311,8 @@ export default function LearnerExperiencePage() {
         const nested = sub.nested.find((n) => n.label === activeLevel3);
         if (nested && nested.keywords.length > 0) {
           result = result.filter((e) => {
-            if (e.lx_focus) return e.lx_focus === activeLevel3;
-            // Fallback: keyword scan for legacy entries
+            const meta = lxMeta.get(e.id);
+            if (meta?.lx_focus) return meta.lx_focus === activeLevel3;
             const haystack = `${e.title} ${e.content}`.toLowerCase();
             return nested.keywords.some((kw) => haystack.includes(kw));
           });
@@ -296,11 +321,11 @@ export default function LearnerExperiencePage() {
     }
 
     return result;
-  }, [entries, activeTab, currentTab, filters, activeLevel2, activeLevel3]);
+  }, [entries, lxMeta, activeTab, currentTab, filters, activeLevel2, activeLevel3]);
 
   return (
     <div className="space-y-8">
-      {/* ─── Visual Metaphor Banner ─── */}
+      {/* ─── Banner ─── */}
       <div className="relative rounded-2xl border border-zinc-800 overflow-hidden bg-gradient-to-br from-zinc-900 via-slate-900 to-emerald-950">
         <div className="absolute -top-20 -right-20 w-60 h-60 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-40 h-40 bg-sky-500/5 rounded-full blur-2xl pointer-events-none" />
@@ -316,7 +341,7 @@ export default function LearnerExperiencePage() {
             </div>
           </div>
 
-          {/* ─── Journey Tabs ─── */}
+          {/* Journey Tabs */}
           <div className="flex flex-wrap gap-2">
             {JOURNEY_TABS.map((tab) => {
               const Icon = tab.icon;
@@ -341,7 +366,7 @@ export default function LearnerExperiencePage() {
         </div>
       </div>
 
-      {/* ─── Category Sub-Navigation (conditional on tab having filters) ─── */}
+      {/* ─── Category Sub-Navigation ─── */}
       {filters && (
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 backdrop-blur-sm p-4 space-y-3">
           <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Filter by focus area</span>
@@ -369,7 +394,6 @@ export default function LearnerExperiencePage() {
             })}
           </div>
 
-          {/* ─── 3rd-Level Nested Pills ─── */}
           {(() => {
             const activeSub = filters.find((s) => s.label === activeLevel2);
             if (!activeSub || activeSub.nested.length === 0) return null;
@@ -405,21 +429,14 @@ export default function LearnerExperiencePage() {
       {/* ─── Content Grid ─── */}
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden animate-pulse">
-              <div className="h-8 bg-zinc-800" />
-              <div className="p-4 space-y-3">
-                <div className="h-4 w-3/4 bg-zinc-200 dark:bg-zinc-700 rounded" />
-                <div className="h-3 w-full bg-zinc-100 dark:bg-zinc-800 rounded" />
-                <div className="h-3 w-5/6 bg-zinc-100 dark:bg-zinc-800 rounded" />
-              </div>
-            </div>
-          ))}
+          <AppletSkeleton gridMode />
+          <AppletSkeleton gridMode />
+          <AppletSkeleton gridMode />
         </div>
       ) : filteredEntries.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredEntries.map((entry) => (
-            <BreakthroughCard key={entry.id} entry={entry} />
+            <AppletCard key={entry.id} article={entry} gridMode />
           ))}
         </div>
       ) : (
@@ -433,97 +450,6 @@ export default function LearnerExperiencePage() {
         onSubmitted={() => {}}
       />
     </div>
-  );
-}
-
-// ─── Breakthrough Card ───────────────────────────────────────
-
-function BreakthroughCard({ entry }: { entry: LearnerEntry }) {
-  const [zoomed, setZoomed] = useState(false);
-  const hasTicketFormat = /Problem:/i.test(entry.content) && /Solution:/i.test(entry.content);
-
-  const snippetText = useMemo(() => {
-    const raw = entry.content.replace(/^#+\s*/gm, '').replace(/\*\*/g, '').replace(/Problem:|Solution:/gi, '').trim();
-    return raw.slice(0, 160);
-  }, [entry.content]);
-
-  const cardInner = (expanded = false) => (
-    <>
-      {/* Header bar */}
-      <div
-        className="flex items-center justify-between px-3 py-1.5 bg-zinc-800 dark:bg-zinc-900"
-        style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
-      >
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] font-mono font-bold text-sky-400 select-none">{`</>`}</span>
-          <span className="text-[10px] font-mono text-zinc-500 truncate max-w-[120px]">
-            {entry.slug.split('/').pop()}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-[9px] text-zinc-500 font-mono">{formatRelativeTime(entry.created_at)}</span>
-          <span className="text-[9px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wide flex-shrink-0 bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
-            {hasTicketFormat ? '[Resolved]' : '[Peer Wisdom]'}
-          </span>
-        </div>
-      </div>
-
-      {/* Body */}
-      <div className="flex flex-col gap-3 p-4 flex-1">
-        <h3 className="font-semibold text-sm leading-snug text-zinc-800 dark:text-white transition-colors duration-200" style={{ WebkitLineClamp: expanded ? undefined : 2, display: expanded ? undefined : '-webkit-box', WebkitBoxOrient: expanded ? undefined : 'vertical', overflow: expanded ? undefined : 'hidden' }}>
-          {entry.title}
-        </h3>
-
-        <p className={`text-xs text-zinc-600 dark:text-slate-400 leading-relaxed ${expanded ? '' : 'line-clamp-3'}`}>
-          {snippetText}{snippetText.length >= 160 ? '...' : ''}
-        </p>
-
-        {/* Footer */}
-        <div className="mt-auto pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between gap-2">
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/15">
-            {entry.author}
-          </span>
-          {expanded && (
-            /^https?:\/\//.test(entry.content) ? (
-              <a
-                href={entry.content}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="inline-flex items-center gap-1 text-[11px] font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
-              >
-                Open resource <ExternalLink className="w-3 h-3" />
-              </a>
-            ) : (
-              <Link
-                to={`/article/${entry.slug}`}
-                onClick={(e) => e.stopPropagation()}
-                className="inline-flex items-center gap-1 text-[11px] font-semibold text-sky-600 dark:text-sky-400 hover:text-sky-500 dark:hover:text-sky-300 transition-colors"
-              >
-                Read full article <ChevronRight className="w-3 h-3" />
-              </Link>
-            )
-          )}
-        </div>
-      </div>
-    </>
-  );
-
-  return (
-    <>
-      <div
-        onClick={() => setZoomed(true)}
-        className="group flex flex-col rounded-xl border overflow-hidden cursor-zoom-in transition-all duration-300 ease-out bg-white dark:bg-zinc-900 border-slate-200 dark:border-zinc-800 hover:-translate-y-1 hover:border-cyan-500/30 hover:shadow-xl hover:shadow-cyan-500/10"
-      >
-        {cardInner(false)}
-      </div>
-
-      <CardZoomOverlay open={zoomed} onClose={() => setZoomed(false)}>
-        <div className="flex flex-col rounded-xl overflow-hidden">
-          {cardInner(true)}
-        </div>
-      </CardZoomOverlay>
-    </>
   );
 }
 
