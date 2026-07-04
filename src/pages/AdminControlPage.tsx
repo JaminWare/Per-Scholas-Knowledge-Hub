@@ -300,9 +300,10 @@ function SubmissionCard({
   const isResource = sub.submission_type === 'Resource Link';
   const submittedAt = (() => {
     const d = new Date(sub.created_at);
-    const date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-    return `Submitted ${date} at ${time}`;
+    const tz = 'America/New_York';
+    const date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: tz });
+    const timeParts = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: tz, timeZoneName: 'short' });
+    return `Submitted ${date} at ${timeParts}`;
   })();
 
   return (
