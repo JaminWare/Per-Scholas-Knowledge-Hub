@@ -1,6 +1,5 @@
 import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import Sidebar from './components/Sidebar';
 import SearchBar from './components/SearchBar';
 import HomePage from './pages/HomePage';
@@ -9,7 +8,7 @@ import SectionPage from './pages/SectionPage';
 import RecognitionPage from './pages/RecognitionPage';
 import LearnerExperiencePage from './pages/LearnerExperiencePage';
 import AdminControlPage from './pages/AdminControlPage';
-import { PanelLeftOpen, PanelLeftClose, Sun, Moon } from 'lucide-react';
+import { PanelLeftOpen, PanelLeftClose } from 'lucide-react';
 
 function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | null> }) {
   const { pathname } = useLocation();
@@ -22,7 +21,6 @@ function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | n
 
 function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const { theme, toggleTheme } = useTheme();
   const mainRef = useRef<HTMLElement>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
@@ -56,19 +54,6 @@ function AppContent() {
             <div className="flex-1 max-w-2xl">
               <SearchBar onMenuClick={() => setSidebarOpen(true)} />
             </div>
-            <button
-              onClick={toggleTheme}
-              className={`p-2.5 rounded-full flex-shrink-0 transition-all duration-300 hover:rotate-12 ${
-                theme === 'dark'
-                  ? 'bg-zinc-700 text-amber-300 hover:bg-amber-500/10 hover:text-amber-400 shadow-md shadow-amber-500/10'
-                  : 'bg-zinc-200 text-sky-600 hover:bg-sky-500/10 hover:text-sky-500 shadow-md shadow-sky-500/10'
-              }`}
-              title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {theme === 'dark'
-                ? <Sun className="w-5 h-5" />
-                : <Moon className="w-5 h-5" />}
-            </button>
           </div>
         </header>
 
@@ -102,11 +87,9 @@ function App() {
   }
 
   return (
-    <ThemeProvider>
-      <Router>
-        <AppContent />
-      </Router>
-    </ThemeProvider>
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
 
