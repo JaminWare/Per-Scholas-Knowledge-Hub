@@ -8,6 +8,9 @@ import { useArticles, type ArticleWithContributor } from '../hooks/useArticles';
 import { normalizeCategory } from '../utils/normalizeCategory';
 import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import {
+  SECTION_TITLE_TO_CANONICAL, SLUG_TO_CANONICAL,
+} from '../lib/domainRegistry';
+import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, Sparkles, Laptop, Monitor, Database,
   Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight,
@@ -44,20 +47,7 @@ const roleColors: Record<string, string> = {
   'Reference Author':    'bg-amber-500/10 text-amber-400',
 };
 
-const CANONICAL_DOMAINS: Record<string, string> = {
-  'Domain 1.0 Mobile Devices': 'CompTIA A+ Core 1 Domain 1.0 (Mobile Devices)',
-  'Domain 2.0 Networking': 'CompTIA A+ Core 1 Domain 2.0 (Networking)',
-  'Domain 3.0 Hardware': 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
-  'Domain 4.0 Virtualization & Cloud': 'CompTIA A+ Core 1 Domain 4.0 (Cloud)',
-  'Domain 5.0 Hardware & Network Troubleshooting': 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
-  'Domain 1.0 Operating Systems': 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
-  'Domain 2.0 Security': 'CompTIA A+ Core 2 Domain 2.0 (Security)',
-  'Domain 3.0 Software Troubleshooting': 'CompTIA A+ Core 2 Domain 3.0 (Software Troubleshooting)',
-  'Domain 4.0 Operational Procedures': 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
-  'EHR Architecture': 'Advanced Healthcare IT EHR Architecture',
-  'HIPAA Data Security': 'Advanced Healthcare IT HIPAA Data Security',
-  'Clinical Workflows': 'Advanced Healthcare IT Clinical Workflows',
-};
+const CANONICAL_DOMAINS = SECTION_TITLE_TO_CANONICAL;
 
 const CURRICULUM_TRACKS = [
   {

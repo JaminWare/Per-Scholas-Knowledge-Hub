@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { normalizeUrl } from '../utils/normalizeUrl';
 import {
+  DOMAIN_REGISTRY, SLUG_TO_CANONICAL, CANONICAL_TO_SLUG,
+  resolveToCanonical, resolveToSlug,
+} from '../lib/domainRegistry';
+import {
   Lock, ShieldCheck, CheckCircle2, Trash2, Loader2,
   AlertCircle, Eye, EyeOff, RefreshCw, FileText, Link2,
   GitBranch, Zap, BookOpen, Tag, User, Calendar,
@@ -49,69 +53,50 @@ function deriveExcerpt(content: string): string {
 
 // Prioritized keyword-to-slug resolution matrix (more specific rules first)
 const TRACK_RULES: { keywords: string[]; slug: string }[] = [
-  // Core 1 domains
   { keywords: ['core 1', 'domain 1', 'mobile'],            slug: 'core1-mobile' },
   { keywords: ['core 1', 'domain 2', 'networking'],        slug: 'core1-networking' },
   { keywords: ['core 1', 'domain 3', 'hardware'],          slug: 'core1-hardware' },
-  { keywords: ['core 1', 'domain 4'],                      slug: 'core1-virtualization' },
+  { keywords: ['core 1', 'domain 4'],                      slug: 'core1-cloud' },
   { keywords: ['core 1', 'domain 5'],                      slug: 'core1-troubleshooting' },
-  // Core 1 keyword-only fallbacks (no domain number present)
   { keywords: ['core 1', 'mobile'],                        slug: 'core1-mobile' },
   { keywords: ['core 1', 'networking'],                    slug: 'core1-networking' },
   { keywords: ['core 1', 'hardware'],                      slug: 'core1-hardware' },
-  { keywords: ['core 1', 'virtualization'],                slug: 'core1-virtualization' },
-  { keywords: ['core 1', 'cloud'],                         slug: 'core1-virtualization' },
+  { keywords: ['core 1', 'virtualization'],                slug: 'core1-cloud' },
+  { keywords: ['core 1', 'cloud'],                         slug: 'core1-cloud' },
   { keywords: ['core 1', 'troubleshooting'],               slug: 'core1-troubleshooting' },
-  // Core 2 domains
   { keywords: ['core 2', 'domain 1', 'operating'],         slug: 'core2-os' },
   { keywords: ['core 2', 'domain 2', 'security'],          slug: 'core2-security' },
   { keywords: ['core 2', 'domain 3', 'software'],          slug: 'core2-software' },
   { keywords: ['core 2', 'domain 4', 'operational'],       slug: 'core2-operations' },
-  // Core 2 keyword-only fallbacks
   { keywords: ['core 2', 'operating system'],              slug: 'core2-os' },
   { keywords: ['core 2', 'security'],                      slug: 'core2-security' },
   { keywords: ['core 2', 'software'],                      slug: 'core2-software' },
   { keywords: ['core 2', 'operational'],                   slug: 'core2-operations' },
-  // Healthcare
+  { keywords: ['general troubleshooting'],                 slug: 'core2-operations' },
   { keywords: ['healthcare', 'ehr'],                       slug: 'healthcare-ehr' },
   { keywords: ['healthcare', 'hipaa'],                     slug: 'healthcare-hipaa' },
   { keywords: ['healthcare', 'clinical'],                  slug: 'healthcare-clinical' },
-  // Top-level categories
-  { keywords: ['diagram'],                                 slug: 'core1-networking' },
-  { keywords: ['prompt playbook'],                         slug: 'core1-hardware' },
 ];
 
-function resolveCanonicalSlug(track: string): string {
+function resolveCanonicalSlug(track: string): string | null {
+  const directSlug = resolveToSlug(track);
+  if (directSlug) return directSlug;
+
   const t = track.toLowerCase();
   for (const rule of TRACK_RULES) {
     if (rule.keywords.every((kw) => t.includes(kw))) return rule.slug;
   }
-  return 'core1-networking';
+  return null;
 }
 
-// Maps form track strings to the exact domain labels used by CurriculumDashboard filters
-const SLUG_TO_STUDY_CATEGORY: Record<string, string> = {
-  'core1-mobile':          'CompTIA A+ Core 1 Domain 1.0 (Mobile Devices)',
-  'core1-networking':      'CompTIA A+ Core 1 Domain 2.0 (Networking)',
-  'core1-hardware':        'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
-  'core1-virtualization':  'CompTIA A+ Core 1 Domain 4.0 (Cloud)',
-  'core1-troubleshooting': 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
-  'core2-os':              'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
-  'core2-security':        'CompTIA A+ Core 2 Domain 2.0 (Security)',
-  'core2-software':        'CompTIA A+ Core 2 Domain 3.0 (Software Troubleshooting)',
-  'core2-operations':      'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
-  'healthcare-ehr':        'Advanced Healthcare IT EHR Architecture',
-  'healthcare-hipaa':      'Advanced Healthcare IT HIPAA Data Security',
-  'healthcare-clinical':   'Advanced Healthcare IT Clinical Workflows',
-};
-
-function resolveStudyCategory(track: string): string {
+function resolveStudyCategory(track: string): string | null {
   const slug = resolveCanonicalSlug(track);
-  return SLUG_TO_STUDY_CATEGORY[slug] ?? track;
+  if (!slug) return null;
+  return SLUG_TO_CANONICAL[slug] ?? null;
 }
 
-async function resolveSectionId(track: string): Promise<string | null> {
-  const slug = resolveCanonicalSlug(track);
+async function resolveSectionId(slug: string | null): Promise<string | null> {
+  if (!slug) return null;
   const { data } = await supabase
     .from('sections')
     .select('id')
@@ -235,7 +220,7 @@ function SubmissionCard({
   onDelete,
 }: {
   sub: PendingSubmission;
-  onApprove: (id: string) => Promise<void>;
+  onApprove: (id: string, domainOverride?: string) => Promise<void>;
   onDelete: (id: string) => Promise<void>;
 }) {
   const [approving, setApproving] = useState(false);
@@ -243,6 +228,9 @@ function SubmissionCard({
   const [expanded, setExpanded] = useState(false);
   const [actionError, setActionError] = useState('');
   const [isDuplicate, setIsDuplicate] = useState(false);
+
+  const needsOverride = !sub.track.toLowerCase().includes('learner experience') && resolveCanonicalSlug(sub.track) === null;
+  const [domainOverride, setDomainOverride] = useState('');
 
   useEffect(() => {
     async function checkDuplicate() {
@@ -271,10 +259,14 @@ function SubmissionCard({
   }, [sub.id]);
 
   const handleApprove = async () => {
+    if (needsOverride && !domainOverride) {
+      setActionError('Please select a target domain before approving.');
+      return;
+    }
     setApproving(true);
     setActionError('');
     try {
-      await onApprove(sub.id);
+      await onApprove(sub.id, needsOverride ? domainOverride : undefined);
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Approval failed.');
     } finally {
@@ -335,6 +327,23 @@ function SubmissionCard({
           </div>
 
           <p className="mt-1.5 text-[11px] text-zinc-500 font-mono truncate">{sub.track}</p>
+          {needsOverride && (
+            <div className="mt-2 p-2.5 rounded-lg bg-amber-500/5 border border-amber-500/20">
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-amber-400 mb-1.5">
+                Unrecognized track -- select correct domain:
+              </label>
+              <select
+                value={domainOverride}
+                onChange={(e) => setDomainOverride(e.target.value)}
+                className="w-full px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+              >
+                <option value="">Select a domain...</option>
+                {DOMAIN_REGISTRY.map((d) => (
+                  <option key={d.canonical} value={d.canonical}>{d.canonical}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
       </div>
 
@@ -451,11 +460,13 @@ function AdminPanel() {
     setTimeout(() => setSuccessMessage(''), 4000);
   };
 
-  const handleApprove = async (id: string) => {
+  const handleApprove = async (id: string, domainOverride?: string) => {
     const sub = submissions.find((s) => s.id === id);
     if (!sub) return;
 
     const cleanedTitle = sanitizeTitle(sub.title);
+
+    const effectiveTrack = domainOverride || sub.track;
 
     // Step 1: mark submission approved
     const { error: approveError } = await supabase
@@ -465,7 +476,8 @@ function AdminPanel() {
     if (approveError) throw approveError;
 
     // Step 2: resolve the target section dynamically
-    const targetSectionId = await resolveSectionId(sub.track);
+    const resolvedSlug = resolveCanonicalSlug(effectiveTrack) ?? (domainOverride ? CANONICAL_TO_SLUG[domainOverride] : null);
+    const targetSectionId = await resolveSectionId(resolvedSlug);
 
     // Step 3: find an open slot in the resolved section
     let openSlot: { id: string } | null = null;
@@ -487,14 +499,16 @@ function AdminPanel() {
       ? `Contributed by ${sub.full_name}`
       : deriveExcerpt(publishContent);
 
-    const trackLower = sub.track.toLowerCase();
+    const trackLower = effectiveTrack.toLowerCase();
     const isLX = trackLower.includes('learner experience');
     const isHealthcare = trackLower.includes('healthcare');
     const sectionPrefix = isLX
       ? 'learner-experience'
       : isHealthcare
         ? 'advanced-healthcare-it'
-        : resolveCanonicalSlug(sub.track);
+        : (resolvedSlug || 'general');
+
+    const studyCategory = resolveStudyCategory(effectiveTrack) ?? (domainOverride || effectiveTrack);
 
     if (openSlot) {
       // Overwrite the placeholder slot
@@ -506,7 +520,7 @@ function AdminPanel() {
           title: cleanedTitle || sub.title,
           slug: uniqueSlug,
           content: publishContent || '',
-          study_category: resolveStudyCategory(sub.track),
+          study_category: studyCategory,
           section_id: targetSectionId,
           is_sample: false,
           is_featured: false,
@@ -529,7 +543,7 @@ function AdminPanel() {
           title: cleanedTitle || sub.title,
           slug: uniqueSlug,
           content: publishContent || '',
-          study_category: resolveStudyCategory(sub.track),
+          study_category: studyCategory,
           section_id: targetSectionId,
           is_sample: false,
           is_featured: false,

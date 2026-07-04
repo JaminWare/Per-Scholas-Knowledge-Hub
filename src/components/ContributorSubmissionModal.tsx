@@ -9,6 +9,7 @@ import { type NewSubmission } from '../utils/submissions';
 import { checkForDuplicate } from '../utils/duplicateCheck';
 import { JOURNEY_TABS, CATEGORY_FILTERS } from '../pages/LearnerExperiencePage';
 import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
+import { MASTER_CATEGORIES, getBadgeForTrack } from '../lib/domainRegistry';
 import { autoCategorizeSubmission } from '../utils/autoCategorize';
 
 type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Resource Link' | 'Prompt Playbook';
@@ -28,39 +29,8 @@ const SUBMISSION_TYPES = [
 
 const LX_TRACK_VALUE = 'Learner Experience & FAQs';
 
-// Sub-domain values must exactly match COMPTIA_OBJECTIVES keys so the
-// objectives dropdown resolves correctly.
-const MASTER_CATEGORIES = [
-  { label: 'Learner Experience & FAQs', badge: 'Community Contributor', sub: [] as string[] },
-  { label: 'CompTIA A+ Core 1', badge: 'Core 1 Expert', sub: [
-    'CompTIA A+ Core 1 Domain 1.0 (Mobile Devices)',
-    'CompTIA A+ Core 1 Domain 2.0 (Networking)',
-    'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
-    'CompTIA A+ Core 1 Domain 4.0 (Cloud)',
-    'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
-  ]},
-  { label: 'CompTIA A+ Core 2', badge: 'Core 2 Expert', sub: [
-    'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
-    'CompTIA A+ Core 2 Domain 2.0 (Security)',
-    'CompTIA A+ Core 2 Domain 3.0 (Software Troubleshooting)',
-    'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
-  ]},
-  { label: 'Advanced Healthcare IT', badge: 'Healthcare IT Specialist', sub: [
-    'Advanced Healthcare IT EHR Architecture',
-    'Advanced Healthcare IT HIPAA Data Security',
-    'Advanced Healthcare IT Clinical Workflows',
-  ]},
-];
-
 function getVisibleCategories(_type: SubmissionType) {
   return MASTER_CATEGORIES;
-}
-
-function getBadge(trackName: string): string {
-  if (trackName === LX_TRACK_VALUE || trackName.startsWith('Learner Experience')) return 'Community Contributor';
-  if (trackName.includes('Core 2')) return 'Core 2 Expert';
-  if (trackName.includes('Advanced Healthcare IT')) return 'Healthcare IT Specialist';
-  return 'Core 1 Expert';
 }
 
 function autoLinkUrls(text: string): string {
@@ -279,7 +249,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const isResourceLink = submissionType === 'Resource Link';
   const isLearnerExperience = masterCategory === LX_TRACK_VALUE;
   const isLightweight = submissionType === 'Diagram' || submissionType === 'Study Tip';
-  const autoBadge = isLearnerExperience ? 'Community Contributor' : getBadge(track || masterCategory);
+  const autoBadge = isLearnerExperience ? 'Community Contributor' : getBadgeForTrack(track || masterCategory);
 
   const visibleCategories = getVisibleCategories(submissionType);
   const selectedMasterObj = MASTER_CATEGORIES.find((c) => c.label === masterCategory);
