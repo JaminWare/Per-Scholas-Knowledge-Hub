@@ -298,7 +298,12 @@ function SubmissionCard({
   };
 
   const isResource = sub.submission_type === 'Resource Link';
-  const dateStr = new Date(sub.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const submittedAt = (() => {
+    const d = new Date(sub.created_at);
+    const date = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const time = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    return `Submitted ${date} at ${time}`;
+  })();
 
   return (
     <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-colors">
@@ -323,8 +328,8 @@ function SubmissionCard({
                 <span className="flex items-center gap-1 text-[11px] text-zinc-400">
                   <User className="w-3 h-3" /> {sub.full_name}
                 </span>
-                <span className="flex items-center gap-1 text-[11px] text-zinc-400">
-                  <Calendar className="w-3 h-3" /> {dateStr}
+                <span className="flex items-center gap-1 text-[11px] text-zinc-500">
+                  <Calendar className="w-3 h-3" /> {submittedAt}
                 </span>
                 <span className="flex items-center gap-1 text-[11px] text-zinc-500">
                   <Tag className="w-3 h-3" /> {sub.badge}
