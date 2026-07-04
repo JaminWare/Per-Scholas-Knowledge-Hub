@@ -26,10 +26,10 @@ function AppContent() {
   const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-200 dark:bg-[#2b2e33] text-zinc-800 dark:text-slate-200">
+    <div className="flex h-screen w-screen overflow-hidden bg-black text-zinc-100">
       {/* Sidebar */}
       <div
-        className={`flex-shrink-0 border-r border-sky-500/10 h-full overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`flex-shrink-0 border-r border-zinc-800 h-full overflow-hidden transition-all duration-300 ease-in-out ${
           sidebarOpen ? 'w-72' : 'w-0'
         }`}
       >
@@ -40,7 +40,7 @@ function AppContent() {
 
       {/* Main area */}
       <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
-        <header className="flex-shrink-0 z-30 bg-zinc-800/95 dark:bg-[#2b2e33]/90 backdrop-blur-lg border-b border-zinc-200 dark:border-slate-700">
+        <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800">
           <div className="flex items-center gap-3 px-4 py-3">
             <button
               onClick={() => setSidebarOpen((v) => !v)}
@@ -57,7 +57,7 @@ function AppContent() {
           </div>
         </header>
 
-        <main ref={mainRef} className="flex-1 overflow-y-auto p-4 md:p-6">
+        <main ref={mainRef} className="flex-1 overflow-y-auto bg-black p-4 md:p-6">
           <ScrollToTop scrollRef={mainRef} />
           <Routes>
             <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
@@ -70,8 +70,8 @@ function AppContent() {
           </Routes>
         </main>
 
-        <footer className="flex-shrink-0 border-t border-zinc-700/40 dark:border-slate-800/80 py-3 px-5">
-          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-zinc-500 dark:text-zinc-500">
+        <footer className="flex-shrink-0 border-t border-zinc-800 py-3 px-5">
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-zinc-500">
             <p>Per Scholas Learners Knowledge Base: AI-Enabled Healthcare IT</p>
             <p>Pioneering Cohort 2026-RTT-23</p>
           </div>
