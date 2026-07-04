@@ -7,7 +7,7 @@ import { useArticles } from '../hooks/useArticles';
 import SuccessToast from '../components/SuccessToast';
 import contentMap from '../data/contentMap';
 import {
-  TrendingUp, ArrowDown, Users, UploadCloud,
+  TrendingUp, Users, UploadCloud,
   Compass, BookOpen, Flame, Briefcase, ChevronRight, Award, LifeBuoy,
 } from 'lucide-react';
 
@@ -246,11 +246,6 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
         {/* ── Right sidebar control console ─────────────────── */}
         <aside className="lg:col-span-1 space-y-4 mt-6 lg:mt-10">
-
-          {/* Pulsing arrow drawing attention to submission CTA */}
-          <div className="flex justify-center py-2">
-            <ArrowDown className="animate-bounce text-sky-400 w-10 h-10 drop-shadow-[0_0_8px_rgba(56,189,248,0.6)]" />
-          </div>
 
           {/* Widget 1Contribute Placard (opens modal) */}
           <button
