@@ -81,6 +81,11 @@ const RULES: Rule[] = [
 export function normalizeCategory(rawCategory: string, title: string = ''): string {
   const trimmed = (rawCategory ?? '').trim();
   if (!trimmed) return trimmed;
+
+  // Learner Experience tracks are intentional sub-categories (e.g. "Learner Experience Job Hunt Triage").
+  // They must NEVER fall through to the domain keyword rules or they'll get captured by broad matches.
+  if (trimmed.startsWith('Learner Experience')) return trimmed;
+
   if (KNOWN_CANONICAL.has(trimmed)) return trimmed;
   if (SHORT_FORM_ALIASES[trimmed]) return SHORT_FORM_ALIASES[trimmed];
 
