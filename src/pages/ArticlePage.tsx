@@ -533,10 +533,7 @@ export default function ArticlePage() {
       </nav>
 
       {/* ── Hero Banner ──────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-sky-950 border border-zinc-700/50 p-8 mb-8">
-        <div className="absolute top-0 right-0 w-72 h-72 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-sky-400/5 rounded-full blur-2xl pointer-events-none" />
-
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-zinc-800 to-zinc-900 border border-zinc-700/60 shadow-[0_0_15px_rgba(56,189,248,0.3)] p-8 mb-8">
         <div className="relative">
           {/* Track label */}
           <div className="flex items-center gap-3 mb-4">
@@ -547,7 +544,7 @@ export default function ArticlePage() {
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-5 leading-tight">
+          <h1 className="text-2xl md:text-3xl font-bold text-white mb-5 leading-tight">
             {article.title}
           </h1>
 

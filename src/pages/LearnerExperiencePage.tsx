@@ -326,10 +326,7 @@ export default function LearnerExperiencePage() {
   return (
     <div className="space-y-8">
       {/* ─── Banner ─── */}
-      <div className="relative rounded-2xl border border-sky-500/10 dark:border-zinc-800 overflow-hidden bg-gradient-to-br from-slate-950 via-sky-950 to-slate-900">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/10 rounded-full blur-2xl pointer-events-none" />
-
+      <div className="relative rounded-2xl border border-zinc-700/60 overflow-hidden bg-gradient-to-r from-zinc-800 to-zinc-900 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
         <div className="relative px-6 py-8 md:px-8 md:py-10">
           <div className="flex items-start gap-5 mb-6">
             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-500 to-teal-500 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">

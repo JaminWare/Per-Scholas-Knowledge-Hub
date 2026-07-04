@@ -114,9 +114,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         <div className="lg:col-span-2 xl:col-span-3 space-y-10">
 
           {/* Hero */}
-          <section className="relative overflow-hidden rounded-2xl border border-sky-500/10 dark:border-zinc-800 bg-gradient-to-br from-slate-950 via-sky-950 to-slate-900">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-400/10 rounded-full blur-2xl pointer-events-none" />
+          <section className="relative overflow-hidden rounded-2xl border border-zinc-700/60 bg-gradient-to-r from-zinc-800 to-zinc-900 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
             <div className="relative px-6 py-8 md:px-8 md:py-10">
               <div className="max-w-2xl flex flex-col gap-2">
                 <div className="flex flex-wrap items-center gap-3">
