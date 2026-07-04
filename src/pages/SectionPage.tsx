@@ -141,7 +141,7 @@ const TAB_TO_SUBMISSION_TYPE: Record<ResourceTab, string | null> = {
 };
 
 const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-track]:bg-transparent';
-const CARD_WIDTH = 'w-[280px] sm:w-[320px] md:w-[350px] shrink-0 snap-start';
+
 
 function contentMapEntryToArticle(slug: string, entry: LocalArticle): ArticleWithContributor {
   const introBlock = entry.content.find((b) => b.type === 'intro');
