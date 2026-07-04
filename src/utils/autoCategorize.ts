@@ -24,7 +24,7 @@ const RULES: Rule[] = [
   },
   // Core 1 Domain 3.0 Hardware
   {
-    keywords: ['motherboard', 'ram', 'cpu', 'bios', 'post', 'cmos', 'heatsink', 'chipset', 'pcie', 'dimm', 'atx', 'power supply', 'psu', 'sata', 'nvme', 'ssd', 'hdd', 'socket', 'cpu socket', 'pin'],
+    keywords: ['motherboard', 'ram', 'cpu', 'bios', 'post', 'cmos', 'heatsink', 'chipset', 'pcie', 'dimm', 'atx', 'power supply', 'psu', 'sata', 'nvme', 'ssd', 'hdd', 'socket', 'cpu socket', 'pin', 'm.2', 'storage'],
     lessonNumbers: ['132'],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
