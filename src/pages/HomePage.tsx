@@ -71,7 +71,7 @@ const survivalGuideCards = [
   {
     id: 'job-hunt',
     title: 'Job Hunt & Certs',
-    description: 'Test-day strategies, resume reality checks, and interviews.',
+    description: 'Test day strategies, resume reality checks, and interviews.',
     icon: Briefcase,
     accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
     iconBg: 'bg-gradient-to-br from-zinc-600 to-zinc-500 shadow-zinc-500/20',

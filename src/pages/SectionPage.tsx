@@ -109,13 +109,13 @@ const TRACK_COLORS = {
 
 const DASHBOARD_CONTEXTS: Record<string, string> = {};
 
-const RESOURCE_TABS = ['All', 'Resource Links', 'Articles', 'Pro-Tips', 'Diagrams', 'Playbooks'] as const;
+const RESOURCE_TABS = ['All', 'Resource Links', 'Articles', 'Pro Tips', 'Diagrams', 'Playbooks'] as const;
 type ResourceTab = typeof RESOURCE_TABS[number];
 
 const TAB_ICONS: Record<ResourceTab, React.ComponentType<{ className?: string }>> = {
   'All': Layers,
   'Articles': FileText,
-  'Pro-Tips': Lightbulb,
+  'Pro Tips': Lightbulb,
   'Diagrams': GitBranch,
   'Resource Links': Link2,
   'Playbooks': Sparkles,
@@ -124,7 +124,7 @@ const TAB_ICONS: Record<ResourceTab, React.ComponentType<{ className?: string }>
 const TAB_TO_SUBMISSION_TYPE: Record<ResourceTab, string | null> = {
   'All': null,
   'Articles': 'Article',
-  'Pro-Tips': 'Study Tip',
+  'Pro Tips': 'Study Tip',
   'Diagrams': 'Diagram',
   'Resource Links': 'Resource Link',
   'Playbooks': 'Prompt Playbook',

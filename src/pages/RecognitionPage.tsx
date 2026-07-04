@@ -48,15 +48,15 @@ function getDomainName(urlString: string): string {
 
 // ── Portal bucket mapping ────────────────────────────────
 
-type PortalBucket = 'Articles' | 'Pro-Tips' | 'Diagrams' | 'Resource Links' | 'Playbooks';
+type PortalBucket = 'Articles' | 'Pro Tips' | 'Diagrams' | 'Resource Links' | 'Playbooks';
 
 function mapToPortalBucket(rawType: string | null | undefined): PortalBucket {
   switch (rawType) {
-    case 'Pro-Tip':
+    case 'Pro Tip':
     case 'Study Tip':
     case 'Quick Reference':
     case 'Quick Ref':
-      return 'Pro-Tips';
+      return 'Pro Tips';
     case 'Diagram':
       return 'Diagrams';
     case 'Resource Link':
@@ -141,7 +141,7 @@ const SECTION_HDR = 'bg-zinc-100/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-
 
 function getCategoryIcon(type: string, isFounder: boolean) {
   if (type === 'Resource Links') return <Link2 className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />;
-  if (type === 'Pro-Tips') return <Lightbulb className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />;
+  if (type === 'Pro Tips') return <Lightbulb className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />;
   if (type === 'Diagrams') return <GitBranch className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />;
   if (type === 'Playbooks') return <Sparkles className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />;
   return <BookOpen className={`w-3.5 h-3.5 flex-shrink-0 ${isFounder ? 'text-amber-500' : 'text-sky-500'}`} />;
@@ -261,7 +261,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
                       const itemType = s.submission_type ?? 'Article';
                       const itemBucket = mapToPortalBucket(itemType);
                       const isResourceLink = itemBucket === 'Resource Links';
-                      const isInternalNav = itemBucket === 'Articles' || itemBucket === 'Pro-Tips' || itemBucket === 'Diagrams' || itemBucket === 'Playbooks';
+                      const isInternalNav = itemBucket === 'Articles' || itemBucket === 'Pro Tips' || itemBucket === 'Diagrams' || itemBucket === 'Playbooks';
 
                       if (isResourceLink) {
                         const hasUrl = s.content && s.content.startsWith('http');

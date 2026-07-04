@@ -92,7 +92,7 @@ export const CATEGORY_FILTERS: Record<string, CategoryFilter[]> = {
   ],
   cert: [
     { id: 'all-cert', label: 'All Cert Advice', keywords: [], nested: [] },
-    { id: 'test-strategies', label: 'Test-Day Strategies', keywords: ['anxiety', 'stress', 'time', 'flag', 'pearson', 'proctor', 'pace', 'home', 'center'], nested: [
+    { id: 'test-strategies', label: 'Test Day Strategies', keywords: ['anxiety', 'stress', 'time', 'flag', 'pearson', 'proctor', 'pace', 'home', 'center'], nested: [
       { label: 'All Test Strategies', keywords: [] },
       { label: 'Anxiety Management', keywords: ['anxiety', 'stress', 'panic', 'breathe', 'calm'] },
       { label: 'Time Management', keywords: ['time', 'flag', 'skip', 'pace', 'clock'] },
@@ -107,7 +107,7 @@ export const CATEGORY_FILTERS: Record<string, CategoryFilter[]> = {
     { id: 'study-benchmarks', label: 'Practice & Benchmarks', keywords: ['score', 'benchmark', 'practice', 'ready', 'dion', 'messer', 'cram', 'review', 'cheat sheet'], nested: [
       { label: 'All Practice & Benchmarks', keywords: [] },
       { label: 'Readiness Benchmarks', keywords: ['score', 'benchmark', 'practice', 'ready', 'dion', 'messer'] },
-      { label: 'Last-Minute Review', keywords: ['cram', 'day before', 'review', 'cheat sheet'] },
+      { label: 'Last Minute Review', keywords: ['cram', 'day before', 'review', 'cheat sheet'] },
     ]},
   ],
   job: [
@@ -142,10 +142,10 @@ export interface JourneyTab {
 
 export const JOURNEY_TABS: JourneyTab[] = [
   { id: 'all', label: 'All', icon: Compass, emptyPrompt: 'Be the first to share a peer survival tip. Your cohort is waiting.' },
-  { id: 'onboarding', label: 'Onboarding Hurdles', icon: Lightbulb, trackSuffix: 'Onboarding Hurdles', emptyPrompt: 'Did you survive the first-week setup chaos? Click here to drop a tip for the next cohort.' },
+  { id: 'onboarding', label: 'Onboarding Hurdles', icon: Lightbulb, trackSuffix: 'Onboarding Hurdles', emptyPrompt: 'Did you survive the first week setup chaos? Click here to drop a tip for the next cohort.' },
   { id: 'labs', label: 'Tech Solutions', icon: BookOpen, trackSuffix: 'Tech Solutions', emptyPrompt: 'Have a fix for a common tech issue? Share your solution here to help the next learner.' },
-  { id: 'slump', label: 'The Mid-Program Slump', icon: Flame, trackSuffix: 'The Mid-Program Slump', emptyPrompt: 'Hit a wall mid-way through and broken through it? Share your strategy here.' },
-  { id: 'cert', label: 'Certification Prep', icon: Shield, trackSuffix: 'Certification Prep', emptyPrompt: 'Have a test-day hack or anxiety management trick? The cohort needs it.' },
+  { id: 'slump', label: 'The Mid Program Slump', icon: Flame, trackSuffix: 'The Mid-Program Slump', emptyPrompt: 'Hit a wall mid way through and broken through it? Share your strategy here.' },
+  { id: 'cert', label: 'Certification Prep', icon: Shield, trackSuffix: 'Certification Prep', emptyPrompt: 'Have a test day hack or anxiety management trick? The cohort needs it.' },
   { id: 'job', label: 'Job Hunt Triage', icon: Briefcase, trackSuffix: 'Job Hunt Triage', emptyPrompt: 'Landed an interview or fixed your resume? Drop your advice for the next wave.' },
 ];
 
