@@ -6,7 +6,6 @@ import {
   DOMAIN_REGISTRY, SLUG_TO_CANONICAL, CANONICAL_TO_SLUG,
   resolveToCanonical, resolveTrackSlug,
 } from '../lib/domainRegistry';
-import { ADMIN_EMAILS } from '../constants/config';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import { useAuth } from '../hooks/useAuth';
 import AuthModal from '../components/AuthModal';
@@ -16,7 +15,7 @@ import {
   AlertCircle, EyeOff, RefreshCw, FileText, Link2,
   GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
   Pencil, SplitSquareHorizontal, Archive, Filter,
-  RotateCcw, XCircle, ShieldOff, Search,
+  RotateCcw, XCircle, ShieldOff, Search, UserPlus, Crown, X,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -594,16 +593,225 @@ function ArchiveTable({
 }
 
 // ---------------------------------------------------------------------------
+// Access Control View (only visible to admins with can_manage_admins)
+// ---------------------------------------------------------------------------
+interface WhitelistEntry {
+  id: string;
+  email: string;
+  can_manage_admins: boolean;
+  created_at: string;
+}
+
+function AccessControlView({ adminEmail }: { adminEmail: string }) {
+  const [admins, setAdmins] = useState<WhitelistEntry[]>([]);
+  const [loadingList, setLoadingList] = useState(true);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [grantManage, setGrantManage] = useState(false);
+  const [inviting, setInviting] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const fetchAdmins = async () => {
+    setLoadingList(true);
+    const { data, error: fetchErr } = await supabase
+      .from('admin_whitelist')
+      .select('id, email, can_manage_admins, created_at')
+      .order('created_at', { ascending: true });
+    if (fetchErr) {
+      setError(fetchErr.message);
+    } else {
+      setAdmins((data as WhitelistEntry[]) ?? []);
+    }
+    setLoadingList(false);
+  };
+
+  useEffect(() => { fetchAdmins(); }, []);
+
+  const handleInvite = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = inviteEmail.trim().toLowerCase();
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+    if (admins.some((a) => a.email === trimmed)) {
+      setError('This email is already in the admin whitelist.');
+      return;
+    }
+    setInviting(true);
+    setError('');
+    const { error: insertErr } = await supabase
+      .from('admin_whitelist')
+      .insert({ email: trimmed, can_manage_admins: grantManage });
+    if (insertErr) {
+      setError(insertErr.message);
+    } else {
+      setSuccess(`${trimmed} has been added as an admin.`);
+      setInviteEmail('');
+      setGrantManage(false);
+      await logAdminAction(adminEmail, 'INVITED_ADMIN', undefined, trimmed);
+      fetchAdmins();
+      setTimeout(() => setSuccess(''), 4000);
+    }
+    setInviting(false);
+  };
+
+  const handleRevoke = async (entry: WhitelistEntry) => {
+    if (entry.email === adminEmail) {
+      setError('You cannot remove yourself from the whitelist.');
+      return;
+    }
+    if (!window.confirm(`Remove ${entry.email} from the admin whitelist? They will lose all admin access immediately.`)) return;
+    setError('');
+    const { error: deleteErr } = await supabase
+      .from('admin_whitelist')
+      .delete()
+      .eq('id', entry.id);
+    if (deleteErr) {
+      setError(deleteErr.message);
+    } else {
+      setSuccess(`${entry.email} has been removed.`);
+      await logAdminAction(adminEmail, 'REVOKED_ADMIN', undefined, entry.email);
+      fetchAdmins();
+      setTimeout(() => setSuccess(''), 4000);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Section header */}
+      <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
+        <Crown className="w-5 h-5 text-amber-400" />
+        <div>
+          <h2 className="text-lg font-bold text-zinc-100">Access Control</h2>
+          <p className="text-sm text-zinc-500 mt-0.5">Manage who can access the Admin Command Center</p>
+        </div>
+      </div>
+
+      {/* Messages */}
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/25 text-red-400 text-sm">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          {error}
+          <button onClick={() => setError('')} className="ml-auto p-1 hover:bg-red-500/20 rounded"><X className="w-3.5 h-3.5" /></button>
+        </div>
+      )}
+      {success && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-teal-500/10 border border-teal-500/25 text-teal-400 text-sm font-medium">
+          <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+          {success}
+        </div>
+      )}
+
+      {/* Invite Form */}
+      <form onSubmit={handleInvite} className="p-5 rounded-xl bg-zinc-900 border border-zinc-800 space-y-4">
+        <h3 className="text-sm font-bold text-zinc-200 flex items-center gap-2">
+          <UserPlus className="w-4 h-4 text-sky-400" />
+          Invite New Admin
+        </h3>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <input
+            type="email"
+            value={inviteEmail}
+            onChange={(e) => setInviteEmail(e.target.value)}
+            placeholder="admin@example.com"
+            className="flex-1 px-4 py-2.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+          />
+          <button
+            type="submit"
+            disabled={inviting || !inviteEmail.trim()}
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-white text-sm font-bold transition-all shadow-md shadow-sky-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+            Invite
+          </button>
+        </div>
+        <label className="flex items-center gap-3 cursor-pointer group">
+          <input
+            type="checkbox"
+            checked={grantManage}
+            onChange={(e) => setGrantManage(e.target.checked)}
+            className="w-4 h-4 rounded border-zinc-600 bg-zinc-950 text-sky-500 focus:ring-sky-500/40 focus:ring-offset-0"
+          />
+          <span className="text-xs text-zinc-400 group-hover:text-zinc-300 transition-colors">
+            Grant Admin Management Privileges (Can invite others)
+          </span>
+        </label>
+      </form>
+
+      {/* Admin List */}
+      {loadingList ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-5 h-5 animate-spin text-zinc-500" />
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-xl border border-zinc-800">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="bg-zinc-900/80 border-b border-zinc-800">
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Email</th>
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Role</th>
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 hidden md:table-cell">Added</th>
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800/60">
+              {admins.map((entry) => (
+                <tr key={entry.id} className="hover:bg-zinc-900/50 transition-colors">
+                  <td className="px-4 py-3 text-zinc-200 font-medium">
+                    <span className="flex items-center gap-2">
+                      {entry.email}
+                      {entry.email === adminEmail && (
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-sky-500/15 text-sky-400 border border-sky-500/25">You</span>
+                      )}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3">
+                    {entry.can_manage_admins ? (
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        <Crown className="w-3 h-3" /> Owner
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-500/10 text-zinc-400 border border-zinc-600/20">
+                        <ShieldCheck className="w-3 h-3" /> Admin
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-zinc-500 whitespace-nowrap hidden md:table-cell">
+                    {new Date(entry.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    {entry.email !== adminEmail && (
+                      <button
+                        onClick={() => handleRevoke(entry)}
+                        title={`Remove ${entry.email}`}
+                        className="p-1.5 rounded-md hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main Admin Panel
 // ---------------------------------------------------------------------------
-function AdminPanel({ adminEmail }: { adminEmail: string }) {
+function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canManageAdmins: boolean }) {
   const [submissions, setSubmissions] = useState<PendingSubmission[]>([]);
   const [archive, setArchive] = useState<ArchiveRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [archiveLoading, setArchiveLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [activeTab, setActiveTab] = useState<'pending' | 'archive'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'archive' | 'access'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredSubmissions = useMemo(() => {
@@ -935,6 +1143,20 @@ function AdminPanel({ adminEmail }: { adminEmail: string }) {
             >
               All Submissions
             </button>
+            {canManageAdmins && (
+              <button
+                type="button"
+                onClick={() => setActiveTab('access')}
+                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                  activeTab === 'access'
+                    ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <Crown className="w-3.5 h-3.5" />
+                Access Control
+              </button>
+            )}
           </div>
         </div>
 
@@ -1003,19 +1225,48 @@ function AdminPanel({ adminEmail }: { adminEmail: string }) {
           />
         )}
 
+        {/* ─── Access Control ─── */}
+        {activeTab === 'access' && canManageAdmins && (
+          <AccessControlView adminEmail={adminEmail} />
+        )}
+
       </main>
     </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// Root export: auth gate + panel
+// Root export: auth gate + panel (database-driven whitelist)
 // ---------------------------------------------------------------------------
 export default function AdminControlPage() {
   const { user, loading } = useAuth();
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [adminCheck, setAdminCheck] = useState<{ checked: boolean; isAdmin: boolean; canManageAdmins: boolean }>({
+    checked: false,
+    isAdmin: false,
+    canManageAdmins: false,
+  });
 
-  if (loading) {
+  useEffect(() => {
+    if (!user?.email) return;
+    let mounted = true;
+    (async () => {
+      const { data } = await supabase
+        .from('admin_whitelist')
+        .select('email, can_manage_admins')
+        .eq('email', user.email!)
+        .maybeSingle();
+      if (!mounted) return;
+      setAdminCheck({
+        checked: true,
+        isAdmin: !!data,
+        canManageAdmins: data?.can_manage_admins ?? false,
+      });
+    })();
+    return () => { mounted = false; };
+  }, [user?.email]);
+
+  if (loading || (user && !adminCheck.checked)) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-sky-400 animate-spin" />
@@ -1049,9 +1300,7 @@ export default function AdminControlPage() {
     );
   }
 
-  const isAdmin = ADMIN_EMAILS.includes(user.email ?? '');
-
-  if (!isAdmin) {
+  if (!adminCheck.isAdmin) {
     return (
       <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
         <div className="w-full max-w-sm text-center space-y-6">
@@ -1072,5 +1321,5 @@ export default function AdminControlPage() {
     );
   }
 
-  return <AdminPanel adminEmail={user.email ?? 'unknown'} />;
+  return <AdminPanel adminEmail={user.email ?? 'unknown'} canManageAdmins={adminCheck.canManageAdmins} />;
 }
