@@ -120,6 +120,23 @@ function AppContent() {
             <div className="flex-1 max-w-2xl">
               <SearchBar onMenuClick={() => setDesktopSidebarOpen(true)} />
             </div>
+            {user ? (
+              <button
+                onClick={signOut}
+                className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-700/60 hover:border-zinc-600 transition-all"
+              >
+                <LogOut className="w-4 h-4" />
+                Sign Out
+              </button>
+            ) : (
+              <button
+                onClick={() => setMobileAuthOpen(true)}
+                className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-sky-400 hover:text-white bg-sky-500/10 hover:bg-sky-500 border border-sky-500/25 hover:border-sky-500 transition-all shadow-sm hover:shadow-lg hover:shadow-sky-500/20"
+              >
+                <LogIn className="w-4 h-4" />
+                Sign In
+              </button>
+            )}
           </div>
         </header>
 
