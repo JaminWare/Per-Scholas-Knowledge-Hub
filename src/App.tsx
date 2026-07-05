@@ -90,6 +90,7 @@ function AppContent() {
           {user ? (
             <button
               onClick={signOut}
+              title="Sign Out"
               className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors flex-shrink-0"
               aria-label="Sign out"
             >
@@ -98,6 +99,7 @@ function AppContent() {
           ) : (
             <button
               onClick={() => setMobileAuthOpen(true)}
+              title="Sign In"
               className="p-2 rounded-lg text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors flex-shrink-0"
               aria-label="Sign in"
             >
@@ -124,18 +126,18 @@ function AppContent() {
             {user ? (
               <button
                 onClick={signOut}
-                className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-700/60 hover:border-zinc-600 transition-all"
+                title="Sign Out"
+                className="ml-auto p-2 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
               >
-                <LogOut className="w-4 h-4" />
-                Sign Out
+                <LogOut className="w-5 h-5" />
               </button>
             ) : (
               <button
                 onClick={() => setMobileAuthOpen(true)}
-                className="ml-auto inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-sky-400 hover:text-white bg-sky-500/10 hover:bg-sky-500 border border-sky-500/25 hover:border-sky-500 transition-all shadow-sm hover:shadow-lg hover:shadow-sky-500/20"
+                title="Sign In"
+                className="ml-auto p-2 rounded-md text-sky-400 hover:text-white hover:bg-sky-500/15 transition-colors"
               >
-                <LogIn className="w-4 h-4" />
-                Sign In
+                <LogIn className="w-5 h-5" />
               </button>
             )}
           </div>
