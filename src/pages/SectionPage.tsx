@@ -11,6 +11,8 @@ import {
   SECTION_TITLE_TO_CANONICAL, SLUG_TO_CANONICAL,
 } from '../lib/domainRegistry';
 import { useSmartBack } from '../hooks/useSmartBack';
+import { SECTION_ROLE_COLORS } from '../constants/badges';
+import { TRACK_NAMES } from '../constants/tracks';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, Sparkles, Laptop, Monitor, Database,
@@ -19,40 +21,34 @@ import {
 } from 'lucide-react';
 
 const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ className?: string }>; track?: string }> = {
-  'study-tips/core1-overview': { title: 'Core 1 Overview', icon: Lightbulb, track: 'CompTIA A+ Core 1' },
-  'study-tips/acronyms': { title: 'Acronym Master Directory', icon: Bookmark, track: 'CompTIA A+ Core 1' },
-  'core1-networking/pbq-prompts': { title: 'PBQ Simulation Prompts', icon: Sparkles, track: 'CompTIA A+ Core 1' },
-  'core1-mobile':          { title: 'Domain 1.0 Mobile Devices', icon: Laptop, track: 'CompTIA A+ Core 1' },
-  'core1-networking':      { title: 'Domain 2.0 Networking', icon: Network, track: 'CompTIA A+ Core 1' },
-  'core1-hardware':        { title: 'Domain 3.0 Hardware', icon: Cpu, track: 'CompTIA A+ Core 1' },
-  'core1-cloud':           { title: 'Domain 4.0 Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
-  'core1-virtualization':  { title: 'Domain 4.0 Virtualization & Cloud', icon: Cloud, track: 'CompTIA A+ Core 1' },
-  'core1-troubleshooting': { title: 'Domain 5.0 HW & Network Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 1' },
-  'core2-os':              { title: 'Domain 1.0 Operating Systems', icon: Monitor, track: 'CompTIA A+ Core 2' },
-  'core2-os/cli-runbook': { title: 'CLI Command Runbook', icon: Monitor, track: 'CompTIA A+ Core 2' },
-  'core2-security':        { title: 'Domain 2.0 Security', icon: Shield, track: 'CompTIA A+ Core 2' },
-  'core2-software':        { title: 'Domain 3.0 Software Troubleshooting', icon: Wrench, track: 'CompTIA A+ Core 2' },
-  'core2-operations':      { title: 'Domain 4.0 Operational Procedures', icon: Users, track: 'CompTIA A+ Core 2' },
-  'healthcare-ehr':        { title: 'EHR Architecture', icon: Database, track: 'Advanced Healthcare IT' },
-  'healthcare-hipaa':      { title: 'HIPAA Data Security', icon: Lock, track: 'Advanced Healthcare IT' },
-  'healthcare-clinical':   { title: 'Clinical Workflows', icon: Heart, track: 'Advanced Healthcare IT' },
+  'study-tips/core1-overview': { title: 'Core 1 Overview', icon: Lightbulb, track: TRACK_NAMES.CORE_1 },
+  'study-tips/acronyms': { title: 'Acronym Master Directory', icon: Bookmark, track: TRACK_NAMES.CORE_1 },
+  'core1-networking/pbq-prompts': { title: 'PBQ Simulation Prompts', icon: Sparkles, track: TRACK_NAMES.CORE_1 },
+  'core1-mobile':          { title: 'Domain 1.0 Mobile Devices', icon: Laptop, track: TRACK_NAMES.CORE_1 },
+  'core1-networking':      { title: 'Domain 2.0 Networking', icon: Network, track: TRACK_NAMES.CORE_1 },
+  'core1-hardware':        { title: 'Domain 3.0 Hardware', icon: Cpu, track: TRACK_NAMES.CORE_1 },
+  'core1-cloud':           { title: 'Domain 4.0 Virtualization & Cloud', icon: Cloud, track: TRACK_NAMES.CORE_1 },
+  'core1-virtualization':  { title: 'Domain 4.0 Virtualization & Cloud', icon: Cloud, track: TRACK_NAMES.CORE_1 },
+  'core1-troubleshooting': { title: 'Domain 5.0 HW & Network Troubleshooting', icon: Wrench, track: TRACK_NAMES.CORE_1 },
+  'core2-os':              { title: 'Domain 1.0 Operating Systems', icon: Monitor, track: TRACK_NAMES.CORE_2 },
+  'core2-os/cli-runbook': { title: 'CLI Command Runbook', icon: Monitor, track: TRACK_NAMES.CORE_2 },
+  'core2-security':        { title: 'Domain 2.0 Security', icon: Shield, track: TRACK_NAMES.CORE_2 },
+  'core2-software':        { title: 'Domain 3.0 Software Troubleshooting', icon: Wrench, track: TRACK_NAMES.CORE_2 },
+  'core2-operations':      { title: 'Domain 4.0 Operational Procedures', icon: Users, track: TRACK_NAMES.CORE_2 },
+  'healthcare-ehr':        { title: 'EHR Architecture', icon: Database, track: TRACK_NAMES.HEALTHCARE },
+  'healthcare-hipaa':      { title: 'HIPAA Data Security', icon: Lock, track: TRACK_NAMES.HEALTHCARE },
+  'healthcare-clinical':   { title: 'Clinical Workflows', icon: Heart, track: TRACK_NAMES.HEALTHCARE },
   'learner-experience/navigation':  { title: 'Navigating the Hub: Search, Domains & Filtering', icon: Compass, track: 'Learner Experience & FAQs' },
   'learner-experience/adding-intel': { title: 'Adding Intel: How to Submit Your Field Notes', icon: BookOpen, track: 'Learner Experience & FAQs' },
 };
 
-const roleColors: Record<string, string> = {
-  'Core 1 Expert':       'bg-sky-500/10 text-sky-400',
-  'Core 2 Expert':       'bg-sky-500/10 text-sky-400',
-  'HealthIT Specialist': 'bg-sky-500/10 text-sky-400',
-  'AI Prompt Engineer':  'bg-sky-500/10 text-sky-400',
-  'Reference Author':    'bg-amber-500/10 text-amber-400',
-};
+const roleColors = SECTION_ROLE_COLORS;
 
 const CANONICAL_DOMAINS = SECTION_TITLE_TO_CANONICAL;
 
 const CURRICULUM_TRACKS = [
   {
-    track: 'CompTIA A+ Core 1',
+    track: TRACK_NAMES.CORE_1,
     icon: Laptop,
     color: 'sky' as const,
     domains: [
@@ -64,7 +60,7 @@ const CURRICULUM_TRACKS = [
     ],
   },
   {
-    track: 'CompTIA A+ Core 2',
+    track: TRACK_NAMES.CORE_2,
     icon: Monitor,
     color: 'teal' as const,
     domains: [
@@ -75,7 +71,7 @@ const CURRICULUM_TRACKS = [
     ],
   },
   {
-    track: 'Advanced Healthcare IT',
+    track: TRACK_NAMES.HEALTHCARE,
     icon: Heart,
     color: 'cyan' as const,
     domains: [

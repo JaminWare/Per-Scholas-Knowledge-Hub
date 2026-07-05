@@ -9,6 +9,9 @@ import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import { useSmartBack } from '../hooks/useSmartBack';
+import { FOUNDER_KEY } from '../constants/config';
+import { deriveTierBadge } from '../constants/badges';
+import { TRACK_ORDER } from '../constants/tracks';
 
 // ── Badge colour map ──────────────────────────────────────
 
@@ -32,12 +35,6 @@ function BadgeTag({ badge }: { badge: string }) {
       [{badge}]
     </span>
   );
-}
-
-function deriveTierBadge(count: number): string {
-  if (count >= 5) return 'Master Architect';
-  if (count >= 3) return 'Domain Expert';
-  return 'Cohort Contributor';
 }
 
 function getDomainName(urlString: string): string {
@@ -73,7 +70,7 @@ function mapToPortalBucket(rawType: string | null | undefined): PortalBucket {
 
 // ── Track resolution (single source of truth) ────────────
 
-const KNOWN_TRACK_ORDER = ['CompTIA A+ Core 1', 'CompTIA A+ Core 2', 'Advanced Healthcare IT', 'Learner Experience'];
+const KNOWN_TRACK_ORDER: readonly string[] = TRACK_ORDER;
 
 function resolveTrack(track: string, slug?: string): string {
   if (!track && slug) {
@@ -424,7 +421,7 @@ export default function RecognitionPage() {
       }, {});
 
       // Override Jamin Ware's badge to Founder
-      const jaminKey = 'jamin ware';
+      const jaminKey = FOUNDER_KEY;
       if (grouped[jaminKey]) {
         grouped[jaminKey].topBadge = 'Founder';
       }
@@ -447,7 +444,7 @@ export default function RecognitionPage() {
       setContributors(sorted);
 
       // Determine newest non-founder contributor
-      const firstNonFounder = allEntries.find((s) => s.full_name.trim().toLowerCase() !== 'jamin ware');
+      const firstNonFounder = allEntries.find((s) => s.full_name.trim().toLowerCase() !== FOUNDER_KEY);
       setNewestName(firstNonFounder?.full_name.trim() ?? null);
     }
     fetchFromSupabase();

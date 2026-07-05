@@ -6,6 +6,7 @@ import {
   DOMAIN_REGISTRY, SLUG_TO_CANONICAL, CANONICAL_TO_SLUG,
   resolveToCanonical, resolveToSlug,
 } from '../lib/domainRegistry';
+import { ADMIN_PASSCODE, COHORT_SHORT_LABEL } from '../constants/config';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import {
   Lock, ShieldCheck, CheckCircle2, Trash2, Loader2,
@@ -37,7 +38,7 @@ interface PendingSubmission {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-const PASSCODE = 'PerScholas2026!';
+const PASSCODE = ADMIN_PASSCODE;
 
 function slugify(text: string): string {
   return text
@@ -166,7 +167,7 @@ function LoginScreen({ onAuth }: { onAuth: () => void }) {
             <Lock className="w-8 h-8 text-sky-400" />
           </div>
           <h1 className="text-2xl font-bold text-zinc-100">Cohort Admin Portal</h1>
-          <p className="text-sm text-zinc-500 mt-1">Per Scholas 2026-RTT-23</p>
+          <p className="text-sm text-zinc-500 mt-1">{COHORT_SHORT_LABEL}</p>
         </div>
 
         <form

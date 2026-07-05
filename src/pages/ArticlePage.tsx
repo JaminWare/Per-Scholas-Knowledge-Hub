@@ -17,6 +17,8 @@ import { articleContentMap } from '../data/articles';
 import contentMap from '../data/contentMap';
 import ArticleRenderer from '../components/ArticleRenderer';
 import type { Article, Contributor } from '../types/database';
+import { FOUNDER_NAME } from '../constants/config';
+import { ROLE_BADGE_STYLES } from '../constants/badges';
 
 const sectionTrackLabels: Record<string, string> = {
   'core1-networking':      'COMPTIA A+ CORE 1 NETWORKING',
@@ -43,14 +45,7 @@ const FOUNDER_SLUGS = new Set([
   'core1-networking/sample-protocols',
 ]);
 
-const roleBadgeStyles: Record<string, string> = {
-  'Founder':             'bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20',
-  'HealthIT Specialist': 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
-  'Reference Author':    'bg-amber-500/10 text-amber-600 dark:text-amber-400',
-  'Core 1 Expert':       'bg-sky-500/10 text-sky-600 dark:text-sky-400',
-  'Core 2 Expert':       'bg-teal-500/10 text-teal-600 dark:text-teal-400',
-  'Playbook Engineer':   'bg-violet-500/10 text-violet-600 dark:text-violet-400',
-};
+const roleBadgeStyles = ROLE_BADGE_STYLES;
 
 const SAMPLE_KEYWORDS = [
   'comptia', 'core1', 'core2', 'mobile', 'networking', 'hardware',
@@ -84,10 +79,10 @@ function deriveTrackLabel(article: Article): string {
 function deriveAuthorName(contributor: Contributor | null, article: Article): string {
   if (contributor?.name) return contributor.name;
   if (article.author_name) return article.author_name;
-  if (FOUNDER_SLUGS.has(article.slug)) return 'Jamin Ware';
+  if (FOUNDER_SLUGS.has(article.slug)) return FOUNDER_NAME;
   const featuredSlugs = ['core1-networking/firewall-basics', 'core1-troubleshooting/command-documentation', 'core2-os/snap-in', 'healthcare-hipaa/intro-healthcare-it-security', 'healthcare-ehr/cloud-computing-healthcare', 'ai-prompt-engineering-healthcare'];
-  if (featuredSlugs.includes(article.slug)) return 'Jamin Ware';
-  return 'Jamin Ware';
+  if (featuredSlugs.includes(article.slug)) return FOUNDER_NAME;
+  return FOUNDER_NAME;
 }
 
 // Full-page diagram panels for founder Diagrams articles
@@ -497,7 +492,7 @@ export default function ArticlePage() {
   const trackLabel = localContentEntry?.trackLabel?.toUpperCase() ?? deriveTrackLabel(article);
   const authorInitial = authorName.charAt(0).toUpperCase();
 
-  const isFounderSlug = FOUNDER_SLUGS.has(article.slug) || authorName === 'Jamin Ware';
+  const isFounderSlug = FOUNDER_SLUGS.has(article.slug) || authorName === FOUNDER_NAME;
   const effectiveIsSample = isSample && !isFounderSlug;
 
   const isNetworkTopologyArticle = article.slug === 'core1-networking/network-topology-architecture' && !strictlyIsSample;
@@ -563,12 +558,12 @@ export default function ArticlePage() {
                   </div>
                   <span className="text-sm font-medium text-zinc-200">{authorName}</span>
                 </div>
-                {authorName === 'Jamin Ware' && (
+                {authorName === FOUNDER_NAME && (
                   <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${roleBadgeStyles['Founder']}`}>
                     [Founder]
                   </span>
                 )}
-                {contributor?.name && contributor.name !== 'Jamin Ware' && (
+                {contributor?.name && contributor.name !== FOUNDER_NAME && (
                   <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400">
                     [Contributor]
                   </span>

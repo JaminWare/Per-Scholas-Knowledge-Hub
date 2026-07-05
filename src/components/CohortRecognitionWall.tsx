@@ -2,22 +2,15 @@ import { useState, useEffect } from 'react';
 import { Award, Plus, BookOpen, Zap, Link2, Star, Crown } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
+import { FOUNDER_KEY, COHORT_LABEL } from '../constants/config';
+import { BADGE_COLORS } from '../constants/badges';
 
 interface Props {
   newSubmission: NewSubmission | null;
   onClaimBadge: () => void;
 }
 
-const badgeColors: Record<string, string> = {
-  'Founder':             'bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400',
-  'Core 1 Expert':       'bg-sky-500/10 text-sky-600 dark:text-sky-400',
-  'Core 2 Expert':       'bg-teal-500/10 text-teal-600 dark:text-teal-400',
-  'HealthIT Specialist': 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400',
-  'Diagram Architect':   'bg-blue-500/10 text-blue-600 dark:text-blue-400',
-  'Reference Author':    'bg-amber-500/10 text-amber-600 dark:text-amber-400',
-  'Playbook Engineer':   'bg-violet-500/10 text-violet-600 dark:text-violet-400',
-  'Cohort Contributor':  'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400',
-};
+const badgeColors = BADGE_COLORS;
 
 function BadgeTag({ badge }: { badge: string }) {
   const cls = badgeColors[badge] ?? badgeColors['Cohort Contributor'];
@@ -97,7 +90,7 @@ function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
   }
 
   // Override Jamin Ware's badge to Founder
-  const jamin = map.get('jamin ware');
+  const jamin = map.get(FOUNDER_KEY);
   if (jamin) jamin.topBadge = 'Founder';
 
   const allGroups = Array.from(map.values()).map((g) => {
@@ -294,7 +287,7 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
   }, [newSubmission]);
 
   const allGroups = groupByName(submissions);
-  const newestName = submissions.find((s) => s.full_name?.trim().toLowerCase() !== 'jamin ware')?.full_name?.trim() ?? null;
+  const newestName = submissions.find((s) => s.full_name?.trim().toLowerCase() !== FOUNDER_KEY)?.full_name?.trim() ?? null;
 
   return (
     <section className="mt-12">
@@ -306,7 +299,7 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
           </div>
           <div>
             <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Cohort Recognition Wall</h2>
-            <p className="text-sm text-zinc-500">Pioneering Cohort 2026-RTT-23</p>
+            <p className="text-sm text-zinc-500">{COHORT_LABEL}</p>
           </div>
         </div>
         <span className="px-3 py-1 text-xs font-semibold bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-full">
