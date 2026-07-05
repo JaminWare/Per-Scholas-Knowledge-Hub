@@ -149,7 +149,7 @@ const LX_STAGES = JOURNEY_TABS.filter((t) => t.id !== 'all');
 
 export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh, editItem }: { isOpen: boolean; onClose: () => void; onSubmitted: (s: NewSubmission) => void; onRefresh?: () => void; editItem?: EditableArticle | null }) {
   const [fullName, setFullName] = useState('');
-  const [submissionType, setSubmissionType] = useState<SubmissionType>('Article');
+  const [submissionType, setSubmissionType] = useState<SubmissionType>('Resource Link');
 
   const [masterCategory, setMasterCategory] = useState('');
   const [track, setTrack] = useState('');
@@ -251,7 +251,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       setHardship('');
       setBreakthrough('');
     } else {
-      setSubmissionType('Article');
+      setSubmissionType('Resource Link');
       try {
         const saved = localStorage.getItem('learnerHub_authorName');
         setFullName(saved || '');
@@ -395,7 +395,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   const reset = () => {
     setFullName('');
-    setSubmissionType('Article');
+    setSubmissionType('Resource Link');
     setMasterCategory('');
     setTrack('');
     setTitle('');
