@@ -11,6 +11,7 @@ import { JOURNEY_TABS, CATEGORY_FILTERS } from '../pages/LearnerExperiencePage';
 import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import { MASTER_CATEGORIES, getBadgeForTrack } from '../lib/domainRegistry';
 import { autoCategorizeSubmission } from '../utils/autoCategorize';
+import { isImageUrl, sanitizeUrlForMarkdown, encodeMarkdownUrl } from '../utils/markdownLinks';
 
 type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Resource Link' | 'Prompt Playbook';
 
@@ -34,7 +35,10 @@ function getVisibleCategories(_type: SubmissionType) {
 }
 
 function autoLinkUrls(text: string): string {
-  return text.replace(/(?<!\]\()https?:\/\/[^\s)>\]]+/g, (url) => `[${url}](${url})`);
+  return text.replace(/(?<!\]\()https?:\/\/[^\s)>\]]+/g, (url) => {
+    const sanitized = sanitizeUrlForMarkdown(url);
+    return `[${sanitized}](${sanitized})`;
+  });
 }
 
 const STRUCTURED_LINE = /^\s*[-*•]\s|^\s*\d+[.)]\s|^\s*[$>]\s/;
@@ -68,10 +72,11 @@ function cleanReferences(raw: string): string {
         tracking.forEach((p) => u.searchParams.delete(p));
         cleanedUrl = u.toString().replace(/\/+$/, '');
       } catch { /* keep original */ }
+      const safeUrl = encodeMarkdownUrl(cleanedUrl);
       const domain = cleanedUrl.replace(/^https?:\/\/(www\.)?/, '').split('/')[0];
       const path = cleanedUrl.replace(/^https?:\/\/(www\.)?[^/]+/, '').replace(/\/+$/, '');
       const label = path ? `${domain}${path}` : domain;
-      return `- [${label}](${cleanedUrl})`;
+      return `- [${label}](${safeUrl})`;
     }
     return `- ${line}`;
   }).join('\n');
@@ -116,7 +121,11 @@ function buildFormattedContent(
   sections.push('', '## \u{1F3E5} Healthcare IT Integration', '', healthcareCallout);
 
   if (diagramUrl) {
-    sections.push('', '## \u{1F5FA}\u{FE0F} Visual Architecture', '', `![Diagram](${diagramUrl})`);
+    const safeUrl = sanitizeUrlForMarkdown(diagramUrl);
+    const media = isImageUrl(safeUrl)
+      ? `![Diagram](${safeUrl})`
+      : `[Attachment](${safeUrl})`;
+    sections.push('', '## \u{1F5FA}\u{FE0F} Visual Architecture', '', media);
   }
 
   sections.push('', '## \u{1F517} References & Citations', '', referencesBlock);
@@ -328,7 +337,10 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
     if (isLightweight) {
       let content = concept.trim();
-      if (diagramUrl.trim()) content += `\n\n![Attachment](${diagramUrl.trim()})`;
+      if (diagramUrl.trim()) {
+        const safeAttachUrl = sanitizeUrlForMarkdown(diagramUrl.trim());
+        content += isImageUrl(safeAttachUrl) ? `\n\n![Attachment](${safeAttachUrl})` : `\n\n[Attachment](${safeAttachUrl})`;
+      }
       return content;
     }
 
@@ -340,7 +352,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     md += `\n\n## \u{1F3E5} Healthcare IT Integration\n\n> \u{1F3E5} **Clinical Workflow Impact:** ${impact.trim()}`;
     md += `\n\n## \u{1F517} References & Citations\n\n${cleanReferences(references)}`;
     if (diagramUrl.trim()) {
-      md += `\n\n## \u{1F5FA}\u{FE0F} Visual Architecture\n\n![Diagram](${diagramUrl.trim()})`;
+      const safeDiagUrl = sanitizeUrlForMarkdown(diagramUrl.trim());
+      const diagMedia = isImageUrl(safeDiagUrl) ? `![Diagram](${safeDiagUrl})` : `[Diagram](${safeDiagUrl})`;
+      md += `\n\n## \u{1F5FA}\u{FE0F} Visual Architecture\n\n${diagMedia}`;
     }
     return md;
   };

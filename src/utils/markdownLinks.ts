@@ -114,3 +114,40 @@ export function buildMarkdownUrl(pageTitle: string, pageUrl: string): string {
     .trim();
   return `[${escapeMarkdownText(cleanTitle)}](${encoded})`;
 }
+
+const IMAGE_EXTENSIONS = new Set([
+  '.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.bmp', '.ico', '.tiff', '.avif',
+]);
+
+export function isImageUrl(url: string): boolean {
+  if (!url) return false;
+  try {
+    const pathname = new URL(url).pathname.toLowerCase();
+    const dotIdx = pathname.lastIndexOf('.');
+    if (dotIdx === -1) return false;
+    return IMAGE_EXTENSIONS.has(pathname.slice(dotIdx));
+  } catch {
+    const clean = url.split('?')[0].split('#')[0].toLowerCase();
+    const dotIdx = clean.lastIndexOf('.');
+    if (dotIdx === -1) return false;
+    return IMAGE_EXTENSIONS.has(clean.slice(dotIdx));
+  }
+}
+
+export function sanitizeUrlForMarkdown(url: string): string {
+  if (!url) return '';
+  let cleaned = url.replace(/<WebsiteContent_[A-Za-z0-9_]+>([\s\S]*?)<\/WebsiteContent_[A-Za-z0-9_]+>/g, '$1');
+  cleaned = cleaned.replace(/<\/?WebsiteContent_[A-Za-z0-9_]+>/g, '');
+  cleaned = cleaned.replace(/^edge_all_open_tabs\s*=\s*/, '');
+  cleaned = extractUrlFromMarkdownWrapper(cleaned);
+  cleaned = encodeMarkdownUrl(cleaned);
+  return cleaned;
+}
+
+export function formatUrlAsMarkdown(url: string, label?: string): string {
+  const sanitized = sanitizeUrlForMarkdown(url);
+  if (isImageUrl(sanitized)) {
+    return `![${label || 'Image'}](${sanitized})`;
+  }
+  return `[${escapeMarkdownText(label || sanitized)}](${sanitized})`;
+}

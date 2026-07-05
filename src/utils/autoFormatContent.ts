@@ -3,6 +3,17 @@ const MINOR_WORDS = new Set([
   'in', 'on', 'at', 'to', 'by', 'of', 'up', 'as', 'is', 'it',
 ]);
 
+const WRAPPER_TAG_RE = /<WebsiteContent_[A-Za-z0-9_]+>([\s\S]*?)<\/WebsiteContent_[A-Za-z0-9_]+>/g;
+const STRAY_TAG_RE = /<\/?WebsiteContent_[A-Za-z0-9_]+>/g;
+const TABS_PREFIX_RE = /^edge_all_open_tabs\s*=\s*/gm;
+
+function stripMetadataWrappers(text: string): string {
+  let cleaned = text.replace(WRAPPER_TAG_RE, '$1');
+  cleaned = cleaned.replace(STRAY_TAG_RE, '');
+  cleaned = cleaned.replace(TABS_PREFIX_RE, '');
+  return cleaned;
+}
+
 function toTitleCase(text: string): string {
   return text
     .split(/\s+/)
@@ -15,10 +26,18 @@ function toTitleCase(text: string): string {
     .join(' ');
 }
 
-function extractHeaderPhrase(paragraph: string): string {
+function extractHeaderPhrase(paragraph: string): { header: string; wordCount: number } {
   const words = paragraph.replace(/[#*>`_\[\]()]/g, '').trim().split(/\s+/);
   const count = Math.min(Math.max(3, Math.ceil(words.length * 0.3)), 6);
-  return toTitleCase(words.slice(0, count).join(' '));
+  return { header: toTitleCase(words.slice(0, count).join(' ')), wordCount: count };
+}
+
+function sliceLeadingWords(paragraph: string, count: number): string {
+  const words = paragraph.trim().split(/\s+/);
+  const remaining = words.slice(count);
+  if (remaining.length < 5) return '';
+  const body = remaining.join(' ');
+  return body.charAt(0).toUpperCase() + body.slice(1);
 }
 
 function wordCount(text: string): number {
@@ -38,6 +57,9 @@ export function autoFormatContent(raw: string): string {
   try {
     let text = raw.trim();
     if (!text) return text;
+
+    // Strip any metadata wrapper tags before processing
+    text = stripMetadataWrappers(text);
 
     // Collapse 3+ consecutive newlines to exactly 2
     text = text.replace(/\n{3,}/g, '\n\n');
@@ -65,8 +87,13 @@ export function autoFormatContent(raw: string): string {
           .join('\n');
         output.push(quoted);
       } else {
-        const header = `### ${extractHeaderPhrase(block)}`;
-        output.push(`${header}\n\n${block}`);
+        const { header, wordCount: headerWordCount } = extractHeaderPhrase(block);
+        const body = sliceLeadingWords(block, headerWordCount);
+        if (body) {
+          output.push(`### ${header}\n\n${body}`);
+        } else {
+          output.push(block);
+        }
       }
     }
 
