@@ -13,6 +13,7 @@ import {
   AlertCircle, Eye, EyeOff, RefreshCw, FileText, Link2,
   GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
   Pencil, SplitSquareHorizontal, Archive, Filter,
+  RotateCcw, XCircle,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -529,13 +530,35 @@ function SubmissionCard({
 // ---------------------------------------------------------------------------
 // Archive Table
 // ---------------------------------------------------------------------------
-function ArchiveTable({ data, loading }: { data: ArchiveRow[]; loading: boolean }) {
+function ArchiveTable({
+  data,
+  loading,
+  onRestore,
+  onHardDelete,
+  onUnpublish,
+}: {
+  data: ArchiveRow[];
+  loading: boolean;
+  onRestore: (id: string) => Promise<void>;
+  onHardDelete: (id: string) => Promise<void>;
+  onUnpublish: (id: string) => Promise<void>;
+}) {
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     if (statusFilter === 'all') return data;
     return data.filter((r) => r.status === statusFilter);
   }, [data, statusFilter]);
+
+  const handleAction = async (id: string, action: (id: string) => Promise<void>) => {
+    setBusyId(id);
+    try {
+      await action(id);
+    } finally {
+      setBusyId(null);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -580,6 +603,7 @@ function ArchiveTable({ data, loading }: { data: ArchiveRow[]; loading: boolean 
                 <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 hidden md:table-cell">Date</th>
                 <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 hidden lg:table-cell">Track</th>
                 <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Status</th>
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800/60">
@@ -590,6 +614,42 @@ function ArchiveTable({ data, loading }: { data: ArchiveRow[]; loading: boolean 
                   <td className="px-4 py-3 text-zinc-500 whitespace-nowrap hidden md:table-cell">{formatDate(row.created_at)}</td>
                   <td className="px-4 py-3 text-zinc-500 max-w-[160px] truncate hidden lg:table-cell">{trackDisplayName(row.track)}</td>
                   <td className="px-4 py-3"><StatusPill status={row.status} /></td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center justify-end gap-1.5">
+                      {busyId === row.id ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-500" />
+                      ) : row.status === 'rejected' ? (
+                        <>
+                          <button
+                            onClick={() => handleAction(row.id, onRestore)}
+                            title="Restore to pending queue"
+                            className="p-1.5 rounded-md hover:bg-amber-500/10 text-zinc-500 hover:text-amber-400 transition-colors"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (window.confirm('Permanently delete this submission? This cannot be undone.')) {
+                                handleAction(row.id, onHardDelete);
+                              }
+                            }}
+                            title="Permanently delete"
+                            className="p-1.5 rounded-md hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition-colors"
+                          >
+                            <XCircle className="w-3.5 h-3.5" />
+                          </button>
+                        </>
+                      ) : row.status === 'approved' ? (
+                        <button
+                          onClick={() => handleAction(row.id, onUnpublish)}
+                          title="Unpublish (move back to pending)"
+                          className="p-1.5 rounded-md hover:bg-amber-500/10 text-zinc-500 hover:text-amber-400 transition-colors"
+                        >
+                          <EyeOff className="w-3.5 h-3.5" />
+                        </button>
+                      ) : null}
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -783,6 +843,39 @@ function AdminPanel() {
     flashSuccess(`"${sub?.title ?? 'Submission'}" rejected.`);
   };
 
+  const handleArchiveRestore = async (id: string) => {
+    const { error } = await supabase
+      .from('submissions')
+      .update({ status: 'pending', is_approved: false })
+      .eq('id', id);
+    if (error) throw error;
+    setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'pending' } : r));
+    // Re-fetch pending to add it back to the queue
+    fetchPending();
+    flashSuccess('Submission restored to the pending queue.');
+  };
+
+  const handleArchiveHardDelete = async (id: string) => {
+    const { error } = await supabase
+      .from('submissions')
+      .delete()
+      .eq('id', id);
+    if (error) throw error;
+    setArchive((prev) => prev.filter((r) => r.id !== id));
+    flashSuccess('Submission permanently deleted.');
+  };
+
+  const handleArchiveUnpublish = async (id: string) => {
+    const { error } = await supabase
+      .from('submissions')
+      .update({ status: 'pending', is_approved: false })
+      .eq('id', id);
+    if (error) throw error;
+    setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'pending' } : r));
+    fetchPending();
+    flashSuccess('Submission unpublished and moved back to pending queue.');
+  };
+
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       {/* Header */}
@@ -881,7 +974,13 @@ function AdminPanel() {
         )}
 
         {/* ─── Archive Table ─── */}
-        <ArchiveTable data={archive} loading={archiveLoading} />
+        <ArchiveTable
+          data={archive}
+          loading={archiveLoading}
+          onRestore={handleArchiveRestore}
+          onHardDelete={handleArchiveHardDelete}
+          onUnpublish={handleArchiveUnpublish}
+        />
 
       </main>
     </div>
