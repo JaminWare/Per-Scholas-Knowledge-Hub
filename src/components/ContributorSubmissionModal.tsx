@@ -11,6 +11,7 @@ import { JOURNEY_TABS, CATEGORY_FILTERS } from '../pages/LearnerExperiencePage';
 import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import { MASTER_CATEGORIES, getBadgeForTrack } from '../lib/domainRegistry';
 import { autoCategorizeSubmission } from '../utils/autoCategorize';
+import { autoFormatContent } from '../utils/autoFormatContent';
 import { isImageUrl, sanitizeUrlForMarkdown, encodeMarkdownUrl, extractSmartLinkLabel } from '../utils/markdownLinks';
 
 type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Resource Link' | 'Prompt Playbook';
@@ -221,7 +222,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   const runAutoDetect = useCallback(() => {
     if (userOverride || masterCategory || track) return;
-    const textBody = [concept, aPlusRelevance, promptText, promptRole].filter(Boolean).join(' ');
+    const textBody = [concept, aPlusRelevance, promptText, promptRole, resourceUrl].filter(Boolean).join(' ');
     const result = autoCategorizeSubmission(title, textBody);
     if (!result) return;
     if (result.submissionType) {
@@ -239,14 +240,14 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     if (result.masterCategory || result.track) {
       setAutoDetected(true);
     }
-  }, [title, concept, aPlusRelevance, promptText, promptRole, userOverride, masterCategory, track]);
+  }, [title, concept, aPlusRelevance, promptText, promptRole, resourceUrl, userOverride, masterCategory, track]);
 
   useEffect(() => {
     if (userOverride || masterCategory || track) return;
     if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current);
     autoDetectTimer.current = setTimeout(runAutoDetect, 400);
     return () => { if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current); };
-  }, [title, concept, aPlusRelevance, promptText, promptRole, runAutoDetect, userOverride, masterCategory, track]);
+  }, [title, concept, aPlusRelevance, promptText, promptRole, resourceUrl, runAutoDetect, userOverride, masterCategory, track]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -479,6 +480,13 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         )
       : null;
 
+    if (!isResourceLink) {
+      rawContent = autoFormatContent(rawContent);
+    }
+    const sanitizedFormatted = formattedContent && !isResourceLink
+      ? autoFormatContent(formattedContent)
+      : formattedContent;
+
     const insertPayload = {
       full_name: fullName.trim(),
       track: payloadTrack,
@@ -486,7 +494,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       title: title.trim(),
       content: rawContent,
       submission_type: submissionType,
-      formatted_content: formattedContent,
+      formatted_content: sanitizedFormatted,
       is_approved: false,
       comp_objective: compObjective || null,
       lx_stage: isLearnerExperience ? lxStage || null : null,
@@ -630,6 +638,12 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             </div>
 
             <div>
+              <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Contribution Title</label>
+              <input type="text" value={title} onChange={(e) => { setTitle(e.target.value); titleManuallyEdited.current = true; }} placeholder="e.g. TCP/IP Protocol Suite" className={inputCls('title')} />
+              {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
+            </div>
+
+            <div>
               <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Curriculum Track</label>
               <select
                 value={masterCategory}
@@ -744,12 +758,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   </span>
                 )}
               </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Contribution Title</label>
-              <input type="text" value={title} onChange={(e) => { setTitle(e.target.value); titleManuallyEdited.current = true; }} placeholder="e.g. TCP/IP Protocol Suite" className={inputCls('title')} />
-              {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
             </div>
 
             <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800">
