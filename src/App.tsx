@@ -9,7 +9,9 @@ import RecognitionPage from './pages/RecognitionPage';
 import LearnerExperiencePage from './pages/LearnerExperiencePage';
 import AdminControlPage from './pages/AdminControlPage';
 import NotFoundPage from './pages/NotFoundPage';
-import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen } from 'lucide-react';
+import AuthModal from './components/AuthModal';
+import { useAuth } from './hooks/useAuth';
+import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen, LogIn, LogOut } from 'lucide-react';
 
 function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | null> }) {
   const { pathname } = useLocation();
@@ -23,10 +25,12 @@ function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | n
 function AppContent() {
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [mobileAuthOpen, setMobileAuthOpen] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -76,12 +80,29 @@ function AppContent() {
           >
             <Menu className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center gap-2 min-w-0 flex-1">
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center flex-shrink-0">
               <BookOpen className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-bold text-sm text-zinc-100 truncate">Learners Hub</span>
           </div>
+          {user ? (
+            <button
+              onClick={signOut}
+              className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors flex-shrink-0"
+              aria-label="Sign out"
+            >
+              <LogOut className="w-4.5 h-4.5" />
+            </button>
+          ) : (
+            <button
+              onClick={() => setMobileAuthOpen(true)}
+              className="p-2 rounded-lg text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors flex-shrink-0"
+              aria-label="Sign in"
+            >
+              <LogIn className="w-4.5 h-4.5" />
+            </button>
+          )}
         </header>
 
         {/* Desktop top header */}
@@ -127,6 +148,8 @@ function AppContent() {
           </div>
         </footer>
       </div>
+
+      <AuthModal isOpen={mobileAuthOpen} onClose={() => setMobileAuthOpen(false)} />
     </div>
   );
 }
