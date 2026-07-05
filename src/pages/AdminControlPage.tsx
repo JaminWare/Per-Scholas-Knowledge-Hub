@@ -7,14 +7,12 @@ import {
   resolveToCanonical, resolveToSlug,
 } from '../lib/domainRegistry';
 import MarkdownRenderer from '../components/MarkdownRenderer';
-import MetadataCleanerPanel from '../components/MetadataCleanerPanel';
-import LinkFixerModal from '../components/LinkFixerModal';
-import type { TabEntry } from '../utils/tabMetadata';
+import MarkdownSanitizerPanel from '../components/MarkdownSanitizerPanel';
 import {
   Lock, ShieldCheck, CheckCircle2, Trash2, Loader2,
   AlertCircle, Eye, EyeOff, RefreshCw, FileText, Link2,
   GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
-  Pencil, SplitSquareHorizontal, ChevronDown, ChevronUp, Wrench,
+  Pencil, SplitSquareHorizontal, ChevronDown, ChevronUp,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -523,7 +521,6 @@ function AdminPanel() {
   const [fetchError, setFetchError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [showTabTools, setShowTabTools] = useState(false);
-  const [linkFixerEntries, setLinkFixerEntries] = useState<TabEntry[] | null>(null);
 
   const fetchPending = async () => {
     setLoading(true);
@@ -780,14 +777,14 @@ function AdminPanel() {
           >
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400">
-                <Wrench className="w-5 h-5" />
+                <Wand2 className="w-5 h-5" />
               </div>
               <div className="text-left">
                 <h3 className="text-sm font-bold text-zinc-200 group-hover:text-zinc-100 transition-colors">
-                  Tab Metadata Tools
+                  Markdown Link Sanitizer
                 </h3>
                 <p className="text-[11px] text-zinc-500">
-                  Clean browser tab metadata, fix links, validate URLs
+                  Paste raw markdown. We will automatically fix broken URLs, encode parentheses, and correct image syntax.
                 </p>
               </div>
             </div>
@@ -799,22 +796,11 @@ function AdminPanel() {
 
           {showTabTools && (
             <div className="mt-4 p-5 rounded-xl bg-zinc-900/60 border border-zinc-800">
-              <MetadataCleanerPanel
-                onOpenLinkFixer={(entries) => setLinkFixerEntries(entries)}
-              />
+              <MarkdownSanitizerPanel />
             </div>
           )}
         </div>
       </main>
-
-      {/* Link Fixer Modal */}
-      {linkFixerEntries && (
-        <LinkFixerModal
-          entries={linkFixerEntries}
-          onClose={() => setLinkFixerEntries(null)}
-          onApply={() => setLinkFixerEntries(null)}
-        />
-      )}
     </div>
   );
 }
