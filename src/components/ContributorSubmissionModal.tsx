@@ -137,7 +137,7 @@ const LX_STAGES = JOURNEY_TABS.filter((t) => t.id !== 'all');
 
 export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh }: { isOpen: boolean; onClose: () => void; onSubmitted: (s: NewSubmission) => void; onRefresh?: () => void; }) {
   const [fullName, setFullName] = useState('');
-  const [submissionType, setSubmissionType] = useState<SubmissionType>('Resource Link');
+  const [submissionType, setSubmissionType] = useState<SubmissionType>('Article');
 
   const [masterCategory, setMasterCategory] = useState('');
   const [track, setTrack] = useState('');
@@ -180,6 +180,37 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [autoDetected, setAutoDetected] = useState(false);
   const [userOverride, setUserOverride] = useState(false);
   const autoDetectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Reset all form state to clean defaults whenever the modal opens
+  useEffect(() => {
+    if (!isOpen) return;
+    setSubmissionType('Article');
+    setFullName('');
+    setMasterCategory('');
+    setTrack('');
+    setTitle('');
+    setConcept('');
+    setAPlusRelevance('');
+    setImpact('');
+    setReferences('');
+    setResourceUrl('');
+    setDiagramUrl('');
+    setPromptRole('');
+    setPromptText('');
+    setPromptUseCase('');
+    setLxStage('');
+    setLxTopic('');
+    setLxFocus('');
+    setHardship('');
+    setBreakthrough('');
+    setCompObjective('');
+    setErrors({});
+    setFormError('');
+    setIsSubmitting(false);
+    setIsSuccess(false);
+    setAutoDetected(false);
+    setUserOverride(false);
+  }, [isOpen]);
 
   const runAutoDetect = useCallback(() => {
     if (userOverride || masterCategory || track) return;
