@@ -720,15 +720,41 @@ function AdminPanel() {
           </div>
         )}
 
-        {/* Section header */}
-        <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
+        {/* Section header with sanitizer toggle */}
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-4 pb-4 border-b border-zinc-800">
           <div>
             <h2 className="text-lg font-bold text-zinc-100">Pending Submissions</h2>
             <p className="text-sm text-zinc-500 mt-0.5">
               Approve to auto-publish to the live knowledge base, or reject to remove permanently.
             </p>
           </div>
+          <button
+            onClick={() => setShowTabTools((v) => !v)}
+            className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700 transition-colors group flex-shrink-0"
+          >
+            <div className="p-1.5 rounded-md bg-sky-500/10 text-sky-400">
+              <Wand2 className="w-4 h-4" />
+            </div>
+            <div className="text-left">
+              <span className="text-xs font-bold text-zinc-200 group-hover:text-zinc-100 transition-colors">
+                Markdown Link Sanitizer
+              </span>
+              <p className="text-[10px] text-zinc-500 leading-tight">
+                Fix URLs, encode parens, correct image syntax
+              </p>
+            </div>
+            {showTabTools
+              ? <ChevronUp className="w-3.5 h-3.5 text-zinc-500 ml-1" />
+              : <ChevronDown className="w-3.5 h-3.5 text-zinc-500 ml-1" />
+            }
+          </button>
         </div>
+
+        {showTabTools && (
+          <div className="p-5 rounded-xl bg-zinc-900/60 border border-zinc-800">
+            <MarkdownSanitizerPanel />
+          </div>
+        )}
 
         {/* Content */}
         {loading ? (
@@ -769,37 +795,6 @@ function AdminPanel() {
           </div>
         )}
 
-        {/* Tab Metadata Tools */}
-        <div className="border-t border-zinc-800 pt-6">
-          <button
-            onClick={() => setShowTabTools((v) => !v)}
-            className="w-full flex items-center justify-between group"
-          >
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400">
-                <Wand2 className="w-5 h-5" />
-              </div>
-              <div className="text-left">
-                <h3 className="text-sm font-bold text-zinc-200 group-hover:text-zinc-100 transition-colors">
-                  Markdown Link Sanitizer
-                </h3>
-                <p className="text-[11px] text-zinc-500">
-                  Paste raw markdown. We will automatically fix broken URLs, encode parentheses, and correct image syntax.
-                </p>
-              </div>
-            </div>
-            {showTabTools
-              ? <ChevronUp className="w-4 h-4 text-zinc-500" />
-              : <ChevronDown className="w-4 h-4 text-zinc-500" />
-            }
-          </button>
-
-          {showTabTools && (
-            <div className="mt-4 p-5 rounded-xl bg-zinc-900/60 border border-zinc-800">
-              <MarkdownSanitizerPanel />
-            </div>
-          )}
-        </div>
       </main>
     </div>
   );

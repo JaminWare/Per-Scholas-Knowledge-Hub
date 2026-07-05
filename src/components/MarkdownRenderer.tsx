@@ -301,7 +301,7 @@ export default function MarkdownRenderer({ content }: Props) {
           }
           case 'h2':
             return (
-              <h2 key={idx} className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mt-8 mb-3 pb-2 border-b border-zinc-200 dark:border-zinc-800 first:mt-0">
+              <h2 key={idx} className="text-2xl font-bold text-zinc-900 dark:text-sky-400 mt-8 mb-3 pb-2 border-b border-zinc-200 dark:border-zinc-800 first:mt-0">
                 {renderInline(block.content)}
               </h2>
             );
@@ -328,13 +328,13 @@ export default function MarkdownRenderer({ content }: Props) {
             );
           case 'h3':
             return (
-              <h3 key={idx} className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mt-6 mb-2">
+              <h3 key={idx} className="text-lg font-semibold text-zinc-900 dark:text-sky-400 mt-6 mb-2">
                 {renderInline(block.content)}
               </h3>
             );
           case 'blockquote':
             return (
-              <blockquote key={idx} className="pl-4 border-l-4 border-sky-400 dark:border-sky-500 bg-sky-50/80 dark:bg-sky-950/20 rounded-r py-3 pr-4 text-zinc-600 dark:text-zinc-400">
+              <blockquote key={idx} className="pl-4 border-l-4 border-zinc-600 dark:border-zinc-700 bg-zinc-50/80 dark:bg-zinc-900/40 rounded-r py-3 pr-4 text-zinc-700 dark:text-zinc-200">
                 {renderInline(block.content)}
               </blockquote>
             );
@@ -344,7 +344,7 @@ export default function MarkdownRenderer({ content }: Props) {
                 {block.items.map((item, j) => (
                   <li key={j} className="flex gap-2.5 items-start">
                     <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 dark:bg-sky-400" />
-                    <span className="text-zinc-600 dark:text-zinc-400">{renderInline(item)}</span>
+                    <span className="text-zinc-600 dark:text-zinc-200">{renderInline(item)}</span>
                   </li>
                 ))}
               </ul>
@@ -405,7 +405,7 @@ export default function MarkdownRenderer({ content }: Props) {
               return <hr key={idx} className="border-zinc-200 dark:border-zinc-700 my-6" />;
             }
             return (
-              <p key={idx} className="text-zinc-600 dark:text-zinc-400 leading-7">
+              <p key={idx} className="text-zinc-600 dark:text-zinc-200 leading-7">
                 {renderInline(block.content)}
               </p>
             );
