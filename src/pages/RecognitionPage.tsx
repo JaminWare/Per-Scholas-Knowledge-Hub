@@ -5,13 +5,10 @@ import {
   Lightbulb, GitBranch, Sparkles, Star, Crown, Link2, UploadCloud,
   Laptop, Monitor, Heart, LifeBuoy, Layers,
 } from 'lucide-react';
-import { supabase } from '../lib/supabase';
-import { type NewSubmission } from '../utils/submissions';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import { useSmartBack } from '../hooks/useSmartBack';
-import { FOUNDER_KEY } from '../constants/config';
 import { deriveTierBadge } from '../constants/badges';
-import { TRACK_ORDER } from '../constants/tracks';
+import { useContributorGroups, mapToPortalBucket, resolveTrack, groupItemsByTrack, type ContributorGroup, type PortfolioItem } from '../hooks/useContributorGroups';
 
 // ── Badge colour map ──────────────────────────────────────
 
@@ -45,97 +42,6 @@ function getDomainName(urlString: string): string {
   }
 }
 
-// ── Portal bucket mapping ────────────────────────────────
-
-type PortalBucket = 'Articles' | 'Pro Tips' | 'Diagrams' | 'Resource Links' | 'Playbooks';
-
-function mapToPortalBucket(rawType: string | null | undefined): PortalBucket {
-  switch (rawType) {
-    case 'Pro Tip':
-    case 'Study Tip':
-    case 'Quick Reference':
-    case 'Quick Ref':
-      return 'Pro Tips';
-    case 'Diagram':
-      return 'Diagrams';
-    case 'Resource Link':
-      return 'Resource Links';
-    case 'Playbook':
-    case 'Prompt Playbook':
-      return 'Playbooks';
-    default:
-      return 'Articles';
-  }
-}
-
-// ── Track resolution (single source of truth) ────────────
-
-const KNOWN_TRACK_ORDER: readonly string[] = TRACK_ORDER;
-
-function resolveTrack(track: string, slug?: string): string {
-  if (!track && slug) {
-    if (slug.startsWith('core1-')) return 'CompTIA A+ Core 1';
-    if (slug.startsWith('core2-')) return 'CompTIA A+ Core 2';
-    if (slug.startsWith('healthcare-') || slug.includes('ai-prompt')) return 'Advanced Healthcare IT';
-    if (slug.startsWith('learner-experience')) return 'Learner Experience';
-    return 'Other Contributions';
-  }
-  if (track.toLowerCase().includes('learner experience')) return 'Learner Experience';
-  if (track.includes('Core 1')) return 'CompTIA A+ Core 1';
-  if (track.includes('Core 2')) return 'CompTIA A+ Core 2';
-  if (track.toLowerCase().includes('healthcare')) return 'Advanced Healthcare IT';
-  if (/Domain\s+[1-3]\.0/i.test(track)) return 'CompTIA A+ Core 1';
-  if (/Domain\s+[4-5]\.0/i.test(track)) return 'CompTIA A+ Core 2';
-  if (track.toLowerCase().includes('networking') || track.toLowerCase().includes('diagram')) return 'CompTIA A+ Core 1';
-  if (track.toLowerCase().includes('administration')) return 'CompTIA A+ Core 2';
-  if (track.toLowerCase().includes('prompt') || track.toLowerCase().includes('ai')) return 'Advanced Healthcare IT';
-  if (track.toLowerCase().includes('quick reference')) return 'CompTIA A+ Core 1';
-  if (!track) return 'Other Contributions';
-  return 'Other Contributions';
-}
-
-// ── Portfolio item (enriched submission shape) ────────────
-
-interface PortfolioItem extends NewSubmission {
-  slug?: string;
-}
-
-// ── Contributor group with dynamic typeCounts ────────────
-
-interface ContributorGroup {
-  name: string;
-  topBadge: string;
-  items: PortfolioItem[];
-  typeCounts: Record<string, number>;
-}
-
-// ── Dynamic track grouping (no hardcoded track list) ─────
-
-function groupItemsByTrack(items: PortfolioItem[]): Map<string, PortfolioItem[]> {
-  const map = new Map<string, PortfolioItem[]>();
-  for (const s of items) {
-    const bucket = resolveTrack(s.track ?? '', s.slug);
-    if (!map.has(bucket)) map.set(bucket, []);
-    map.get(bucket)!.push(s);
-  }
-  // Sort each bucket by created_at ascending (FIFOoldest first)
-  for (const [, val] of map) {
-    val.sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''));
-  }
-  // Sort map keys: known tracks first in order, then alphabetical, "Other" last
-  const sorted = new Map<string, PortfolioItem[]>();
-  for (const known of KNOWN_TRACK_ORDER) {
-    if (map.has(known)) { sorted.set(known, map.get(known)!); map.delete(known); }
-  }
-  const otherBucket = map.get('Other Contributions');
-  map.delete('Other Contributions');
-  for (const [key, val] of [...map.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
-    sorted.set(key, val);
-  }
-  if (otherBucket) sorted.set('Other Contributions', otherBucket);
-  return sorted;
-}
-
 const SECTION_HDR = 'bg-zinc-100/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 font-mono text-[10px] uppercase tracking-wider border-y border-zinc-200 dark:border-zinc-800 px-3 py-1 block first:border-t-0';
 
 // ── Category icon helper ─────────────────────────────────
@@ -167,7 +73,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
     if (!isOpen) setOpenCategory(null);
   }, [isOpen]);
 
-  const categoryEntries = Object.entries(group.typeCounts).sort((a, b) => b[1] - a[1]);
+  const categoryEntries = Object.entries(group.portalTypeCounts).sort((a, b) => b[1] - a[1]);
 
   const handleTabClick = (e: React.MouseEvent, type: string) => {
     e.stopPropagation();
@@ -353,102 +259,10 @@ function buildSlugFromTitle(title: string): string {
 
 export default function RecognitionPage() {
   const { goBack } = useSmartBack('/');
-  const [contributors, setContributors] = useState<ContributorGroup[]>([]);
+  const { contributors, newestNonFounderName: newestName } = useContributorGroups();
   const [openContributor, setOpenContributor] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [newestName, setNewestName] = useState<string | null>(null);
   const [trackFilter, setTrackFilter] = useState<string>('All');
-
-  useEffect(() => {
-    async function fetchFromSupabase() {
-      const { data: subData } = await supabase
-        .from('submissions')
-        .select('*')
-        .eq('is_approved', true)
-        .order('created_at', { ascending: false })
-        .limit(200);
-
-      const { data: articleData } = await supabase
-        .from('articles')
-        .select('id, title, slug, content, author_name, study_category, submission_type, created_at')
-        .eq('is_sample', false)
-        .not('author_name', 'is', null)
-        .order('created_at', { ascending: false })
-        .limit(200);
-
-      const articleEntries: PortfolioItem[] = (articleData ?? []).map((a: any) => ({
-        id: `art-${a.id}`,
-        full_name: a.author_name,
-        track: a.study_category ?? '',
-        badge: 'Cohort Contributor',
-        title: a.title,
-        content: a.content ?? '',
-        submission_type: a.submission_type ?? 'Article',
-        created_at: a.created_at ?? '',
-        slug: a.slug,
-      }));
-
-      const submissionEntries: PortfolioItem[] = ((subData as any[]) ?? []).map((s: any) => ({
-        ...s,
-        slug: undefined,
-      }));
-
-      // Merge and deduplicate by title
-      const allEntries: PortfolioItem[] = [];
-      const seenTitles = new Set<string>();
-
-      for (const entry of articleEntries) {
-        const key = entry.title.trim().toLowerCase();
-        if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
-      }
-      for (const entry of submissionEntries) {
-        const key = entry.title.trim().toLowerCase();
-        if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
-      }
-
-      // Group by author using reducebuild dynamic typeCounts
-      const grouped = allEntries.reduce<Record<string, ContributorGroup>>((acc, item) => {
-        const key = item.full_name.trim().toLowerCase();
-        if (!acc[key]) {
-          acc[key] = { name: item.full_name.trim(), topBadge: 'Cohort Contributor', items: [], typeCounts: {} };
-        }
-        const group = acc[key];
-        if (item.badge && item.badge !== 'Cohort Contributor') group.topBadge = item.badge;
-        group.items.push(item);
-        const bucket = mapToPortalBucket(item.submission_type);
-        group.typeCounts[bucket] = (group.typeCounts[bucket] ?? 0) + 1;
-        return acc;
-      }, {});
-
-      // Override Jamin Ware's badge to Founder
-      const jaminKey = FOUNDER_KEY;
-      if (grouped[jaminKey]) {
-        grouped[jaminKey].topBadge = 'Founder';
-      }
-
-      // Pin Founder to #1, sort rest by most recent contribution then total count
-      const allGroups = Object.values(grouped);
-      const founder = allGroups.find((g) => g.topBadge === 'Founder');
-      const rest = allGroups.filter((g) => g.topBadge !== 'Founder');
-
-      rest.sort((a, b) => {
-        const latestA = a.items.reduce((max, i) => (i.created_at > max ? i.created_at : max), '');
-        const latestB = b.items.reduce((max, i) => (i.created_at > max ? i.created_at : max), '');
-        const dateCompare = latestB.localeCompare(latestA);
-        if (dateCompare !== 0) return dateCompare;
-        return b.items.length - a.items.length;
-      });
-
-      const sorted = founder ? [founder, ...rest] : rest;
-
-      setContributors(sorted);
-
-      // Determine newest non-founder contributor
-      const firstNonFounder = allEntries.find((s) => s.full_name.trim().toLowerCase() !== FOUNDER_KEY);
-      setNewestName(firstNonFounder?.full_name.trim() ?? null);
-    }
-    fetchFromSupabase();
-  }, []);
 
   const TRACK_FILTER_OPTIONS = [
     { value: 'All', label: 'All Tracks', icon: Layers },
@@ -464,12 +278,12 @@ export default function RecognitionPage() {
       .map((g) => {
         const matchingItems = g.items.filter((item) => resolveTrack(item.track ?? '', item.slug) === trackFilter);
         if (matchingItems.length === 0) return null;
-        const typeCounts: Record<string, number> = {};
+        const portalTypeCounts: Record<string, number> = {};
         for (const item of matchingItems) {
           const bucket = mapToPortalBucket(item.submission_type);
-          typeCounts[bucket] = (typeCounts[bucket] ?? 0) + 1;
+          portalTypeCounts[bucket] = (portalTypeCounts[bucket] ?? 0) + 1;
         }
-        return { ...g, items: matchingItems, typeCounts };
+        return { ...g, items: matchingItems, portalTypeCounts };
       })
       .filter((g): g is ContributorGroup => g !== null);
   }, [contributors, trackFilter]);

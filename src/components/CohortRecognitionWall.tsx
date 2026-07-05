@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
 import { Award, Plus, BookOpen, Zap, Link2, Star, Crown } from 'lucide-react';
-import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
-import { FOUNDER_KEY, COHORT_LABEL } from '../constants/config';
+import { COHORT_LABEL } from '../constants/config';
 import { BADGE_COLORS } from '../constants/badges';
+import { useContributorGroups, type ContributorGroup } from '../hooks/useContributorGroups';
 
 interface Props {
   newSubmission: NewSubmission | null;
@@ -54,62 +53,6 @@ const TYPE_ICON: Record<string, React.ReactNode> = {
   'Article':        <BookOpen className="w-3 h-3" />,
   'Resource Link':  <Link2 className="w-3 h-3" />,
 };
-
-interface ContributorGroup {
-  name: string;
-  topBadge: string;
-  typeCounts: Record<string, number>;
-  totalCount: number;
-  tracks: string[];
-  objectives: string[];
-  latestContribution: string;
-}
-
-function shortenTrack(track: string): string {
-  const match = track.match(/Domain\s+\d+\.\d+/i);
-  return match ? match[0] : track;
-}
-
-function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
-  const map = new Map<string, ContributorGroup & { _tracks: Set<string>; _objectives: Set<string> }>();
-  for (const s of submissions) {
-    const key = s.full_name.trim().toLowerCase();
-    if (!map.has(key)) {
-      map.set(key, { name: s.full_name.trim(), topBadge: s.badge || 'Cohort Contributor', typeCounts: {}, totalCount: 0, tracks: [], objectives: [], latestContribution: '', _tracks: new Set(), _objectives: new Set() });
-    }
-    const group = map.get(key)!;
-    if (s.badge && s.badge !== 'Cohort Contributor') group.topBadge = s.badge;
-    const effectiveType = s.submission_type ?? 'Article';
-    group.typeCounts[effectiveType] = (group.typeCounts[effectiveType] ?? 0) + 1;
-    group.totalCount++;
-    if (s.created_at && s.created_at > group.latestContribution) {
-      group.latestContribution = s.created_at;
-    }
-    if (s.track) group._tracks.add(shortenTrack(s.track));
-    if (s.comp_objective) group._objectives.add(s.comp_objective);
-  }
-
-  // Override Jamin Ware's badge to Founder
-  const jamin = map.get(FOUNDER_KEY);
-  if (jamin) jamin.topBadge = 'Founder';
-
-  const allGroups = Array.from(map.values()).map((g) => {
-    g.tracks = Array.from(g._tracks);
-    g.objectives = Array.from(g._objectives);
-    return g as ContributorGroup;
-  });
-
-  const founder = allGroups.find((g) => g.topBadge === 'Founder');
-  const rest = allGroups.filter((g) => g.topBadge !== 'Founder');
-
-  rest.sort((a, b) => {
-    const dateCompare = b.latestContribution.localeCompare(a.latestContribution);
-    if (dateCompare !== 0) return dateCompare;
-    return b.totalCount - a.totalCount;
-  });
-
-  return founder ? [founder, ...rest] : rest;
-}
 
 // ── Track & Objective Badges ─────────────────────────────
 
@@ -167,7 +110,7 @@ function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boo
             <BadgeTag badge="Founder" />
           </div>
           <div className="flex flex-wrap gap-1 mt-1">
-            {Object.entries(group.typeCounts).map(([type, count]) => {
+            {Object.entries(group.rawTypeCounts).map(([type, count]) => {
               const colors = TYPE_PILL_COLORS[type] ?? DEFAULT_PILL;
               return (
                 <span key={type} className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${colors.founder}`}>
@@ -204,7 +147,7 @@ function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boo
           )}
         </div>
         <div className="flex flex-wrap gap-1 mt-1">
-          {Object.entries(group.typeCounts).map(([type, count]) => {
+          {Object.entries(group.rawTypeCounts).map(([type, count]) => {
             const colors = TYPE_PILL_COLORS[type] ?? DEFAULT_PILL;
             return (
               <span key={type} className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${colors.base}`}>
@@ -218,7 +161,7 @@ function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boo
         )}
       </div>
       <div className="hidden sm:flex items-center gap-1 flex-shrink-0">
-        {Object.keys(group.typeCounts).map((type) => (
+        {Object.keys(group.rawTypeCounts).map((type) => (
           <span key={type} className="text-zinc-400 dark:text-zinc-600" title={type}>
             {TYPE_ICON[type] ?? <Zap className="w-3 h-3" />}
           </span>
@@ -230,64 +173,7 @@ function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boo
 
 // ── Main component ────────────────────────────────────────
 export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: Props) {
-  const [submissions, setSubmissions] = useState<NewSubmission[]>([]);
-
-  useEffect(() => {
-    async function loadFromSupabase() {
-      const { data: subData } = await supabase
-        .from('submissions')
-        .select('*')
-        .eq('is_approved', true)
-        .order('created_at', { ascending: false })
-        .limit(100);
-
-      const { data: articleData } = await supabase
-        .from('articles')
-        .select('id, title, slug, author_name, study_category, submission_type, comp_objective, created_at')
-        .eq('is_sample', false)
-        .not('author_name', 'is', null)
-        .order('created_at', { ascending: false })
-        .limit(200);
-
-      const articleEntries: NewSubmission[] = (articleData ?? []).map((a: any) => ({
-        id: `art-${a.id}`,
-        full_name: a.author_name,
-        track: a.study_category ?? '',
-        badge: 'Cohort Contributor',
-        title: a.title,
-        content: '',
-        submission_type: a.submission_type ?? 'Article',
-        comp_objective: a.comp_objective ?? '',
-        created_at: a.created_at ?? '',
-      }));
-
-      const allEntries: NewSubmission[] = [];
-      const seenTitles = new Set<string>();
-
-      for (const entry of articleEntries) {
-        const key = entry.title.trim().toLowerCase();
-        if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
-      }
-      for (const entry of (subData as NewSubmission[]) ?? []) {
-        const key = entry.title.trim().toLowerCase();
-        if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
-      }
-
-      setSubmissions(allEntries);
-    }
-    loadFromSupabase();
-  }, []);
-
-  useEffect(() => {
-    if (!newSubmission) return;
-    setSubmissions((prev) => {
-      const already = prev.some((s) => s.id === newSubmission.id);
-      return already ? prev : [newSubmission, ...prev];
-    });
-  }, [newSubmission]);
-
-  const allGroups = groupByName(submissions);
-  const newestName = submissions.find((s) => s.full_name?.trim().toLowerCase() !== FOUNDER_KEY)?.full_name?.trim() ?? null;
+  const { contributors: allGroups, newestNonFounderName: newestName } = useContributorGroups({ newSubmission });
 
   return (
     <section className="mt-12">
