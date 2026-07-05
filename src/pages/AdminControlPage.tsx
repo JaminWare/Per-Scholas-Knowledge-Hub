@@ -16,7 +16,7 @@ import {
   AlertCircle, EyeOff, RefreshCw, FileText, Link2,
   GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
   Pencil, SplitSquareHorizontal, Archive, Filter,
-  RotateCcw, XCircle, ShieldOff,
+  RotateCcw, XCircle, ShieldOff, Search,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -456,12 +456,14 @@ function SubmissionCard({
 function ArchiveTable({
   data,
   loading,
+  searchQuery,
   onRestore,
   onHardDelete,
   onUnpublish,
 }: {
   data: ArchiveRow[];
   loading: boolean;
+  searchQuery: string;
   onRestore: (id: string) => Promise<void>;
   onHardDelete: (id: string) => Promise<void>;
   onUnpublish: (id: string) => Promise<void>;
@@ -515,7 +517,15 @@ function ArchiveTable({
           <Loader2 className="w-5 h-5 animate-spin text-zinc-500" />
         </div>
       ) : filtered.length === 0 ? (
-        <p className="text-center text-sm text-zinc-600 py-8">No submissions match this filter.</p>
+        searchQuery.trim() ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <Search className="w-8 h-8 text-zinc-600 mb-4" />
+            <h3 className="text-base font-semibold text-zinc-300">No results found</h3>
+            <p className="text-sm text-zinc-500 mt-1">No submissions found matching &lsquo;{searchQuery}&rsquo;.</p>
+          </div>
+        ) : (
+          <p className="text-center text-sm text-zinc-600 py-8">No submissions match this filter.</p>
+        )
       ) : (
         <div className="overflow-x-auto rounded-xl border border-zinc-800">
           <table className="w-full text-left text-sm">
@@ -594,6 +604,27 @@ function AdminPanel({ adminEmail }: { adminEmail: string }) {
   const [fetchError, setFetchError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [activeTab, setActiveTab] = useState<'pending' | 'archive'>('pending');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredSubmissions = useMemo(() => {
+    if (!searchQuery.trim()) return submissions;
+    const q = searchQuery.toLowerCase();
+    return submissions.filter((s) =>
+      s.title.toLowerCase().includes(q) ||
+      s.full_name.toLowerCase().includes(q) ||
+      s.track.toLowerCase().includes(q)
+    );
+  }, [submissions, searchQuery]);
+
+  const filteredArchive = useMemo(() => {
+    if (!searchQuery.trim()) return archive;
+    const q = searchQuery.toLowerCase();
+    return archive.filter((r) =>
+      r.title.toLowerCase().includes(q) ||
+      r.full_name.toLowerCase().includes(q) ||
+      r.track.toLowerCase().includes(q)
+    );
+  }, [archive, searchQuery]);
 
   const fetchPending = async () => {
     setLoading(true);
@@ -856,6 +887,20 @@ function AdminPanel({ adminEmail }: { adminEmail: string }) {
           </div>
         )}
 
+        {/* Search Bar */}
+        <div className="flex justify-center">
+          <div className="relative w-full max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by title, author, or track..."
+              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+            />
+          </div>
+        </div>
+
         {/* Pill Tab Switcher */}
         <div className="flex justify-center">
           <div className="inline-flex rounded-full bg-zinc-800/80 border border-zinc-700/60 p-1">
@@ -869,13 +914,13 @@ function AdminPanel({ adminEmail }: { adminEmail: string }) {
               }`}
             >
               Pending Submissions
-              {submissions.length > 0 && (
+              {filteredSubmissions.length > 0 && (
                 <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
                   activeTab === 'pending'
                     ? 'bg-white/20 text-white'
                     : 'bg-amber-500/15 text-amber-400'
                 }`}>
-                  {submissions.length}
+                  {filteredSubmissions.length}
                 </span>
               )}
             </button>
@@ -911,19 +956,29 @@ function AdminPanel({ adminEmail }: { adminEmail: string }) {
                   </div>
                 ))}
               </div>
-            ) : submissions.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
-                  <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+            ) : filteredSubmissions.length === 0 ? (
+              searchQuery.trim() ? (
+                <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
+                  <Search className="w-8 h-8 text-zinc-600 mb-4" />
+                  <h3 className="text-base font-semibold text-zinc-300">No results found</h3>
+                  <p className="text-sm text-zinc-500 mt-1 max-w-xs">
+                    No submissions found matching &lsquo;{searchQuery}&rsquo;.
+                  </p>
                 </div>
-                <h3 className="text-base font-semibold text-zinc-200">All caught up!</h3>
-                <p className="text-sm text-zinc-500 mt-1 max-w-xs">
-                  The pending queue is clear. New contributions will appear here automatically.
-                </p>
-              </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
+                  <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
+                    <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+                  </div>
+                  <h3 className="text-base font-semibold text-zinc-200">All caught up!</h3>
+                  <p className="text-sm text-zinc-500 mt-1 max-w-xs">
+                    The pending queue is clear. New contributions will appear here automatically.
+                  </p>
+                </div>
+              )
             ) : (
               <div className="space-y-4">
-                {submissions.map((sub) => (
+                {filteredSubmissions.map((sub) => (
                   <SubmissionCard
                     key={sub.id}
                     sub={sub}
@@ -939,8 +994,9 @@ function AdminPanel({ adminEmail }: { adminEmail: string }) {
         {/* ─── Archive Table ─── */}
         {activeTab === 'archive' && (
           <ArchiveTable
-            data={archive}
+            data={filteredArchive}
             loading={archiveLoading}
+            searchQuery={searchQuery}
             onRestore={handleArchiveRestore}
             onHardDelete={handleArchiveHardDelete}
             onUnpublish={handleArchiveUnpublish}
