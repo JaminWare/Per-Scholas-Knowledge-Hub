@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
   Lightbulb, GitBranch, Sparkles, Star, Crown, Link2, UploadCloud,
-  Laptop, Monitor, Heart, LifeBuoy, Layers, UserCog,
+  Laptop, Monitor, Heart, LifeBuoy, Layers, Pencil,
 } from 'lucide-react';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import { useSmartBack } from '../hooks/useSmartBack';
@@ -59,11 +59,13 @@ function getCategoryIcon(type: string, isFounder: boolean) {
 
 // ── Unified Contributor Card ─────────────────────────────
 
-function ContributorCard({ group, isNew, isOpen, onToggle }: {
+function ContributorCard({ group, isNew, isOpen, onToggle, isCurrentUser, onEditProfile }: {
   group: ContributorGroup;
   isNew: boolean;
   isOpen: boolean;
   onToggle: () => void;
+  isCurrentUser?: boolean;
+  onEditProfile?: () => void;
 }) {
   const isFounder = group.topBadge === 'Founder';
   const initial = group.name.charAt(0).toUpperCase();
@@ -117,6 +119,16 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className={`${isFounder ? 'font-bold' : 'font-semibold'} text-white text-sm`}>{group.name}</span>
+              {isCurrentUser && onEditProfile && (
+                <button
+                  type="button"
+                  onClick={(e) => { e.stopPropagation(); onEditProfile(); }}
+                  title="Edit Display Name"
+                  className="p-1 rounded-md text-zinc-500 hover:text-sky-400 hover:bg-zinc-700/60 transition-colors"
+                >
+                  <Pencil className="w-3 h-3" />
+                </button>
+              )}
               {!isFounder && tierBadge !== group.topBadge && <BadgeTag badge={tierBadge} />}
               {!isFounder && <BadgeTag badge={group.topBadge} />}
               {isNew && !isFounder && (
@@ -269,6 +281,7 @@ export default function RecognitionPage() {
   const { user } = useAuth();
   const [authOpen, setAuthOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const currentUserName = localStorage.getItem('learnerHub_authorName') || '';
 
   const TRACK_FILTER_OPTIONS = [
     { value: 'All', label: 'All Tracks', icon: Layers },
@@ -324,14 +337,6 @@ export default function RecognitionPage() {
             <p className="text-sky-100/80 leading-relaxed text-sm">
               Celebrating every learner who has contributed research, documentation, and knowledge to the collective!
             </p>
-            <button
-              type="button"
-              onClick={() => user ? setProfileOpen(true) : setAuthOpen(true)}
-              className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border border-zinc-600/60 bg-zinc-800/50 text-zinc-300 hover:bg-zinc-700 hover:text-white hover:border-zinc-500 transition-colors"
-            >
-              <UserCog className="w-4 h-4" />
-              Edit My Display Name
-            </button>
           </div>
         </div>
       </section>
@@ -379,6 +384,8 @@ export default function RecognitionPage() {
                 isNew={g.name === newestName && g.topBadge !== 'Founder'}
                 isOpen={openContributor === g.name}
                 onToggle={() => setOpenContributor((prev) => prev === g.name ? null : g.name)}
+                isCurrentUser={!!currentUserName && g.name === currentUserName}
+                onEditProfile={() => user ? setProfileOpen(true) : setAuthOpen(true)}
               />
             ))}
           </div>
