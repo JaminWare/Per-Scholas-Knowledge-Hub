@@ -322,6 +322,7 @@ function TrackDomains({
   isLoading,
   context,
   onContribute,
+  onEdit,
   gridMode = false,
 }: {
   domains: readonly string[];
@@ -330,6 +331,7 @@ function TrackDomains({
   isLoading: boolean;
   context: string;
   onContribute: () => void;
+  onEdit?: (article: ArticleWithContributor) => void;
   gridMode?: boolean;
 }) {
   return (
@@ -369,7 +371,7 @@ function TrackDomains({
                           </span>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-                          {items.map((a) => <AppletCard key={a.id} article={a} gridMode onEdit={handleEdit} />)}
+                          {items.map((a) => <AppletCard key={a.id} article={a} gridMode onEdit={onEdit} />)}
                         </div>
                       </div>
                     ))}
@@ -388,7 +390,7 @@ function TrackDomains({
                     <AppletSkeleton />
                   </>
                 ) : domainArticles.length > 0 ? (
-                  domainArticles.map((a) => <AppletCard key={a.id} article={a} onEdit={handleEdit} />)
+                  domainArticles.map((a) => <AppletCard key={a.id} article={a} onEdit={onEdit} />)
                 ) : (
                   <OpenSlotPlaceholder domain={domain} context={context} onContribute={onContribute} />
                 )}
@@ -406,6 +408,7 @@ function CurriculumDashboard({
   isLoading,
   context,
   onContribute,
+  onEdit,
   focusDomain,
   activeTab,
   activeObjective,
@@ -414,6 +417,7 @@ function CurriculumDashboard({
   isLoading: boolean;
   context: string;
   onContribute: () => void;
+  onEdit?: (article: ArticleWithContributor) => void;
   focusDomain?: { domain: string; trackIndex: number };
   activeTab?: ResourceTab;
   activeObjective?: string;
@@ -509,7 +513,7 @@ function CurriculumDashboard({
               </span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-              {items.map((a) => <AppletCard key={a.id} article={a} gridMode onEdit={handleEdit} />)}
+              {items.map((a) => <AppletCard key={a.id} article={a} gridMode onEdit={onEdit} />)}
             </div>
           </div>
         ))}
@@ -548,7 +552,7 @@ function CurriculumDashboard({
             </span>
           </div>
           <div className={SCROLL_TRACK}>
-            {uncategorizedArticles.map((a) => <AppletCard key={a.id} article={a} onEdit={handleEdit} />)}
+            {uncategorizedArticles.map((a) => <AppletCard key={a.id} article={a} onEdit={onEdit} />)}
           </div>
         </section>
       )}
@@ -567,6 +571,7 @@ function CurriculumDashboard({
             isLoading={isLoading}
             context={context}
             onContribute={onContribute}
+            onEdit={onEdit}
           />
         </section>
 
@@ -584,6 +589,7 @@ function CurriculumDashboard({
             isLoading={isLoading}
             context={context}
             onContribute={onContribute}
+            onEdit={onEdit}
           />
         </section>
       </div>
@@ -602,6 +608,7 @@ function CurriculumDashboard({
           isLoading={isLoading}
           context={context}
           onContribute={onContribute}
+          onEdit={onEdit}
         />
       </section>
     </div>
@@ -802,6 +809,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
           isLoading={isLoading}
           context={dashboardContext}
           onContribute={() => setIsModalOpen(true)}
+          onEdit={handleEdit}
         />
       ) : domainInfo ? (
         <>
@@ -817,6 +825,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
             isLoading={isLoading}
             context={activeTab}
             onContribute={() => setIsModalOpen(true)}
+            onEdit={handleEdit}
             focusDomain={domainInfo}
             activeTab={activeTab}
             activeObjective={activeObjective}
