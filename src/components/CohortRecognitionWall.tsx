@@ -1,4 +1,4 @@
-import { Award, Plus, BookOpen, Zap, Link2, Star, Crown } from 'lucide-react';
+import { Award, Plus, BookOpen, Zap, Link2, Star, Crown, Pencil } from 'lucide-react';
 import { type NewSubmission } from '../utils/submissions';
 import { COHORT_LABEL } from '../constants/config';
 import { BADGE_COLORS } from '../constants/badges';
@@ -7,6 +7,7 @@ import { useContributorGroups, type ContributorGroup } from '../hooks/useContrib
 interface Props {
   newSubmission: NewSubmission | null;
   onClaimBadge: () => void;
+  onEditProfile: () => void;
 }
 
 const badgeColors = BADGE_COLORS;
@@ -91,7 +92,7 @@ function TrackBadges({ tracks, objectives }: { tracks: string[]; objectives: str
 
 // ── Contributor Row ──────────────────────────────────────
 
-function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boolean }) {
+function ContributorRow({ group, isNew, onEditProfile }: { group: ContributorGroup; isNew?: boolean; onEditProfile: () => void }) {
   const isFounder = group.topBadge === 'Founder';
   const initial = group.name.charAt(0).toUpperCase();
 
@@ -107,6 +108,14 @@ function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boo
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-bold text-zinc-800 dark:text-zinc-100 text-sm">{group.name}</span>
+            <button
+              type="button"
+              onClick={onEditProfile}
+              title="Edit Display Name"
+              className="inline-flex items-center text-zinc-500 hover:text-sky-400 transition-colors p-1 rounded-full hover:bg-zinc-800"
+            >
+              <Pencil className="w-3 h-3" />
+            </button>
             <BadgeTag badge="Founder" />
           </div>
           <div className="flex flex-wrap gap-1 mt-1">
@@ -139,6 +148,14 @@ function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boo
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="font-semibold text-zinc-800 dark:text-zinc-100 text-sm">{group.name}</span>
+          <button
+            type="button"
+            onClick={onEditProfile}
+            title="Edit Display Name"
+            className="inline-flex items-center text-zinc-500 hover:text-sky-400 transition-colors p-1 rounded-full hover:bg-zinc-800"
+          >
+            <Pencil className="w-3 h-3" />
+          </button>
           <BadgeTag badge={group.topBadge} />
           {isNew && (
             <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold bg-sky-500 text-white rounded-full">
@@ -172,7 +189,7 @@ function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boo
 }
 
 // ── Main component ────────────────────────────────────────
-export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: Props) {
+export default function CohortRecognitionWall({ newSubmission, onClaimBadge, onEditProfile }: Props) {
   const { contributors: allGroups, newestNonFounderName: newestName } = useContributorGroups({ newSubmission });
 
   return (
@@ -201,6 +218,7 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
               key={group.name}
               group={group}
               isNew={group.name.trim() === newestName && group.topBadge !== 'Founder'}
+              onEditProfile={onEditProfile}
             />
           ))}
         </div>

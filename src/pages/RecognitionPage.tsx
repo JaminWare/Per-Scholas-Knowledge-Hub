@@ -59,12 +59,11 @@ function getCategoryIcon(type: string, isFounder: boolean) {
 
 // ── Unified Contributor Card ─────────────────────────────
 
-function ContributorCard({ group, isNew, isOpen, onToggle, isCurrentUser, onEditProfile }: {
+function ContributorCard({ group, isNew, isOpen, onToggle, onEditProfile }: {
   group: ContributorGroup;
   isNew: boolean;
   isOpen: boolean;
   onToggle: () => void;
-  isCurrentUser?: boolean;
   onEditProfile?: () => void;
 }) {
   const isFounder = group.topBadge === 'Founder';
@@ -119,7 +118,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle, isCurrentUser, onEdit
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className={`${isFounder ? 'font-bold' : 'font-semibold'} text-white text-sm`}>{group.name}</span>
-              {isCurrentUser && onEditProfile && (
+              {onEditProfile && (
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); onEditProfile(); }}
@@ -384,7 +383,6 @@ export default function RecognitionPage() {
                 isNew={g.name === newestName && g.topBadge !== 'Founder'}
                 isOpen={openContributor === g.name}
                 onToggle={() => setOpenContributor((prev) => prev === g.name ? null : g.name)}
-                isCurrentUser={!!currentUserName && g.name === currentUserName}
                 onEditProfile={() => user ? setProfileOpen(true) : setAuthOpen(true)}
               />
             ))}
