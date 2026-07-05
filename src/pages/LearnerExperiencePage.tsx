@@ -9,6 +9,7 @@ import { AppletCard, AppletSkeleton } from '../components/AppletCard';
 import type { ArticleWithContributor } from '../hooks/useArticles';
 import ContributorSubmissionModal, { type EditableArticle } from '../components/ContributorSubmissionModal';
 import { useAuth } from '../hooks/useAuth';
+import AuthModal from '../components/AuthModal';
 
 // ─── 3-tier category filter system ─────────────────────────────
 
@@ -214,10 +215,15 @@ export default function LearnerExperiencePage() {
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editItem, setEditItem] = useState<EditableArticle | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const { user } = useAuth();
   const abortRef = useRef(false);
 
   const handleEdit = (article: ArticleWithContributor) => {
+    if (!user) {
+      setAuthModalOpen(true);
+      return;
+    }
     setEditItem(article);
     setIsModalOpen(true);
   };
@@ -532,7 +538,7 @@ export default function LearnerExperiencePage() {
       ) : filteredEntries.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {displayEntries.map((entry) => (
-            <AppletCard key={entry.id} article={entry} gridMode isPinned={pinnedSet.has(entry.id)} onEdit={user ? handleEdit : undefined} />
+            <AppletCard key={entry.id} article={entry} gridMode isPinned={pinnedSet.has(entry.id)} onEdit={handleEdit} />
           ))}
         </div>
       ) : (
@@ -546,6 +552,7 @@ export default function LearnerExperiencePage() {
         onSubmitted={() => {}}
         editItem={editItem}
       />
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>
   );
 }

@@ -226,7 +226,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
 
         <div className="mt-6 border-t border-zinc-800 pt-4 px-1 space-y-1">
           <button
-            onClick={() => setProfileOpen(true)}
+            onClick={() => user ? setProfileOpen(true) : setAuthOpen(true)}
             className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
           >
             <UserCog className="w-4 h-4 flex-shrink-0" />

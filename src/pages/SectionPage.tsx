@@ -6,6 +6,7 @@ import { AppletCard, AppletSkeleton, OpenSlotPlaceholder, CARD_WIDTH } from '../
 import contentMap, { type LocalArticle } from '../data/contentMap';
 import { useArticles, type ArticleWithContributor } from '../hooks/useArticles';
 import { useAuth } from '../hooks/useAuth';
+import AuthModal from '../components/AuthModal';
 import { normalizeCategory } from '../utils/normalizeCategory';
 import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import {
@@ -367,7 +368,7 @@ function TrackDomains({
                           </span>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-                          {items.map((a) => <AppletCard key={a.id} article={a} gridMode onEdit={user ? handleEdit : undefined} />)}
+                          {items.map((a) => <AppletCard key={a.id} article={a} gridMode onEdit={handleEdit} />)}
                         </div>
                       </div>
                     ))}
@@ -386,7 +387,7 @@ function TrackDomains({
                     <AppletSkeleton />
                   </>
                 ) : domainArticles.length > 0 ? (
-                  domainArticles.map((a) => <AppletCard key={a.id} article={a} onEdit={user ? handleEdit : undefined} />)
+                  domainArticles.map((a) => <AppletCard key={a.id} article={a} onEdit={handleEdit} />)
                 ) : (
                   <OpenSlotPlaceholder domain={domain} context={context} onContribute={onContribute} />
                 )}
@@ -506,7 +507,7 @@ function CurriculumDashboard({
               </span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
-              {items.map((a) => <AppletCard key={a.id} article={a} gridMode onEdit={user ? handleEdit : undefined} />)}
+              {items.map((a) => <AppletCard key={a.id} article={a} gridMode onEdit={handleEdit} />)}
             </div>
           </div>
         ))}
@@ -544,7 +545,7 @@ function CurriculumDashboard({
             </span>
           </div>
           <div className={SCROLL_TRACK}>
-            {uncategorizedArticles.map((a) => <AppletCard key={a.id} article={a} onEdit={user ? handleEdit : undefined} />)}
+            {uncategorizedArticles.map((a) => <AppletCard key={a.id} article={a} onEdit={handleEdit} />)}
           </div>
         </section>
       )}
@@ -635,9 +636,14 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const { articles: allArticles, isLoading } = useArticles(refreshKey);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editItem, setEditItem] = useState<EditableArticle | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
   const { user } = useAuth();
 
   const handleEdit = (article: ArticleWithContributor) => {
+    if (!user) {
+      setAuthModalOpen(true);
+      return;
+    }
     setEditItem(article);
     setIsModalOpen(true);
   };
@@ -734,7 +740,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
               {mergedArticles.filter(a => {
                 const canonicalTarget = CANONICAL_DOMAINS[meta?.title ?? ''] || meta?.title;
                 return a.study_category === canonicalTarget;
-              }).map((a) => <AppletCard key={a.id} article={a} onEdit={user ? handleEdit : undefined} />)}
+              }).map((a) => <AppletCard key={a.id} article={a} onEdit={handleEdit} />)}
             </div>
           </div>
         )}
@@ -809,7 +815,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         </div>
       ) : mergedArticles.length > 0 ? (
         <div className={SCROLL_TRACK}>
-          {mergedArticles.map((a) => <AppletCard key={a.id} article={a} onEdit={user ? handleEdit : undefined} />)}
+          {mergedArticles.map((a) => <AppletCard key={a.id} article={a} onEdit={handleEdit} />)}
         </div>
       ) : (
         <ComingSoonPanel />
@@ -823,6 +829,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         }}
         editItem={editItem}
       />
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>
   );
 }
