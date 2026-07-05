@@ -185,7 +185,12 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   useEffect(() => {
     if (!isOpen) return;
     setSubmissionType('Article');
-    setFullName('');
+    try {
+      const saved = localStorage.getItem('learnerHub_authorName');
+      setFullName(saved || '');
+    } catch {
+      setFullName('');
+    }
     setMasterCategory('');
     setTrack('');
     setTitle('');
@@ -496,6 +501,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       }
 
       const sub: NewSubmission = { ...(data as NewSubmission), badge: payloadBadge, submission_type: submissionType };
+
+      try { localStorage.setItem('learnerHub_authorName', fullName.trim()); } catch {}
 
       onSubmitted(sub);
       setIsSuccess(true);
