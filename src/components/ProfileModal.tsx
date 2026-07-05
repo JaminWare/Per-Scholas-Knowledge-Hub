@@ -13,6 +13,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [isManualClaim, setIsManualClaim] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -23,8 +24,10 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     try {
       const saved = localStorage.getItem('learnerHub_authorName') || '';
       setCurrentName(saved);
+      setIsManualClaim(!saved);
     } catch {
       setCurrentName('');
+      setIsManualClaim(true);
     }
   }, [isOpen]);
 
@@ -45,8 +48,8 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
       setError('New name is the same as current name.');
       return;
     }
-    if (!currentName) {
-      setError('No current name found. Submit a contribution first.');
+    if (!currentName.trim()) {
+      setError('Please enter your previous display name so we can locate your submissions.');
       return;
     }
 
@@ -118,13 +121,28 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-zinc-400 mb-1.5">Current Name</label>
-            <input
-              type="text"
-              value={currentName || '(none saved)'}
-              disabled
-              className="w-full px-4 py-3 rounded-xl bg-zinc-950/60 border border-zinc-800 text-sm text-zinc-500 cursor-not-allowed"
-            />
+            <label className="block text-xs font-semibold text-zinc-400 mb-1.5">
+              Current Name
+              {isManualClaim && (
+                <span className="ml-2 text-amber-400 font-normal">(type the name you used before)</span>
+              )}
+            </label>
+            {isManualClaim ? (
+              <input
+                type="text"
+                value={currentName}
+                onChange={(e) => setCurrentName(e.target.value)}
+                placeholder="Enter your exact previous display name"
+                className="w-full px-4 py-3 rounded-xl bg-zinc-950/60 border border-amber-500/30 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all"
+              />
+            ) : (
+              <input
+                type="text"
+                value={currentName}
+                disabled
+                className="w-full px-4 py-3 rounded-xl bg-zinc-950/60 border border-zinc-800 text-sm text-zinc-500 cursor-not-allowed"
+              />
+            )}
           </div>
 
           <div>
