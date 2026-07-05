@@ -55,6 +55,10 @@ function isHeading(block: string): boolean {
   return /^#{1,6}\s/.test(block.trim());
 }
 
+function isBlockquote(block: string): boolean {
+  return block.split('\n').every((l) => /^> /.test(l) || l.trim() === '');
+}
+
 // ---------------------------------------------------------------------------
 // Link sanitization pass (ported from MarkdownSanitizerPanel)
 // ---------------------------------------------------------------------------
@@ -155,9 +159,25 @@ export function autoFormatContent(raw: string): string {
     const blocks = text.split(/\n\n/).map((b) => b.trim()).filter(Boolean);
     const output: string[] = [];
 
+    // Track whether the previous emitted block was a heading so we never
+    // extract a second header from the body paragraph that follows it.
+    // This is the key idempotency guard: clicking Auto-Format twice produces
+    // identical output because `### H\n\nbody` splits into ["### H", "body"]
+    // and the body is protected by this flag on the second pass.
+    let prevWasHeading = false;
+
     for (const block of blocks) {
       if (isHeading(block)) {
         output.push(block);
+        prevWasHeading = true;
+      } else if (isBlockquote(block)) {
+        // Already-quoted blocks pass through unchanged to avoid double-quoting.
+        output.push(block);
+        prevWasHeading = false;
+      } else if (prevWasHeading) {
+        // Body paragraph immediately after a heading: pass through as-is.
+        output.push(block);
+        prevWasHeading = false;
       } else if (isListBlock(block)) {
         const cleaned = block
           .split('\n')
@@ -167,19 +187,23 @@ export function autoFormatContent(raw: string): string {
           })
           .join('\n');
         output.push(cleaned);
+        prevWasHeading = false;
       } else if (wordCount(block) < 15) {
         const quoted = block
           .split('\n')
           .map((line) => `> ${line}`)
           .join('\n');
         output.push(quoted);
+        prevWasHeading = false;
       } else {
         const { header, wordCount: headerWordCount } = extractHeaderPhrase(block);
         const body = sliceLeadingWords(block, headerWordCount);
         if (body) {
           output.push(`### ${header}\n\n${body}`);
+          prevWasHeading = false;
         } else {
           output.push(block);
+          prevWasHeading = false;
         }
       }
     }

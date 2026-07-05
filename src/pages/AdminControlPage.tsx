@@ -410,7 +410,10 @@ function SubmissionCard({
               {/* Toolbar */}
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setEditedContent(autoFormatContent(editedContent))}
+                  onClick={() => {
+                    const formatted = autoFormatContent(editedContent);
+                    if (formatted !== editedContent) setEditedContent(formatted);
+                  }}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-900/20 hover:bg-sky-800/30 text-sky-400 border border-sky-800/50 text-[11px] font-semibold transition-all"
                 >
                   <Wand2 className="w-3 h-3" /> Auto-Format
