@@ -336,7 +336,7 @@ function SubmissionCard({
 
       {/* Content preview & editor toggle */}
       <div className="px-5 pb-3">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => setExpanded((v) => !v)}
             className="text-[11px] text-sky-500 hover:text-sky-400 font-medium transition-colors"
@@ -362,7 +362,7 @@ function SubmissionCard({
 
         {expanded && (
           isResource ? (
-            <div className="mt-2 p-3 bg-zinc-950 rounded-lg border border-zinc-800">
+            <div className="mt-2 p-3 bg-zinc-950 rounded-lg border border-zinc-800 overflow-x-auto">
               <a
                 href={sub.content}
                 target="_blank"
@@ -413,7 +413,7 @@ function SubmissionCard({
                 {/* Preview */}
                 <div className="flex flex-col">
                   <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold mb-1.5">Live Preview</span>
-                  <div className="flex-1 min-h-[200px] sm:min-h-[320px] max-h-[500px] overflow-y-auto px-4 sm:px-5 py-3 sm:py-4 rounded-lg bg-black border border-zinc-800">
+                  <div className="flex-1 min-h-[200px] sm:min-h-[320px] max-h-[500px] overflow-y-auto overflow-x-auto px-4 sm:px-5 py-3 sm:py-4 rounded-lg bg-black border border-zinc-800">
                     <MarkdownRenderer content={editedContent} />
                   </div>
                 </div>
@@ -437,7 +437,7 @@ function SubmissionCard({
                   </div>
                 </div>
               ) : (
-                <pre className="p-3 bg-zinc-950 rounded-lg text-[11px] text-zinc-400 font-mono whitespace-pre-wrap break-all max-h-48 overflow-y-auto border border-zinc-800">
+                <pre className="p-3 bg-zinc-950 rounded-lg text-[11px] text-zinc-400 font-mono whitespace-pre-wrap break-all max-h-48 overflow-auto border border-zinc-800">
                   {editedContent}
                 </pre>
               )}
@@ -455,7 +455,7 @@ function SubmissionCard({
       )}
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 px-4 sm:px-5 py-3 sm:py-4 border-t border-zinc-800 bg-zinc-900/50">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 px-4 sm:px-5 py-3 sm:py-4 border-t border-zinc-800 bg-zinc-900/50">
         <button
           onClick={handleApprove}
           disabled={approving || deleting}

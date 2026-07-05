@@ -390,14 +390,16 @@ export default function MarkdownRenderer({ content }: Props) {
                     ))}
                   </div>
                 </div>
-                <SyntaxHighlighter
-                  language={block.lang}
-                  style={vscDarkPlus}
-                  customStyle={{ margin: 0, borderRadius: 0, padding: '1rem', fontSize: '0.875rem' }}
-                  wrapLongLines
-                >
-                  {block.code}
-                </SyntaxHighlighter>
+                <div className="overflow-x-auto">
+                  <SyntaxHighlighter
+                    language={block.lang}
+                    style={vscDarkPlus}
+                    customStyle={{ margin: 0, borderRadius: 0, padding: '1rem', fontSize: '0.875rem' }}
+                    wrapLongLines
+                  >
+                    {block.code}
+                  </SyntaxHighlighter>
+                </div>
               </div>
             );
           case 'paragraph':
