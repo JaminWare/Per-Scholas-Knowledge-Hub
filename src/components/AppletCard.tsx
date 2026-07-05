@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Lightbulb, Pin } from 'lucide-react';
+import { ArrowRight, Lightbulb, Pin, Pencil } from 'lucide-react';
 import CardZoomOverlay from './CardZoomOverlay';
 import type { ArticleWithContributor } from '../hooks/useArticles';
 
@@ -27,7 +27,7 @@ export function parseAuthorFromExcerpt(excerpt: string | null | undefined): stri
   return excerpt.replace('Contributed by ', '').trim() || null;
 }
 
-export function AppletCard({ article, gridMode = false, isPinned = false }: { article: ArticleWithContributor; gridMode?: boolean; isPinned?: boolean }) {
+export function AppletCard({ article, gridMode = false, isPinned = false, onEdit }: { article: ArticleWithContributor; gridMode?: boolean; isPinned?: boolean; onEdit?: (article: ArticleWithContributor) => void }) {
   const [zoomed, setZoomed] = useState(false);
   const isSample = article.is_sample;
   const authorName = (article.contributor as { name: string } | null)?.name
@@ -90,7 +90,7 @@ export function AppletCard({ article, gridMode = false, isPinned = false }: { ar
       >
         {cardContent}
       </div>
-      <div className="px-5 pb-5 pt-3 mt-auto">
+      <div className="px-5 pb-5 pt-3 mt-auto flex items-center justify-between">
         {isExternalLink || article.submission_type === 'Resource Link' ? (
           <a
             href={article.content}
@@ -107,6 +107,16 @@ export function AppletCard({ article, gridMode = false, isPinned = false }: { ar
           >
             Read more <ArrowRight className="w-4 h-4" />
           </Link>
+        )}
+        {onEdit && !isSample && (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onEdit(article); }}
+            className="p-2 rounded-lg text-zinc-500 hover:text-sky-400 hover:bg-sky-500/10 transition-colors"
+            title="Suggest an edit"
+          >
+            <Pencil className="w-3.5 h-3.5" />
+          </button>
         )}
       </div>
       <CardZoomOverlay open={zoomed} onClose={() => setZoomed(false)}>

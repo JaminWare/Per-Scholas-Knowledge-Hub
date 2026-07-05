@@ -7,7 +7,8 @@ import Fuse from 'fuse.js';
 import { supabase } from '../lib/supabase';
 import { AppletCard, AppletSkeleton } from '../components/AppletCard';
 import type { ArticleWithContributor } from '../hooks/useArticles';
-import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
+import ContributorSubmissionModal, { type EditableArticle } from '../components/ContributorSubmissionModal';
+import { useAuth } from '../hooks/useAuth';
 
 // ─── 3-tier category filter system ─────────────────────────────
 
@@ -212,7 +213,14 @@ export default function LearnerExperiencePage() {
   const [isLoading, setIsLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editItem, setEditItem] = useState<EditableArticle | null>(null);
+  const { user } = useAuth();
   const abortRef = useRef(false);
+
+  const handleEdit = (article: ArticleWithContributor) => {
+    setEditItem(article);
+    setIsModalOpen(true);
+  };
 
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
@@ -524,7 +532,7 @@ export default function LearnerExperiencePage() {
       ) : filteredEntries.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {displayEntries.map((entry) => (
-            <AppletCard key={entry.id} article={entry} gridMode isPinned={pinnedSet.has(entry.id)} />
+            <AppletCard key={entry.id} article={entry} gridMode isPinned={pinnedSet.has(entry.id)} onEdit={user ? handleEdit : undefined} />
           ))}
         </div>
       ) : (
@@ -534,8 +542,9 @@ export default function LearnerExperiencePage() {
       {/* ─── Submission Modal ─── */}
       <ContributorSubmissionModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => { setIsModalOpen(false); setEditItem(null); }}
         onSubmitted={() => {}}
+        editItem={editItem}
       />
     </div>
   );

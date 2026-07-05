@@ -4,8 +4,10 @@ import {
   Home, ChevronDown, ChevronRight, ChevronLeft,
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   BookOpen, LifeBuoy, Headphones, ExternalLink,
-  Laptop, Monitor, Heart, Database, Award,
+  Laptop, Monitor, Heart, Database, Award, LogIn, LogOut,
 } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
+import AuthModal from './AuthModal';
 
 // ─── Navigation data ──────────────────────────────────────
 
@@ -111,6 +113,8 @@ export default function Sidebar({ onToggle }: SidebarProps) {
   const [openTracks, setOpenTracks] = useState<Record<string, boolean>>({
     core1: true, core2: false, healthcare: false,
   });
+  const [authOpen, setAuthOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const lxActive = location.hash === '#/learner-experience';
 
@@ -217,7 +221,29 @@ export default function Sidebar({ onToggle }: SidebarProps) {
             )}
           </div>
         ))}
+
+        <div className="mt-6 border-t border-zinc-800 pt-4 px-1">
+          {user ? (
+            <button
+              onClick={signOut}
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+            >
+              <LogOut className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">Sign Out</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => setAuthOpen(true)}
+              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 border border-sky-500/20 transition-colors"
+            >
+              <LogIn className="w-4 h-4 flex-shrink-0" />
+              <span className="truncate">Sign In</span>
+            </button>
+          )}
+        </div>
       </nav>
+
+      <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
     </div>
   );
 }

@@ -16,6 +16,17 @@ import { isImageUrl, sanitizeUrlForMarkdown, encodeMarkdownUrl, extractSmartLink
 
 type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Resource Link' | 'Prompt Playbook';
 
+export interface EditableArticle {
+  id: string;
+  title: string;
+  content: string;
+  formatted_content?: string | null;
+  study_category?: string | null;
+  submission_type?: string | null;
+  author_name?: string | null;
+  comp_objective?: string | null;
+}
+
 const PROFANITY_PATTERN = new RegExp(
   ['fuck','shit','bitch','asshole','bastard','cunt','damn','piss','cock','dick','pussy','whore','slut','retard','nigger','faggot','kike','spic','chink','wetback'].join('|'),
   'i'
@@ -136,7 +147,7 @@ function buildFormattedContent(
 
 const LX_STAGES = JOURNEY_TABS.filter((t) => t.id !== 'all');
 
-export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh }: { isOpen: boolean; onClose: () => void; onSubmitted: (s: NewSubmission) => void; onRefresh?: () => void; }) {
+export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh, editItem }: { isOpen: boolean; onClose: () => void; onSubmitted: (s: NewSubmission) => void; onRefresh?: () => void; editItem?: EditableArticle | null }) {
   const [fullName, setFullName] = useState('');
   const [submissionType, setSubmissionType] = useState<SubmissionType>('Article');
 
@@ -187,38 +198,86 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   useEffect(() => {
     if (!isOpen) return;
     titleManuallyEdited.current = false;
-    setSubmissionType('Article');
-    try {
-      const saved = localStorage.getItem('learnerHub_authorName');
-      setFullName(saved || '');
-    } catch {
-      setFullName('');
-    }
-    setMasterCategory('');
-    setTrack('');
-    setTitle('');
-    setConcept('');
-    setAPlusRelevance('');
-    setImpact('');
-    setReferences('');
-    setResourceUrl('');
-    setDiagramUrl('');
-    setPromptRole('');
-    setPromptText('');
-    setPromptUseCase('');
-    setLxStage('');
-    setLxTopic('');
-    setLxFocus('');
-    setHardship('');
-    setBreakthrough('');
-    setCompObjective('');
     setErrors({});
     setFormError('');
     setIsSubmitting(false);
     setIsSuccess(false);
     setAutoDetected(false);
     setUserOverride(false);
-  }, [isOpen]);
+
+    if (editItem) {
+      setTitle(editItem.title || '');
+      const rawType = (editItem.submission_type || 'Article') as SubmissionType;
+      setSubmissionType(rawType);
+      setFullName(editItem.author_name || '');
+      setCompObjective(editItem.comp_objective || '');
+
+      if (rawType === 'Resource Link') {
+        setResourceUrl(editItem.content || '');
+        setConcept('');
+      } else {
+        setConcept(editItem.content || '');
+        setResourceUrl('');
+      }
+
+      // Pre-select track from study_category if available
+      const cat = editItem.study_category || '';
+      const matchedMaster = MASTER_CATEGORIES.find((mc) =>
+        mc.sub.includes(cat) || mc.label === cat
+      );
+      if (matchedMaster) {
+        setMasterCategory(matchedMaster.label);
+        if (matchedMaster.sub.includes(cat)) {
+          setTrack(cat);
+        } else {
+          setTrack('');
+        }
+        setUserOverride(true);
+      } else {
+        setMasterCategory('');
+        setTrack('');
+      }
+
+      setAPlusRelevance('');
+      setImpact('');
+      setReferences('');
+      setDiagramUrl('');
+      setPromptRole('');
+      setPromptText('');
+      setPromptUseCase('');
+      setLxStage('');
+      setLxTopic('');
+      setLxFocus('');
+      setHardship('');
+      setBreakthrough('');
+    } else {
+      setSubmissionType('Article');
+      try {
+        const saved = localStorage.getItem('learnerHub_authorName');
+        setFullName(saved || '');
+      } catch {
+        setFullName('');
+      }
+      setMasterCategory('');
+      setTrack('');
+      setTitle('');
+      setConcept('');
+      setAPlusRelevance('');
+      setImpact('');
+      setReferences('');
+      setResourceUrl('');
+      setDiagramUrl('');
+      setPromptRole('');
+      setPromptText('');
+      setPromptUseCase('');
+      setLxStage('');
+      setLxTopic('');
+      setLxFocus('');
+      setHardship('');
+      setBreakthrough('');
+      setCompObjective('');
+    }
+  }, [isOpen, editItem]);
 
   const runAutoDetect = useCallback(() => {
     if (userOverride || masterCategory || track) return;
@@ -403,7 +462,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     const e: Record<string, string> = {};
     if (!fullName.trim()) e.fullName = 'Required.';
     if (!title.trim()) e.title = 'Required.';
-    if (!masterCategory) e.masterCategory = 'Please select a category.';
+    if (!editItem && !masterCategory) e.masterCategory = 'Please select a category.';
 
     if (isLearnerExperience && !lxStage) {
       e.lxStage = 'Please select a stage.';
@@ -446,6 +505,43 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
     setIsSubmitting(true);
 
+    // ─── EDIT MODE: update existing article, route back to pending ───
+    if (editItem) {
+      if (!isResourceLink) {
+        rawContent = autoFormatContent(rawContent);
+      }
+
+      try {
+        const { error: updateError } = await supabase
+          .from('articles')
+          .update({
+            title: title.trim(),
+            content: rawContent,
+            study_category: track || masterCategory || editItem.study_category,
+            submission_type: submissionType,
+            comp_objective: compObjective || null,
+            status: 'pending',
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', editItem.id);
+
+        if (updateError) {
+          setFormError('Database Error: ' + updateError.message);
+          setIsSubmitting(false);
+          return;
+        }
+
+        setIsSuccess(true);
+        if (onRefresh) onRefresh();
+      } catch (err: any) {
+        setFormError('Database Error: ' + (err?.message || JSON.stringify(err)));
+      } finally {
+        setIsSubmitting(false);
+      }
+      return;
+    }
+
+    // ─── NEW SUBMISSION MODE ───
     // Pre-flight duplication check (fuzzy title + URL + content)
     try {
       const duplicateError = await checkForDuplicate(
@@ -537,9 +633,11 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             <div className="w-20 h-20 rounded-full bg-emerald-500/10 border-2 border-emerald-500/30 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
               <CheckCircle2 className="w-10 h-10 text-emerald-500" />
             </div>
-            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-3">Contribution Submitted!</h2>
+            <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-3">{editItem ? 'Edit Submitted!' : 'Contribution Submitted!'}</h2>
             <p className="text-sm text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-sm">
-              Your resource has been sent to the curation queue for peer review and admin approval.
+              {editItem
+                ? 'Your edit has been sent to the curation queue for admin review before going live.'
+                : 'Your resource has been sent to the curation queue for peer review and admin approval.'}
             </p>
           </div>
           <div className="px-8 pb-8">
@@ -563,8 +661,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
         <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex items-center justify-between flex-shrink-0 gap-3">
           <div className="min-w-0">
-            <h2 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-100">Log New Intel</h2>
-            <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">Add your breakthrough, workflow fix, or study hack to the Cohort Survival Guide.</p>
+            <h2 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-100">{editItem ? 'Suggest an Edit' : 'Log New Intel'}</h2>
+            <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">{editItem ? 'Propose changes to this article. Edits are reviewed before going live.' : 'Add your breakthrough, workflow fix, or study hack to the Cohort Survival Guide.'}</p>
           </div>
           <button onClick={() => { reset(); onClose(); }} className="p-2.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors flex-shrink-0"><X className="w-5 h-5" /></button>
         </div>
@@ -901,7 +999,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         <div className="px-4 sm:px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 flex-shrink-0">
           <button type="button" onClick={() => { reset(); onClose(); }} className="text-sm font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors py-2.5 sm:py-0">Cancel</button>
           <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all text-zinc-900 bg-sky-400 hover:bg-sky-500 shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] disabled:opacity-60">
-            {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><Send className="w-4 h-4" /> Submit Your Contribution</>}
+            {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><Send className="w-4 h-4" /> {editItem ? 'Submit Edit for Review' : 'Submit Your Contribution'}</>}
           </button>
         </div>
 
