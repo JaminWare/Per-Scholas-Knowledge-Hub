@@ -751,9 +751,10 @@ function AdminPanel() {
 
       const publishContent = editedContent ?? sub.formatted_content ?? sub.content;
       const isResourceLink = sub.submission_type === 'Resource Link';
+      const finalContent = isResourceLink ? publishContent : autoFormatContent(publishContent);
       const excerpt = isResourceLink
         ? `Contributed by ${sub.full_name}`
-        : deriveExcerpt(publishContent);
+        : deriveExcerpt(finalContent);
 
       const trackLower = effectiveTrack.toLowerCase();
       const isLX = trackLower.includes('learner experience');
@@ -774,7 +775,7 @@ function AdminPanel() {
           .update({
             title: cleanedTitle || sub.title,
             slug: uniqueSlug,
-            content: publishContent || '',
+            content: finalContent || '',
             study_category: studyCategory,
             section_id: targetSectionId,
             is_sample: false,
@@ -799,7 +800,7 @@ function AdminPanel() {
           .insert({
             title: cleanedTitle || sub.title,
             slug: uniqueSlug,
-            content: publishContent || '',
+            content: finalContent || '',
             study_category: studyCategory,
             section_id: targetSectionId,
             is_sample: false,

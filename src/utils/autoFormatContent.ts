@@ -168,6 +168,64 @@ function sanitizeLinks(input: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// Smart dash normalization
+// ---------------------------------------------------------------------------
+
+const MARKDOWN_LINK_RE = /\[([^\]]*)\]\([^)]*\)/g;
+const URL_RE = /https?:\/\/[^\s)>\]]+/g;
+
+function normalizeDashes(input: string): string {
+  return input.split('\n').map((line) => {
+    if (/^\s*[-*]\s/.test(line)) return line;
+
+    const shields: { start: number; end: number }[] = [];
+    let m: RegExpExecArray | null;
+
+    MARKDOWN_LINK_RE.lastIndex = 0;
+    while ((m = MARKDOWN_LINK_RE.exec(line)) !== null) {
+      shields.push({ start: m.index, end: m.index + m[0].length });
+    }
+    URL_RE.lastIndex = 0;
+    while ((m = URL_RE.exec(line)) !== null) {
+      shields.push({ start: m.index, end: m.index + m[0].length });
+    }
+
+    const isShielded = (idx: number) => shields.some((s) => idx >= s.start && idx < s.end);
+
+    let result = '';
+    let i = 0;
+    while (i < line.length) {
+      const ch = line[i];
+      const isEm = ch === '\u2014';
+      const isEn = ch === '\u2013';
+      const isHyphenBreak = ch === '-' && i > 0 && i < line.length - 1
+        && line[i - 1] === ' ' && line[i + 1] === ' ';
+
+      if ((isEm || isEn || isHyphenBreak) && !isShielded(i)) {
+        const hasPre = result.length > 0 && result[result.length - 1] === ' ';
+        const postStart = isHyphenBreak ? i + 2 : i + 1;
+        const hasPost = postStart < line.length && line[postStart] === ' ';
+
+        if (hasPre && (isHyphenBreak || hasPost)) {
+          result = result.slice(0, -1) + ' ';
+          i = isHyphenBreak ? i + 2 : (hasPost ? postStart + 1 : postStart);
+        } else if (hasPre) {
+          i = isHyphenBreak ? i + 2 : i + 1;
+        } else {
+          result += ' ';
+          i = isHyphenBreak ? i + 2 : i + 1;
+          if (i < line.length && line[i] === ' ') i++;
+        }
+      } else {
+        result += ch;
+        i++;
+      }
+    }
+    return result;
+  }).join('\n');
+}
+
+// ---------------------------------------------------------------------------
 // Main auto-format pipeline
 // ---------------------------------------------------------------------------
 
@@ -234,6 +292,7 @@ export function autoFormatContent(raw: string): string {
       .map((line) => line.trimEnd())
       .join('\n');
 
+    result = normalizeDashes(result);
     result = sanitizeLinks(result);
 
     return result.trim();
