@@ -9,7 +9,7 @@ import RecognitionPage from './pages/RecognitionPage';
 import LearnerExperiencePage from './pages/LearnerExperiencePage';
 import AdminControlPage from './pages/AdminControlPage';
 import NotFoundPage from './pages/NotFoundPage';
-import { PanelLeftOpen, PanelLeftClose } from 'lucide-react';
+import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen } from 'lucide-react';
 
 function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | null> }) {
   const { pathname } = useLocation();
@@ -21,42 +21,91 @@ function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | n
 }
 
 function AppContent() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const mainRef = useRef<HTMLElement>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
+  const location = useLocation();
+
+  // Close mobile sidebar on route change
+  useEffect(() => {
+    setMobileSidebarOpen(false);
+  }, [location.pathname, location.hash]);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-black text-zinc-100">
-      {/* Sidebar */}
+
+      {/* ── Mobile Sidebar Overlay ─────────────────────────── */}
+      {mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden"
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
+
+      {/* ── Mobile Off-Canvas Sidebar ──────────────────────── */}
       <div
-        className={`flex-shrink-0 border-r border-zinc-800 h-full overflow-hidden transition-all duration-300 ease-in-out ${
-          sidebarOpen ? 'w-72' : 'w-0'
+        className={`fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-in-out md:hidden ${
+          mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <Sidebar onToggle={() => setMobileSidebarOpen(false)} />
+      </div>
+
+      {/* ── Desktop Sidebar (pinned) ──────────────────────── */}
+      <div
+        className={`hidden md:block flex-shrink-0 border-r border-zinc-800 h-full overflow-hidden transition-all duration-300 ease-in-out ${
+          desktopSidebarOpen ? 'w-72' : 'w-0'
         }`}
       >
         <div className="w-72 h-full overflow-y-auto">
-          <Sidebar onToggle={() => setSidebarOpen(false)} />
+          <Sidebar onToggle={() => setDesktopSidebarOpen(false)} />
         </div>
       </div>
 
-      {/* Main area */}
+      {/* ── Main area ─────────────────────────────────────── */}
       <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
-        <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800">
+
+        {/* Mobile top header */}
+        <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800 flex md:hidden items-center gap-3 px-4 py-3">
+          <button
+            onClick={() => setMobileSidebarOpen(true)}
+            className="p-2 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-sky-400 transition-colors flex-shrink-0"
+            aria-label="Open navigation menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center flex-shrink-0">
+              <BookOpen className="w-3.5 h-3.5 text-white" />
+            </div>
+            <span className="font-bold text-sm text-zinc-100 truncate">Learners Hub</span>
+          </div>
+        </header>
+
+        {/* Desktop top header */}
+        <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800 hidden md:block">
           <div className="flex items-center gap-3 px-4 py-3">
             <button
-              onClick={() => setSidebarOpen((v) => !v)}
+              onClick={() => setDesktopSidebarOpen((v) => !v)}
               className="p-2 rounded-lg bg-zinc-700 text-zinc-400 hover:bg-zinc-600 hover:text-sky-400 transition-colors flex-shrink-0"
-              title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+              title={desktopSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
             >
-              {sidebarOpen
+              {desktopSidebarOpen
                 ? <PanelLeftClose className="w-5 h-5" />
                 : <PanelLeftOpen className="w-5 h-5" />}
             </button>
             <div className="flex-1 max-w-2xl">
-              <SearchBar onMenuClick={() => setSidebarOpen(true)} />
+              <SearchBar onMenuClick={() => setDesktopSidebarOpen(true)} />
             </div>
           </div>
         </header>
+
+        {/* Mobile search bar (below mobile header) */}
+        <div className="flex-shrink-0 md:hidden px-4 py-2 border-b border-zinc-800 bg-zinc-950/80">
+          <SearchBar onMenuClick={() => setMobileSidebarOpen(true)} />
+        </div>
 
         <main ref={mainRef} className="flex-1 overflow-y-auto bg-black p-4 md:p-6">
           <ScrollToTop scrollRef={mainRef} />
@@ -71,8 +120,8 @@ function AppContent() {
           </Routes>
         </main>
 
-        <footer className="flex-shrink-0 border-t border-zinc-800 py-3 px-5">
-          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-zinc-500">
+        <footer className="flex-shrink-0 border-t border-zinc-800 py-3 px-4 sm:px-5">
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-xs sm:text-sm text-zinc-500">
             <p>Per Scholas Learners Knowledge Base: AI-Enabled Healthcare IT</p>
             <p>Pioneering Cohort 2026-RTT-23</p>
           </div>
