@@ -96,7 +96,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle }: {
     }`}>
 
       {/* Header */}
-      <div className="px-5 py-4">
+      <div className="px-3 sm:px-5 py-3 sm:py-4">
         <button
           onClick={onToggle}
           className="w-full flex items-center gap-3 text-left"
@@ -343,7 +343,7 @@ export default function RecognitionPage() {
                 key={opt.value}
                 type="button"
                 onClick={() => setTrackFilter(opt.value)}
-                className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 sm:px-4 py-2 sm:py-1.5 text-xs sm:text-sm font-medium border transition-all duration-200 ${
                   isActive
                     ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
                     : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'

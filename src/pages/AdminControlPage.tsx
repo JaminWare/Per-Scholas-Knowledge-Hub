@@ -375,17 +375,17 @@ function SubmissionCard({
           ) : isEditing ? (
             <div className="mt-3 space-y-3">
               {/* Toolbar */}
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <button
                   onClick={() => {
                     const formatted = autoFormatContent(editedContent);
                     if (formatted !== editedContent) setEditedContent(formatted);
                   }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-900/20 hover:bg-sky-800/30 text-sky-400 border border-sky-800/50 text-[11px] font-semibold transition-all"
+                  className="flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded-lg bg-sky-900/20 hover:bg-sky-800/30 text-sky-400 border border-sky-800/50 text-[11px] font-semibold transition-all"
                 >
                   <Wand2 className="w-3 h-3" /> Auto-Format
                 </button>
-                <span className="text-[10px] text-zinc-600">Smart headers, blockquotes, list cleanup</span>
+                <span className="text-[10px] text-zinc-600 hidden sm:inline">Smart headers, blockquotes, list cleanup</span>
               </div>
               {/* Editable Title */}
               <div>
@@ -407,13 +407,13 @@ function SubmissionCard({
                     value={editedContent}
                     onChange={(e) => setEditedContent(e.target.value)}
                     spellCheck={false}
-                    className="flex-1 min-h-[320px] w-full px-4 py-3 rounded-lg bg-black border border-zinc-800 text-zinc-200 text-xs font-mono leading-relaxed resize-y focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 focus:outline-none transition-all"
+                    className="flex-1 min-h-[200px] sm:min-h-[320px] w-full px-3 sm:px-4 py-3 rounded-lg bg-black border border-zinc-800 text-zinc-200 text-xs font-mono leading-relaxed resize-y focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 focus:outline-none transition-all"
                   />
                 </div>
                 {/* Preview */}
                 <div className="flex flex-col">
                   <span className="text-[10px] uppercase tracking-wider text-zinc-500 font-bold mb-1.5">Live Preview</span>
-                  <div className="flex-1 min-h-[320px] max-h-[500px] overflow-y-auto px-5 py-4 rounded-lg bg-black border border-zinc-800">
+                  <div className="flex-1 min-h-[200px] sm:min-h-[320px] max-h-[500px] overflow-y-auto px-4 sm:px-5 py-3 sm:py-4 rounded-lg bg-black border border-zinc-800">
                     <MarkdownRenderer content={editedContent} />
                   </div>
                 </div>
@@ -455,11 +455,11 @@ function SubmissionCard({
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-3 px-5 py-4 border-t border-zinc-800 bg-zinc-900/50">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 px-4 sm:px-5 py-3 sm:py-4 border-t border-zinc-800 bg-zinc-900/50">
         <button
           onClick={handleApprove}
           disabled={approving || deleting}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-white text-xs font-bold transition-all shadow-md shadow-teal-500/20 disabled:opacity-50"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-white text-xs font-bold transition-all shadow-md shadow-teal-500/20 disabled:opacity-50"
         >
           {approving
             ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Approving…</>
@@ -469,7 +469,7 @@ function SubmissionCard({
         <button
           onClick={handleDelete}
           disabled={approving || deleting}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/20 text-xs font-bold transition-all disabled:opacity-50"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/20 text-xs font-bold transition-all disabled:opacity-50"
         >
           {deleting
             ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Deleting…</>
@@ -644,7 +644,7 @@ function AdminPanel() {
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       {/* Header */}
       <header className="sticky top-0 z-20 bg-zinc-900/95 backdrop-blur-md border-b border-zinc-800">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-sky-500/15 border border-sky-500/25">
               <ShieldCheck className="w-5 h-5 text-sky-400" />
@@ -670,7 +670,7 @@ function AdminPanel() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 py-8 space-y-6">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-5 sm:space-y-6">
 
         {/* Success toast */}
         {successMessage && (

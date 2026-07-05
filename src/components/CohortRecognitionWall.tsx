@@ -97,7 +97,7 @@ function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boo
 
   if (isFounder) {
     return (
-      <div className="flex items-center gap-3 px-5 py-4 bg-sky-50/90 dark:bg-zinc-700/80 rounded-xl border border-sky-300/60 dark:border-amber-500/30 shadow-sm shadow-amber-500/5">
+      <div className="flex items-center gap-3 px-3 sm:px-5 py-3 sm:py-4 bg-sky-50/90 dark:bg-zinc-700/80 rounded-xl border border-sky-300/60 dark:border-amber-500/30 shadow-sm shadow-amber-500/5">
         <div className="flex flex-col items-center gap-1 flex-shrink-0">
           <Crown className="w-4 h-4 text-amber-500" />
           <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-amber-400 flex items-center justify-center font-bold text-white text-base shadow-md shadow-amber-500/20">
@@ -128,7 +128,7 @@ function ContributorRow({ group, isNew }: { group: ContributorGroup; isNew?: boo
   }
 
   return (
-    <div className={`flex items-center gap-3 px-4 py-3 bg-white dark:bg-zinc-600 rounded-xl border ${
+    <div className={`flex items-center gap-3 px-3 sm:px-4 py-3 bg-white dark:bg-zinc-600 rounded-xl border ${
       isNew ? 'border-sky-400/40 dark:border-sky-500/30' : 'border-zinc-200 dark:border-zinc-600'
     }`}>
       <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white text-sm ${
@@ -176,16 +176,16 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
   const { contributors: allGroups, newestNonFounderName: newestName } = useContributorGroups({ newSubmission });
 
   return (
-    <section className="mt-12">
+    <section className="mt-8 sm:mt-12">
       {/* Header */}
-      <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
+      <div className="flex items-center justify-between mb-4 sm:mb-5 flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-500/10">
             <Award className="w-5 h-5 text-amber-600 dark:text-amber-400" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Cohort Recognition Wall</h2>
-            <p className="text-sm text-zinc-500">{COHORT_LABEL}</p>
+            <h2 className="text-lg sm:text-xl font-bold text-zinc-800 dark:text-zinc-100">Cohort Recognition Wall</h2>
+            <p className="text-xs sm:text-sm text-zinc-500">{COHORT_LABEL}</p>
           </div>
         </div>
         <span className="px-3 py-1 text-xs font-semibold bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-full">
@@ -209,9 +209,9 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge }: P
       {/* Claim your spot CTA */}
       <button
         onClick={onClaimBadge}
-        className="w-full flex items-center gap-3 p-4 bg-white dark:bg-zinc-600 border-2 border-dashed border-zinc-300 dark:border-zinc-500 hover:border-sky-400 dark:hover:border-sky-500/50 hover:bg-sky-50 dark:hover:bg-sky-500/5 rounded-xl transition-all group text-left"
+        className="w-full flex items-center gap-3 p-3 sm:p-4 bg-white dark:bg-zinc-600 border-2 border-dashed border-zinc-300 dark:border-zinc-500 hover:border-sky-400 dark:hover:border-sky-500/50 hover:bg-sky-50 dark:hover:bg-sky-500/5 rounded-xl transition-all group text-left"
       >
-        <div className="w-11 h-11 rounded-xl bg-sky-100 dark:bg-sky-500/10 flex items-center justify-center group-hover:bg-sky-200 dark:group-hover:bg-sky-500/20 transition-colors flex-shrink-0">
+        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-sky-100 dark:bg-sky-500/10 flex items-center justify-center group-hover:bg-sky-200 dark:group-hover:bg-sky-500/20 transition-colors flex-shrink-0">
           <Plus className="w-5 h-5 text-sky-600 dark:text-sky-400" />
         </div>
         <div>

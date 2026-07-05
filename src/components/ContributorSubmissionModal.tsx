@@ -551,29 +551,29 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-zinc-950/70 dark:bg-zinc-300/25 backdrop-blur-sm" onClick={() => { reset(); onClose(); }} />
-      <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-2xl bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden flex flex-col max-h-[88vh] sm:max-h-[90vh]">
 
-        <div className="px-6 py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex items-center justify-between flex-shrink-0">
-          <div>
-            <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Log New Intel</h2>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">Add your breakthrough, workflow fix, or study hack to the Cohort Survival Guide.</p>
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex items-center justify-between flex-shrink-0 gap-3">
+          <div className="min-w-0">
+            <h2 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-100">Log New Intel</h2>
+            <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">Add your breakthrough, workflow fix, or study hack to the Cohort Survival Guide.</p>
           </div>
-          <button onClick={() => { reset(); onClose(); }} className="p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors"><X className="w-5 h-5" /></button>
+          <button onClick={() => { reset(); onClose(); }} className="p-2.5 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors flex-shrink-0"><X className="w-5 h-5" /></button>
         </div>
 
-        <div className="mx-6 mt-4 px-4 py-3 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-start gap-2.5 flex-shrink-0">
+        <div className="mx-4 sm:mx-6 mt-3 sm:mt-4 px-3 sm:px-4 py-3 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-start gap-2.5 flex-shrink-0">
           <Lightbulb className="w-4 h-4 text-sky-400 mt-0.5 flex-shrink-0" />
           <p className="text-sm text-sky-600 dark:text-sky-400 leading-snug">Diagramming? Don't upload screenshots of your topology. Use the <a href="https://mermaid.live" target="_blank" rel="noopener noreferrer" className="font-bold underline hover:text-sky-300">Mermaid Live Editor</a> to visually map out your architecture and paste the markdown code below.</p>
         </div>
 
         {formError && (
-          <div className="mx-6 mt-4 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 flex items-start gap-2.5 flex-shrink-0">
+          <div className="mx-4 sm:mx-6 mt-3 sm:mt-4 px-3 sm:px-4 py-3 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 flex items-start gap-2.5 flex-shrink-0">
             <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
             <p className="text-sm text-red-600 dark:text-red-400 leading-snug">{formError}</p>
           </div>
         )}
 
-        <div className="px-6 py-5 overflow-y-auto flex-1 custom-scrollbar">
+        <div className="px-4 sm:px-6 py-4 sm:py-5 overflow-y-auto flex-1 custom-scrollbar">
           <div className="space-y-6">
 
             <div>
@@ -615,7 +615,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               <label className="block text-sm font-semibold mb-2 text-zinc-900 dark:text-zinc-100">Contribution Type</label>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                 {SUBMISSION_TYPES.map((t) => (
-                  <button key={t.value} type="button" onClick={() => setSubmissionType(t.value)} className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-all ${submissionType === t.value ? 'bg-sky-500 border-sky-500 text-white shadow-md shadow-sky-500/20' : 'bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-sky-300'}`}>
+                  <button key={t.value} type="button" onClick={() => setSubmissionType(t.value)} className={`flex flex-col items-center gap-1.5 p-3 sm:p-3 rounded-xl border text-center transition-all min-h-[56px] ${submissionType === t.value ? 'bg-sky-500 border-sky-500 text-white shadow-md shadow-sky-500/20' : 'bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-sky-300'}`}>
                     <t.icon className="w-4 h-4" />
                     <span className="text-[11px] font-semibold leading-tight">{t.label}</span>
                   </button>
@@ -890,9 +890,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex items-center justify-between flex-shrink-0">
-          <button type="button" onClick={() => { reset(); onClose(); }} className="text-sm font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors">Cancel</button>
-          <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all text-zinc-900 bg-sky-400 hover:bg-sky-500 shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] disabled:opacity-60">
+        <div className="px-4 sm:px-6 py-4 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/80 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 flex-shrink-0">
+          <button type="button" onClick={() => { reset(); onClose(); }} className="text-sm font-medium text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200 transition-colors py-2.5 sm:py-0">Cancel</button>
+          <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all text-zinc-900 bg-sky-400 hover:bg-sky-500 shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] disabled:opacity-60">
             {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><Send className="w-4 h-4" /> Submit Your Contribution</>}
           </button>
         </div>
