@@ -16,6 +16,7 @@ import {
   GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
   Pencil, SplitSquareHorizontal, Archive, Filter,
   RotateCcw, XCircle, ShieldOff, Search, UserPlus, Crown, X,
+  Activity,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -593,6 +594,115 @@ function ArchiveTable({
 }
 
 // ---------------------------------------------------------------------------
+// Audit Trail View (only visible to admins with can_manage_admins)
+// ---------------------------------------------------------------------------
+interface AuditLogEntry {
+  id: string;
+  admin_email: string;
+  action_taken: string;
+  target_id: string | null;
+  target_title: string | null;
+  created_at: string;
+}
+
+function getActionBadge(action: string): { label: string; className: string } {
+  const a = action.toUpperCase();
+  if (a.includes('APPROVED') || a.includes('INVITED'))
+    return { label: action.replace(/_/g, ' '), className: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25' };
+  if (a.includes('REJECTED') || a.includes('HARD_DELETED') || a.includes('REVOKED'))
+    return { label: action.replace(/_/g, ' '), className: 'bg-red-500/10 text-red-400 border-red-500/25' };
+  if (a.includes('UNPUBLISHED') || a.includes('RESTORED'))
+    return { label: action.replace(/_/g, ' '), className: 'bg-amber-500/10 text-amber-400 border-amber-500/25' };
+  return { label: action.replace(/_/g, ' '), className: 'bg-zinc-500/10 text-zinc-400 border-zinc-600/25' };
+}
+
+function AuditTrailView() {
+  const [logs, setLogs] = useState<AuditLogEntry[]>([]);
+  const [loadingLogs, setLoadingLogs] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const { data } = await supabase
+        .from('admin_audit_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+      if (!mounted) return;
+      setLogs((data as AuditLogEntry[]) ?? []);
+      setLoadingLogs(false);
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  return (
+    <div className="space-y-6">
+      {/* Section header */}
+      <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
+        <Activity className="w-5 h-5 text-sky-400" />
+        <div>
+          <h2 className="text-lg font-bold text-zinc-100">Audit Trail</h2>
+          <p className="text-sm text-zinc-500 mt-0.5">Chronological log of all moderation actions (most recent first)</p>
+        </div>
+      </div>
+
+      {loadingLogs ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-5 h-5 animate-spin text-zinc-500" />
+        </div>
+      ) : logs.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
+          <Activity className="w-8 h-8 text-zinc-600 mb-4" />
+          <h3 className="text-base font-semibold text-zinc-300">No audit events yet</h3>
+          <p className="text-sm text-zinc-500 mt-1 max-w-xs">
+            Actions taken in the Admin Command Center will appear here.
+          </p>
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-xl border border-zinc-800">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="bg-zinc-900/80 border-b border-zinc-800">
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Timestamp</th>
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Admin</th>
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Action</th>
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Target</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800/60">
+              {logs.map((log) => {
+                const badge = getActionBadge(log.action_taken);
+                return (
+                  <tr key={log.id} className="hover:bg-zinc-900/50 transition-colors">
+                    <td className="px-4 py-3 text-zinc-400 whitespace-nowrap text-xs">
+                      {new Date(log.created_at).toLocaleString('en-US', {
+                        month: 'short', day: 'numeric', year: 'numeric',
+                        hour: 'numeric', minute: '2-digit', hour12: true,
+                      })}
+                    </td>
+                    <td className="px-4 py-3 text-zinc-200 font-medium text-xs">
+                      {log.admin_email}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${badge.className}`}>
+                        {badge.label}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-zinc-300 text-xs max-w-[240px] truncate">
+                      {log.target_title ?? '---'}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Access Control View (only visible to admins with can_manage_admins)
 // ---------------------------------------------------------------------------
 interface WhitelistEntry {
@@ -811,7 +921,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   const [archiveLoading, setArchiveLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [activeTab, setActiveTab] = useState<'pending' | 'archive' | 'access'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'archive' | 'access' | 'audit'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredSubmissions = useMemo(() => {
@@ -1157,6 +1267,20 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 Access Control
               </button>
             )}
+            {canManageAdmins && (
+              <button
+                type="button"
+                onClick={() => setActiveTab('audit')}
+                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                  activeTab === 'audit'
+                    ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <Activity className="w-3.5 h-3.5" />
+                Audit Trail
+              </button>
+            )}
           </div>
         </div>
 
@@ -1228,6 +1352,11 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         {/* ─── Access Control ─── */}
         {activeTab === 'access' && canManageAdmins && (
           <AccessControlView adminEmail={adminEmail} />
+        )}
+
+        {/* ─── Audit Trail ─── */}
+        {activeTab === 'audit' && canManageAdmins && (
+          <AuditTrailView />
         )}
 
       </main>
