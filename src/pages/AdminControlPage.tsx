@@ -7,12 +7,11 @@ import {
   resolveToCanonical, resolveToSlug,
 } from '../lib/domainRegistry';
 import MarkdownRenderer from '../components/MarkdownRenderer';
-import MarkdownSanitizerPanel from '../components/MarkdownSanitizerPanel';
 import {
   Lock, ShieldCheck, CheckCircle2, Trash2, Loader2,
   AlertCircle, Eye, EyeOff, RefreshCw, FileText, Link2,
   GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
-  Pencil, SplitSquareHorizontal, ChevronDown, ChevronUp,
+  Pencil, SplitSquareHorizontal,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -520,7 +519,6 @@ function AdminPanel() {
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [showTabTools, setShowTabTools] = useState(false);
 
   const fetchPending = async () => {
     setLoading(true);
@@ -720,41 +718,13 @@ function AdminPanel() {
           </div>
         )}
 
-        {/* Section header with sanitizer toggle */}
-        <div className="flex flex-col lg:flex-row justify-between items-start gap-4 pb-4 border-b border-zinc-800">
-          <div>
-            <h2 className="text-lg font-bold text-zinc-100">Pending Submissions</h2>
-            <p className="text-sm text-zinc-500 mt-0.5">
-              Approve to auto-publish to the live knowledge base, or reject to remove permanently.
-            </p>
-          </div>
-          <button
-            onClick={() => setShowTabTools((v) => !v)}
-            className="flex items-center gap-2.5 px-3 py-2 rounded-lg bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700 transition-colors group flex-shrink-0"
-          >
-            <div className="p-1.5 rounded-md bg-sky-500/10 text-sky-400">
-              <Wand2 className="w-4 h-4" />
-            </div>
-            <div className="text-left">
-              <span className="text-xs font-bold text-zinc-200 group-hover:text-zinc-100 transition-colors">
-                Markdown Link Sanitizer
-              </span>
-              <p className="text-[10px] text-zinc-500 leading-tight">
-                Fix URLs, encode parens, correct image syntax
-              </p>
-            </div>
-            {showTabTools
-              ? <ChevronUp className="w-3.5 h-3.5 text-zinc-500 ml-1" />
-              : <ChevronDown className="w-3.5 h-3.5 text-zinc-500 ml-1" />
-            }
-          </button>
+        {/* Section header */}
+        <div className="pb-4 border-b border-zinc-800">
+          <h2 className="text-lg font-bold text-zinc-100">Pending Submissions</h2>
+          <p className="text-sm text-zinc-500 mt-0.5">
+            Approve to auto-publish to the live knowledge base, or reject to remove permanently.
+          </p>
         </div>
-
-        {showTabTools && (
-          <div className="p-5 rounded-xl bg-zinc-900/60 border border-zinc-800">
-            <MarkdownSanitizerPanel />
-          </div>
-        )}
 
         {/* Content */}
         {loading ? (

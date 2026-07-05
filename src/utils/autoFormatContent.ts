@@ -1,3 +1,5 @@
+import { extractSmartLinkLabel, isImageUrl, encodeParens } from './markdownLinks';
+
 const MINOR_WORDS = new Set([
   'a', 'an', 'the', 'and', 'but', 'or', 'nor', 'for', 'yet', 'so',
   'in', 'on', 'at', 'to', 'by', 'of', 'up', 'as', 'is', 'it',
@@ -52,6 +54,91 @@ function isListBlock(block: string): boolean {
 function isHeading(block: string): boolean {
   return /^#{1,6}\s/.test(block.trim());
 }
+
+// ---------------------------------------------------------------------------
+// Link sanitization pass (ported from MarkdownSanitizerPanel)
+// ---------------------------------------------------------------------------
+
+function extractMarkdownLink(text: string, startIdx: number): { full: string; bang: string; label: string; url: string } | null {
+  const bangChar = text[startIdx] === '!' ? '!' : '';
+  const bracketStart = bangChar ? startIdx + 1 : startIdx;
+
+  if (text[bracketStart] !== '[') return null;
+
+  let depth = 0;
+  let i = bracketStart;
+  for (; i < text.length; i++) {
+    if (text[i] === '[') depth++;
+    else if (text[i] === ']') {
+      depth--;
+      if (depth === 0) break;
+    }
+  }
+  if (depth !== 0 || text[i + 1] !== '(') return null;
+
+  const label = text.slice(bracketStart + 1, i);
+  const urlStart = i + 2;
+
+  let parenDepth = 1;
+  let j = urlStart;
+  for (; j < text.length && parenDepth > 0; j++) {
+    if (text[j] === '(') parenDepth++;
+    else if (text[j] === ')') parenDepth--;
+  }
+  if (parenDepth !== 0) return null;
+
+  const url = text.slice(urlStart, j - 1);
+  const full = text.slice(startIdx, j);
+  return { full, bang: bangChar, label, url };
+}
+
+function sanitizeLinks(input: string): string {
+  const result: string[] = [];
+  let cursor = 0;
+
+  while (cursor < input.length) {
+    if ((input[cursor] === '!' && input[cursor + 1] === '[') || input[cursor] === '[') {
+      const parsed = extractMarkdownLink(input, cursor);
+      if (parsed) {
+        const encoded = encodeParens(parsed.url);
+
+        if (parsed.bang === '!' && !isImageUrl(parsed.url)) {
+          const label = parsed.label || extractSmartLinkLabel(parsed.url);
+          result.push(`[${label}](${encoded})`);
+        } else if (!parsed.bang && !parsed.label) {
+          result.push(`[${extractSmartLinkLabel(parsed.url)}](${encoded})`);
+        } else {
+          result.push(`${parsed.bang}[${parsed.label}](${encoded})`);
+        }
+        cursor += parsed.full.length;
+        continue;
+      }
+    }
+
+    const remaining = input.slice(cursor);
+    const bareMatch = remaining.match(/^https?:\/\/[^\s)>\]]+/);
+    if (bareMatch && (cursor === 0 || !/\]\($/.test(input.slice(Math.max(0, cursor - 2), cursor)))) {
+      const url = bareMatch[0];
+      const encoded = encodeParens(url);
+      if (isImageUrl(url)) {
+        result.push(`![Image](${encoded})`);
+      } else {
+        result.push(`[${extractSmartLinkLabel(url)}](${encoded})`);
+      }
+      cursor += url.length;
+      continue;
+    }
+
+    result.push(input[cursor]);
+    cursor++;
+  }
+
+  return result.join('');
+}
+
+// ---------------------------------------------------------------------------
+// Main auto-format pipeline
+// ---------------------------------------------------------------------------
 
 export function autoFormatContent(raw: string): string {
   try {
@@ -110,6 +197,9 @@ export function autoFormatContent(raw: string): string {
       .split('\n')
       .map((line) => line.trimEnd())
       .join('\n');
+
+    // Sanitize all links: encode parens, fix broken markdown links, label bare URLs
+    result = sanitizeLinks(result);
 
     return result.trim();
   } catch {

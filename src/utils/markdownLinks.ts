@@ -152,6 +152,10 @@ export function formatUrlAsMarkdown(url: string, label?: string): string {
   return `[${escapeMarkdownText(label || sanitized)}](${sanitized})`;
 }
 
+export function encodeParens(url: string): string {
+  return url.replace(/\(/g, '%28').replace(/\)/g, '%29');
+}
+
 function toTitleCase(str: string): string {
   return str
     .replace(/[-_]/g, ' ')
