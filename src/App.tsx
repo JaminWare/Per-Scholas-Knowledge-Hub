@@ -2,6 +2,7 @@ import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-d
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Sidebar from './components/Sidebar';
 import SearchBar from './components/SearchBar';
+import ErrorBoundary from './components/ErrorBoundary';
 import HomePage from './pages/HomePage';
 import ArticlePage from './pages/ArticlePage';
 import SectionPage from './pages/SectionPage';
@@ -147,15 +148,17 @@ function AppContent() {
 
         <main ref={mainRef} className="flex-1 overflow-y-auto bg-black p-4 md:p-6">
           <ScrollToTop scrollRef={mainRef} />
-          <Routes>
-            <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
-            <Route path="/recognition" element={<RecognitionPage />} />
-            <Route path="/learner-experience" element={<LearnerExperiencePage />} />
-            <Route path="/article/:slug" element={<ArticlePage />} />
-            <Route path="/article/:slug/*" element={<ArticlePage />} />
-            <Route path="/:slug/*" element={<SectionPage refreshKey={refreshKey} />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
+          <ErrorBoundary>
+            <Routes>
+              <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
+              <Route path="/recognition" element={<RecognitionPage />} />
+              <Route path="/learner-experience" element={<LearnerExperiencePage />} />
+              <Route path="/article/:slug" element={<ArticlePage />} />
+              <Route path="/article/:slug/*" element={<ArticlePage />} />
+              <Route path="/:slug/*" element={<SectionPage refreshKey={refreshKey} />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </ErrorBoundary>
         </main>
 
         <footer className="flex-shrink-0 border-t border-zinc-800 py-3 px-4 sm:px-5">

@@ -655,6 +655,16 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
     setActiveObjective('All');
   }, [slug]);
 
+  console.log('SectionPage Data:', { slug, tracksLength: CURRICULUM_TRACKS?.length });
+
+  if (!CURRICULUM_TRACKS || !SLUG_TO_DOMAIN_META) {
+    return (
+      <div className="p-8 rounded-xl border-2 border-red-500/60 bg-red-950/30 text-red-400 font-medium">
+        Critical Error: Domain registry failed to load.
+      </div>
+    );
+  }
+
   const meta = sectionMeta[slug];
   const Icon = meta?.icon ?? BookOpen;
   const localContent = contentMap[slug];

@@ -7,7 +7,7 @@ import {
 import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
 import { checkForDuplicate } from '../utils/duplicateCheck';
-import { JOURNEY_TABS, CATEGORY_FILTERS } from '../pages/LearnerExperiencePage';
+import { JOURNEY_TABS, CATEGORY_FILTERS } from '../constants/learnerExperience';
 import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import { MASTER_CATEGORIES, getBadgeForTrack } from '../lib/domainRegistry';
 import { autoCategorizeSubmission } from '../utils/autoCategorize';
