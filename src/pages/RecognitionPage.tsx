@@ -429,8 +429,20 @@ export default function RecognitionPage() {
         grouped[jaminKey].topBadge = 'Founder';
       }
 
-      // Sort by total contribution count descending
-      const sorted = Object.values(grouped).sort((a, b) => b.items.length - a.items.length);
+      // Pin Founder to #1, sort rest by most recent contribution then total count
+      const allGroups = Object.values(grouped);
+      const founder = allGroups.find((g) => g.topBadge === 'Founder');
+      const rest = allGroups.filter((g) => g.topBadge !== 'Founder');
+
+      rest.sort((a, b) => {
+        const latestA = a.items.reduce((max, i) => (i.created_at > max ? i.created_at : max), '');
+        const latestB = b.items.reduce((max, i) => (i.created_at > max ? i.created_at : max), '');
+        const dateCompare = latestB.localeCompare(latestA);
+        if (dateCompare !== 0) return dateCompare;
+        return b.items.length - a.items.length;
+      });
+
+      const sorted = founder ? [founder, ...rest] : rest;
 
       setContributors(sorted);
 

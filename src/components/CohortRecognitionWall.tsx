@@ -69,6 +69,7 @@ interface ContributorGroup {
   totalCount: number;
   tracks: string[];
   objectives: string[];
+  latestContribution: string;
 }
 
 function shortenTrack(track: string): string {
@@ -81,13 +82,16 @@ function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
   for (const s of submissions) {
     const key = s.full_name.trim().toLowerCase();
     if (!map.has(key)) {
-      map.set(key, { name: s.full_name.trim(), topBadge: s.badge || 'Cohort Contributor', typeCounts: {}, totalCount: 0, tracks: [], objectives: [], _tracks: new Set(), _objectives: new Set() });
+      map.set(key, { name: s.full_name.trim(), topBadge: s.badge || 'Cohort Contributor', typeCounts: {}, totalCount: 0, tracks: [], objectives: [], latestContribution: '', _tracks: new Set(), _objectives: new Set() });
     }
     const group = map.get(key)!;
     if (s.badge && s.badge !== 'Cohort Contributor') group.topBadge = s.badge;
     const effectiveType = s.submission_type ?? 'Article';
     group.typeCounts[effectiveType] = (group.typeCounts[effectiveType] ?? 0) + 1;
     group.totalCount++;
+    if (s.created_at && s.created_at > group.latestContribution) {
+      group.latestContribution = s.created_at;
+    }
     if (s.track) group._tracks.add(shortenTrack(s.track));
     if (s.comp_objective) group._objectives.add(s.comp_objective);
   }
@@ -96,11 +100,22 @@ function groupByName(submissions: NewSubmission[]): ContributorGroup[] {
   const jamin = map.get('jamin ware');
   if (jamin) jamin.topBadge = 'Founder';
 
-  return Array.from(map.values()).map((g) => {
+  const allGroups = Array.from(map.values()).map((g) => {
     g.tracks = Array.from(g._tracks);
     g.objectives = Array.from(g._objectives);
     return g as ContributorGroup;
-  }).sort((a, b) => b.totalCount - a.totalCount);
+  });
+
+  const founder = allGroups.find((g) => g.topBadge === 'Founder');
+  const rest = allGroups.filter((g) => g.topBadge !== 'Founder');
+
+  rest.sort((a, b) => {
+    const dateCompare = b.latestContribution.localeCompare(a.latestContribution);
+    if (dateCompare !== 0) return dateCompare;
+    return b.totalCount - a.totalCount;
+  });
+
+  return founder ? [founder, ...rest] : rest;
 }
 
 // ── Track & Objective Badges ─────────────────────────────
