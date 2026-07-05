@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { normalizeUrl } from '../utils/normalizeUrl';
 import { autoFormatContent } from '../utils/autoFormatContent';
@@ -12,7 +12,7 @@ import {
   Lock, ShieldCheck, CheckCircle2, Trash2, Loader2,
   AlertCircle, Eye, EyeOff, RefreshCw, FileText, Link2,
   GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
-  Pencil, SplitSquareHorizontal,
+  Pencil, SplitSquareHorizontal, Archive, Filter,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -29,10 +29,20 @@ interface PendingSubmission {
   formatted_content: string | null;
   comp_objective: string | null;
   is_approved: boolean;
+  status: string;
   created_at: string;
   lx_stage: string | null;
   lx_topic: string | null;
   lx_focus: string | null;
+}
+
+interface ArchiveRow {
+  id: string;
+  title: string;
+  full_name: string;
+  track: string;
+  status: string;
+  created_at: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -66,6 +76,23 @@ function resolveCanonicalSlug(track: string): string | null {
 function resolveStudyCategory(track: string): string | null {
   const resolved = resolveTrackSlug(track);
   return resolved?.canonical ?? null;
+}
+
+function formatDate(iso: string): string {
+  const raw = iso;
+  const utcStr = raw.endsWith('Z') || /[+-]\d{2}:\d{2}$/.test(raw) ? raw : raw + 'Z';
+  return new Date(utcStr).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+function trackDisplayName(track: string): string {
+  const resolved = resolveTrackSlug(track);
+  if (resolved?.canonical) return resolved.canonical;
+  if (track.length > 30) return track.slice(0, 28) + '...';
+  return track;
 }
 
 async function resolveSectionId(slug: string | null): Promise<string | null> {
@@ -103,6 +130,24 @@ function TypeIcon({ type }: { type: string }) {
   };
   const Icon = map[type] ?? FileText;
   return <Icon className="w-3.5 h-3.5" />;
+}
+
+// ---------------------------------------------------------------------------
+// Status Pill
+// ---------------------------------------------------------------------------
+function StatusPill({ status }: { status: string }) {
+  const config: Record<string, { bg: string; dot: string; text: string; label: string }> = {
+    approved: { bg: 'bg-emerald-500/10 border-emerald-500/20', dot: 'bg-emerald-400', text: 'text-emerald-400', label: 'Approved' },
+    pending: { bg: 'bg-amber-500/10 border-amber-500/20', dot: 'bg-amber-400', text: 'text-amber-400', label: 'Pending' },
+    rejected: { bg: 'bg-zinc-500/10 border-zinc-600/20', dot: 'bg-zinc-500', text: 'text-zinc-400', label: 'Rejected' },
+  };
+  const c = config[status] ?? config.pending;
+  return (
+    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${c.bg} ${c.text}`}>
+      <span className={`w-1.5 h-1.5 rounded-full ${c.dot}`} />
+      {c.label}
+    </span>
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -190,14 +235,14 @@ function LoginScreen({ onAuth }: { onAuth: () => void }) {
 function SubmissionCard({
   sub,
   onApprove,
-  onDelete,
+  onReject,
 }: {
   sub: PendingSubmission;
   onApprove: (id: string, domainOverride?: string, editedContent?: string, editedTitle?: string) => Promise<void>;
-  onDelete: (id: string) => Promise<void>;
+  onReject: (id: string) => Promise<void>;
 }) {
   const [approving, setApproving] = useState(false);
-  const [deleting, setDeleting] = useState(false);
+  const [rejecting, setRejecting] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [actionError, setActionError] = useState('');
@@ -253,14 +298,14 @@ function SubmissionCard({
     }
   };
 
-  const handleDelete = async () => {
-    setDeleting(true);
+  const handleReject = async () => {
+    setRejecting(true);
     setActionError('');
     try {
-      await onDelete(sub.id);
+      await onReject(sub.id);
     } catch (err) {
-      setActionError(err instanceof Error ? err.message : 'Delete failed.');
-      setDeleting(false);
+      setActionError(err instanceof Error ? err.message : 'Reject failed.');
+      setRejecting(false);
     }
   };
 
@@ -458,25 +503,99 @@ function SubmissionCard({
       <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 px-4 sm:px-5 py-3 sm:py-4 border-t border-zinc-800 bg-zinc-900/50">
         <button
           onClick={handleApprove}
-          disabled={approving || deleting}
+          disabled={approving || rejecting}
           className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-white text-xs font-bold transition-all shadow-md shadow-teal-500/20 disabled:opacity-50"
         >
           {approving
-            ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Approving…</>
+            ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Approving...</>
             : <><CheckCircle2 className="w-3.5 h-3.5" /> Approve &amp; Publish</>
           }
         </button>
         <button
-          onClick={handleDelete}
-          disabled={approving || deleting}
+          onClick={handleReject}
+          disabled={approving || rejecting}
           className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/20 text-xs font-bold transition-all disabled:opacity-50"
         >
-          {deleting
-            ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Deleting…</>
-            : <><Trash2 className="w-3.5 h-3.5" /> Reject &amp; Delete</>
+          {rejecting
+            ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Rejecting...</>
+            : <><Trash2 className="w-3.5 h-3.5" /> Reject</>
           }
         </button>
       </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Archive Table
+// ---------------------------------------------------------------------------
+function ArchiveTable({ data, loading }: { data: ArchiveRow[]; loading: boolean }) {
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+
+  const filtered = useMemo(() => {
+    if (statusFilter === 'all') return data;
+    return data.filter((r) => r.status === statusFilter);
+  }, [data, statusFilter]);
+
+  return (
+    <div className="space-y-4">
+      {/* Section header */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-zinc-800">
+        <div className="flex items-center gap-3">
+          <Archive className="w-5 h-5 text-zinc-500" />
+          <div>
+            <h2 className="text-lg font-bold text-zinc-100">Cohort Submissions Archive</h2>
+            <p className="text-sm text-zinc-500 mt-0.5">{data.length} total submissions</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <Filter className="w-3.5 h-3.5 text-zinc-500" />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-3 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+          >
+            <option value="all">All Statuses</option>
+            <option value="approved">Approved</option>
+            <option value="pending">Pending</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Table */}
+      {loading ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-5 h-5 animate-spin text-zinc-500" />
+        </div>
+      ) : filtered.length === 0 ? (
+        <p className="text-center text-sm text-zinc-600 py-8">No submissions match this filter.</p>
+      ) : (
+        <div className="overflow-x-auto rounded-xl border border-zinc-800">
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="bg-zinc-900/80 border-b border-zinc-800">
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Title</th>
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Submitter</th>
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 hidden md:table-cell">Date</th>
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 hidden lg:table-cell">Track</th>
+                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800/60">
+              {filtered.map((row) => (
+                <tr key={row.id} className="hover:bg-zinc-900/50 transition-colors">
+                  <td className="px-4 py-3 text-zinc-200 font-medium max-w-[200px] truncate">{row.title}</td>
+                  <td className="px-4 py-3 text-zinc-400 whitespace-nowrap">{row.full_name}</td>
+                  <td className="px-4 py-3 text-zinc-500 whitespace-nowrap hidden md:table-cell">{formatDate(row.created_at)}</td>
+                  <td className="px-4 py-3 text-zinc-500 max-w-[160px] truncate hidden lg:table-cell">{trackDisplayName(row.track)}</td>
+                  <td className="px-4 py-3"><StatusPill status={row.status} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
@@ -486,7 +605,9 @@ function SubmissionCard({
 // ---------------------------------------------------------------------------
 function AdminPanel() {
   const [submissions, setSubmissions] = useState<PendingSubmission[]>([]);
+  const [archive, setArchive] = useState<ArchiveRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [archiveLoading, setArchiveLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
@@ -497,9 +618,8 @@ function AdminPanel() {
       const { data, error } = await supabase
         .from('submissions')
         .select('*')
-        .eq('is_approved', false)
+        .eq('status', 'pending')
         .order('created_at', { ascending: false });
-      console.log('[TRACER] ADMIN FETCH RESULT:', { data, error, count: data?.length ?? 0 });
       if (error) throw error;
       setSubmissions((data as PendingSubmission[]) ?? []);
     } catch (err) {
@@ -509,7 +629,26 @@ function AdminPanel() {
     }
   };
 
-  useEffect(() => { fetchPending(); }, []);
+  const fetchArchive = async () => {
+    setArchiveLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('submissions')
+        .select('id, title, full_name, track, status, created_at')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setArchive((data as ArchiveRow[]) ?? []);
+    } catch {
+      // Non-blocking for archive
+    } finally {
+      setArchiveLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPending();
+    fetchArchive();
+  }, []);
 
   const flashSuccess = (msg: string) => {
     setSuccessMessage(msg);
@@ -527,7 +666,7 @@ function AdminPanel() {
     // Step 1: mark submission approved
     const { error: approveError } = await supabase
       .from('submissions')
-      .update({ is_approved: true })
+      .update({ is_approved: true, status: 'approved' })
       .eq('id', id);
     if (approveError) throw approveError;
 
@@ -620,24 +759,28 @@ function AdminPanel() {
       // Rollback: revert approval so the submission remains visible in the admin queue
       await supabase
         .from('submissions')
-        .update({ is_approved: false })
+        .update({ is_approved: false, status: 'pending' })
         .eq('id', id);
       throw publishError;
     }
 
     setSubmissions((prev) => prev.filter((s) => s.id !== id));
+    setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'approved' } : r));
     flashSuccess(`"${cleanedTitle || sub.title}" approved and published successfully.`);
   };
 
-  const handleDelete = async (id: string) => {
+  const handleReject = async (id: string) => {
     const sub = submissions.find((s) => s.id === id);
-    const { error } = await supabase.from('submissions').delete().eq('id', id);
+    const { error } = await supabase
+      .from('submissions')
+      .update({ status: 'rejected' })
+      .eq('id', id);
     if (error) {
-      console.error('Database deletion failed:', error.message);
-      throw new Error('Failed to delete from database. Please check Supabase RLS policies.');
+      throw new Error('Failed to reject submission. Please check Supabase RLS policies.');
     }
     setSubmissions((prev) => prev.filter((s) => s.id !== id));
-    flashSuccess(`"${sub?.title ?? 'Submission'}" rejected and removed.`);
+    setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'rejected' } : r));
+    flashSuccess(`"${sub?.title ?? 'Submission'}" rejected.`);
   };
 
   return (
@@ -650,7 +793,7 @@ function AdminPanel() {
               <ShieldCheck className="w-5 h-5 text-sky-400" />
             </div>
             <div>
-              <h1 className="text-base font-bold text-zinc-100 leading-none">Admin Control Panel</h1>
+              <h1 className="text-base font-bold text-zinc-100 leading-none">Admin Command Center</h1>
               <p className="text-[11px] text-zinc-500 mt-0.5">Per Scholas 2026-RTT-23 Cohort</p>
             </div>
           </div>
@@ -659,7 +802,7 @@ function AdminPanel() {
               {submissions.length} pending
             </span>
             <button
-              onClick={fetchPending}
+              onClick={() => { fetchPending(); fetchArchive(); }}
               disabled={loading}
               className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-200 transition-colors"
               title="Refresh"
@@ -670,7 +813,7 @@ function AdminPanel() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-5 sm:space-y-6">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
 
         {/* Success toast */}
         {successMessage && (
@@ -688,17 +831,13 @@ function AdminPanel() {
           </div>
         )}
 
-        {/* Section header */}
-        <div className="pb-4 border-b border-zinc-800">
-          <h2 className="text-lg font-bold text-zinc-100">Pending Submissions</h2>
-          <p className="text-sm text-zinc-500 mt-0.5">
-            Approve to auto-publish to the live knowledge base, or reject to remove permanently.
-          </p>
-        </div>
-
-        {/* Content */}
+        {/* ─── Pending Queue (Inbox Zero) ─── */}
         {loading ? (
           <div className="space-y-4">
+            <div className="pb-4 border-b border-zinc-800">
+              <h2 className="text-lg font-bold text-zinc-100">Pending Submissions</h2>
+              <p className="text-sm text-zinc-500 mt-0.5">Loading queue...</p>
+            </div>
             {[...Array(3)].map((_, i) => (
               <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 animate-pulse">
                 <div className="flex gap-4">
@@ -713,27 +852,36 @@ function AdminPanel() {
             ))}
           </div>
         ) : submissions.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-16 h-16 rounded-2xl bg-zinc-800/60 border border-zinc-700 flex items-center justify-center mb-4">
-              <CheckCircle2 className="w-8 h-8 text-teal-500" />
+          <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
+            <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
+              <CheckCircle2 className="w-8 h-8 text-emerald-400" />
             </div>
-            <h3 className="text-base font-semibold text-zinc-300">All caught up!</h3>
-            <p className="text-sm text-zinc-600 mt-1 max-w-xs">
-              No pending submissions to review. New contributions will appear here automatically.
+            <h3 className="text-base font-semibold text-zinc-200">All caught up!</h3>
+            <p className="text-sm text-zinc-500 mt-1 max-w-xs">
+              The pending queue is clear. New contributions will appear here automatically.
             </p>
           </div>
         ) : (
           <div className="space-y-4">
+            <div className="pb-4 border-b border-zinc-800">
+              <h2 className="text-lg font-bold text-zinc-100">Pending Submissions</h2>
+              <p className="text-sm text-zinc-500 mt-0.5">
+                Approve to auto-publish to the live knowledge base, or reject to archive.
+              </p>
+            </div>
             {submissions.map((sub) => (
               <SubmissionCard
                 key={sub.id}
                 sub={sub}
                 onApprove={handleApprove}
-                onDelete={handleDelete}
+                onReject={handleReject}
               />
             ))}
           </div>
         )}
+
+        {/* ─── Archive Table ─── */}
+        <ArchiveTable data={archive} loading={archiveLoading} />
 
       </main>
     </div>
@@ -741,7 +889,7 @@ function AdminPanel() {
 }
 
 // ---------------------------------------------------------------------------
-// Root exportauth gate + panel
+// Root export: auth gate + panel
 // ---------------------------------------------------------------------------
 export default function AdminControlPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
