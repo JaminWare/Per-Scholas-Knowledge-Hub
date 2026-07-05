@@ -151,3 +151,63 @@ export function formatUrlAsMarkdown(url: string, label?: string): string {
   }
   return `[${escapeMarkdownText(label || sanitized)}](${sanitized})`;
 }
+
+function toTitleCase(str: string): string {
+  return str
+    .replace(/[-_]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function safeDecode(str: string): string {
+  try { return decodeURIComponent(str); } catch { return str; }
+}
+
+const GIBBERISH_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-/i;
+const LONG_HEX_RE = /^[0-9a-f]{16,}$/i;
+const NUMERIC_ONLY_RE = /^\d{7,}$/;
+
+function isGibberishSegment(segment: string): boolean {
+  return GIBBERISH_RE.test(segment) || LONG_HEX_RE.test(segment) || NUMERIC_ONLY_RE.test(segment);
+}
+
+export function extractSmartLinkLabel(rawUrl: string): string {
+  try {
+    let urlToParse = rawUrl.trim();
+    if (!/^[a-zA-Z][a-zA-Z+.-]*:/.test(urlToParse)) {
+      urlToParse = 'https://' + urlToParse;
+    }
+
+    const parsed = new URL(urlToParse);
+
+    if (parsed.protocol === 'mailto:') {
+      return parsed.pathname || rawUrl.replace(/^mailto:/i, '');
+    }
+    if (parsed.protocol === 'tel:') {
+      return parsed.pathname || rawUrl.replace(/^tel:/i, '');
+    }
+
+    const pathname = parsed.pathname.replace(/\/+$/, '');
+    const lastSegment = pathname.split('/').pop() || '';
+
+    if (lastSegment && !isGibberishSegment(lastSegment)) {
+      const dotIdx = lastSegment.lastIndexOf('.');
+      if (dotIdx > 0) {
+        const base = lastSegment.slice(0, dotIdx);
+        if (!isGibberishSegment(base)) {
+          return toTitleCase(safeDecode(base));
+        }
+      } else {
+        return toTitleCase(safeDecode(lastSegment));
+      }
+    }
+
+    const host = parsed.hostname.replace(/^www\./, '');
+    const tldIdx = host.lastIndexOf('.');
+    const name = tldIdx > 0 ? host.slice(0, tldIdx) : host;
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  } catch {
+    return 'Resource Link';
+  }
+}

@@ -11,7 +11,7 @@ import { JOURNEY_TABS, CATEGORY_FILTERS } from '../pages/LearnerExperiencePage';
 import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import { MASTER_CATEGORIES, getBadgeForTrack } from '../lib/domainRegistry';
 import { autoCategorizeSubmission } from '../utils/autoCategorize';
-import { isImageUrl, sanitizeUrlForMarkdown, encodeMarkdownUrl } from '../utils/markdownLinks';
+import { isImageUrl, sanitizeUrlForMarkdown, encodeMarkdownUrl, extractSmartLinkLabel } from '../utils/markdownLinks';
 
 type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Resource Link' | 'Prompt Playbook';
 
@@ -180,10 +180,12 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [autoDetected, setAutoDetected] = useState(false);
   const [userOverride, setUserOverride] = useState(false);
   const autoDetectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const titleManuallyEdited = useRef(false);
 
   // Reset all form state to clean defaults whenever the modal opens
   useEffect(() => {
     if (!isOpen) return;
+    titleManuallyEdited.current = false;
     setSubmissionType('Article');
     try {
       const saved = localStorage.getItem('learnerHub_authorName');
@@ -337,6 +339,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setMasterCategory('');
     setTrack('');
     setTitle('');
+    titleManuallyEdited.current = false;
     setConcept('');
     setAPlusRelevance('');
     setImpact('');
@@ -745,7 +748,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
             <div>
               <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Contribution Title</label>
-              <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. TCP/IP Protocol Suite" className={inputCls('title')} />
+              <input type="text" value={title} onChange={(e) => { setTitle(e.target.value); titleManuallyEdited.current = true; }} placeholder="e.g. TCP/IP Protocol Suite" className={inputCls('title')} />
               {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
             </div>
 
@@ -758,7 +761,18 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               {isResourceLink ? (
                 <div>
                   <label className="flex items-center gap-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5"><LinkIcon className="w-3.5 h-3.5 text-sky-500" /> Resource URL</label>
-                  <input type="url" value={resourceUrl} onChange={(e) => setResourceUrl(e.target.value)} placeholder="https://..." className={inputCls('resourceUrl')} />
+                  <input type="url" value={resourceUrl} onChange={(e) => {
+                    const val = e.target.value;
+                    setResourceUrl(val);
+                    if (!titleManuallyEdited.current && !title && /^https?:\/\/.+/.test(val.trim())) {
+                      setTitle(extractSmartLinkLabel(val.trim()));
+                    }
+                  }} onBlur={() => {
+                    if (!titleManuallyEdited.current && !title && resourceUrl.trim()) {
+                      setTitle(extractSmartLinkLabel(resourceUrl.trim()));
+                    }
+                  }} placeholder="https://example.com/your-resource..." className={inputCls('resourceUrl')} />
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Paste any link (PDFs, YouTube, articles, websites). The system will automatically generate a clean, readable title for the knowledge base.</p>
                   {errors.resourceUrl && <p className="mt-1 text-xs text-red-500">{errors.resourceUrl}</p>}
                 </div>
               ) : (submissionType === 'Study Tip' || submissionType === 'Diagram') ? (

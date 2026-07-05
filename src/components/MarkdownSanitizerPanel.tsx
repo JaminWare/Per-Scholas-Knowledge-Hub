@@ -1,48 +1,11 @@
 import { useState, useCallback } from 'react';
 import { Wand2, Copy, CheckCircle2, AlertCircle } from 'lucide-react';
-import { isImageUrl } from '../utils/markdownLinks';
+import { isImageUrl, extractSmartLinkLabel } from '../utils/markdownLinks';
 
 const WRAPPER_TAG_RE = /<\/?WebsiteContent_[A-Za-z0-9_]+>/g;
 
 function encodeParens(url: string): string {
   return url.replace(/\(/g, '%28').replace(/\)/g, '%29');
-}
-
-function toTitleCase(str: string): string {
-  return str
-    .replace(/[-_]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-function safeDecode(str: string): string {
-  try { return decodeURIComponent(str); } catch { return str; }
-}
-
-function extractSmartLinkLabel(rawUrl: string): string {
-  try {
-    const parsed = new URL(rawUrl);
-    const pathname = parsed.pathname.replace(/\/+$/, '');
-
-    const lastSegment = pathname.split('/').pop() || '';
-    const dotIdx = lastSegment.lastIndexOf('.');
-    if (dotIdx > 0) {
-      const base = lastSegment.slice(0, dotIdx);
-      return toTitleCase(safeDecode(base));
-    }
-
-    if (lastSegment) {
-      return toTitleCase(safeDecode(lastSegment));
-    }
-
-    const host = parsed.hostname.replace(/^www\./, '');
-    const tldIdx = host.lastIndexOf('.');
-    const name = tldIdx > 0 ? host.slice(0, tldIdx) : host;
-    return name.charAt(0).toUpperCase() + name.slice(1);
-  } catch {
-    return 'Resource Link';
-  }
 }
 
 function extractMarkdownLink(text: string, startIdx: number): { full: string; bang: string; label: string; url: string } | null {
