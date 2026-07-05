@@ -16,7 +16,7 @@ import {
   GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
   Pencil, SplitSquareHorizontal, Archive, Filter,
   RotateCcw, XCircle, ShieldOff, Search, UserPlus, Crown, X,
-  Activity,
+  Activity, UserCheck,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -616,6 +616,159 @@ function getActionBadge(action: string): { label: string; className: string } {
   return { label: action.replace(/_/g, ' '), className: 'bg-zinc-500/10 text-zinc-400 border-zinc-600/25' };
 }
 
+// ---------------------------------------------------------------------------
+// Name Requests View (visible to all admins)
+// ---------------------------------------------------------------------------
+interface NameChangeRequest {
+  id: string;
+  current_name: string;
+  requested_name: string;
+  status: string;
+  created_at: string;
+}
+
+function NameRequestsView({ adminEmail }: { adminEmail: string }) {
+  const [requests, setRequests] = useState<NameChangeRequest[]>([]);
+  const [loadingRequests, setLoadingRequests] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState('');
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      const { data } = await supabase
+        .from('name_change_requests')
+        .select('*')
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false });
+      if (!mounted) return;
+      setRequests((data as NameChangeRequest[]) ?? []);
+      setLoadingRequests(false);
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  const flash = (msg: string) => {
+    setSuccessMsg(msg);
+    setTimeout(() => setSuccessMsg(''), 4000);
+  };
+
+  const handleApprove = async (req: NameChangeRequest) => {
+    setActionLoading(req.id);
+
+    await supabase
+      .from('submissions')
+      .update({ full_name: req.requested_name })
+      .eq('full_name', req.current_name);
+
+    await supabase
+      .from('articles')
+      .update({ author_name: req.requested_name })
+      .eq('author_name', req.current_name);
+
+    await supabase
+      .from('name_change_requests')
+      .update({ status: 'approved' })
+      .eq('id', req.id);
+
+    await logAdminAction(adminEmail, 'APPROVED_NAME_CHANGE', req.id, req.requested_name);
+
+    setRequests((prev) => prev.filter((r) => r.id !== req.id));
+    setActionLoading(null);
+    flash(`Approved: "${req.current_name}" is now "${req.requested_name}"`);
+  };
+
+  const handleReject = async (req: NameChangeRequest) => {
+    setActionLoading(req.id);
+
+    await supabase
+      .from('name_change_requests')
+      .update({ status: 'rejected' })
+      .eq('id', req.id);
+
+    await logAdminAction(adminEmail, 'REJECTED_NAME_CHANGE', req.id, req.requested_name);
+
+    setRequests((prev) => prev.filter((r) => r.id !== req.id));
+    setActionLoading(null);
+    flash(`Rejected name change request from "${req.current_name}"`);
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
+        <UserCheck className="w-5 h-5 text-sky-400" />
+        <div>
+          <h2 className="text-lg font-bold text-zinc-100">Name Change Requests</h2>
+          <p className="text-sm text-zinc-500 mt-0.5">Review and approve or reject display name change requests</p>
+        </div>
+      </div>
+
+      {successMsg && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-teal-500/10 border border-teal-500/25 text-teal-400 text-sm font-medium">
+          <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+          {successMsg}
+        </div>
+      )}
+
+      {loadingRequests ? (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-5 h-5 animate-spin text-zinc-500" />
+        </div>
+      ) : requests.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
+          <UserCheck className="w-8 h-8 text-zinc-600 mb-4" />
+          <h3 className="text-base font-semibold text-zinc-300">No pending name requests</h3>
+          <p className="text-sm text-zinc-500 mt-1 max-w-xs">
+            When users submit name change requests, they will appear here for review.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {requests.map((req) => (
+            <div key={req.id} className="flex items-center justify-between gap-4 px-5 py-4 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition-colors">
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-zinc-200">
+                  <span className="font-semibold text-zinc-100">{req.current_name}</span>
+                  <span className="text-zinc-500 mx-2">wants to change to</span>
+                  <span className="font-semibold text-sky-400">{req.requested_name}</span>
+                </p>
+                <p className="text-xs text-zinc-500 mt-1">
+                  {new Date(req.created_at).toLocaleString('en-US', {
+                    month: 'short', day: 'numeric', year: 'numeric',
+                    hour: 'numeric', minute: '2-digit', hour12: true,
+                  })}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button
+                  onClick={() => handleApprove(req)}
+                  disabled={actionLoading === req.id}
+                  className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 hover:bg-emerald-500/20 hover:text-emerald-300 transition-colors disabled:opacity-50"
+                  title="Approve"
+                >
+                  {actionLoading === req.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <CheckCircle2 className="w-4 h-4" />
+                  )}
+                </button>
+                <button
+                  onClick={() => handleReject(req)}
+                  disabled={actionLoading === req.id}
+                  className="p-2 rounded-lg bg-red-500/10 border border-red-500/25 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-colors disabled:opacity-50"
+                  title="Reject"
+                >
+                  <XCircle className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function AuditTrailView() {
   const [logs, setLogs] = useState<AuditLogEntry[]>([]);
   const [loadingLogs, setLoadingLogs] = useState(true);
@@ -921,7 +1074,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   const [archiveLoading, setArchiveLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [activeTab, setActiveTab] = useState<'pending' | 'archive' | 'access' | 'audit'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'archive' | 'access' | 'audit' | 'names'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredSubmissions = useMemo(() => {
@@ -1253,6 +1406,18 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             >
               All Submissions
             </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('names')}
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                activeTab === 'names'
+                  ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              <UserCheck className="w-3.5 h-3.5" />
+              Name Requests
+            </button>
             {canManageAdmins && (
               <button
                 type="button"
@@ -1357,6 +1522,11 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         {/* ─── Audit Trail ─── */}
         {activeTab === 'audit' && canManageAdmins && (
           <AuditTrailView />
+        )}
+
+        {/* ─── Name Requests ─── */}
+        {activeTab === 'names' && (
+          <NameRequestsView adminEmail={adminEmail} />
         )}
 
       </main>

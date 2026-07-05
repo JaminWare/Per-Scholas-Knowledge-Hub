@@ -55,27 +55,16 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
     setLoading(true);
 
-    const { error: updateError } = await supabase
-      .from('submissions')
-      .update({ full_name: trimmedNew })
-      .eq('full_name', currentName);
+    const { error: insertError } = await supabase
+      .from('name_change_requests')
+      .insert({ current_name: currentName.trim(), requested_name: trimmedNew });
 
-    if (updateError) {
-      setError('Update failed: ' + updateError.message);
+    if (insertError) {
+      setError('Request failed: ' + insertError.message);
       setLoading(false);
       return;
     }
 
-    await supabase
-      .from('articles')
-      .update({ author_name: trimmedNew })
-      .eq('author_name', currentName);
-
-    try {
-      localStorage.setItem('learnerHub_authorName', trimmedNew);
-    } catch { /* non-critical */ }
-
-    setCurrentName(trimmedNew);
     setNewName('');
     setSuccess(true);
     setLoading(false);
@@ -97,7 +86,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             </div>
             <div>
               <h2 className="text-lg font-bold text-zinc-100">Edit Display Name</h2>
-              <p className="text-xs text-zinc-500 mt-0.5">Updates all past and future submissions.</p>
+              <p className="text-xs text-zinc-500 mt-0.5">Submit a name change request for admin review.</p>
             </div>
           </div>
           <button
@@ -116,7 +105,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           )}
           {success && (
             <div className="px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-sm text-emerald-400">
-              Display name updated successfully.
+              Name change requested! An admin will review it shortly.
             </div>
           )}
 
@@ -163,11 +152,11 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-white bg-sky-500 hover:bg-sky-400 shadow-lg shadow-sky-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> Updating...</>
+              <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</>
             ) : success ? (
-              'Done'
+              'Requested'
             ) : (
-              'Update Display Name'
+              'Request Name Change'
             )}
           </button>
         </form>
