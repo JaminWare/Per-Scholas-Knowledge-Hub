@@ -79,6 +79,15 @@ export default function LearnerExperiencePage() {
   const { user } = useAuth();
   const abortRef = useRef(false);
 
+  const handleEdit = (article: ArticleWithContributor) => {
+    if (!user) {
+      setAuthModalOpen(true);
+      return;
+    }
+    setEditItem(article as EditableArticle);
+    setIsModalOpen(true);
+  };
+
   const handleTabChange = (tabId: string) => {
     setActiveTab(tabId);
     if (tabId === 'all') {
@@ -389,7 +398,7 @@ export default function LearnerExperiencePage() {
       ) : filteredEntries.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {displayEntries.map((entry) => (
-            <AppletCard key={entry.id} article={entry} gridMode isPinned={pinnedSet.has(entry.id)} />
+            <AppletCard key={entry.id} article={entry} gridMode isPinned={pinnedSet.has(entry.id)} onEdit={handleEdit} />
           ))}
         </div>
       ) : (
