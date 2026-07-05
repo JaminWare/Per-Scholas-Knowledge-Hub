@@ -124,7 +124,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle, isCurrentUser, onEdit
                   type="button"
                   onClick={(e) => { e.stopPropagation(); onEditProfile(); }}
                   title="Edit Display Name"
-                  className="p-1 rounded-md text-zinc-500 hover:text-sky-400 hover:bg-zinc-700/60 transition-colors"
+                  className="ml-1 inline-flex items-center text-zinc-500 hover:text-sky-400 transition-colors p-1 rounded-full hover:bg-zinc-800"
                 >
                   <Pencil className="w-3 h-3" />
                 </button>

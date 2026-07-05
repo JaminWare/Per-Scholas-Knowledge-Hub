@@ -52,9 +52,21 @@ export function AppletCard({ article, gridMode = false, isPinned = false, onEdit
           </span>
         </div>
       )}
-      <h3 className="font-semibold text-white transition-colors">
-        {article.title}
-      </h3>
+      <div className="flex items-start gap-1.5">
+        <h3 className="font-semibold text-white transition-colors">
+          {article.title}
+        </h3>
+        {onEdit && !isSample && (
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); onEdit(article); }}
+            className="mt-0.5 flex-shrink-0 text-zinc-600 hover:text-sky-400 transition-colors p-0.5 rounded"
+            title="Suggest an edit"
+          >
+            <Pencil className="w-3 h-3" />
+          </button>
+        )}
+      </div>
       {!isSample && (
         <p className="text-xs text-zinc-400 mt-1">
           by {article.author || authorName}
@@ -90,7 +102,7 @@ export function AppletCard({ article, gridMode = false, isPinned = false, onEdit
       >
         {cardContent}
       </div>
-      <div className="px-5 pb-5 pt-3 mt-auto flex items-center justify-between">
+      <div className="px-5 pb-5 pt-3 mt-auto">
         {isExternalLink || article.submission_type === 'Resource Link' ? (
           <a
             href={article.content}
@@ -107,17 +119,6 @@ export function AppletCard({ article, gridMode = false, isPinned = false, onEdit
           >
             Read more <ArrowRight className="w-4 h-4" />
           </Link>
-        )}
-        {onEdit && !isSample && (
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onEdit(article); }}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium border border-zinc-600/60 bg-zinc-800/50 text-zinc-300 hover:bg-zinc-700 hover:text-white hover:border-zinc-500 transition-colors"
-            title="Suggest an edit"
-          >
-            <Pencil className="w-3 h-3" />
-            Edit
-          </button>
         )}
       </div>
       <CardZoomOverlay open={zoomed} onClose={() => setZoomed(false)}>
