@@ -4,10 +4,11 @@ import {
   Home, ChevronDown, ChevronRight, ChevronLeft,
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   BookOpen, LifeBuoy, Headphones, ExternalLink,
-  Laptop, Monitor, Heart, Database, Award, LogIn, LogOut,
+  Laptop, Monitor, Heart, Database, Award, LogIn, LogOut, UserCog,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import AuthModal from './AuthModal';
+import ProfileModal from './ProfileModal';
 
 // ─── Navigation data ──────────────────────────────────────
 
@@ -114,6 +115,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
     core1: true, core2: false, healthcare: false,
   });
   const [authOpen, setAuthOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const { user, signOut } = useAuth();
 
   const lxActive = location.hash === '#/learner-experience';
@@ -222,7 +224,14 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           </div>
         ))}
 
-        <div className="mt-6 border-t border-zinc-800 pt-4 px-1">
+        <div className="mt-6 border-t border-zinc-800 pt-4 px-1 space-y-1">
+          <button
+            onClick={() => setProfileOpen(true)}
+            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+          >
+            <UserCog className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate">Edit Display Name</span>
+          </button>
           {user ? (
             <button
               onClick={signOut}
@@ -244,6 +253,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
       </nav>
 
       <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
+      <ProfileModal isOpen={profileOpen} onClose={() => setProfileOpen(false)} />
     </div>
   );
 }
