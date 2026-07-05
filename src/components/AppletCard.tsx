@@ -112,10 +112,11 @@ export function AppletCard({ article, gridMode = false, isPinned = false, onEdit
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); onEdit(article); }}
-            className="p-2 rounded-lg text-zinc-500 hover:text-sky-400 hover:bg-sky-500/10 transition-colors"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-medium border border-zinc-600/60 bg-zinc-800/50 text-zinc-300 hover:bg-zinc-700 hover:text-white hover:border-zinc-500 transition-colors"
             title="Suggest an edit"
           >
-            <Pencil className="w-3.5 h-3.5" />
+            <Pencil className="w-3 h-3" />
+            Edit
           </button>
         )}
       </div>

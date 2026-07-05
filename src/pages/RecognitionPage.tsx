@@ -3,10 +3,13 @@ import { Link } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
   Lightbulb, GitBranch, Sparkles, Star, Crown, Link2, UploadCloud,
-  Laptop, Monitor, Heart, LifeBuoy, Layers,
+  Laptop, Monitor, Heart, LifeBuoy, Layers, UserCog,
 } from 'lucide-react';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import { useSmartBack } from '../hooks/useSmartBack';
+import { useAuth } from '../hooks/useAuth';
+import AuthModal from '../components/AuthModal';
+import ProfileModal from '../components/ProfileModal';
 import { deriveTierBadge } from '../constants/badges';
 import { useContributorGroups, mapToPortalBucket, resolveTrack, groupItemsByTrack, type ContributorGroup, type PortfolioItem } from '../hooks/useContributorGroups';
 
@@ -263,6 +266,9 @@ export default function RecognitionPage() {
   const [openContributor, setOpenContributor] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [trackFilter, setTrackFilter] = useState<string>('All');
+  const { user } = useAuth();
+  const [authOpen, setAuthOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const TRACK_FILTER_OPTIONS = [
     { value: 'All', label: 'All Tracks', icon: Layers },
@@ -318,6 +324,14 @@ export default function RecognitionPage() {
             <p className="text-sky-100/80 leading-relaxed text-sm">
               Celebrating every learner who has contributed research, documentation, and knowledge to the collective!
             </p>
+            <button
+              type="button"
+              onClick={() => user ? setProfileOpen(true) : setAuthOpen(true)}
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium border border-zinc-600/60 bg-zinc-800/50 text-zinc-300 hover:bg-zinc-700 hover:text-white hover:border-zinc-500 transition-colors"
+            >
+              <UserCog className="w-4 h-4" />
+              Edit My Display Name
+            </button>
           </div>
         </div>
       </section>
@@ -390,6 +404,8 @@ export default function RecognitionPage() {
         onClose={() => setModalOpen(false)}
         onSubmitted={() => setModalOpen(false)}
       />
+      <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
+      <ProfileModal isOpen={profileOpen} onClose={() => setProfileOpen(false)} />
 
     </div>
   );
