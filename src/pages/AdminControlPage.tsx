@@ -670,6 +670,7 @@ function AdminPanel() {
   const [archiveLoading, setArchiveLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [activeTab, setActiveTab] = useState<'pending' | 'archive'>('pending');
 
   const fetchPending = async () => {
     setLoading(true);
@@ -925,63 +926,96 @@ function AdminPanel() {
           </div>
         )}
 
-        {/* ─── Pending Queue (Inbox Zero) ─── */}
-        {loading ? (
-          <div className="space-y-4">
-            <div className="pb-4 border-b border-zinc-800">
-              <h2 className="text-lg font-bold text-zinc-100">Pending Submissions</h2>
-              <p className="text-sm text-zinc-500 mt-0.5">Loading queue...</p>
-            </div>
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 animate-pulse">
-                <div className="flex gap-4">
-                  <div className="w-9 h-9 rounded-lg bg-zinc-800 flex-shrink-0" />
-                  <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-zinc-800 rounded w-1/2" />
-                    <div className="h-3 bg-zinc-800 rounded w-1/3" />
-                    <div className="h-3 bg-zinc-800 rounded w-3/4" />
+        {/* Pill Tab Switcher */}
+        <div className="flex justify-center">
+          <div className="inline-flex rounded-full bg-zinc-800/80 border border-zinc-700/60 p-1">
+            <button
+              type="button"
+              onClick={() => setActiveTab('pending')}
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                activeTab === 'pending'
+                  ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              Pending Submissions
+              {submissions.length > 0 && (
+                <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                  activeTab === 'pending'
+                    ? 'bg-white/20 text-white'
+                    : 'bg-amber-500/15 text-amber-400'
+                }`}>
+                  {submissions.length}
+                </span>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('archive')}
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                activeTab === 'archive'
+                  ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              All Submissions
+            </button>
+          </div>
+        </div>
+
+        {/* ─── Pending Queue ─── */}
+        {activeTab === 'pending' && (
+          <>
+            {loading ? (
+              <div className="space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 animate-pulse">
+                    <div className="flex gap-4">
+                      <div className="w-9 h-9 rounded-lg bg-zinc-800 flex-shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-zinc-800 rounded w-1/2" />
+                        <div className="h-3 bg-zinc-800 rounded w-1/3" />
+                        <div className="h-3 bg-zinc-800 rounded w-3/4" />
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
-        ) : submissions.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
-            <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
-              <CheckCircle2 className="w-8 h-8 text-emerald-400" />
-            </div>
-            <h3 className="text-base font-semibold text-zinc-200">All caught up!</h3>
-            <p className="text-sm text-zinc-500 mt-1 max-w-xs">
-              The pending queue is clear. New contributions will appear here automatically.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <div className="pb-4 border-b border-zinc-800">
-              <h2 className="text-lg font-bold text-zinc-100">Pending Submissions</h2>
-              <p className="text-sm text-zinc-500 mt-0.5">
-                Approve to auto-publish to the live knowledge base, or reject to archive.
-              </p>
-            </div>
-            {submissions.map((sub) => (
-              <SubmissionCard
-                key={sub.id}
-                sub={sub}
-                onApprove={handleApprove}
-                onReject={handleReject}
-              />
-            ))}
-          </div>
+            ) : submissions.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+                </div>
+                <h3 className="text-base font-semibold text-zinc-200">All caught up!</h3>
+                <p className="text-sm text-zinc-500 mt-1 max-w-xs">
+                  The pending queue is clear. New contributions will appear here automatically.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {submissions.map((sub) => (
+                  <SubmissionCard
+                    key={sub.id}
+                    sub={sub}
+                    onApprove={handleApprove}
+                    onReject={handleReject}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
 
         {/* ─── Archive Table ─── */}
-        <ArchiveTable
-          data={archive}
-          loading={archiveLoading}
-          onRestore={handleArchiveRestore}
-          onHardDelete={handleArchiveHardDelete}
-          onUnpublish={handleArchiveUnpublish}
-        />
+        {activeTab === 'archive' && (
+          <ArchiveTable
+            data={archive}
+            loading={archiveLoading}
+            onRestore={handleArchiveRestore}
+            onHardDelete={handleArchiveHardDelete}
+            onUnpublish={handleArchiveUnpublish}
+          />
+        )}
 
       </main>
     </div>

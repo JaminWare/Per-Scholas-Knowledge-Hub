@@ -246,6 +246,7 @@ function ObjectivePlacard({
   activeTab: ResourceTab;
   onTabChange: (tab: ResourceTab) => void;
 }) {
+  if (!domainInfo?.domain) return null;
   const canonicalTrack = CANONICAL_DOMAINS[domainInfo.domain] || domainInfo.domain;
   const objectives = COMPTIA_OBJECTIVES[canonicalTrack] ?? [];
 
@@ -426,8 +427,9 @@ function CurriculumDashboard({
   }, [articles, context]);
 
   if (focusDomain) {
-    const track = CURRICULUM_TRACKS_WITH_ICONS[focusDomain.trackIndex];
-    const colors = TRACK_COLORS[track.color];
+    const track = CURRICULUM_TRACKS_WITH_ICONS[focusDomain.trackIndex] ?? CURRICULUM_TRACKS_WITH_ICONS[0];
+    if (!track) return <ComingSoonPanel />;
+    const colors = TRACK_COLORS[track.color] ?? TRACK_COLORS.sky;
     const canonicalTarget = CANONICAL_DOMAINS[focusDomain.domain] || focusDomain.domain;
 
     const objectiveFilteredArticles = activeObjective && activeObjective !== 'All'
@@ -516,6 +518,7 @@ function CurriculumDashboard({
   }
 
   const [core1, core2, healthcare] = CURRICULUM_TRACKS_WITH_ICONS;
+  if (!core1 || !core2 || !healthcare) return <ComingSoonPanel />;
 
   const allCanonicalTargets = useMemo(() => {
     const targets = new Set<string>();

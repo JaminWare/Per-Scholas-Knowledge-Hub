@@ -143,6 +143,34 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         </button>
       </div>
 
+      {/* Auth Section */}
+      <div className="px-3 py-2.5 border-b border-zinc-800 flex-shrink-0 space-y-1">
+        <button
+          onClick={() => user ? setProfileOpen(true) : setAuthOpen(true)}
+          className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+        >
+          <UserCog className="w-4 h-4 flex-shrink-0" />
+          <span className="truncate">Edit Display Name</span>
+        </button>
+        {user ? (
+          <button
+            onClick={signOut}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+          >
+            <LogOut className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate">Sign Out</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => setAuthOpen(true)}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-semibold text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 border border-sky-500/20 transition-colors"
+          >
+            <LogIn className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate">Sign In</span>
+          </button>
+        )}
+      </div>
+
       {/* Nav */}
       <nav className="flex-1 overflow-y-auto py-3 px-2 pb-40 space-y-0.5">
         <Link
@@ -223,33 +251,6 @@ export default function Sidebar({ onToggle }: SidebarProps) {
             )}
           </div>
         ))}
-
-        <div className="mt-6 border-t border-zinc-800 pt-4 px-1 space-y-1">
-          <button
-            onClick={() => user ? setProfileOpen(true) : setAuthOpen(true)}
-            className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
-          >
-            <UserCog className="w-4 h-4 flex-shrink-0" />
-            <span className="truncate">Edit Display Name</span>
-          </button>
-          {user ? (
-            <button
-              onClick={signOut}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
-            >
-              <LogOut className="w-4 h-4 flex-shrink-0" />
-              <span className="truncate">Sign Out</span>
-            </button>
-          ) : (
-            <button
-              onClick={() => setAuthOpen(true)}
-              className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 border border-sky-500/20 transition-colors"
-            >
-              <LogIn className="w-4 h-4 flex-shrink-0" />
-              <span className="truncate">Sign In</span>
-            </button>
-          )}
-        </div>
       </nav>
 
       <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
