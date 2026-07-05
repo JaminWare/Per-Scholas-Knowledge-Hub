@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, X, FileText, Folder, Loader2 } from 'lucide-react';
+import Fuse from 'fuse.js';
 import { supabase } from '../lib/supabase';
 import type { SearchResult } from '../types/database';
 
@@ -8,9 +9,20 @@ interface SearchBarProps {
   onMenuClick: () => void;
 }
 
+const fuseOptions: Fuse.IFuseOptions<SearchResult> = {
+  keys: [
+    { name: 'title', weight: 0.6 },
+    { name: 'excerpt', weight: 0.3 },
+    { name: 'slug', weight: 0.1 },
+  ],
+  threshold: 0.35,
+  includeScore: true,
+  ignoreLocation: true,
+};
+
 export default function SearchBar({ onMenuClick }: SearchBarProps) {
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [rawResults, setRawResults] = useState<SearchResult[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -19,7 +31,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
 
   const searchContent = useCallback(async (searchQuery: string) => {
     if (searchQuery.trim().length < 2) {
-      setResults([]);
+      setRawResults([]);
       return;
     }
     setIsLoading(true);
@@ -29,12 +41,12 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
           .from('articles')
           .select('id, title, slug, excerpt')
           .or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`)
-          .limit(5),
+          .limit(15),
         supabase
           .from('sections')
           .select('id, title, slug')
           .ilike('title', `%${searchQuery}%`)
-          .limit(3),
+          .limit(8),
       ]);
       const searchResults: SearchResult[] = [
         ...(articlesResult.data?.map((a) => ({
@@ -51,14 +63,20 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
           slug: s.slug,
         })) || []),
       ];
-      setResults(searchResults);
+      setRawResults(searchResults);
     } catch (error) {
       console.error('Search error:', error);
-      setResults([]);
+      setRawResults([]);
     } finally {
       setIsLoading(false);
     }
   }, []);
+
+  const results = useMemo(() => {
+    if (!query.trim() || rawResults.length === 0) return rawResults;
+    const fuse = new Fuse(rawResults, fuseOptions);
+    return fuse.search(query.trim()).map((r) => r.item).slice(0, 8);
+  }, [rawResults, query]);
 
   useEffect(() => {
     const timer = setTimeout(() => searchContent(query), 300);
@@ -120,7 +138,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
             </button>
           )}
           <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-300 dark:bg-zinc-200 text-zinc-400 dark:text-zinc-600 text-xs font-medium">
-            <span>⌘</span><span>K</span>
+            <span>Cmd</span><span>K</span>
           </div>
         </div>
       </div>
