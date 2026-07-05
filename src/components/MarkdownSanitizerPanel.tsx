@@ -11,26 +11,38 @@ function encodeParens(url: string): string {
 function toTitleCase(str: string): string {
   return str
     .replace(/[-_]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-function extractPdfLabel(url: string): string {
-  try {
-    const pathname = new URL(url).pathname;
-    const filename = pathname.split('/').pop() || '';
-    const base = filename.replace(/\.pdf$/i, '');
-    return toTitleCase(decodeURIComponent(base));
-  } catch {
-    const segments = url.split('?')[0].split('#')[0].split('/');
-    const filename = segments.pop() || 'Document';
-    const base = filename.replace(/\.pdf$/i, '');
-    return toTitleCase(decodeURIComponent(base));
-  }
+function safeDecode(str: string): string {
+  try { return decodeURIComponent(str); } catch { return str; }
 }
 
-function isPdfUrl(url: string): boolean {
-  const clean = url.split('?')[0].split('#')[0].toLowerCase();
-  return clean.endsWith('.pdf');
+function extractSmartLinkLabel(rawUrl: string): string {
+  try {
+    const parsed = new URL(rawUrl);
+    const pathname = parsed.pathname.replace(/\/+$/, '');
+
+    const lastSegment = pathname.split('/').pop() || '';
+    const dotIdx = lastSegment.lastIndexOf('.');
+    if (dotIdx > 0) {
+      const base = lastSegment.slice(0, dotIdx);
+      return toTitleCase(safeDecode(base));
+    }
+
+    if (lastSegment) {
+      return toTitleCase(safeDecode(lastSegment));
+    }
+
+    const host = parsed.hostname.replace(/^www\./, '');
+    const tldIdx = host.lastIndexOf('.');
+    const name = tldIdx > 0 ? host.slice(0, tldIdx) : host;
+    return name.charAt(0).toUpperCase() + name.slice(1);
+  } catch {
+    return 'Resource Link';
+  }
 }
 
 function extractMarkdownLink(text: string, startIdx: number): { full: string; bang: string; label: string; url: string } | null {
@@ -80,12 +92,10 @@ function sanitizeMarkdown(input: string): string {
         const encoded = encodeParens(parsed.url);
 
         if (parsed.bang === '!' && !isImageUrl(parsed.url)) {
-          const label = isPdfUrl(parsed.url)
-            ? extractPdfLabel(parsed.url)
-            : (parsed.label || 'Attachment');
+          const label = parsed.label || extractSmartLinkLabel(parsed.url);
           result.push(`[${label}](${encoded})`);
-        } else if (!parsed.bang && isPdfUrl(parsed.url) && !parsed.label) {
-          result.push(`[${extractPdfLabel(parsed.url)}](${encoded})`);
+        } else if (!parsed.bang && !parsed.label) {
+          result.push(`[${extractSmartLinkLabel(parsed.url)}](${encoded})`);
         } else {
           result.push(`${parsed.bang}[${parsed.label}](${encoded})`);
         }
@@ -101,10 +111,8 @@ function sanitizeMarkdown(input: string): string {
       const encoded = encodeParens(url);
       if (isImageUrl(url)) {
         result.push(`![Image](${encoded})`);
-      } else if (isPdfUrl(url)) {
-        result.push(`[${extractPdfLabel(url)}](${encoded})`);
       } else {
-        result.push(`[${encoded}](${encoded})`);
+        result.push(`[${extractSmartLinkLabel(url)}](${encoded})`);
       }
       cursor += url.length;
       continue;
