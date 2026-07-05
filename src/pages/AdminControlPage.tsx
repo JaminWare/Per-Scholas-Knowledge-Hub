@@ -8,12 +8,15 @@ import {
 } from '../lib/domainRegistry';
 import { ADMIN_PASSCODE, COHORT_SHORT_LABEL } from '../constants/config';
 import MarkdownRenderer from '../components/MarkdownRenderer';
+import { useAuth } from '../hooks/useAuth';
+import AuthModal from '../components/AuthModal';
+import { logAdminAction } from '../utils/auditLogger';
 import {
   Lock, ShieldCheck, CheckCircle2, Trash2, Loader2,
   AlertCircle, Eye, EyeOff, RefreshCw, FileText, Link2,
   GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
   Pencil, SplitSquareHorizontal, Archive, Filter,
-  RotateCcw, XCircle,
+  RotateCcw, XCircle, ShieldOff,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -663,7 +666,7 @@ function ArchiveTable({
 // ---------------------------------------------------------------------------
 // Main Admin Panel
 // ---------------------------------------------------------------------------
-function AdminPanel() {
+function AdminPanel({ adminEmail }: { adminEmail: string }) {
   const [submissions, setSubmissions] = useState<PendingSubmission[]>([]);
   const [archive, setArchive] = useState<ArchiveRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -829,6 +832,7 @@ function AdminPanel() {
     setSubmissions((prev) => prev.filter((s) => s.id !== id));
     setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'approved' } : r));
     flashSuccess(`"${cleanedTitle || sub.title}" approved and published successfully.`);
+    await logAdminAction(adminEmail, 'APPROVED_SUBMISSION', id, cleanedTitle || sub.title);
   };
 
   const handleReject = async (id: string) => {
@@ -843,21 +847,24 @@ function AdminPanel() {
     setSubmissions((prev) => prev.filter((s) => s.id !== id));
     setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'rejected' } : r));
     flashSuccess(`"${sub?.title ?? 'Submission'}" rejected.`);
+    await logAdminAction(adminEmail, 'REJECTED_SUBMISSION', id, sub?.title ?? 'Unknown');
   };
 
   const handleArchiveRestore = async (id: string) => {
+    const row = archive.find((r) => r.id === id);
     const { error } = await supabase
       .from('submissions')
       .update({ status: 'pending', is_approved: false })
       .eq('id', id);
     if (error) throw error;
     setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'pending' } : r));
-    // Re-fetch pending to add it back to the queue
     fetchPending();
     flashSuccess('Submission restored to the pending queue.');
+    await logAdminAction(adminEmail, 'RESTORED_SUBMISSION', id, row?.title ?? 'Unknown');
   };
 
   const handleArchiveHardDelete = async (id: string) => {
+    const row = archive.find((r) => r.id === id);
     const { error } = await supabase
       .from('submissions')
       .delete()
@@ -865,9 +872,11 @@ function AdminPanel() {
     if (error) throw error;
     setArchive((prev) => prev.filter((r) => r.id !== id));
     flashSuccess('Submission permanently deleted.');
+    await logAdminAction(adminEmail, 'HARD_DELETED_SUBMISSION', id, row?.title ?? 'Unknown');
   };
 
   const handleArchiveUnpublish = async (id: string) => {
+    const row = archive.find((r) => r.id === id);
     const { error } = await supabase
       .from('submissions')
       .update({ status: 'pending', is_approved: false })
@@ -876,6 +885,7 @@ function AdminPanel() {
     setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'pending' } : r));
     fetchPending();
     flashSuccess('Submission unpublished and moved back to pending queue.');
+    await logAdminAction(adminEmail, 'UNPUBLISHED_SUBMISSION', id, row?.title ?? 'Unknown');
   };
 
   return (
@@ -1026,11 +1036,47 @@ function AdminPanel() {
 // Root export: auth gate + panel
 // ---------------------------------------------------------------------------
 export default function AdminControlPage() {
+  const { user, loading } = useAuth();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <Loader2 className="w-6 h-6 text-sky-400 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
+        <div className="w-full max-w-sm text-center space-y-6">
+          <div className="mx-auto w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/25 flex items-center justify-center">
+            <ShieldOff className="w-8 h-8 text-red-400" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-zinc-100">Access Denied</h1>
+            <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
+              You must be signed in to access the Admin Command Center. Please authenticate to continue.
+            </p>
+          </div>
+          <button
+            onClick={() => setAuthModalOpen(true)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-sky-500 hover:bg-sky-600 transition-colors shadow-lg shadow-sky-500/20"
+          >
+            <Lock className="w-4 h-4" />
+            Sign In
+          </button>
+        </div>
+        <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return <LoginScreen onAuth={() => setIsAuthenticated(true)} />;
   }
 
-  return <AdminPanel />;
+  return <AdminPanel adminEmail={user.email ?? 'unknown'} />;
 }
