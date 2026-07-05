@@ -6,14 +6,14 @@ import {
   DOMAIN_REGISTRY, SLUG_TO_CANONICAL, CANONICAL_TO_SLUG,
   resolveToCanonical, resolveTrackSlug,
 } from '../lib/domainRegistry';
-import { ADMIN_PASSCODE, COHORT_SHORT_LABEL } from '../constants/config';
+import { ADMIN_EMAILS } from '../constants/config';
 import MarkdownRenderer from '../components/MarkdownRenderer';
 import { useAuth } from '../hooks/useAuth';
 import AuthModal from '../components/AuthModal';
 import { logAdminAction } from '../utils/auditLogger';
 import {
   Lock, ShieldCheck, CheckCircle2, Trash2, Loader2,
-  AlertCircle, Eye, EyeOff, RefreshCw, FileText, Link2,
+  AlertCircle, EyeOff, RefreshCw, FileText, Link2,
   GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
   Pencil, SplitSquareHorizontal, Archive, Filter,
   RotateCcw, XCircle, ShieldOff,
@@ -52,7 +52,6 @@ interface ArchiveRow {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
-const PASSCODE = ADMIN_PASSCODE;
 
 function slugify(text: string): string {
   return text
@@ -151,85 +150,6 @@ function StatusPill({ status }: { status: string }) {
       <span className={`w-1.5 h-1.5 rounded-full ${c.dot}`} />
       {c.label}
     </span>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Login screen
-// ---------------------------------------------------------------------------
-function LoginScreen({ onAuth }: { onAuth: () => void }) {
-  const [passcode, setPasscode] = useState('');
-  const [showPass, setShowPass] = useState(false);
-  const [error, setError] = useState('');
-  const [shaking, setShaking] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (passcode === PASSCODE) {
-      onAuth();
-    } else {
-      setError('Incorrect passcode. Access denied.');
-      setShaking(true);
-      setTimeout(() => setShaking(false), 500);
-    }
-  };
-
-  return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-sky-500/15 border border-sky-500/30 mb-4">
-            <Lock className="w-8 h-8 text-sky-400" />
-          </div>
-          <h1 className="text-2xl font-bold text-zinc-100">Cohort Admin Portal</h1>
-          <p className="text-sm text-zinc-500 mt-1">{COHORT_SHORT_LABEL}</p>
-        </div>
-
-        <form
-          onSubmit={handleSubmit}
-          className={`bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-4 ${shaking ? 'animate-[shake_0.4s_ease-in-out]' : ''}`}
-        >
-          <div>
-            <label className="block text-sm font-semibold text-zinc-300 mb-2">Cohort Admin Passcode</label>
-            <div className="relative">
-              <input
-                type={showPass ? 'text' : 'password'}
-                value={passcode}
-                onChange={(e) => { setPasscode(e.target.value); setError(''); }}
-                placeholder="Enter passcode..."
-                autoFocus
-                className="w-full px-4 py-3 pr-12 rounded-xl bg-zinc-950 border border-zinc-700 text-zinc-100 text-sm placeholder:text-zinc-600 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPass((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
-              >
-                {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
-
-          {error && (
-            <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-red-500/10 border border-red-500/20">
-              <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
-              <p className="text-sm text-red-400">{error}</p>
-            </div>
-          )}
-
-          <button
-            type="submit"
-            className="w-full py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm transition-all shadow-lg shadow-sky-500/20"
-          >
-            Access Control Panel
-          </button>
-        </form>
-
-        <p className="text-center text-xs text-zinc-700 mt-6">
-          This portal is restricted to cohort administrators only.
-        </p>
-      </div>
-    </div>
   );
 }
 
@@ -1037,7 +957,6 @@ function AdminPanel({ adminEmail }: { adminEmail: string }) {
 // ---------------------------------------------------------------------------
 export default function AdminControlPage() {
   const { user, loading } = useAuth();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
   if (loading) {
@@ -1074,8 +993,27 @@ export default function AdminControlPage() {
     );
   }
 
-  if (!isAuthenticated) {
-    return <LoginScreen onAuth={() => setIsAuthenticated(true)} />;
+  const isAdmin = ADMIN_EMAILS.includes(user.email ?? '');
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
+        <div className="w-full max-w-sm text-center space-y-6">
+          <div className="mx-auto w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center">
+            <ShieldOff className="w-8 h-8 text-amber-400" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-zinc-100">Unauthorized</h1>
+            <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
+              You do not have administrative privileges for this workspace. Contact your cohort lead if you believe this is an error.
+            </p>
+          </div>
+          <p className="text-xs text-zinc-600">
+            Signed in as {user.email}
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return <AdminPanel adminEmail={user.email ?? 'unknown'} />;
