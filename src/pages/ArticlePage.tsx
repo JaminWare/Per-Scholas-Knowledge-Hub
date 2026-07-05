@@ -1,11 +1,13 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { ArrowLeft, Share2, Bookmark, BookOpen, ExternalLink, UploadCloud } from 'lucide-react';
+import { ArrowLeft, Share2, Bookmark, BookOpen, ExternalLink, UploadCloud, Pencil } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useSmartBack } from '../hooks/useSmartBack';
+import { useAuth } from '../hooks/useAuth';
 import ArticleCard from '../components/ArticleCard';
 import MarkdownRenderer from '../components/MarkdownRenderer';
-import ContributorSubmissionModal, { type NewSubmission } from '../components/ContributorSubmissionModal';
+import ContributorSubmissionModal, { type NewSubmission, type EditableArticle } from '../components/ContributorSubmissionModal';
+import AuthModal from '../components/AuthModal';
 import {
   OSIModelStackDiagram,
   HL7MessageRoutingDiagram,
@@ -399,6 +401,9 @@ export default function ArticlePage() {
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [editItem, setEditItem] = useState<EditableArticle | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const { user } = useAuth();
 
   const backFallback = useMemo(() => {
     if (!article) return '/';
@@ -583,6 +588,19 @@ export default function ArticlePage() {
 
             {/* Actions */}
             <div className="ml-auto flex items-center gap-1">
+              {!isSample && (
+                <button
+                  onClick={() => {
+                    if (!user) { setAuthModalOpen(true); return; }
+                    setEditItem({ id: article.id, title: article.title, content: article.content ?? '', formatted_content: (article as any).formatted_content ?? null, study_category: article.study_category ?? null, submission_type: (article as any).submission_type ?? null, author_name: (article as any).author_name ?? null });
+                    setModalOpen(true);
+                  }}
+                  className="p-2 rounded-lg hover:bg-zinc-700/50 text-zinc-400 hover:text-sky-400 transition-colors"
+                  title="Suggest an edit"
+                >
+                  <Pencil className="w-4 h-4" />
+                </button>
+              )}
               <button className="p-2 rounded-lg hover:bg-zinc-700/50 text-zinc-400 hover:text-zinc-200 transition-colors">
                 <Bookmark className="w-4 h-4" />
               </button>
@@ -693,9 +711,11 @@ export default function ArticlePage() {
 
       <ContributorSubmissionModal
         isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSubmitted={(_s: NewSubmission) => setModalOpen(false)}
+        onClose={() => { setModalOpen(false); setEditItem(null); }}
+        onSubmitted={(_s: NewSubmission) => { setModalOpen(false); setEditItem(null); }}
+        editItem={editItem}
       />
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>
   );
 }

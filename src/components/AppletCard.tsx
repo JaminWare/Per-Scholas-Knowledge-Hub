@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Lightbulb, Pin, Pencil } from 'lucide-react';
+import { ArrowRight, Lightbulb, Pin } from 'lucide-react';
 import CardZoomOverlay from './CardZoomOverlay';
 import type { ArticleWithContributor } from '../hooks/useArticles';
 
@@ -27,7 +27,7 @@ export function parseAuthorFromExcerpt(excerpt: string | null | undefined): stri
   return excerpt.replace('Contributed by ', '').trim() || null;
 }
 
-export function AppletCard({ article, gridMode = false, isPinned = false, onEdit }: { article: ArticleWithContributor; gridMode?: boolean; isPinned?: boolean; onEdit?: (article: ArticleWithContributor) => void }) {
+export function AppletCard({ article, gridMode = false, isPinned = false }: { article: ArticleWithContributor; gridMode?: boolean; isPinned?: boolean }) {
   const [zoomed, setZoomed] = useState(false);
   const isSample = article.is_sample;
   const authorName = (article.contributor as { name: string } | null)?.name
@@ -52,21 +52,9 @@ export function AppletCard({ article, gridMode = false, isPinned = false, onEdit
           </span>
         </div>
       )}
-      <div className="flex items-start gap-1.5">
-        <h3 className="font-semibold text-white transition-colors">
-          {article.title}
-        </h3>
-        {onEdit && !isSample && (
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); onEdit(article); }}
-            className="mt-0.5 flex-shrink-0 text-zinc-600 hover:text-sky-400 transition-colors p-0.5 rounded"
-            title="Suggest an edit"
-          >
-            <Pencil className="w-3 h-3" />
-          </button>
-        )}
-      </div>
+      <h3 className="font-semibold text-white transition-colors">
+        {article.title}
+      </h3>
       {!isSample && (
         <p className="text-xs text-zinc-400 mt-1">
           by {article.author || authorName}
