@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
 import { FOUNDER_KEY } from '../constants/config';
 import { TRACK_ORDER } from '../constants/tracks';
+import { resolveToTrackName } from '../lib/domainRegistry';
 
 export interface PortfolioItem extends NewSubmission {
   slug?: string;
@@ -53,25 +54,7 @@ export function mapToPortalBucket(rawType: string | null | undefined): PortalBuc
 }
 
 export function resolveTrack(track: string, slug?: string): string {
-  if (!track && slug) {
-    if (slug.startsWith('core1-')) return 'CompTIA A+ Core 1';
-    if (slug.startsWith('core2-')) return 'CompTIA A+ Core 2';
-    if (slug.startsWith('healthcare-') || slug.includes('ai-prompt')) return 'Advanced Healthcare IT';
-    if (slug.startsWith('learner-experience')) return 'Learner Experience';
-    return 'Other Contributions';
-  }
-  if (track.toLowerCase().includes('learner experience')) return 'Learner Experience';
-  if (track.includes('Core 1')) return 'CompTIA A+ Core 1';
-  if (track.includes('Core 2')) return 'CompTIA A+ Core 2';
-  if (track.toLowerCase().includes('healthcare')) return 'Advanced Healthcare IT';
-  if (/Domain\s+[1-3]\.0/i.test(track)) return 'CompTIA A+ Core 1';
-  if (/Domain\s+[4-5]\.0/i.test(track)) return 'CompTIA A+ Core 2';
-  if (track.toLowerCase().includes('networking') || track.toLowerCase().includes('diagram')) return 'CompTIA A+ Core 1';
-  if (track.toLowerCase().includes('administration')) return 'CompTIA A+ Core 2';
-  if (track.toLowerCase().includes('prompt') || track.toLowerCase().includes('ai')) return 'Advanced Healthcare IT';
-  if (track.toLowerCase().includes('quick reference')) return 'CompTIA A+ Core 1';
-  if (!track) return 'Other Contributions';
-  return 'Other Contributions';
+  return resolveToTrackName(track, slug);
 }
 
 export function groupItemsByTrack(items: PortfolioItem[]): Map<string, PortfolioItem[]> {

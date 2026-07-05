@@ -4,7 +4,7 @@ import { normalizeUrl } from '../utils/normalizeUrl';
 import { autoFormatContent } from '../utils/autoFormatContent';
 import {
   DOMAIN_REGISTRY, SLUG_TO_CANONICAL, CANONICAL_TO_SLUG,
-  resolveToCanonical, resolveToSlug,
+  resolveToCanonical, resolveTrackSlug,
 } from '../lib/domainRegistry';
 import { ADMIN_PASSCODE, COHORT_SHORT_LABEL } from '../constants/config';
 import MarkdownRenderer from '../components/MarkdownRenderer';
@@ -58,48 +58,14 @@ function deriveExcerpt(content: string): string {
   return clean.slice(0, 200).trim();
 }
 
-// Prioritized keyword-to-slug resolution matrix (more specific rules first)
-const TRACK_RULES: { keywords: string[]; slug: string }[] = [
-  { keywords: ['core 1', 'domain 1', 'mobile'],            slug: 'core1-mobile' },
-  { keywords: ['core 1', 'domain 2', 'networking'],        slug: 'core1-networking' },
-  { keywords: ['core 1', 'domain 3', 'hardware'],          slug: 'core1-hardware' },
-  { keywords: ['core 1', 'domain 4'],                      slug: 'core1-cloud' },
-  { keywords: ['core 1', 'domain 5'],                      slug: 'core1-troubleshooting' },
-  { keywords: ['core 1', 'mobile'],                        slug: 'core1-mobile' },
-  { keywords: ['core 1', 'networking'],                    slug: 'core1-networking' },
-  { keywords: ['core 1', 'hardware'],                      slug: 'core1-hardware' },
-  { keywords: ['core 1', 'virtualization'],                slug: 'core1-cloud' },
-  { keywords: ['core 1', 'cloud'],                         slug: 'core1-cloud' },
-  { keywords: ['core 1', 'troubleshooting'],               slug: 'core1-troubleshooting' },
-  { keywords: ['core 2', 'domain 1', 'operating'],         slug: 'core2-os' },
-  { keywords: ['core 2', 'domain 2', 'security'],          slug: 'core2-security' },
-  { keywords: ['core 2', 'domain 3', 'software'],          slug: 'core2-software' },
-  { keywords: ['core 2', 'domain 4', 'operational'],       slug: 'core2-operations' },
-  { keywords: ['core 2', 'operating system'],              slug: 'core2-os' },
-  { keywords: ['core 2', 'security'],                      slug: 'core2-security' },
-  { keywords: ['core 2', 'software'],                      slug: 'core2-software' },
-  { keywords: ['core 2', 'operational'],                   slug: 'core2-operations' },
-  { keywords: ['general troubleshooting'],                 slug: 'core2-operations' },
-  { keywords: ['healthcare', 'ehr'],                       slug: 'healthcare-ehr' },
-  { keywords: ['healthcare', 'hipaa'],                     slug: 'healthcare-hipaa' },
-  { keywords: ['healthcare', 'clinical'],                  slug: 'healthcare-clinical' },
-];
-
 function resolveCanonicalSlug(track: string): string | null {
-  const directSlug = resolveToSlug(track);
-  if (directSlug) return directSlug;
-
-  const t = track.toLowerCase();
-  for (const rule of TRACK_RULES) {
-    if (rule.keywords.every((kw) => t.includes(kw))) return rule.slug;
-  }
-  return null;
+  const resolved = resolveTrackSlug(track);
+  return resolved?.slug ?? null;
 }
 
 function resolveStudyCategory(track: string): string | null {
-  const slug = resolveCanonicalSlug(track);
-  if (!slug) return null;
-  return SLUG_TO_CANONICAL[slug] ?? null;
+  const resolved = resolveTrackSlug(track);
+  return resolved?.canonical ?? null;
 }
 
 async function resolveSectionId(slug: string | null): Promise<string | null> {
