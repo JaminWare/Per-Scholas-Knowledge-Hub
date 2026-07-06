@@ -4,6 +4,7 @@ import { normalizeUrl } from '../utils/normalizeUrl';
 import { autoFormatContent } from '../utils/autoFormatContent';
 import { autoCategorizeSubmission } from '../utils/autoCategorize';
 import { handleSupabaseError, isAuthError } from '../utils/handleSupabaseError';
+import { calculateSimilarity } from '../utils/textSimilarity';
 import {
   DOMAIN_REGISTRY, SLUG_TO_CANONICAL, CANONICAL_TO_SLUG,
   resolveToCanonical, resolveTrackSlug,
@@ -1175,30 +1176,40 @@ function MaintenanceView({ adminEmail }: { adminEmail: string }) {
       };
 
       const findDuplicates = (rows: { id: string; title: string | null; created_at: string; content: string | null }[]): string[] => {
-        const groups = new Map<string, { id: string; created_at: string; content: string | null }[]>();
-        for (const row of rows) {
-          const key = (row.title ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
-          if (!key) continue;
-          const existing = groups.get(key);
-          if (existing) {
-            existing.push({ id: row.id, created_at: row.created_at, content: row.content });
+        const sorted = [...rows].sort((a, b) => {
+          const wDiff = contentWeight(b.content) - contentWeight(a.content);
+          if (wDiff !== 0) return wDiff;
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        });
+
+        const uniqueRecords: { id: string; title: string | null; content: string | null }[] = [];
+        const duplicateIds: string[] = [];
+
+        for (const record of sorted) {
+          const normalizedTitle = (record.title ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (!normalizedTitle && !record.content) continue;
+
+          let isDuplicate = false;
+          for (const unique of uniqueRecords) {
+            const uniqueNormalizedTitle = (unique.title ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (normalizedTitle && uniqueNormalizedTitle && normalizedTitle === uniqueNormalizedTitle) {
+              isDuplicate = true;
+              break;
+            }
+            if (record.content && unique.content && calculateSimilarity(record.content, unique.content) >= 0.85) {
+              isDuplicate = true;
+              break;
+            }
+          }
+
+          if (isDuplicate) {
+            duplicateIds.push(record.id);
           } else {
-            groups.set(key, [{ id: row.id, created_at: row.created_at, content: row.content }]);
+            uniqueRecords.push({ id: record.id, title: record.title, content: record.content });
           }
         }
-        const dupIds: string[] = [];
-        for (const entries of groups.values()) {
-          if (entries.length <= 1) continue;
-          entries.sort((a, b) => {
-            const wDiff = contentWeight(b.content) - contentWeight(a.content);
-            if (wDiff !== 0) return wDiff;
-            return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-          });
-          for (let i = 1; i < entries.length; i++) {
-            dupIds.push(entries[i].id);
-          }
-        }
-        return dupIds;
+
+        return duplicateIds;
       };
 
       // Phase 1: Articles
@@ -1260,7 +1271,7 @@ function MaintenanceView({ adminEmail }: { adminEmail: string }) {
         <div className="rounded-lg border border-zinc-700/60 bg-zinc-950/40 p-5">
           <h4 className="text-sm font-semibold text-zinc-200 mb-2">Deduplication Sweep</h4>
           <p className="text-xs text-zinc-400 leading-relaxed mb-4">
-            Scans both the articles and submissions tables for entries with identical titles. Keeps the best record (by content weight, then oldest) for each title and permanently deletes duplicates.
+            Scans both the articles and submissions tables for entries with identical titles or 85%+ content similarity. Keeps the heaviest record for each unique piece of content and permanently deletes duplicates.
           </p>
           <button
             type="button"
