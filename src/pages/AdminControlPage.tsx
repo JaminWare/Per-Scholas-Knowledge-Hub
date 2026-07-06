@@ -1552,4 +1552,538 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
     const row = archive.find((r) => r.id === id);
     const { error } = await supabase
       .from('submissions')
-      .update({
+      .update({ status: 'pending', is_approved: false })
+      .eq('id', id);
+    if (error) throw new Error(handleSupabaseError(error));
+    setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'pending' } : r));
+    fetchPending();
+    flashSuccess('Submission unpublished and moved back to pending queue.');
+    await logAdminAction(adminEmail, 'UNPUBLISHED_SUBMISSION', id, row?.title ?? 'Unknown');
+  };
+
+  return (
+    <div className="min-h-screen bg-zinc-950 text-zinc-100">
+      {/* Unified sticky command strip: header + search + tabs */}
+      <div className="sticky top-0 z-20 bg-black backdrop-blur-md border-b border-zinc-800">
+        {/* Title row */}
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">
+          <div className="flex items-center gap-3 min-w-0 w-full lg:w-auto">
+            <div className="p-2 rounded-lg bg-sky-500/15 border border-sky-500/25 flex-shrink-0">
+              <ShieldCheck className="w-6 h-6 text-sky-400" />
+            </div>
+            <div className="min-w-0">
+              <h1 className="text-3xl sm:text-4xl font-bold text-zinc-100 leading-tight tracking-tight">Admin Command Center</h1>
+              <p className="text-[11px] text-zinc-500 mt-0.5">Per Scholas 2026-RTT-23 Cohort</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
+            <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              {submissions.length} pending
+            </span>
+            <button
+              onClick={() => { fetchPending(); fetchArchive(); }}
+              disabled={loading}
+              className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-200 transition-colors"
+              title="Refresh"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            </button>
+          </div>
+        </div>
+
+        {/* Divider between title row and search/tabs */}
+        <div className="border-t border-zinc-800/60" />
+
+        {/* Search + Tabs */}
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col gap-3">
+          {/* Search Bar */}
+          <div className="w-full flex justify-center">
+            <div className="relative w-full max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by title, author, or track..."
+                className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Pill Tab Switcher */}
+          <div className="relative w-full">
+            <div className="overflow-x-auto whitespace-nowrap scrollbar-hide px-1 [mask-image:linear-gradient(to_right,white_0%,white_90%,transparent_100%)]">
+            <div className="inline-flex rounded-full bg-zinc-800/80 border border-zinc-700/60 p-1">
+            <button
+              type="button"
+              onClick={() => setActiveTab('pending')}
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                activeTab === 'pending'
+                  ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              Pending Submissions
+              {filteredSubmissions.length > 0 && (
+                <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                  activeTab === 'pending'
+                    ? 'bg-white/20 text-white'
+                    : 'bg-amber-500/15 text-amber-400'
+                }`}>
+                  {filteredSubmissions.length}
+                </span>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('archive')}
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                activeTab === 'archive'
+                  ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              All Submissions
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('names')}
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                activeTab === 'names'
+                  ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              <UserCheck className="w-3.5 h-3.5" />
+              Name Requests
+            </button>
+            {canManageAdmins && (
+              <button
+                type="button"
+                onClick={() => setActiveTab('access')}
+                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                  activeTab === 'access'
+                    ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <Crown className="w-3.5 h-3.5" />
+                Access Control
+              </button>
+            )}
+            {canManageAdmins && (
+              <button
+                type="button"
+                onClick={() => setActiveTab('audit')}
+                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                  activeTab === 'audit'
+                    ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <Activity className="w-3.5 h-3.5" />
+                Audit Trail
+              </button>
+            )}
+            {canManageAdmins && (
+              <button
+                type="button"
+                onClick={() => setActiveTab('maintenance')}
+                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                  activeTab === 'maintenance'
+                    ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <Database className="w-3.5 h-3.5" />
+                Maintenance
+              </button>
+            )}
+            {canManageAdmins && (
+              <button
+                type="button"
+                onClick={() => setActiveTab('health')}
+                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                  activeTab === 'health'
+                    ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <HeartPulse className="w-3.5 h-3.5" />
+                System Health
+              </button>
+            )}
+          </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
+
+        {/* Success toast */}
+        {successMessage && (
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-teal-500/10 border border-teal-500/25 text-teal-400 text-sm font-medium">
+            <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+            {successMessage}
+          </div>
+        )}
+
+        {/* Fetch error */}
+        {fetchError && (
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/25 text-red-400 text-sm">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            {fetchError}
+          </div>
+        )}
+
+        {/* ─── Pending Queue ─── */}
+        {activeTab === 'pending' && (
+          <>
+            {loading ? (
+              <div className="space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 animate-pulse">
+                    <div className="flex gap-4">
+                      <div className="w-9 h-9 rounded-lg bg-zinc-800 flex-shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 bg-zinc-800 rounded w-1/2" />
+                        <div className="h-3 bg-zinc-800 rounded w-1/3" />
+                        <div className="h-3 bg-zinc-800 rounded w-3/4" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : filteredSubmissions.length === 0 ? (
+              searchQuery.trim() ? (
+                <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
+                  <Search className="w-8 h-8 text-zinc-600 mb-4" />
+                  <h3 className="text-base font-semibold text-zinc-300">No results found</h3>
+                  <p className="text-sm text-zinc-500 mt-1 max-w-xs">
+                    No submissions found matching &lsquo;{searchQuery}&rsquo;.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
+                  <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
+                    <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+                  </div>
+                  <h3 className="text-base font-semibold text-zinc-200">All caught up!</h3>
+                  <p className="text-sm text-zinc-500 mt-1 max-w-xs">
+                    The pending queue is clear. New contributions will appear here automatically.
+                  </p>
+                </div>
+              )
+            ) : (
+              <div className="space-y-4">
+                {filteredSubmissions.map((sub) => (
+                  <SubmissionCard
+                    key={sub.id}
+                    sub={sub}
+                    onApprove={handleApprove}
+                    onReject={handleReject}
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* ─── Archive Table ─── */}
+        {activeTab === 'archive' && (
+          <ArchiveTable
+            data={filteredArchive}
+            loading={archiveLoading}
+            searchQuery={searchQuery}
+            onRestore={handleArchiveRestore}
+            onHardDelete={handleArchiveHardDelete}
+            onUnpublish={handleArchiveUnpublish}
+          />
+        )}
+
+        {/* ─── Access Control ─── */}
+        {activeTab === 'access' && canManageAdmins && (
+          <AccessControlView adminEmail={adminEmail} />
+        )}
+
+        {/* ─── Audit Trail ─── */}
+        {activeTab === 'audit' && canManageAdmins && (
+          <AuditTrailView />
+        )}
+
+        {/* ─── Name Requests ─── */}
+        {activeTab === 'names' && (
+          <NameRequestsView adminEmail={adminEmail} />
+        )}
+
+        {/* ─── System Maintenance ─── */}
+        {activeTab === 'maintenance' && canManageAdmins && (
+          <MaintenanceView adminEmail={adminEmail} />
+        )}
+
+        {/* ─── System Health ─── */}
+        {activeTab === 'health' && canManageAdmins && (
+          <SystemHealthView />
+        )}
+
+      </main>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// System Health View (crash telemetry dashboard)
+// ---------------------------------------------------------------------------
+interface CrashLogEntry {
+  id: string;
+  target_id: string | null;
+  target_title: string | null;
+  created_at: string;
+}
+
+function SystemHealthView() {
+  const [logs, setLogs] = useState<CrashLogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error: fetchErr } = await supabase
+        .from('admin_audit_logs')
+        .select('id, target_id, target_title, created_at')
+        .eq('action_taken', 'frontend_crash')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      if (cancelled) return;
+      if (fetchErr) {
+        setError(fetchErr.message);
+      } else {
+        setLogs(data ?? []);
+      }
+      setLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const formatTimestamp = (ts: string) => {
+    const d = new Date(ts);
+    return d.toLocaleString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+    });
+  };
+
+  return (
+    <section className="space-y-6">
+      <div className="flex items-center gap-3 mb-2">
+        <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+          <HeartPulse className="w-5 h-5 text-emerald-400" />
+        </div>
+        <div>
+          <h2 className="text-lg font-bold text-white">System Health Monitor</h2>
+          <p className="text-sm text-zinc-500 mt-0.5">Frontend crash telemetry captured by the Global Error Boundary</p>
+        </div>
+      </div>
+
+      {loading && (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-5 h-5 text-zinc-500 animate-spin" />
+        </div>
+      )}
+
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/25 text-red-400 text-sm">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          {error}
+        </div>
+      )}
+
+      {!loading && !error && logs.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="p-4 rounded-full bg-emerald-500/10 mb-4">
+            <ShieldCheck className="w-8 h-8 text-emerald-400" />
+          </div>
+          <h3 className="text-base font-semibold text-zinc-300">No Crashes Recorded</h3>
+          <p className="text-sm text-zinc-500 mt-1 max-w-sm">
+            The Global Error Boundary has not captured any frontend crashes. System is operating normally.
+          </p>
+        </div>
+      )}
+
+      {!loading && !error && logs.length > 0 && (
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-zinc-800 bg-zinc-900/80">
+                <tr>
+                  <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Timestamp</th>
+                  <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Route</th>
+                  <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Error Details</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-800/60">
+                {logs.map((log) => {
+                  const parts = (log.target_title ?? '').split('\n\n--- Component Stack ---\n');
+                  const errorMsg = parts[0] || 'Unknown error';
+                  const stack = parts[1] || '';
+                  return (
+                    <tr key={log.id} className="hover:bg-zinc-800/30 transition-colors">
+                      <td className="px-4 py-3 text-zinc-400 whitespace-nowrap align-top text-xs font-mono">
+                        {formatTimestamp(log.created_at)}
+                      </td>
+                      <td className="px-4 py-3 text-zinc-300 whitespace-nowrap align-top">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded bg-zinc-800 text-xs font-mono text-zinc-300">
+                          {log.target_id || '/'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 align-top max-w-md">
+                        <p className="text-red-300 text-xs font-medium mb-1 break-words">{errorMsg}</p>
+                        {stack && (
+                          <pre className="text-[10px] text-zinc-500 font-mono bg-zinc-950 rounded-lg p-2 max-h-28 overflow-y-auto whitespace-pre-wrap break-words border border-zinc-800">
+                            {stack}
+                          </pre>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div className="px-4 py-2 border-t border-zinc-800 bg-zinc-900/80">
+            <p className="text-xs text-zinc-500">Showing {logs.length} most recent crash{logs.length !== 1 ? 'es' : ''}</p>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Floating toast for unauthenticated admin access
+// ---------------------------------------------------------------------------
+function AdminAccessToast() {
+  const [show, setShow] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShow(false), 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <div
+      className={`fixed bottom-6 right-6 z-[200] flex items-start gap-3 px-5 py-4 bg-zinc-900 rounded-2xl shadow-2xl border border-amber-500/20 max-w-sm transition-all duration-300 ${
+        show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+      }`}
+    >
+      <div className="p-1 rounded-full bg-amber-500/20">
+        <AlertCircle className="w-5 h-5 text-amber-400" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="font-semibold text-zinc-100 text-sm">Sign-in Required</p>
+        <p className="text-zinc-400 text-xs mt-0.5">Please sign in to access the Admin Control Panel.</p>
+      </div>
+      <button
+        onClick={() => setShow(false)}
+        className="p-1 rounded-lg hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300"
+      >
+        <X className="w-4 h-4" />
+      </button>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Root export: auth gate + panel (database-driven whitelist)
+// ---------------------------------------------------------------------------
+export default function AdminControlPage() {
+  const { user, loading } = useAuth();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [adminCheck, setAdminCheck] = useState<{ checked: boolean; isAdmin: boolean; canManageAdmins: boolean }>({
+    checked: false,
+    isAdmin: false,
+    canManageAdmins: false,
+  });
+
+  useEffect(() => {
+    if (!user?.email) return;
+    let mounted = true;
+    (async () => {
+      const { data } = await supabase
+        .from('admin_whitelist')
+        .select('email, can_manage_admins')
+        .eq('email', user.email!)
+        .maybeSingle();
+      if (!mounted) return;
+      setAdminCheck({
+        checked: true,
+        isAdmin: !!data,
+        canManageAdmins: data?.can_manage_admins ?? false,
+      });
+    })();
+    return () => { mounted = false; };
+  }, [user?.email]);
+
+  if (loading || (user && !adminCheck.checked)) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+        <Loader2 className="w-6 h-6 text-sky-400 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
+        <div className="w-full max-w-sm text-center space-y-6">
+          <div className="mx-auto w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/25 flex items-center justify-center">
+            <ShieldOff className="w-8 h-8 text-red-400" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-zinc-100">Access Denied</h1>
+            <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
+              You must be signed in to access the Admin Command Center. Please authenticate to continue.
+            </p>
+          </div>
+          <button
+            onClick={() => setAuthModalOpen(true)}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-sky-500 hover:bg-sky-600 transition-colors shadow-lg shadow-sky-500/20"
+          >
+            <Lock className="w-4 h-4" />
+            Sign In
+          </button>
+        </div>
+        <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+        <AdminAccessToast />
+      </div>
+    );
+  }
+
+  if (!adminCheck.isAdmin) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
+        <div className="w-full max-w-sm text-center space-y-6">
+          <div className="mx-auto w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center">
+            <ShieldOff className="w-8 h-8 text-amber-400" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-zinc-100">Unauthorized</h1>
+            <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
+              You do not have administrative privileges for this workspace. Contact your cohort lead if you believe this is an error.
+            </p>
+          </div>
+          <p className="text-xs text-zinc-600">
+            Signed in as {user.email}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return <AdminPanel adminEmail={user.email ?? 'unknown'} canManageAdmins={adminCheck.canManageAdmins} />;
+}
