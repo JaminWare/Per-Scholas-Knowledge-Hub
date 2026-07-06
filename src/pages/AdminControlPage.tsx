@@ -1,7 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { normalizeUrl } from '../utils/normalizeUrl';
 import { autoFormatContent } from '../utils/autoFormatContent';
+import { autoCategorizeSubmission } from '../utils/autoCategorize';
 import {
   DOMAIN_REGISTRY, SLUG_TO_CANONICAL, CANONICAL_TO_SLUG,
   resolveToCanonical, resolveTrackSlug,
@@ -162,7 +163,7 @@ function SubmissionCard({
   onReject,
 }: {
   sub: PendingSubmission;
-  onApprove: (id: string, domainOverride?: string, editedContent?: string, editedTitle?: string) => Promise<void>;
+  onApprove: (id: string, domainOverride?: string, editedContent?: string, editedTitle?: string, metadataOverrides?: { compObjective?: string; lxStage?: string }) => Promise<void>;
   onReject: (id: string) => Promise<void>;
 }) {
   const [approving, setApproving] = useState(false);
@@ -179,6 +180,38 @@ function SubmissionCard({
 
   const needsOverride = !sub.track.toLowerCase().includes('learner experience') && resolveCanonicalSlug(sub.track) === null;
   const [domainOverride, setDomainOverride] = useState('');
+
+  // Auto-categorization state for admin title edits
+  const [suggestedTrack, setSuggestedTrack] = useState('');
+  const [suggestedCompObjective, setSuggestedCompObjective] = useState('');
+  const [suggestedLxStage, setSuggestedLxStage] = useState('');
+  const [suggestionApplied, setSuggestionApplied] = useState(false);
+  const [suggestionDismissed, setSuggestionDismissed] = useState(false);
+  const autoDetectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    // Only fire when admin actively changes the title
+    if (editedTitle === sub.title || suggestionDismissed) {
+      setSuggestedTrack('');
+      setSuggestedCompObjective('');
+      setSuggestedLxStage('');
+      return;
+    }
+    if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current);
+    autoDetectTimer.current = setTimeout(() => {
+      const result = autoCategorizeSubmission(editedTitle, editedContent);
+      if (result && result.track) {
+        setSuggestedTrack(result.track);
+        setSuggestedCompObjective(result.compObjective ?? '');
+        setSuggestedLxStage(result.lxStage ?? '');
+      } else {
+        setSuggestedTrack('');
+        setSuggestedCompObjective('');
+        setSuggestedLxStage('');
+      }
+    }, 400);
+    return () => { if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current); };
+  }, [editedTitle, editedContent, sub.title, suggestionDismissed]);
 
   useEffect(() => {
     async function checkDuplicate() {
@@ -214,7 +247,11 @@ function SubmissionCard({
     setApproving(true);
     setActionError('');
     try {
-      await onApprove(sub.id, needsOverride ? domainOverride : undefined, editedContent, editedTitle !== sub.title ? editedTitle : undefined);
+      const effectiveDomainOverride = domainOverride || (needsOverride ? '' : undefined);
+      const metaOverrides = suggestionApplied && (suggestedCompObjective || suggestedLxStage)
+        ? { compObjective: suggestedCompObjective || undefined, lxStage: suggestedLxStage || undefined }
+        : undefined;
+      await onApprove(sub.id, effectiveDomainOverride || undefined, editedContent, editedTitle !== sub.title ? editedTitle : undefined, metaOverrides);
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Approval failed.');
     } finally {
@@ -366,6 +403,36 @@ function SubmissionCard({
                   placeholder="Edit submission title..."
                   className="w-full px-4 py-2.5 rounded-lg bg-black border border-zinc-800 text-white text-lg font-semibold placeholder:text-zinc-600 focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 focus:outline-none transition-all"
                 />
+                {suggestedTrack && suggestedTrack !== sub.track && !suggestionApplied && !suggestionDismissed && (
+                  <div className="mt-2 flex flex-wrap items-center gap-2 px-3 py-2 rounded-lg bg-sky-500/5 border border-sky-500/20">
+                    <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />
+                    <span className="text-[11px] text-sky-300 font-medium">
+                      Auto-detected: <span className="font-bold text-sky-200">{suggestedTrack}</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setDomainOverride(suggestedTrack);
+                        setSuggestionApplied(true);
+                      }}
+                      className="ml-auto px-2.5 py-1 rounded-md bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 text-[10px] font-bold uppercase tracking-wide border border-sky-500/30 transition-colors"
+                    >
+                      Apply
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSuggestionDismissed(true);
+                        setSuggestedTrack('');
+                        setSuggestedCompObjective('');
+                        setSuggestedLxStage('');
+                      }}
+                      className="px-2.5 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-[10px] font-bold uppercase tracking-wide border border-zinc-700 transition-colors"
+                    >
+                      Dismiss
+                    </button>
+                  </div>
+                )}
               </div>
               {/* Side-by-side panels */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
@@ -1141,7 +1208,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
     setTimeout(() => setSuccessMessage(''), 4000);
   };
 
-  const handleApprove = async (id: string, domainOverride?: string, editedContent?: string, editedTitle?: string) => {
+  const handleApprove = async (id: string, domainOverride?: string, editedContent?: string, editedTitle?: string, metadataOverrides?: { compObjective?: string; lxStage?: string }) => {
     const sub = submissions.find((s) => s.id === id);
     if (!sub) return;
 
@@ -1208,8 +1275,8 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             is_featured: false,
             submission_type: sub.submission_type,
             author_name: sub.full_name,
-            comp_objective: sub.comp_objective || null,
-            lx_stage: sub.lx_stage || null,
+            comp_objective: metadataOverrides?.compObjective || sub.comp_objective || null,
+            lx_stage: metadataOverrides?.lxStage || sub.lx_stage || null,
             lx_topic: sub.lx_topic || null,
             lx_focus: sub.lx_focus || null,
             excerpt,
@@ -1233,8 +1300,8 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             is_featured: false,
             submission_type: sub.submission_type,
             author_name: sub.full_name,
-            comp_objective: sub.comp_objective || null,
-            lx_stage: sub.lx_stage || null,
+            comp_objective: metadataOverrides?.compObjective || sub.comp_objective || null,
+            lx_stage: metadataOverrides?.lxStage || sub.lx_stage || null,
             lx_topic: sub.lx_topic || null,
             lx_focus: sub.lx_focus || null,
             excerpt,

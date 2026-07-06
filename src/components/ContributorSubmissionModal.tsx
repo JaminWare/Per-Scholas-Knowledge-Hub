@@ -307,7 +307,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   useEffect(() => {
     if (userOverride || masterCategory || track) return;
     if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current);
-    autoDetectTimer.current = setTimeout(runAutoDetect, 400);
+    autoDetectTimer.current = setTimeout(runAutoDetect, 300);
     return () => { if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current); };
   }, [title, concept, aPlusRelevance, promptText, promptRole, resourceUrl, runAutoDetect, userOverride, masterCategory, track]);
 

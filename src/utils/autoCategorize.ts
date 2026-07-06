@@ -1,3 +1,5 @@
+import Fuse from 'fuse.js';
+
 export interface AutoCategoryResult {
   masterCategory: string;
   track: string;
@@ -6,51 +8,31 @@ export interface AutoCategoryResult {
   submissionType?: 'Diagram' | 'Prompt Playbook';
 }
 
-interface Rule {
-  keywords: string[];
-  lessonNumbers?: string[];
+interface SearchableEntry {
+  keyword: string;
   masterCategory: string;
   track: string;
   compObjective?: string;
   lxStage?: string;
 }
 
-const MINIMUM_CONFIDENCE_SCORE = 2;
-
-const SEPARATORS = new Set([
-  ' ', '\t', '\n', '\r', ',', ';', ':', '!', '?', '(', ')', '[', ']',
-  '{', '}', '"', "'", '/', '\\', '|', '<', '>', '~', '`',
-]);
-
-function isSeparatorAt(text: string, index: number): boolean {
-  if (index < 0 || index >= text.length) return true;
-  return SEPARATORS.has(text[index]);
-}
-
-function findBoundedMatch(text: string, keyword: string, consumedRanges: [number, number][]): number {
-  let searchFrom = 0;
-  while (searchFrom <= text.length - keyword.length) {
-    const idx = text.indexOf(keyword, searchFrom);
-    if (idx === -1) return -1;
-
-    const beforeOk = isSeparatorAt(text, idx - 1);
-    const afterOk = isSeparatorAt(text, idx + keyword.length);
-
-    if (beforeOk && afterOk) {
-      const alreadyConsumed = consumedRanges.some(
-        ([start, end]) => idx >= start && idx + keyword.length <= end,
-      );
-      if (!alreadyConsumed) return idx;
-    }
-    searchFrom = idx + 1;
-  }
-  return -1;
+interface LessonMapping {
+  lessonNumber: string;
+  masterCategory: string;
+  track: string;
+  compObjective?: string;
 }
 
 const LX_TRACK = 'Learner Experience & FAQs';
 
-const RULES: Rule[] = [
-  // ── Learner Experience & FAQs ──────────────────────────────
+const RULE_DATA: {
+  keywords: string[];
+  lessonNumbers?: string[];
+  masterCategory: string;
+  track: string;
+  compObjective?: string;
+  lxStage?: string;
+}[] = [
   {
     keywords: [
       'imposter syndrome', 'mental health', 'time management', 'give up',
@@ -102,7 +84,6 @@ const RULES: Rule[] = [
     compObjective: 'Tech Solutions',
     lxStage: 'labs',
   },
-  // ── CompTIA A+ Core 1 ─────────────────────────────────────
   {
     keywords: [
       'ip address', 'networking', 'firewall', 'subnet', 'tcp', 'port',
@@ -153,7 +134,6 @@ const RULES: Rule[] = [
     track: 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
     compObjective: '5.2 Motherboard/RAM/CPU Issues',
   },
-  // ── CompTIA A+ Core 2 ─────────────────────────────────────
   {
     keywords: [
       'command line', 'task manager', 'disk management',
@@ -193,7 +173,6 @@ const RULES: Rule[] = [
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
   },
-  // ── Advanced Healthcare IT ─────────────────────────────────
   {
     keywords: [
       'electronic health record', 'health information exchange',
@@ -225,33 +204,39 @@ const RULES: Rule[] = [
   },
 ];
 
+// Flatten all rules into a single searchable array for Fuse
+const SEARCHABLE_ENTRIES: SearchableEntry[] = RULE_DATA.flatMap((rule) =>
+  rule.keywords.map((keyword) => ({
+    keyword,
+    masterCategory: rule.masterCategory,
+    track: rule.track,
+    compObjective: rule.compObjective,
+    lxStage: rule.lxStage,
+  })),
+);
+
+// Separate exact-match lesson number mappings (no fuzzy matching)
+const LESSON_MAPPINGS: LessonMapping[] = RULE_DATA
+  .filter((r) => r.lessonNumbers)
+  .flatMap((r) =>
+    r.lessonNumbers!.map((ln) => ({
+      lessonNumber: ln,
+      masterCategory: r.masterCategory,
+      track: r.track,
+      compObjective: r.compObjective,
+    })),
+  );
+
+// Initialize Fuse with tight threshold (0.3) to avoid false positives on IT terms
+const fuse = new Fuse(SEARCHABLE_ENTRIES, {
+  keys: ['keyword'],
+  threshold: 0.3,
+  ignoreLocation: true,
+  includeScore: true,
+});
+
 const DIAGRAM_KEYWORDS = ['architecture map', 'mermaid', 'flowchart', 'topology', 'diagram', 'blueprint'];
 const PROMPT_KEYWORDS = ['canvas class ai', 'system message', 'prompt', 'llm', 'chatgpt', 'ai role'];
-
-function scoreRule(rule: Rule, text: string): number {
-  let score = 0;
-  const consumedRanges: [number, number][] = [];
-
-  const sorted = [...rule.keywords].sort((a, b) => b.length - a.length);
-
-  for (const kw of sorted) {
-    const isPhrase = kw.includes(' ');
-    const idx = findBoundedMatch(text, kw, consumedRanges);
-    if (idx === -1) continue;
-
-    const points = isPhrase ? 3 : 1;
-    score += points;
-    consumedRanges.push([idx, idx + kw.length]);
-  }
-
-  if (rule.lessonNumbers) {
-    for (const ln of rule.lessonNumbers) {
-      if (text.includes(ln)) score += 2;
-    }
-  }
-
-  return score;
-}
 
 export function autoCategorizeSubmission(
   title: string,
@@ -259,6 +244,7 @@ export function autoCategorizeSubmission(
 ): AutoCategoryResult | null {
   const combined = `${title} ${content}`.toLowerCase();
 
+  // Submission type detection (exact match, unchanged)
   let submissionType: 'Diagram' | 'Prompt Playbook' | undefined;
   if (DIAGRAM_KEYWORDS.some((kw) => combined.includes(kw))) {
     submissionType = 'Diagram';
@@ -266,18 +252,79 @@ export function autoCategorizeSubmission(
     submissionType = 'Prompt Playbook';
   }
 
-  let bestRule: Rule | null = null;
-  let bestScore = 0;
-
-  for (const rule of RULES) {
-    const score = scoreRule(rule, combined);
-    if (score > bestScore) {
-      bestScore = score;
-      bestRule = rule;
+  // Lesson number exact-match pass (no fuzzy)
+  for (const mapping of LESSON_MAPPINGS) {
+    if (combined.includes(mapping.lessonNumber)) {
+      return {
+        masterCategory: mapping.masterCategory,
+        track: mapping.track,
+        compObjective: mapping.compObjective,
+        submissionType,
+      };
     }
   }
 
-  if (!bestRule || bestScore < MINIMUM_CONFIDENCE_SCORE) {
+  // Fuzzy search: search the full title first (catches multi-word phrases)
+  const trackScores = new Map<string, { score: number; entry: SearchableEntry }>();
+
+  const addHit = (entry: SearchableEntry, fuseScore: number) => {
+    // Lower Fuse score = better match. Convert to points (1 - score gives higher points for better matches)
+    const points = 1 - fuseScore;
+    const existing = trackScores.get(entry.track);
+    if (existing) {
+      existing.score += points;
+    } else {
+      trackScores.set(entry.track, { score: points, entry });
+    }
+  };
+
+  // Search full title as a phrase
+  const titleLower = title.toLowerCase().trim();
+  if (titleLower.length >= 3) {
+    const titleResults = fuse.search(titleLower, { limit: 5 });
+    for (const r of titleResults) {
+      if (r.score !== undefined && r.score <= 0.3) {
+        addHit(r.item, r.score);
+      }
+    }
+  }
+
+  // Tokenize combined text and search each meaningful token
+  const tokens = combined
+    .split(/[\s,;:!?()[\]{}"'\/\\|<>~`]+/)
+    .filter((t) => t.length >= 3);
+
+  // Also extract 2-word and 3-word ngrams from the title for phrase matching
+  const titleTokens = titleLower.split(/\s+/).filter((t) => t.length >= 2);
+  const ngrams: string[] = [];
+  for (let i = 0; i < titleTokens.length - 1; i++) {
+    ngrams.push(`${titleTokens[i]} ${titleTokens[i + 1]}`);
+    if (i < titleTokens.length - 2) {
+      ngrams.push(`${titleTokens[i]} ${titleTokens[i + 1]} ${titleTokens[i + 2]}`);
+    }
+  }
+
+  const searchTerms = [...new Set([...ngrams, ...tokens])];
+
+  for (const term of searchTerms) {
+    const results = fuse.search(term, { limit: 3 });
+    for (const r of results) {
+      if (r.score !== undefined && r.score <= 0.3) {
+        addHit(r.item, r.score);
+      }
+    }
+  }
+
+  // Find the track with the highest aggregated score
+  let bestTrack: { score: number; entry: SearchableEntry } | null = null;
+  for (const candidate of trackScores.values()) {
+    if (!bestTrack || candidate.score > bestTrack.score) {
+      bestTrack = candidate;
+    }
+  }
+
+  // Require at least one strong match (aggregated score > 0.5 means at least one good hit)
+  if (!bestTrack || bestTrack.score < 0.5) {
     if (submissionType) {
       return { masterCategory: '', track: '', submissionType };
     }
@@ -285,10 +332,10 @@ export function autoCategorizeSubmission(
   }
 
   return {
-    masterCategory: bestRule.masterCategory,
-    track: bestRule.track,
-    compObjective: bestRule.compObjective,
-    lxStage: bestRule.lxStage,
+    masterCategory: bestTrack.entry.masterCategory,
+    track: bestTrack.entry.track,
+    compObjective: bestTrack.entry.compObjective,
+    lxStage: bestTrack.entry.lxStage,
     submissionType,
   };
 }
