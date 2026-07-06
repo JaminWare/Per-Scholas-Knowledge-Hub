@@ -1175,19 +1175,19 @@ function MaintenanceView({ adminEmail }: { adminEmail: string }) {
         return c.length;
       };
 
-      const findDuplicates = (rows: { id: string; title: string | null; created_at: string; content: string | null }[]): string[] => {
+      const findDuplicates = (rows: { id: string; title: string | null; created_at: string; content: string | null; slug?: string | null }[]): string[] => {
         const sorted = [...rows].sort((a, b) => {
           const wDiff = contentWeight(b.content) - contentWeight(a.content);
           if (wDiff !== 0) return wDiff;
           return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
         });
 
-        const uniqueRecords: { id: string; title: string | null; content: string | null }[] = [];
+        const uniqueRecords: { id: string; title: string | null; content: string | null; slug?: string | null }[] = [];
         const duplicateIds: string[] = [];
 
         for (const record of sorted) {
           const normalizedTitle = (record.title ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
-          if (!normalizedTitle && !record.content) continue;
+          if (!normalizedTitle && !record.content && !record.slug) continue;
 
           let isDuplicate = false;
           for (const unique of uniqueRecords) {
@@ -1200,22 +1200,27 @@ function MaintenanceView({ adminEmail }: { adminEmail: string }) {
               isDuplicate = true;
               break;
             }
+            if (record.slug && unique.slug && record.slug === unique.slug) {
+              isDuplicate = true;
+              break;
+            }
           }
 
           if (isDuplicate) {
             duplicateIds.push(record.id);
           } else {
-            uniqueRecords.push({ id: record.id, title: record.title, content: record.content });
+            uniqueRecords.push({ id: record.id, title: record.title, content: record.content, slug: record.slug });
           }
         }
 
+        console.log("DEDUP SWEEP:", { uniqueRecords, duplicateIds });
         return duplicateIds;
       };
 
       // Phase 1: Articles
       const { data: articlesData, error: articlesError } = await supabase
         .from('articles')
-        .select('id, title, created_at, content');
+        .select('id, title, created_at, content, slug');
       if (articlesError) throw articlesError;
 
       const articleDupIds = findDuplicates(articlesData ?? []);
@@ -1560,8 +1565,8 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       {/* Header */}
       <header className="sticky top-0 z-20 bg-zinc-900/95 backdrop-blur-md border-b border-zinc-800">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-start justify-between gap-3 sm:gap-4">
-          <div className="flex items-center gap-3 min-w-0">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 min-w-0 w-full lg:w-auto">
             <div className="p-2 rounded-lg bg-sky-500/15 border border-sky-500/25 flex-shrink-0">
               <ShieldCheck className="w-5 h-5 text-sky-400" />
             </div>
@@ -1570,7 +1575,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               <p className="text-[11px] text-zinc-500 mt-0.5">Per Scholas 2026-RTT-23 Cohort</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-3 flex-shrink-0 w-full lg:w-auto justify-between lg:justify-end">
             <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
               {submissions.length} pending
             </span>
