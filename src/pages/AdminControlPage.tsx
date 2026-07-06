@@ -18,7 +18,7 @@ import {
   GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
   Pencil, SplitSquareHorizontal, Archive, Filter,
   RotateCcw, XCircle, ShieldOff, Search, UserPlus, Crown, X,
-  Activity, UserCheck,
+  Activity, UserCheck, Database,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -1156,6 +1156,123 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
 }
 
 // ---------------------------------------------------------------------------
+// System Maintenance View
+// ---------------------------------------------------------------------------
+function MaintenanceView({ adminEmail }: { adminEmail: string }) {
+  const [isCleaning, setIsCleaning] = useState(false);
+  const [resultMessage, setResultMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const handleDeduplicateArticles = async () => {
+    if (!window.confirm('Are you sure? This will permanently delete duplicate database records.')) return;
+
+    setIsCleaning(true);
+    setResultMessage(null);
+
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('id, title, created_at');
+
+      if (error) throw error;
+      if (!data || data.length === 0) {
+        setResultMessage({ type: 'success', text: 'Database is clean: 0 duplicates found.' });
+        return;
+      }
+
+      const groups = new Map<string, { id: string; created_at: string }[]>();
+      for (const row of data) {
+        const key = (row.title ?? '').toLowerCase().trim();
+        if (!key) continue;
+        const existing = groups.get(key);
+        if (existing) {
+          existing.push({ id: row.id, created_at: row.created_at });
+        } else {
+          groups.set(key, [{ id: row.id, created_at: row.created_at }]);
+        }
+      }
+
+      const duplicateIds: string[] = [];
+      for (const entries of groups.values()) {
+        if (entries.length <= 1) continue;
+        entries.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+        for (let i = 1; i < entries.length; i++) {
+          duplicateIds.push(entries[i].id);
+        }
+      }
+
+      if (duplicateIds.length === 0) {
+        setResultMessage({ type: 'success', text: 'Database is clean: 0 duplicates found.' });
+        return;
+      }
+
+      const { error: deleteError } = await supabase
+        .from('articles')
+        .delete()
+        .in('id', duplicateIds);
+
+      if (deleteError) throw deleteError;
+
+      await logAdminAction(adminEmail, 'dedup_sweep', undefined, `Removed ${duplicateIds.length} duplicate articles`);
+      setResultMessage({ type: 'success', text: `Success: ${duplicateIds.length} duplicate article${duplicateIds.length === 1 ? '' : 's'} removed.` });
+    } catch (err) {
+      const msg = handleSupabaseError(err);
+      setResultMessage({ type: 'error', text: msg });
+    } finally {
+      setIsCleaning(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
+            <Database className="w-5 h-5 text-amber-400" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-zinc-100">System Maintenance</h3>
+            <p className="text-sm text-zinc-500 mt-0.5">Database integrity tools for senior administrators</p>
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-zinc-700/60 bg-zinc-950/40 p-5">
+          <h4 className="text-sm font-semibold text-zinc-200 mb-2">Deduplication Sweep</h4>
+          <p className="text-xs text-zinc-400 leading-relaxed mb-4">
+            Scans the articles table for entries with identical titles. Keeps the oldest record for each title and permanently deletes newer duplicates.
+          </p>
+          <button
+            type="button"
+            onClick={handleDeduplicateArticles}
+            disabled={isCleaning}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-red-600 hover:bg-red-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-600/20"
+          >
+            {isCleaning ? (
+              <><Loader2 className="w-4 h-4 animate-spin" /> Running sweep...</>
+            ) : (
+              <><Trash2 className="w-4 h-4" /> Run Deduplication Sweep</>
+            )}
+          </button>
+        </div>
+
+        {resultMessage && (
+          <div className={`mt-4 px-4 py-3 rounded-xl text-sm flex items-start gap-2.5 ${
+            resultMessage.type === 'success'
+              ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400'
+              : 'bg-red-500/10 border border-red-500/20 text-red-400'
+          }`}>
+            {resultMessage.type === 'success'
+              ? <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0" />
+              : <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" />
+            }
+            {resultMessage.text}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main Admin Panel
 // ---------------------------------------------------------------------------
 function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canManageAdmins: boolean }) {
@@ -1165,7 +1282,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   const [archiveLoading, setArchiveLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [activeTab, setActiveTab] = useState<'pending' | 'archive' | 'access' | 'audit' | 'names'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'archive' | 'access' | 'audit' | 'names' | 'maintenance'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
   const fetchVersionRef = useRef(0);
 
@@ -1542,6 +1659,20 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 Audit Trail
               </button>
             )}
+            {canManageAdmins && (
+              <button
+                type="button"
+                onClick={() => setActiveTab('maintenance')}
+                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                  activeTab === 'maintenance'
+                    ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <Database className="w-3.5 h-3.5" />
+                Maintenance
+              </button>
+            )}
           </div>
         </div>
 
@@ -1623,6 +1754,11 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         {/* ─── Name Requests ─── */}
         {activeTab === 'names' && (
           <NameRequestsView adminEmail={adminEmail} />
+        )}
+
+        {/* ─── System Maintenance ─── */}
+        {activeTab === 'maintenance' && canManageAdmins && (
+          <MaintenanceView adminEmail={adminEmail} />
         )}
 
       </main>
