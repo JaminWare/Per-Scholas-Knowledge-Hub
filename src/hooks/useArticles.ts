@@ -22,6 +22,7 @@ export function useArticles(refreshKey: number = 0) {
           supabase
             .from('articles')
             .select('*, contributor:contributors(name)')
+            .eq('status', 'published')
             .order('created_at', { ascending: true }),
           supabase
             .from('submissions')
@@ -69,8 +70,15 @@ export function useArticles(refreshKey: number = 0) {
           ...approvedSubs.filter((s) => !existingTitles.has((s.title ?? '').toLowerCase().trim())),
         ];
 
+        const seenIds = new Set<string>();
+        const deduplicated = merged.filter((a) => {
+          if (seenIds.has(a.id)) return false;
+          seenIds.add(a.id);
+          return true;
+        });
+
         if (!abortRef.current) {
-          setArticles(merged);
+          setArticles(deduplicated);
         }
       } catch (e: any) {
         console.error('useArticles fetch error:', e);

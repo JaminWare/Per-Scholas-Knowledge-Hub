@@ -35,6 +35,7 @@ export interface Article {
   author_name: string | null;
   submission_type?: string | null;
   comp_objective?: string | null;
+  status?: string;
   created_at: string;
   updated_at: string;
   contributor?: Contributor;

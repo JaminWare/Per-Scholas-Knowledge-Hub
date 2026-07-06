@@ -101,6 +101,7 @@ export default function LearnerExperiencePage() {
           supabase
             .from('articles')
             .select('*')
+            .eq('status', 'published')
             .ilike('study_category', 'Learner Experience%'),
         ]);
 

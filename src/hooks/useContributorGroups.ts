@@ -172,6 +172,7 @@ export function useContributorGroups(options?: UseContributorGroupsOptions): Use
             .from('articles')
             .select('id, title, slug, content, author_name, study_category, submission_type, comp_objective, created_at')
             .eq('is_sample', false)
+            .eq('status', 'published')
             .not('author_name', 'is', null)
             .order('created_at', { ascending: false })
             .limit(200),

@@ -36,6 +36,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [checkingBreach, setCheckingBreach] = useState(false);
 
   const breachCheckRef = useRef(0);
+  const oauthRedirectingRef = useRef(false);
 
   useEffect(() => {
     if (mode !== 'signup' || !password) {
@@ -77,6 +78,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
     mode === 'signup' && (passwordScore < 3 || !!breachWarning || checkingBreach);
 
   const reset = () => {
+    if (oauthRedirectingRef.current) return;
     setEmail('');
     setPassword('');
     setError('');
@@ -90,15 +92,20 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   };
 
   const handleClose = () => {
+    if (oauthRedirectingRef.current) return;
     reset();
     onClose();
   };
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setError('');
     setGoogleLoading(true);
+    oauthRedirectingRef.current = true;
     const { error: oauthError } = await signInWithGoogle();
     if (oauthError) {
+      oauthRedirectingRef.current = false;
       setError(oauthError.message);
       setGoogleLoading(false);
     }
@@ -150,7 +157,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         onClick={handleClose}
       />
 
-      <div className="relative w-full max-w-[420px] bg-zinc-900 rounded-2xl shadow-2xl shadow-black/60 border border-zinc-800 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div onClick={(e) => e.stopPropagation()} className="relative w-full max-w-[420px] bg-zinc-900 rounded-2xl shadow-2xl shadow-black/60 border border-zinc-800 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="px-7 pt-7 pb-0 flex items-start justify-between">
           <div>
