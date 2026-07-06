@@ -88,7 +88,7 @@ const RULE_DATA: {
   },
   // === Core 1 Domain 1.0 (Mobile Devices) ===
   {
-    keywords: ['laptop', 'docking station', 'port replicator', 'laptop battery', 'laptop keyboard', 'trackpad'],
+    keywords: ['laptop', 'docking station', 'port replicator', 'laptop battery', 'laptop keyboard', 'trackpad', 'mobile', 'smartphone', 'phone', 'tablet'],
     lessonNumbers: ['130'],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 1.0 (Mobile Devices)',
@@ -189,7 +189,7 @@ const RULE_DATA: {
     compObjective: '3.5 Power Supplies',
   },
   {
-    keywords: ['custom pc', 'gaming pc', 'workstation', 'htpc', 'thin client', 'thick client'],
+    keywords: ['custom pc', 'gaming pc', 'workstation', 'htpc', 'thin client', 'thick client', 'hardware', 'pc build', 'configuration', 'config'],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
     compObjective: '3.6 Custom PC Configurations',
@@ -215,7 +215,7 @@ const RULE_DATA: {
   },
   // === Core 1 Domain 5.0 (Troubleshooting) ===
   {
-    keywords: ['troubleshooting methodology', 'identify the problem', 'theory of probable cause', 'plan of action', 'verify functionality', 'document findings'],
+    keywords: ['troubleshooting methodology', 'identify the problem', 'theory of probable cause', 'plan of action', 'verify functionality', 'document findings', 'troubleshooting', 'troubleshoot', 'diagnose', 'repair'],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
     compObjective: '5.1 Troubleshooting Methodology',
@@ -326,7 +326,7 @@ const RULE_DATA: {
   },
   // === Core 2 Domain 2.0 (Security) ===
   {
-    keywords: ['two-factor', 'mfa', 'authentication', 'biometric', 'smart card', 'token', 'access control list'],
+    keywords: ['two-factor', 'mfa', 'authentication', 'biometric', 'smart card', 'token', 'access control list', 'security', 'cybersecurity', 'firewall'],
     lessonNumbers: ['136'],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
@@ -388,7 +388,7 @@ const RULE_DATA: {
   },
   // === Core 2 Domain 3.0 (Software Troubleshooting) ===
   {
-    keywords: ['app crash', 'slow performance', 'startup repair', 'safe mode', 'update failure', 'system restore', 'windows', 'registry'],
+    keywords: ['app crash', 'slow performance', 'startup repair', 'safe mode', 'update failure', 'system restore', 'windows', 'registry', 'software', 'application', 'program'],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 3.0 (Software Troubleshooting)',
     compObjective: '3.1 Windows OS Issues',
