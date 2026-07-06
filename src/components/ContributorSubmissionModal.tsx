@@ -296,6 +296,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     if (result.compObjective) {
       setCompObjective(result.compObjective);
     }
+    if (result.lxStage) {
+      setLxStage(result.lxStage);
+    }
     if (result.masterCategory || result.track) {
       setAutoDetected(true);
     }

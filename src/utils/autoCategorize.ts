@@ -2,6 +2,7 @@ export interface AutoCategoryResult {
   masterCategory: string;
   track: string;
   compObjective?: string;
+  lxStage?: string;
   submissionType?: 'Diagram' | 'Prompt Playbook';
 }
 
@@ -11,9 +12,42 @@ interface Rule {
   masterCategory: string;
   track: string;
   compObjective?: string;
+  lxStage?: string;
 }
 
+const LX_TRACK = 'Learner Experience & FAQs';
+
 const RULES: Rule[] = [
+  // ── Learner Experience & FAQs ──────────────────────────────
+  {
+    keywords: ['imposter syndrome', 'imposter', 'burnout', 'mental health', 'slump', 'motivation', 'stress', 'overwhelmed', 'exhaustion', 'doubt', 'confidence', 'discipline', 'distraction', 'behind', 'catch up', 'time management'],
+    masterCategory: LX_TRACK,
+    track: LX_TRACK,
+    compObjective: 'The Mid-Program Slump',
+    lxStage: 'slump',
+  },
+  {
+    keywords: ['canvas', 'lms', 'onboarding', 'access', 'login', 'setup', 'first week', 'enrollment', 'password reset', 'account setup', 'orientation', 'getting started'],
+    masterCategory: LX_TRACK,
+    track: LX_TRACK,
+    compObjective: 'Onboarding Hurdles',
+    lxStage: 'onboarding',
+  },
+  {
+    keywords: ['resume', 'interview', 'job hunt', 'job', 'exam', 'test day', 'strategy', 'linkedin', 'salary', 'helpdesk', 'certification', 'cert prep', 'cover letter', 'career'],
+    masterCategory: LX_TRACK,
+    track: LX_TRACK,
+    compObjective: 'Job Hunt Triage',
+    lxStage: 'job',
+  },
+  {
+    keywords: ['git', 'github', 'vscode', 'virtualbox', 'ide', 'software install', 'vpn', 'wifi issue', 'hardware setup', 'monitor', 'webcam', 'headset', 'peripheral'],
+    masterCategory: LX_TRACK,
+    track: LX_TRACK,
+    compObjective: 'Tech Solutions',
+    lxStage: 'labs',
+  },
+  // ── CompTIA A+ Core 1 ─────────────────────────────────────
   // Core 1 Domain 2.0 Networking
   {
     keywords: ['ip address', 'networking', 'firewall', 'subnet', 'tcp', 'port', 'router', 'switch', 'dns', 'dhcp', 'osi', 'gateway', 'nat', 'vlan', 'ethernet', 'wifi', 'wireless', 'protocol', 'packet', 'soho'],
@@ -142,7 +176,7 @@ export function autoCategorizeSubmission(
     }
   }
 
-  if (!bestRule || bestScore < 1) {
+  if (!bestRule || bestScore < 2) {
     if (submissionType) {
       return { masterCategory: '', track: '', submissionType };
     }
@@ -153,6 +187,7 @@ export function autoCategorizeSubmission(
     masterCategory: bestRule.masterCategory,
     track: bestRule.track,
     compObjective: bestRule.compObjective,
+    lxStage: bestRule.lxStage,
     submissionType,
   };
 }
