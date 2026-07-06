@@ -1563,9 +1563,10 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      {/* Header */}
-      <header className="sticky top-0 z-20 bg-zinc-900/95 backdrop-blur-md">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-4 pb-0 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 sm:gap-4">
+      {/* Unified sticky command strip: header + search + tabs */}
+      <div className="sticky top-0 z-20 bg-zinc-900/95 backdrop-blur-md border-b border-zinc-800">
+        {/* Title row */}
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">
           <div className="flex items-center gap-3 min-w-0 w-full lg:w-auto">
             <div className="p-2 rounded-lg bg-sky-500/15 border border-sky-500/25 flex-shrink-0">
               <ShieldCheck className="w-5 h-5 text-sky-400" />
@@ -1575,7 +1576,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               <p className="text-[11px] text-zinc-500 mt-0.5">Per Scholas 2026-RTT-23 Cohort</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 flex-shrink-0 w-full lg:w-auto justify-between lg:justify-end">
+          <div className="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
             <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
               {submissions.length} pending
             </span>
@@ -1589,11 +1590,12 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             </button>
           </div>
         </div>
-      </header>
 
-      {/* Sticky sub-nav: Search + Tabs */}
-      <div className="sticky top-0 z-10 bg-zinc-950 border-b border-zinc-800/50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 mt-0 pt-0 pb-4 flex flex-col gap-4">
+        {/* Divider between title row and search/tabs */}
+        <div className="border-t border-zinc-800/60" />
+
+        {/* Search + Tabs */}
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col gap-3">
           {/* Search Bar */}
           <div className="w-full flex justify-center">
             <div className="relative w-full max-w-md">
@@ -1609,8 +1611,9 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
           </div>
 
           {/* Pill Tab Switcher */}
-          <div className="w-full overflow-x-auto whitespace-nowrap scrollbar-hide flex justify-center">
-          <div className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-full bg-zinc-800/80 border border-zinc-700/60 p-1 scrollbar-hide">
+          <div className="relative w-full">
+            <div className="overflow-x-auto whitespace-nowrap scrollbar-hide flex justify-center [mask-image:linear-gradient(to_right,white_0%,white_80%,transparent_100%)]">
+            <div className="inline-flex rounded-full bg-zinc-800/80 border border-zinc-700/60 p-1">
             <button
               type="button"
               onClick={() => setActiveTab('pending')}
@@ -1711,7 +1714,8 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               </button>
             )}
           </div>
-        </div>
+            </div>
+          </div>
         </div>
       </div>
 
