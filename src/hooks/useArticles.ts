@@ -64,10 +64,10 @@ export function useArticles(refreshKey: number = 0) {
           updated_at: s.created_at,
         }));
 
-        const existingTitles = new Set(dbArticles.map((a) => (a.title ?? '').toLowerCase().trim()));
+        const existingTitles = new Set(dbArticles.map((a) => (a.title ?? '').toLowerCase().replace(/[^a-z0-9]/g, '')));
         const merged = [
           ...dbArticles,
-          ...approvedSubs.filter((s) => !existingTitles.has((s.title ?? '').toLowerCase().trim())),
+          ...approvedSubs.filter((s) => !existingTitles.has((s.title ?? '').toLowerCase().replace(/[^a-z0-9]/g, ''))),
         ];
 
         const seenIds = new Set<string>();
