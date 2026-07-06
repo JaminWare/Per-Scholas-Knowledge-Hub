@@ -102,7 +102,7 @@ const RULE_DATA: {
     keywords: [
       'power supply', 'cpu socket', 'motherboard', 'ram', 'cpu', 'bios',
       'cmos', 'heatsink', 'chipset', 'pcie', 'dimm', 'atx', 'psu',
-      'sata', 'nvme', 'ssd', 'hdd', 'socket', 'm.2', 'storage',
+      'sata', 'nvme', 'ssd', 'hdd', 'socket', 'm.2', 'storage', 'hardware',
     ],
     lessonNumbers: ['132'],
     masterCategory: 'CompTIA A+ Core 1',
@@ -269,7 +269,7 @@ export function autoCategorizeSubmission(
     const results = fuse.search(entry.keyword);
     if (results.length > 0 && results[0].score !== undefined && results[0].score < 0.3) {
       const isPhrase = entry.keyword.includes(' ');
-      const points = isPhrase ? 3 : 1;
+      const points = isPhrase ? 3 : 2;
 
       const existing = trackScores.get(entry.track);
       if (existing) {
