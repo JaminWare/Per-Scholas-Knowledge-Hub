@@ -86,132 +86,466 @@ const RULE_DATA: {
     compObjective: 'Tech Solutions',
     lxStage: 'labs',
   },
+  // === Core 1 Domain 1.0 (Mobile Devices) ===
   {
-    keywords: [
-      'ip address', 'networking', 'firewall', 'subnet', 'tcp', 'port',
-      'router', 'switch', 'dns', 'dhcp', 'osi', 'gateway', 'nat', 'vlan',
-      'ethernet', 'wifi', 'wireless', 'protocol', 'packet', 'soho',
-      '802.11ac', '802.11n', '802.11ax', '802.11',
-      'network', 'lan', 'wan',
-    ],
+    keywords: ['laptop', 'docking station', 'port replicator', 'laptop battery', 'laptop keyboard', 'trackpad'],
+    lessonNumbers: ['130'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 1.0 (Mobile Devices)',
+    compObjective: '1.1 Laptop Hardware',
+  },
+  {
+    keywords: ['mobile display', 'lcd', 'oled', 'digitizer', 'touchscreen', 'inverter', 'backlight'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 1.0 (Mobile Devices)',
+    compObjective: '1.2 Mobile Displays',
+  },
+  {
+    keywords: ['lightning', 'usb-c', 'micro usb', 'stylus', 'pogo pin', 'nfc payment', 'portable charger'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 1.0 (Mobile Devices)',
+    compObjective: '1.3 Accessories & Ports',
+  },
+  {
+    keywords: ['mobile hotspot', 'cellular', 'tethering', 'airplane mode', 'imei', 'sim card', 'esim', 'prl', 'mobile', 'smartphone', 'phone', 'tablet', 'portable'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 1.0 (Mobile Devices)',
+    compObjective: '1.4 Network Connectivity',
+  },
+  // === Core 1 Domain 2.0 (Networking) ===
+  {
+    keywords: ['tcp', 'udp', 'port', 'protocol', 'dns', 'dhcp', 'ssh', 'ftp', 'rdp'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 2.0 (Networking)',
+    compObjective: '2.1 Ports & Protocols',
+  },
+  {
+    keywords: ['router', 'switch', 'firewall', 'gateway', 'patch panel', 'poe', 'hub'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 2.0 (Networking)',
+    compObjective: '2.2 Network Equipment',
+  },
+  {
+    keywords: ['wifi', 'wireless', '802.11', '802.11ac', '802.11n', '802.11ax', 'bluetooth', 'rfid', 'nfc'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 2.0 (Networking)',
+    compObjective: '2.3 Wireless Protocols',
+  },
+  {
+    keywords: ['dhcp server', 'dns server', 'proxy', 'vpn', 'vlan', 'nat'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 2.0 (Networking)',
+    compObjective: '2.4 Network Services',
+  },
+  {
+    keywords: ['ip address', 'subnet', 'ipv4', 'ipv6', 'mac address', 'cidr'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 2.0 (Networking)',
+    compObjective: '2.5 IP Addressing',
+  },
+  {
+    keywords: ['soho', 'home router', 'port forwarding', 'qos', 'ssid'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 2.0 (Networking)',
+    compObjective: '2.6 SOHO Networks',
+  },
+  {
+    keywords: ['ethernet', 'lan', 'wan', 'packet', 'osi', 'networking', 'network'],
     lessonNumbers: ['133'],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 2.0 (Networking)',
     compObjective: '2.7 Network Configs',
   },
+  // === Core 1 Domain 3.0 (Hardware) ===
   {
-    keywords: [
-      'power supply', 'cpu socket', 'motherboard', 'ram', 'cpu', 'bios',
-      'cmos', 'heatsink', 'chipset', 'pcie', 'dimm', 'atx', 'psu',
-      'sata', 'nvme', 'ssd', 'hdd', 'socket', 'm.2', 'storage', 'hardware',
-      'connector', 'cable', 'adapter', 'printer', 'usb',
-    ],
+    keywords: ['cable', 'connector', 'usb', 'hdmi', 'displayport', 'vga', 'dvi', 'thunderbolt', 'sata', 'adapter'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
+    compObjective: '3.1 Cables & Connectors',
+  },
+  {
+    keywords: ['ram', 'memory', 'dimm', 'sodimm', 'ddr', 'ddr4', 'ddr5', 'ecc'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
+    compObjective: '3.2 RAM',
+  },
+  {
+    keywords: ['storage', 'hdd', 'ssd', 'nvme', 'm.2', 'raid', 'flash drive'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
+    compObjective: '3.3 Storage Devices',
+  },
+  {
+    keywords: ['motherboard', 'cpu', 'processor', 'socket', 'chipset', 'pcie', 'bios', 'uefi', 'heatsink', 'cmos'],
     lessonNumbers: ['132'],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
     compObjective: '3.4 Motherboards & CPUs',
   },
   {
-    keywords: [
-      'mobile display', 'mobile device', 'docking station', 'touchscreen',
-      'laptop', 'tablet', 'digitizer', 'lcd', 'oled', 'battery',
-      'mobile', 'smartphone', 'phone', 'cellular', 'portable',
-    ],
-    lessonNumbers: ['130'],
+    keywords: ['power supply', 'psu', 'wattage', 'atx', 'modular'],
     masterCategory: 'CompTIA A+ Core 1',
-    track: 'CompTIA A+ Core 1 Domain 1.0 (Mobile Devices)',
+    track: 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
+    compObjective: '3.5 Power Supplies',
   },
   {
-    keywords: [
-      'virtual machine', 'cloud', 'virtualization', 'hypervisor', 'iaas',
-      'paas', 'saas', 'vmware', 'hyper-v', 'container', 'docker', 'vm',
-      'cloud computing', 'aws', 'azure', 'vdi', 'sandbox',
-    ],
+    keywords: ['custom pc', 'gaming pc', 'workstation', 'htpc', 'thin client', 'thick client'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
+    compObjective: '3.6 Custom PC Configurations',
+  },
+  {
+    keywords: ['printer', 'laser', 'inkjet', 'thermal', 'impact', 'spooler', '3d printer'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
+    compObjective: '3.7 Printers',
+  },
+  // === Core 1 Domain 4.0 (Cloud) ===
+  {
+    keywords: ['cloud', 'iaas', 'paas', 'saas', 'aws', 'azure', 'cloud computing', 'public cloud', 'private cloud', 'hybrid cloud'],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 4.0 (Cloud)',
     compObjective: '4.1 Cloud Computing Concepts',
   },
   {
-    keywords: [
-      'blue screen', 'boot failure', 'beep code', 'no post', 'no display',
-      'black screen', 'troubleshoot', 'troubleshooting', 'bsod', 'overheat',
-      'overheating', 'diagnose', 'repair', 'diagnostic', 'symptom', 'intermittent',
-    ],
+    keywords: ['virtual machine', 'virtualization', 'hypervisor', 'vmware', 'hyper-v', 'container', 'docker', 'vm', 'vdi', 'sandbox'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 4.0 (Cloud)',
+    compObjective: '4.2 Client-Side Virtualization',
+  },
+  // === Core 1 Domain 5.0 (Troubleshooting) ===
+  {
+    keywords: ['troubleshooting methodology', 'identify the problem', 'theory of probable cause', 'plan of action', 'verify functionality', 'document findings'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
+    compObjective: '5.1 Troubleshooting Methodology',
+  },
+  {
+    keywords: ['blue screen', 'bsod', 'no post', 'beep code', 'boot failure', 'overheating', 'overheat', 'thermal paste'],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
     compObjective: '5.2 Motherboard/RAM/CPU Issues',
   },
   {
-    keywords: [
-      'command line', 'task manager', 'disk management', 'operating system',
-      'file system', 'windows', 'cli', 'powershell', 'linux', 'macos', 'terminal',
-      'registry', 'cmd', 'bash', 'os', 'mac', 'partition', 'boot',
-    ],
+    keywords: ['disk failure', 'bad sector', 'chkdsk', 'slow boot', 'read write error', 'drive not recognized', 'clicking noise'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
+    compObjective: '5.3 Storage Issues',
+  },
+  {
+    keywords: ['no display', 'black screen', 'artifact', 'dead pixel', 'flickering', 'gpu issue', 'resolution problem'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
+    compObjective: '5.4 Video/Display Issues',
+  },
+  {
+    keywords: ['battery drain', 'frozen screen', 'swollen battery', 'no signal', 'overheating phone', 'gps issue'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
+    compObjective: '5.5 Mobile Device Issues',
+  },
+  {
+    keywords: ['paper jam', 'print queue', 'faded print', 'streaks', 'spooler error', 'toner', 'drum'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
+    compObjective: '5.6 Printer Issues',
+  },
+  {
+    keywords: ['no connectivity', 'intermittent', 'packet loss', 'high latency', 'limited connectivity', 'ip conflict'],
+    masterCategory: 'CompTIA A+ Core 1',
+    track: 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
+    compObjective: '5.7 Network Issues',
+  },
+  // === Core 2 Domain 1.0 (Operating Systems) ===
+  {
+    keywords: ['windows home', 'windows pro', 'windows enterprise', 'windows edition', 'workgroup', 'domain join'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
+    compObjective: '1.1 Windows Editions',
+  },
+  {
+    keywords: ['command line', 'cli', 'powershell', 'cmd', 'terminal', 'ipconfig', 'netstat', 'nslookup', 'ping', 'tracert', 'sfc'],
     lessonNumbers: ['134', '135'],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
     compObjective: '1.2 Command-Line Tools',
   },
   {
-    keywords: [
-      'social engineering', 'firewall rule', 'two-factor',
-      'malware', 'phishing', 'encryption', 'antivirus', 'ransomware',
-      'mfa', 'wpa', 'wep', 'password', 'authentication',
-      'security', 'virus', 'firewall', 'spyware', 'trojan', 'threat',
-    ],
+    keywords: ['cortana', 'task view', 'virtual desktop', 'action center', 'windows store', 'windows 10'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
+    compObjective: '1.3 Windows 10 Features',
+  },
+  {
+    keywords: ['control panel', 'device manager', 'disk management', 'msconfig', 'services.msc', 'defragment', 'task manager'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
+    compObjective: '1.4 Control Panel Utilities',
+  },
+  {
+    keywords: ['windows settings', 'display settings', 'network settings', 'personalization', 'privacy settings', 'update settings'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
+    compObjective: '1.5 Windows Settings',
+  },
+  {
+    keywords: ['network share', 'mapped drive', 'net use', 'file sharing', 'windows networking'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
+    compObjective: '1.6 Windows Networking',
+  },
+  {
+    keywords: ['msi', 'exe installer', 'app store', 'sideload', 'group policy', 'gpo'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
+    compObjective: '1.7 App Installation/Config',
+  },
+  {
+    keywords: ['operating system', 'file system', 'ntfs', 'ext4', 'apfs', 'fat32', 'partition', 'os'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
+    compObjective: '1.8 OS Types & Purposes',
+  },
+  {
+    keywords: ['clean install', 'upgrade install', 'boot media', 'usb boot', 'pxe boot', 'unattended install', 'image deploy', 'boot'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
+    compObjective: '1.9 OS Installations/Upgrades',
+  },
+  {
+    keywords: ['macos', 'mac', 'finder', 'time machine', 'spotlight', 'keychain', 'mission control'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
+    compObjective: '1.10 macOS Features/Tools',
+  },
+  {
+    keywords: ['linux', 'bash', 'apt', 'yum', 'chmod', 'grep', 'sudo', 'nano', 'cron'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
+    compObjective: '1.11 Linux Features/Tools',
+  },
+  // === Core 2 Domain 2.0 (Security) ===
+  {
+    keywords: ['two-factor', 'mfa', 'authentication', 'biometric', 'smart card', 'token', 'access control list'],
     lessonNumbers: ['136'],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
     compObjective: '2.1 Security Measures',
   },
   {
-    keywords: [
-      'app crash', 'software issue', 'os problem', 'slow performance',
-      'startup repair', 'safe mode', 'driver issue', 'update failure',
-      'software', 'application', 'compatibility', 'uninstall', 'reinstall', 'driver',
-    ],
+    keywords: ['wpa', 'wpa2', 'wpa3', 'wep', 'tkip', 'aes', 'wireless security', 'war driving'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
+    compObjective: '2.2 Wireless Security',
+  },
+  {
+    keywords: ['malware', 'antivirus', 'ransomware', 'spyware', 'trojan', 'rootkit', 'worm', 'virus'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
+    compObjective: '2.3 Malware Detection',
+  },
+  {
+    keywords: ['social engineering', 'phishing', 'tailgating', 'shoulder surfing', 'dumpster diving', 'vishing', 'smishing'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
+    compObjective: '2.4 Social Engineering',
+  },
+  {
+    keywords: ['uac', 'bitlocker', 'efs', 'windows defender', 'firewall rule', 'group policy security'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
+    compObjective: '2.5 Windows Security Settings',
+  },
+  {
+    keywords: ['screen lock', 'password policy', 'login attempt', 'disable guest', 'usb lock', 'bios password'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
+    compObjective: '2.6 Workstation Security',
+  },
+  {
+    keywords: ['mdm', 'remote wipe', 'device encryption', 'byod', 'geofencing', 'mobile device security'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
+    compObjective: '2.7 Mobile Device Security',
+  },
+  {
+    keywords: ['data destruction', 'degauss', 'shred', 'low level format', 'secure erase', 'data sanitization'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
+    compObjective: '2.8 Data Destruction',
+  },
+  {
+    keywords: ['soho security', 'home firewall', 'change default password', 'disable ssid broadcast', 'mac filtering'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
+    compObjective: '2.9 SOHO Network Security',
+  },
+  {
+    keywords: ['browser security', 'popup blocker', 'certificate', 'https', 'private browsing', 'clear cache', 'extension security'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
+    compObjective: '2.10 Browser Security',
+  },
+  // === Core 2 Domain 3.0 (Software Troubleshooting) ===
+  {
+    keywords: ['app crash', 'slow performance', 'startup repair', 'safe mode', 'update failure', 'system restore', 'windows', 'registry'],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 3.0 (Software Troubleshooting)',
+    compObjective: '3.1 Windows OS Issues',
   },
   {
-    keywords: [
-      'change management', 'disaster recovery', 'asset management',
-      'documentation', 'backup', 'ticketing', 'incident', 'safety',
-      'scripting', 'operational', 'procedure', 'sop', 'inventory', 'regulation',
-    ],
+    keywords: ['browser redirect', 'pop up', 'rogue software', 'unauthorized access', 'security alert'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 3.0 (Software Troubleshooting)',
+    compObjective: '3.2 PC Security Issues',
+  },
+  {
+    keywords: ['malware removal', 'quarantine', 'remediate', 'enable system protection', 'scan'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 3.0 (Software Troubleshooting)',
+    compObjective: '3.3 Malware Removal Best Practices',
+  },
+  {
+    keywords: ['app not loading', 'force stop', 'clear app cache', 'os update issue', 'factory reset'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 3.0 (Software Troubleshooting)',
+    compObjective: '3.4 Mobile OS/App Issues',
+  },
+  {
+    keywords: ['leaked data', 'unauthorized root', 'jailbreak', 'unintended connection', 'developer mode'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 3.0 (Software Troubleshooting)',
+    compObjective: '3.5 Mobile Security Issues',
+  },
+  // === Core 2 Domain 4.0 (Operational Procedures) ===
+  {
+    keywords: ['documentation', 'ticketing', 'knowledge base', 'asset management', 'inventory', 'network diagram'],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
+    compObjective: '4.1 IT Documentation',
   },
   {
-    keywords: [
-      'electronic health record', 'health information exchange', 'electronic medical record',
-      'ehr', 'emr', 'fhir', 'hl7', 'epic', 'cerner', 'interoperability',
-      'patient portal', 'clinical data', 'health record',
-    ],
+    keywords: ['change management', 'change board', 'rollback plan', 'approval process', 'risk analysis'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
+    compObjective: '4.2 Change Management',
+  },
+  {
+    keywords: ['disaster recovery', 'backup', 'restore', 'redundancy', 'failover', 'business continuity'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
+    compObjective: '4.3 Disaster Recovery',
+  },
+  {
+    keywords: ['safety', 'esd', 'anti static', 'lifting', 'electrical safety', 'msds'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
+    compObjective: '4.4 Safety Procedures',
+  },
+  {
+    keywords: ['recycling', 'proper disposal', 'battery disposal', 'toner disposal', 'e-waste', 'green it'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
+    compObjective: '4.5 Environmental Impacts',
+  },
+  {
+    keywords: ['pii', 'gdpr', 'license', 'open source', 'eula', 'drm', 'copyright'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
+    compObjective: '4.6 Privacy & Licensing',
+  },
+  {
+    keywords: ['professionalism', 'communication', 'customer service', 'active listening', 'escalation'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
+    compObjective: '4.7 Professionalism & Comms',
+  },
+  {
+    keywords: ['scripting', 'script', 'batch file', 'powershell script', 'python', 'javascript', 'automation'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
+    compObjective: '4.8 Scripting Basics',
+  },
+  {
+    keywords: ['remote desktop', 'vnc', 'ssh remote', 'teamviewer', 'vpn remote', 'remote access'],
+    masterCategory: 'CompTIA A+ Core 2',
+    track: 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
+    compObjective: '4.9 Remote Access Tech',
+  },
+  // === Healthcare IT: EHR Architecture ===
+  {
+    keywords: ['ehr', 'emr', 'epic', 'cerner', 'electronic health record', 'electronic medical record', 'patient portal', 'ehr sandbox'],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT EHR Architecture',
     compObjective: 'EHR Integrations & Sandboxes',
   },
   {
-    keywords: [
-      'privacy rule', 'security rule', 'breach notification', 'risk assessment',
-      'protected health information', 'data breach', 'access control',
-      'hipaa', 'phi', 'compliance', 'audit', 'baa', 'cybersecurity',
-      'vulnerability', 'privacy', 'safeguard',
-    ],
+    keywords: ['fhir', 'hl7', 'interoperability', 'health information exchange', 'hie', 'ccda', 'api integration'],
+    masterCategory: 'Advanced Healthcare IT',
+    track: 'Advanced Healthcare IT EHR Architecture',
+    compObjective: 'Data Interoperability (HL7/FHIR)',
+  },
+  {
+    keywords: ['clinical database', 'data warehouse', 'sql health', 'data migration', 'data integrity', 'health record database'],
+    masterCategory: 'Advanced Healthcare IT',
+    track: 'Advanced Healthcare IT EHR Architecture',
+    compObjective: 'Database Management',
+  },
+  {
+    keywords: ['downtime', 'system outage', 'paper charting', 'backup procedure', 'disaster recovery ehr'],
+    masterCategory: 'Advanced Healthcare IT',
+    track: 'Advanced Healthcare IT EHR Architecture',
+    compObjective: 'System Downtime Procedures',
+  },
+  // === Healthcare IT: HIPAA Data Security ===
+  {
+    keywords: ['phi', 'protected health information', 'hipaa', 'minimum necessary', 'de-identification', 'privacy'],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT HIPAA Data Security',
     compObjective: 'PHI Protection Strategies',
   },
   {
-    keywords: [
-      'medical iot', 'lab order', 'medical device', 'lab result',
-      'clinical', 'cpoe', 'patient', 'telehealth', 'nursing', 'discharge',
-      'admission', 'pacs', 'dicom', 'imaging', 'radiology', 'medication', 'pharmacy',
-    ],
+    keywords: ['access control', 'audit', 'audit trail', 'role based access', 'authentication health', 'baa'],
+    masterCategory: 'Advanced Healthcare IT',
+    track: 'Advanced Healthcare IT HIPAA Data Security',
+    compObjective: 'Access Controls & Auditing',
+  },
+  {
+    keywords: ['cybersecurity', 'vulnerability', 'threat', 'data breach', 'breach notification', 'penetration test', 'ids', 'ips'],
+    masterCategory: 'Advanced Healthcare IT',
+    track: 'Advanced Healthcare IT HIPAA Data Security',
+    compObjective: 'Threat Detection & Response',
+  },
+  {
+    keywords: ['compliance', 'risk assessment', 'security rule', 'privacy rule', 'safeguard', 'security policy', 'nist'],
+    masterCategory: 'Advanced Healthcare IT',
+    track: 'Advanced Healthcare IT HIPAA Data Security',
+    compObjective: 'Compliance Documentation',
+  },
+  // === Healthcare IT: Clinical Workflows ===
+  {
+    keywords: ['patient', 'admission', 'discharge', 'nursing', 'clinical workflow', 'patient flow', 'clinical'],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT Clinical Workflows',
     compObjective: 'Patient Admission to Discharge',
+  },
+  {
+    keywords: ['cpoe', 'lab order', 'lab result', 'medication order', 'pharmacy', 'medication'],
+    masterCategory: 'Advanced Healthcare IT',
+    track: 'Advanced Healthcare IT Clinical Workflows',
+    compObjective: 'Order Entry Systems (CPOE)',
+  },
+  {
+    keywords: ['telehealth', 'telemedicine', 'virtual visit', 'remote patient', 'video consult', 'remote monitoring'],
+    masterCategory: 'Advanced Healthcare IT',
+    track: 'Advanced Healthcare IT Clinical Workflows',
+    compObjective: 'Telehealth Integrations',
+  },
+  {
+    keywords: ['medical iot', 'medical device', 'pacs', 'dicom', 'imaging', 'radiology', 'biomedical', 'infusion pump'],
+    masterCategory: 'Advanced Healthcare IT',
+    track: 'Advanced Healthcare IT Clinical Workflows',
+    compObjective: 'Medical IoT Troubleshooting',
   },
 ];
 
@@ -271,7 +605,7 @@ export function autoCategorizeSubmission(
   const paddedText = ' ' + sanitizedText + ' ';
 
   // Phase 1: Exact substring matching with space-padded boundaries
-  const trackScores = new Map<string, { points: number; entry: SearchableEntry }>();
+  const objectiveScores = new Map<string, { points: number; entry: SearchableEntry }>();
 
   for (const entry of SEARCHABLE_ENTRIES) {
     const isPhrase = entry.keyword.includes(' ');
@@ -281,33 +615,34 @@ export function autoCategorizeSubmission(
 
     if (matched) {
       const points = isPhrase ? 3 : 2;
-      const existing = trackScores.get(entry.track);
+      const key = entry.track + '||' + (entry.compObjective ?? '');
+      const existing = objectiveScores.get(key);
       if (existing) {
         existing.points += points;
       } else {
-        trackScores.set(entry.track, { points, entry });
+        objectiveScores.set(key, { points, entry });
       }
     }
   }
 
-  let bestTrack: { points: number; entry: SearchableEntry } | null = null;
-  for (const candidate of trackScores.values()) {
-    if (!bestTrack || candidate.points > bestTrack.points) {
-      bestTrack = candidate;
+  let bestMatch: { points: number; entry: SearchableEntry } | null = null;
+  for (const candidate of objectiveScores.values()) {
+    if (!bestMatch || candidate.points > bestMatch.points) {
+      bestMatch = candidate;
     }
   }
 
-  if (bestTrack && bestTrack.points >= MINIMUM_CONFIDENCE_SCORE) {
+  if (bestMatch && bestMatch.points >= MINIMUM_CONFIDENCE_SCORE) {
     return {
-      masterCategory: bestTrack.entry.masterCategory,
-      track: bestTrack.entry.track,
-      compObjective: bestTrack.entry.compObjective,
-      lxStage: bestTrack.entry.lxStage,
+      masterCategory: bestMatch.entry.masterCategory,
+      track: bestMatch.entry.track,
+      compObjective: bestMatch.entry.compObjective,
+      lxStage: bestMatch.entry.lxStage,
       submissionType,
     };
   }
 
-  // Phase 2: Typo fallback — tokenized Fuse (only runs if Phase 1 fails)
+  // Phase 2: Typo fallback -- tokenized Fuse (only runs if Phase 1 fails)
   const tokens = sanitizedText.split(/\s+/).filter((t) => t.length >= 4);
   const fuse = new Fuse(SEARCHABLE_ENTRIES, {
     keys: ['keyword'],
@@ -320,11 +655,12 @@ export function autoCategorizeSubmission(
     const results = fuse.search(token);
     if (results.length > 0) {
       const hit = results[0].item;
-      const existing = fallbackScores.get(hit.track);
+      const key = hit.track + '||' + (hit.compObjective ?? '');
+      const existing = fallbackScores.get(key);
       if (existing) {
         existing.points += 2;
       } else {
-        fallbackScores.set(hit.track, { points: 2, entry: hit });
+        fallbackScores.set(key, { points: 2, entry: hit });
       }
     }
   }
