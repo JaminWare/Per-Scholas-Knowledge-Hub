@@ -1564,8 +1564,8 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       {/* Header */}
-      <header className="sticky top-0 z-20 bg-zinc-900/95 backdrop-blur-md border-b border-zinc-800">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 sm:gap-4">
+      <header className="sticky top-0 z-20 bg-zinc-900/95 backdrop-blur-md">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-4 pb-0 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 sm:gap-4">
           <div className="flex items-center gap-3 min-w-0 w-full lg:w-auto">
             <div className="p-2 rounded-lg bg-sky-500/15 border border-sky-500/25 flex-shrink-0">
               <ShieldCheck className="w-5 h-5 text-sky-400" />
@@ -1593,9 +1593,9 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
 
       {/* Sticky sub-nav: Search + Tabs */}
       <div className="sticky top-0 z-10 bg-zinc-950 border-b border-zinc-800/50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-3 pb-4 space-y-3">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 mt-0 pt-0 pb-4 flex flex-col gap-4">
           {/* Search Bar */}
-          <div className="flex justify-center">
+          <div className="w-full flex justify-center">
             <div className="relative w-full max-w-md">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
               <input
@@ -1609,7 +1609,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
           </div>
 
           {/* Pill Tab Switcher */}
-          <div className="flex justify-center">
+          <div className="w-full overflow-x-auto whitespace-nowrap scrollbar-hide flex justify-center">
           <div className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-full bg-zinc-800/80 border border-zinc-700/60 p-1 scrollbar-hide">
             <button
               type="button"
