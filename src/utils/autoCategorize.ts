@@ -255,22 +255,23 @@ export function autoCategorizeSubmission(
     }
   }
 
-  // Inverted Fuse: user text is the dataset, keywords are the queries
-  const fuse = new Fuse([{ text: combined }], {
-    keys: ['text'],
-    threshold: 0.2,
-    ignoreLocation: true,
-    includeScore: true,
-  });
+  // IT-safe punctuation sanitization: preserve internal dots/hyphens (802.11, m.2, Hyper-V)
+  let sanitizedText = combined.replace(/[,!?;:()[\]"'{}]/g, ' ');
+  sanitizedText = sanitizedText.replace(/[.-](?=\s|$)/g, ' ');
+  sanitizedText = sanitizedText.replace(/\s+/g, ' ').trim();
+  const paddedText = ' ' + sanitizedText + ' ';
 
+  // Phase 1: Exact substring matching with space-padded boundaries
   const trackScores = new Map<string, { points: number; entry: SearchableEntry }>();
 
   for (const entry of SEARCHABLE_ENTRIES) {
-    const results = fuse.search(entry.keyword);
-    if (results.length > 0 && results[0].score !== undefined && results[0].score < 0.3) {
-      const isPhrase = entry.keyword.includes(' ');
-      const points = isPhrase ? 3 : 2;
+    const isPhrase = entry.keyword.includes(' ');
+    const matched = isPhrase
+      ? sanitizedText.includes(entry.keyword)
+      : paddedText.includes(' ' + entry.keyword + ' ');
 
+    if (matched) {
+      const points = isPhrase ? 3 : 2;
       const existing = trackScores.get(entry.track);
       if (existing) {
         existing.points += points;
@@ -287,18 +288,57 @@ export function autoCategorizeSubmission(
     }
   }
 
-  if (!bestTrack || bestTrack.points < MINIMUM_CONFIDENCE_SCORE) {
-    if (submissionType) {
-      return { masterCategory: '', track: '', submissionType };
-    }
-    return null;
+  if (bestTrack && bestTrack.points >= MINIMUM_CONFIDENCE_SCORE) {
+    return {
+      masterCategory: bestTrack.entry.masterCategory,
+      track: bestTrack.entry.track,
+      compObjective: bestTrack.entry.compObjective,
+      lxStage: bestTrack.entry.lxStage,
+      submissionType,
+    };
   }
 
-  return {
-    masterCategory: bestTrack.entry.masterCategory,
-    track: bestTrack.entry.track,
-    compObjective: bestTrack.entry.compObjective,
-    lxStage: bestTrack.entry.lxStage,
-    submissionType,
-  };
+  // Phase 2: Typo fallback — tokenized Fuse (only runs if Phase 1 fails)
+  const tokens = sanitizedText.split(/\s+/).filter((t) => t.length >= 4);
+  const fuse = new Fuse(SEARCHABLE_ENTRIES, {
+    keys: ['keyword'],
+    threshold: 0.3,
+  });
+
+  const fallbackScores = new Map<string, { points: number; entry: SearchableEntry }>();
+
+  for (const token of tokens) {
+    const results = fuse.search(token);
+    if (results.length > 0) {
+      const hit = results[0].item;
+      const existing = fallbackScores.get(hit.track);
+      if (existing) {
+        existing.points += 2;
+      } else {
+        fallbackScores.set(hit.track, { points: 2, entry: hit });
+      }
+    }
+  }
+
+  let fallbackBest: { points: number; entry: SearchableEntry } | null = null;
+  for (const candidate of fallbackScores.values()) {
+    if (!fallbackBest || candidate.points > fallbackBest.points) {
+      fallbackBest = candidate;
+    }
+  }
+
+  if (fallbackBest && fallbackBest.points >= MINIMUM_CONFIDENCE_SCORE) {
+    return {
+      masterCategory: fallbackBest.entry.masterCategory,
+      track: fallbackBest.entry.track,
+      compObjective: fallbackBest.entry.compObjective,
+      lxStage: fallbackBest.entry.lxStage,
+      submissionType,
+    };
+  }
+
+  if (submissionType) {
+    return { masterCategory: '', track: '', submissionType };
+  }
+  return null;
 }
