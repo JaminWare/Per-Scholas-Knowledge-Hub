@@ -399,7 +399,11 @@ function SubmissionCard({
                 <input
                   type="text"
                   value={editedTitle}
-                  onChange={(e) => setEditedTitle(e.target.value)}
+                  onChange={(e) => {
+                    setEditedTitle(e.target.value);
+                    setSuggestionApplied(false);
+                    setSuggestionDismissed(false);
+                  }}
                   placeholder="Edit submission title..."
                   className="w-full px-4 py-2.5 rounded-lg bg-black border border-zinc-800 text-white text-lg font-semibold placeholder:text-zinc-600 focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 focus:outline-none transition-all"
                 />
