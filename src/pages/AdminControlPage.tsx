@@ -1181,7 +1181,7 @@ function MaintenanceView({ adminEmail }: { adminEmail: string }) {
 
       const groups = new Map<string, { id: string; created_at: string; content: string | null }[]>();
       for (const row of data) {
-        const key = (row.title ?? '').toLowerCase().trim();
+        const key = (row.title ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
         if (!key) continue;
         const existing = groups.get(key);
         if (existing) {
@@ -1596,7 +1596,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
 
         {/* Pill Tab Switcher */}
         <div className="flex justify-center">
-          <div className="inline-flex rounded-full bg-zinc-800/80 border border-zinc-700/60 p-1">
+          <div className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-full bg-zinc-800/80 border border-zinc-700/60 p-1 scrollbar-hide">
             <button
               type="button"
               onClick={() => setActiveTab('pending')}

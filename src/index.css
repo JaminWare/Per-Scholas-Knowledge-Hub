@@ -69,6 +69,15 @@
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-sky-500 to-sky-400;
   }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* Un-clamp text inside card zoom overlay so full content is readable */
