@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Redirecting...</title>
+  <script>
+    // GitHub Pages SPA redirect: converts pathname to hash-based route
+    // e.g. /repo/cohort-admin -> /repo/#/cohort-admin
+    (function () {
+      var repo = location.pathname.split('/').filter(Boolean)[0] || '';
+      var path = location.pathname.replace('/' + repo, '') || '/';
+      var search = location.search;
+      var hash = '#' + path + search;
+      location.replace(
+        location.origin + '/' + repo + '/' + hash
+      );
+    })();
+  </script>
+</head>
+<body>
+</body>
+</html>

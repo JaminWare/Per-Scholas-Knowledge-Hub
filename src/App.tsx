@@ -153,6 +153,7 @@ function AppContent() {
           <ErrorBoundary>
             <Routes>
               <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
+              <Route path="/cohort-admin" element={<AdminControlPage />} />
               <Route path="/recognition" element={<RecognitionPage />} />
               <Route path="/learner-experience" element={<LearnerExperiencePage />} />
               <Route path="/article/:slug" element={<ArticlePage />} />
@@ -177,10 +178,6 @@ function AppContent() {
 }
 
 function App() {
-  if (window.location.pathname === '/cohort-admin') {
-    return <AdminControlPage />;
-  }
-
   return (
     <Router>
       <AppContent />
