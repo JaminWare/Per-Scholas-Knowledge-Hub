@@ -85,7 +85,9 @@ function AppContent() {
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center flex-shrink-0">
               <BookOpen className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-bold text-sm text-zinc-100 truncate">Learners Hub</span>
+            <span className="font-bold text-sm text-zinc-100 truncate">
+              {location.pathname.includes('/cohort-admin') ? 'Learners Hub Admin' : 'Learners Hub'}
+            </span>
           </div>
           {user ? (
             <button
