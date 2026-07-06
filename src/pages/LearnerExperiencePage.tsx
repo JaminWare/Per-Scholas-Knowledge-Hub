@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Plus, LifeBuoy } from 'lucide-react';
-import Fuse from 'fuse.js';
 import { supabase } from '../lib/supabase';
 import { AppletCard, AppletSkeleton } from '../components/AppletCard';
 import type { ArticleWithContributor } from '../hooks/useArticles';
@@ -51,24 +50,11 @@ function entryToArticle(entry: {
 
 // ─── Main page component ─────────────────────────────────────
 
-const QUICK_FILTERS = ['All', 'Onboarding', 'Labs', 'Mental Health', 'Certs', 'Resume', 'Canvas'];
-
-const quickFilterFuseOptions: Fuse.IFuseOptions<ArticleWithContributor> = {
-  keys: [
-    { name: 'title', weight: 0.5 },
-    { name: 'content', weight: 0.3 },
-    { name: 'study_category', weight: 0.2 },
-  ],
-  threshold: 0.4,
-  ignoreLocation: true,
-};
-
 export default function LearnerExperiencePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'all');
   const [activeLevel2, setActiveLevel2] = useState('');
   const [activeLevel3, setActiveLevel3] = useState('');
-  const [quickFilter, setQuickFilter] = useState('All');
   const [entries, setEntries] = useState<ArticleWithContributor[]>([]);
   const [lxMeta, setLxMeta] = useState<Map<string, LxMeta>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
@@ -89,7 +75,6 @@ export default function LearnerExperiencePage() {
     }
     setActiveLevel2('');
     setActiveLevel3('');
-    setQuickFilter('All');
   };
 
   useEffect(() => {
@@ -232,13 +217,8 @@ export default function LearnerExperiencePage() {
       }
     }
 
-    if (quickFilter !== 'All') {
-      const fuse = new Fuse(result, quickFilterFuseOptions);
-      result = fuse.search(quickFilter).map((r) => r.item);
-    }
-
     return result;
-  }, [entries, lxMeta, activeTab, currentTab, filters, activeLevel2, activeLevel3, quickFilter]);
+  }, [entries, lxMeta, activeTab, currentTab, filters, activeLevel2, activeLevel3]);
 
   const PINNED_TITLES = [
     'Navigating the Hub: Search, Domains & Filtering',
@@ -293,29 +273,6 @@ export default function LearnerExperiencePage() {
               );
             })}
           </div>
-        </div>
-      </div>
-
-      {/* ─── Quick Filter Pills ─── */}
-      <div className="overflow-x-auto whitespace-nowrap pb-1 -mx-1 px-1 scrollbar-hide">
-        <div className="inline-flex items-center gap-2">
-          {QUICK_FILTERS.map((pill) => {
-            const isActive = quickFilter === pill;
-            return (
-              <button
-                key={pill}
-                type="button"
-                onClick={() => setQuickFilter(pill)}
-                className={`flex-shrink-0 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
-                  isActive
-                    ? 'bg-sky-500/20 text-sky-300 border-sky-400/50 shadow-sm shadow-sky-500/10'
-                    : 'bg-zinc-800/60 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/60 border-zinc-700/50'
-                }`}
-              >
-                {pill}
-              </button>
-            );
-          })}
         </div>
       </div>
 
