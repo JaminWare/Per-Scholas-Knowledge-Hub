@@ -1549,17 +1549,17 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       {/* Header */}
       <header className="sticky top-0 z-20 bg-zinc-900/95 backdrop-blur-md border-b border-zinc-800">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3 sm:gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-sky-500/15 border border-sky-500/25">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-start justify-between gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="p-2 rounded-lg bg-sky-500/15 border border-sky-500/25 flex-shrink-0">
               <ShieldCheck className="w-5 h-5 text-sky-400" />
             </div>
-            <div>
-              <h1 className="text-base font-bold text-zinc-100 leading-none">Admin Command Center</h1>
+            <div className="min-w-0">
+              <h1 className="text-base font-bold text-zinc-100 leading-tight">Admin Command Center</h1>
               <p className="text-[11px] text-zinc-500 mt-0.5">Per Scholas 2026-RTT-23 Cohort</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-shrink-0">
             <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
               {submissions.length} pending
             </span>
@@ -1575,26 +1575,9 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
-
-        {/* Success toast */}
-        {successMessage && (
-          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-teal-500/10 border border-teal-500/25 text-teal-400 text-sm font-medium">
-            <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
-            {successMessage}
-          </div>
-        )}
-
-        {/* Fetch error */}
-        {fetchError && (
-          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/25 text-red-400 text-sm">
-            <AlertCircle className="w-4 h-4 flex-shrink-0" />
-            {fetchError}
-          </div>
-        )}
-
-        {/* Sticky sub-nav: Search + Tabs */}
-        <div className="sticky top-[57px] z-30 bg-zinc-950 pt-2 pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 border-b border-zinc-800/50 space-y-4">
+      {/* Sticky sub-nav: Search + Tabs */}
+      <div className="sticky top-0 z-10 bg-zinc-950 border-b border-zinc-800/50">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-3 pb-4 space-y-3">
           {/* Search Bar */}
           <div className="flex justify-center">
             <div className="relative w-full max-w-md">
@@ -1700,6 +1683,25 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
           </div>
         </div>
         </div>
+      </div>
+
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
+
+        {/* Success toast */}
+        {successMessage && (
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-teal-500/10 border border-teal-500/25 text-teal-400 text-sm font-medium">
+            <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+            {successMessage}
+          </div>
+        )}
+
+        {/* Fetch error */}
+        {fetchError && (
+          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/25 text-red-400 text-sm">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            {fetchError}
+          </div>
+        )}
 
         {/* ─── Pending Queue ─── */}
         {activeTab === 'pending' && (
