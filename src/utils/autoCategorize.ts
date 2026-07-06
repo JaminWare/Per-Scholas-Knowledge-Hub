@@ -92,6 +92,7 @@ const RULE_DATA: {
       'router', 'switch', 'dns', 'dhcp', 'osi', 'gateway', 'nat', 'vlan',
       'ethernet', 'wifi', 'wireless', 'protocol', 'packet', 'soho',
       '802.11ac', '802.11n', '802.11ax', '802.11',
+      'network', 'lan', 'wan',
     ],
     lessonNumbers: ['133'],
     masterCategory: 'CompTIA A+ Core 1',
@@ -103,6 +104,7 @@ const RULE_DATA: {
       'power supply', 'cpu socket', 'motherboard', 'ram', 'cpu', 'bios',
       'cmos', 'heatsink', 'chipset', 'pcie', 'dimm', 'atx', 'psu',
       'sata', 'nvme', 'ssd', 'hdd', 'socket', 'm.2', 'storage', 'hardware',
+      'connector', 'cable', 'adapter', 'printer', 'usb',
     ],
     lessonNumbers: ['132'],
     masterCategory: 'CompTIA A+ Core 1',
@@ -113,6 +115,7 @@ const RULE_DATA: {
     keywords: [
       'mobile display', 'mobile device', 'docking station', 'touchscreen',
       'laptop', 'tablet', 'digitizer', 'lcd', 'oled', 'battery',
+      'mobile', 'smartphone', 'phone', 'cellular', 'portable',
     ],
     lessonNumbers: ['130'],
     masterCategory: 'CompTIA A+ Core 1',
@@ -122,6 +125,7 @@ const RULE_DATA: {
     keywords: [
       'virtual machine', 'cloud', 'virtualization', 'hypervisor', 'iaas',
       'paas', 'saas', 'vmware', 'hyper-v', 'container', 'docker', 'vm',
+      'cloud computing', 'aws', 'azure', 'vdi', 'sandbox',
     ],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 4.0 (Cloud)',
@@ -129,8 +133,9 @@ const RULE_DATA: {
   },
   {
     keywords: [
-      'blue screen', 'boot failure', 'beep code', 'no post',
-      'troubleshoot', 'bsod', 'overheat',
+      'blue screen', 'boot failure', 'beep code', 'no post', 'no display',
+      'black screen', 'troubleshoot', 'troubleshooting', 'bsod', 'overheat',
+      'overheating', 'diagnose', 'repair', 'diagnostic', 'symptom', 'intermittent',
     ],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
@@ -138,9 +143,9 @@ const RULE_DATA: {
   },
   {
     keywords: [
-      'command line', 'task manager', 'disk management',
-      'windows', 'cli', 'powershell', 'linux', 'macos', 'terminal',
-      'registry', 'cmd', 'bash',
+      'command line', 'task manager', 'disk management', 'operating system',
+      'file system', 'windows', 'cli', 'powershell', 'linux', 'macos', 'terminal',
+      'registry', 'cmd', 'bash', 'os', 'mac', 'partition', 'boot',
     ],
     lessonNumbers: ['134', '135'],
     masterCategory: 'CompTIA A+ Core 2',
@@ -152,6 +157,7 @@ const RULE_DATA: {
       'social engineering', 'firewall rule', 'two-factor',
       'malware', 'phishing', 'encryption', 'antivirus', 'ransomware',
       'mfa', 'wpa', 'wep', 'password', 'authentication',
+      'security', 'virus', 'firewall', 'spyware', 'trojan', 'threat',
     ],
     lessonNumbers: ['136'],
     masterCategory: 'CompTIA A+ Core 2',
@@ -161,24 +167,26 @@ const RULE_DATA: {
   {
     keywords: [
       'app crash', 'software issue', 'os problem', 'slow performance',
-      'startup repair', 'safe mode', 'driver issue',
+      'startup repair', 'safe mode', 'driver issue', 'update failure',
+      'software', 'application', 'compatibility', 'uninstall', 'reinstall', 'driver',
     ],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 3.0 (Software Troubleshooting)',
   },
   {
     keywords: [
-      'change management', 'disaster recovery',
+      'change management', 'disaster recovery', 'asset management',
       'documentation', 'backup', 'ticketing', 'incident', 'safety',
-      'scripting',
+      'scripting', 'operational', 'procedure', 'sop', 'inventory', 'regulation',
     ],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
   },
   {
     keywords: [
-      'electronic health record', 'health information exchange',
-      'ehr', 'fhir', 'hl7', 'epic', 'cerner', 'interoperability',
+      'electronic health record', 'health information exchange', 'electronic medical record',
+      'ehr', 'emr', 'fhir', 'hl7', 'epic', 'cerner', 'interoperability',
+      'patient portal', 'clinical data', 'health record',
     ],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT EHR Architecture',
@@ -187,8 +195,9 @@ const RULE_DATA: {
   {
     keywords: [
       'privacy rule', 'security rule', 'breach notification', 'risk assessment',
+      'protected health information', 'data breach', 'access control',
       'hipaa', 'phi', 'compliance', 'audit', 'baa', 'cybersecurity',
-      'vulnerability',
+      'vulnerability', 'privacy', 'safeguard',
     ],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT HIPAA Data Security',
@@ -196,9 +205,9 @@ const RULE_DATA: {
   },
   {
     keywords: [
-      'medical iot', 'lab order',
+      'medical iot', 'lab order', 'medical device', 'lab result',
       'clinical', 'cpoe', 'patient', 'telehealth', 'nursing', 'discharge',
-      'admission',
+      'admission', 'pacs', 'dicom', 'imaging', 'radiology', 'medication', 'pharmacy',
     ],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT Clinical Workflows',
