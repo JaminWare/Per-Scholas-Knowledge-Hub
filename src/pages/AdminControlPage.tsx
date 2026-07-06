@@ -1171,7 +1171,7 @@ function MaintenanceView({ adminEmail }: { adminEmail: string }) {
     try {
       const { data, error } = await supabase
         .from('articles')
-        .select('id, title, created_at');
+        .select('id, title, created_at, content');
 
       if (error) throw error;
       if (!data || data.length === 0) {
@@ -1179,22 +1179,31 @@ function MaintenanceView({ adminEmail }: { adminEmail: string }) {
         return;
       }
 
-      const groups = new Map<string, { id: string; created_at: string }[]>();
+      const groups = new Map<string, { id: string; created_at: string; content: string | null }[]>();
       for (const row of data) {
         const key = (row.title ?? '').toLowerCase().trim();
         if (!key) continue;
         const existing = groups.get(key);
         if (existing) {
-          existing.push({ id: row.id, created_at: row.created_at });
+          existing.push({ id: row.id, created_at: row.created_at, content: row.content });
         } else {
-          groups.set(key, [{ id: row.id, created_at: row.created_at }]);
+          groups.set(key, [{ id: row.id, created_at: row.created_at, content: row.content }]);
         }
       }
+
+      const contentWeight = (c: string | null): number => {
+        if (!c || c.trim() === '' || c.includes('Article Not Found')) return 0;
+        return c.length;
+      };
 
       const duplicateIds: string[] = [];
       for (const entries of groups.values()) {
         if (entries.length <= 1) continue;
-        entries.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
+        entries.sort((a, b) => {
+          const wDiff = contentWeight(b.content) - contentWeight(a.content);
+          if (wDiff !== 0) return wDiff;
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        });
         for (let i = 1; i < entries.length; i++) {
           duplicateIds.push(entries[i].id);
         }
