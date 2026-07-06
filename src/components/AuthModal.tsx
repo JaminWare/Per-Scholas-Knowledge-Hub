@@ -1,6 +1,8 @@
-import { useState } from 'react';
-import { X, Mail, Lock, Loader2 } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { X, Mail, Lock, Loader2, ShieldAlert } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
+import { checkPasswordStrength, checkBreachedPassword } from '../utils/passwordStrength';
+import PasswordStrengthBar from './PasswordStrengthBar';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -27,12 +29,64 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
 
+  const [passwordScore, setPasswordScore] = useState(0);
+  const [passwordFeedback, setPasswordFeedback] = useState('');
+  const [passwordCrackTime, setPasswordCrackTime] = useState('');
+  const [breachWarning, setBreachWarning] = useState('');
+  const [checkingBreach, setCheckingBreach] = useState(false);
+
+  const breachCheckRef = useRef(0);
+
+  useEffect(() => {
+    if (mode !== 'signup' || !password) {
+      setPasswordScore(0);
+      setPasswordFeedback('');
+      setPasswordCrackTime('');
+      setBreachWarning('');
+      setCheckingBreach(false);
+      return;
+    }
+
+    const strength = checkPasswordStrength(password);
+    setPasswordScore(strength.score);
+    setPasswordFeedback(strength.feedback);
+    setPasswordCrackTime(strength.crackTime);
+
+    if (strength.score >= 3) {
+      const checkId = ++breachCheckRef.current;
+      setCheckingBreach(true);
+      setBreachWarning('');
+      const timer = setTimeout(async () => {
+        const breached = await checkBreachedPassword(password);
+        if (breachCheckRef.current !== checkId) return;
+        setCheckingBreach(false);
+        if (breached) {
+          setBreachWarning(
+            'This password has been exposed in a known data breach. Please choose a different, secure password.'
+          );
+        }
+      }, 400);
+      return () => { clearTimeout(timer); };
+    } else {
+      setBreachWarning('');
+      setCheckingBreach(false);
+    }
+  }, [password, mode]);
+
+  const isSignupBlocked =
+    mode === 'signup' && (passwordScore < 3 || !!breachWarning || checkingBreach);
+
   const reset = () => {
     setEmail('');
     setPassword('');
     setError('');
     setLoading(false);
     setGoogleLoading(false);
+    setPasswordScore(0);
+    setPasswordFeedback('');
+    setPasswordCrackTime('');
+    setBreachWarning('');
+    setCheckingBreach(false);
   };
 
   const handleClose = () => {
@@ -63,6 +117,8 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
       setError('Password must be at least 6 characters.');
       return;
     }
+
+    if (isSignupBlocked) return;
 
     setLoading(true);
 
@@ -168,7 +224,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               </div>
             </div>
 
-            <div>
+            <div className="space-y-2.5">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                   <Lock className="w-4 h-4 text-zinc-500" />
@@ -177,16 +233,38 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder={mode === 'signup' ? 'Password (min. 6 characters)' : 'Password'}
+                  placeholder={mode === 'signup' ? 'Create a strong password' : 'Password'}
                   className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-950/80 border border-zinc-700/60 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/40 transition-all"
                   autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                 />
               </div>
+
+              {mode === 'signup' && password.length > 0 && (
+                <PasswordStrengthBar
+                  score={passwordScore}
+                  feedback={passwordFeedback}
+                  crackTime={passwordCrackTime}
+                />
+              )}
+
+              {breachWarning && (
+                <div className="flex items-start gap-2.5 px-3.5 py-3 rounded-xl bg-red-500/10 border border-red-500/30">
+                  <ShieldAlert className="w-4 h-4 text-red-400 mt-0.5 shrink-0" />
+                  <p className="text-xs text-red-300 leading-relaxed">{breachWarning}</p>
+                </div>
+              )}
+
+              {checkingBreach && mode === 'signup' && passwordScore >= 3 && (
+                <div className="flex items-center gap-2 px-3.5 py-2">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-500" />
+                  <span className="text-xs text-zinc-500">Checking breach databases...</span>
+                </div>
+              )}
             </div>
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || isSignupBlocked}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-white bg-sky-500 hover:bg-sky-400 shadow-lg shadow-sky-500/20 hover:shadow-sky-400/30 disabled:opacity-60 disabled:cursor-not-allowed mt-1"
             >
               {loading ? (
@@ -195,6 +273,12 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 mode === 'login' ? 'Sign In' : 'Create Account'
               )}
             </button>
+
+            {mode === 'signup' && password.length > 0 && passwordScore < 3 && (
+              <p className="text-center text-xs text-zinc-500">
+                Password must score at least "Strong" to continue
+              </p>
+            )}
           </form>
 
           {/* Toggle */}
