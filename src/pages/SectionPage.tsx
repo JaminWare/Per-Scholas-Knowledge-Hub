@@ -698,13 +698,14 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const domainInfo = SLUG_TO_DOMAIN[slug];
 
   const mergedArticles = useMemo(() => {
+    const safe = allArticles ?? [];
     const sectionSlug = domainInfo ? slug : dashboardContext ? slug : null;
-    if (!sectionSlug) return allArticles;
+    if (!sectionSlug) return safe;
     const localArticles = getLocalArticlesForSection(sectionSlug);
-    if (localArticles.length === 0) return allArticles;
-    const existingSlugs = new Set(allArticles.map((a) => a.slug));
+    if (localArticles.length === 0) return safe;
+    const existingSlugs = new Set(safe.map((a) => a.slug));
     const newLocals = localArticles.filter((la) => !existingSlugs.has(la.slug));
-    return newLocals.length > 0 ? [...allArticles, ...newLocals] : allArticles;
+    return newLocals.length > 0 ? [...safe, ...newLocals] : safe;
   }, [allArticles, slug, domainInfo, dashboardContext]);
 
   const isKnownSlug = !!(meta || localContent || dashboardContext || domainInfo);

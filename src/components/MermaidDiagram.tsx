@@ -39,19 +39,25 @@ export default function MermaidDiagram({ chart }: Props) {
     const id = `mermaid-${Date.now()}-${idCounter++}`;
     let cancelled = false;
 
-    mermaid
-      .render(id, chart.trim())
-      .then(({ svg }) => {
-        if (!cancelled && containerRef.current) {
-          containerRef.current.innerHTML = svg;
-          setError(null);
-        }
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          setError(err?.message || 'Invalid diagram syntax');
-        }
-      });
+    try {
+      mermaid
+        .render(id, chart.trim())
+        .then(({ svg }) => {
+          if (!cancelled && containerRef.current) {
+            containerRef.current.innerHTML = svg;
+            setError(null);
+          }
+        })
+        .catch((err) => {
+          if (!cancelled) {
+            setError(err?.message || 'Invalid diagram syntax');
+          }
+        });
+    } catch (err: any) {
+      if (!cancelled) {
+        setError(err?.message || 'Invalid diagram syntax');
+      }
+    }
 
     return () => {
       cancelled = true;

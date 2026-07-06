@@ -156,60 +156,64 @@ export function useContributorGroups(options?: UseContributorGroupsOptions): Use
       setIsLoading(true);
       setError(null);
 
-      const [subResult, articleResult] = await Promise.all([
-        supabase
-          .from('submissions')
-          .select('*')
-          .eq('is_approved', true)
-          .order('created_at', { ascending: false })
-          .limit(200),
-        supabase
-          .from('articles')
-          .select('id, title, slug, content, author_name, study_category, submission_type, comp_objective, created_at')
-          .eq('is_sample', false)
-          .not('author_name', 'is', null)
-          .order('created_at', { ascending: false })
-          .limit(200),
-      ]);
+      try {
+        const [subResult, articleResult] = await Promise.all([
+          supabase
+            .from('submissions')
+            .select('*')
+            .eq('is_approved', true)
+            .order('created_at', { ascending: false })
+            .limit(200),
+          supabase
+            .from('articles')
+            .select('id, title, slug, content, author_name, study_category, submission_type, comp_objective, created_at')
+            .eq('is_sample', false)
+            .not('author_name', 'is', null)
+            .order('created_at', { ascending: false })
+            .limit(200),
+        ]);
 
-      if (subResult.error || articleResult.error) {
-        setError(subResult.error?.message ?? articleResult.error?.message ?? 'Fetch failed');
+        if (subResult.error || articleResult.error) {
+          setError(subResult.error?.message ?? articleResult.error?.message ?? 'Fetch failed');
+          return;
+        }
+
+        const articleEntries: PortfolioItem[] = (articleResult.data ?? []).map((a: any) => ({
+          id: `art-${a.id}`,
+          full_name: a.author_name,
+          track: a.study_category ?? '',
+          badge: 'Cohort Contributor',
+          title: a.title,
+          content: a.content ?? '',
+          submission_type: a.submission_type ?? 'Article',
+          comp_objective: a.comp_objective ?? '',
+          created_at: a.created_at ?? '',
+          slug: a.slug,
+        }));
+
+        const submissionEntries: PortfolioItem[] = ((subResult.data as any[]) ?? []).map((s: any) => ({
+          ...s,
+          slug: undefined,
+        }));
+
+        const allEntries: PortfolioItem[] = [];
+        const seenTitles = new Set<string>();
+
+        for (const entry of articleEntries) {
+          const key = entry.title.trim().toLowerCase();
+          if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
+        }
+        for (const entry of submissionEntries) {
+          const key = entry.title.trim().toLowerCase();
+          if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
+        }
+
+        setEntries(allEntries);
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Network error');
+      } finally {
         setIsLoading(false);
-        return;
       }
-
-      const articleEntries: PortfolioItem[] = (articleResult.data ?? []).map((a: any) => ({
-        id: `art-${a.id}`,
-        full_name: a.author_name,
-        track: a.study_category ?? '',
-        badge: 'Cohort Contributor',
-        title: a.title,
-        content: a.content ?? '',
-        submission_type: a.submission_type ?? 'Article',
-        comp_objective: a.comp_objective ?? '',
-        created_at: a.created_at ?? '',
-        slug: a.slug,
-      }));
-
-      const submissionEntries: PortfolioItem[] = ((subResult.data as any[]) ?? []).map((s: any) => ({
-        ...s,
-        slug: undefined,
-      }));
-
-      const allEntries: PortfolioItem[] = [];
-      const seenTitles = new Set<string>();
-
-      for (const entry of articleEntries) {
-        const key = entry.title.trim().toLowerCase();
-        if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
-      }
-      for (const entry of submissionEntries) {
-        const key = entry.title.trim().toLowerCase();
-        if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
-      }
-
-      setEntries(allEntries);
-      setIsLoading(false);
     }
     fetch();
   }, []);

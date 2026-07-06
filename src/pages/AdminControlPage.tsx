@@ -266,6 +266,7 @@ function SubmissionCard({
       await onReject(sub.id);
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Reject failed.');
+    } finally {
       setRejecting(false);
     }
   };
@@ -726,42 +727,50 @@ function NameRequestsView({ adminEmail }: { adminEmail: string }) {
 
   const handleApprove = async (req: NameChangeRequest) => {
     setActionLoading(req.id);
+    try {
+      await supabase
+        .from('submissions')
+        .update({ full_name: req.requested_name })
+        .eq('full_name', req.current_name);
 
-    await supabase
-      .from('submissions')
-      .update({ full_name: req.requested_name })
-      .eq('full_name', req.current_name);
+      await supabase
+        .from('articles')
+        .update({ author_name: req.requested_name })
+        .eq('author_name', req.current_name);
 
-    await supabase
-      .from('articles')
-      .update({ author_name: req.requested_name })
-      .eq('author_name', req.current_name);
+      await supabase
+        .from('name_change_requests')
+        .update({ status: 'approved' })
+        .eq('id', req.id);
 
-    await supabase
-      .from('name_change_requests')
-      .update({ status: 'approved' })
-      .eq('id', req.id);
+      await logAdminAction(adminEmail, 'APPROVED_NAME_CHANGE', req.id, req.requested_name);
 
-    await logAdminAction(adminEmail, 'APPROVED_NAME_CHANGE', req.id, req.requested_name);
-
-    setRequests((prev) => prev.filter((r) => r.id !== req.id));
-    setActionLoading(null);
-    flash(`Approved: "${req.current_name}" is now "${req.requested_name}"`);
+      setRequests((prev) => prev.filter((r) => r.id !== req.id));
+      flash(`Approved: "${req.current_name}" is now "${req.requested_name}"`);
+    } catch {
+      flash(`Error approving name change for "${req.current_name}"`);
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   const handleReject = async (req: NameChangeRequest) => {
     setActionLoading(req.id);
+    try {
+      await supabase
+        .from('name_change_requests')
+        .update({ status: 'rejected' })
+        .eq('id', req.id);
 
-    await supabase
-      .from('name_change_requests')
-      .update({ status: 'rejected' })
-      .eq('id', req.id);
+      await logAdminAction(adminEmail, 'REJECTED_NAME_CHANGE', req.id, req.requested_name);
 
-    await logAdminAction(adminEmail, 'REJECTED_NAME_CHANGE', req.id, req.requested_name);
-
-    setRequests((prev) => prev.filter((r) => r.id !== req.id));
-    setActionLoading(null);
-    flash(`Rejected name change request from "${req.current_name}"`);
+      setRequests((prev) => prev.filter((r) => r.id !== req.id));
+      flash(`Rejected name change request from "${req.current_name}"`);
+    } catch {
+      flash(`Error rejecting name change for "${req.current_name}"`);
+    } finally {
+      setActionLoading(null);
+    }
   };
 
   return (

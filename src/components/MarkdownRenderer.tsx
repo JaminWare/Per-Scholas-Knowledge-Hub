@@ -28,6 +28,11 @@ type InlineToken =
   | { type: 'code'; value: string }
   | { type: 'link'; label: string; href: string };
 
+const SAFE_URL_PATTERN = /^(https?:\/\/|mailto:|#|\/)/i;
+function safeHref(href: string): string {
+  return SAFE_URL_PATTERN.test(href.trim()) ? href.trim() : '#';
+}
+
 type Block =
   | { type: 'h2'; content: string }
   | { type: 'h3'; content: string }
@@ -87,7 +92,7 @@ function renderInline(text: string): React.ReactNode {
             );
           case 'link':
             return (
-              <a key={i} href={token.href} target="_blank" rel="noopener noreferrer"
+              <a key={i} href={safeHref(token.href)} target="_blank" rel="noopener noreferrer"
                 className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
                 {token.label}
               </a>
