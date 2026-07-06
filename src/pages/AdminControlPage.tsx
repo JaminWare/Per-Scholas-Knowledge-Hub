@@ -19,7 +19,7 @@ import {
   GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
   Pencil, SplitSquareHorizontal, Archive, Filter,
   RotateCcw, XCircle, ShieldOff, Search, UserPlus, Crown, X,
-  Activity, UserCheck, Database,
+  Activity, UserCheck, Database, HeartPulse,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -1315,7 +1315,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   const [archiveLoading, setArchiveLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [activeTab, setActiveTab] = useState<'pending' | 'archive' | 'access' | 'audit' | 'names' | 'maintenance'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'archive' | 'access' | 'audit' | 'names' | 'maintenance' | 'health'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
   const fetchVersionRef = useRef(0);
 
@@ -1691,6 +1691,20 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 Maintenance
               </button>
             )}
+            {canManageAdmins && (
+              <button
+                type="button"
+                onClick={() => setActiveTab('health')}
+                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                  activeTab === 'health'
+                    ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <HeartPulse className="w-3.5 h-3.5" />
+                System Health
+              </button>
+            )}
           </div>
         </div>
         </div>
@@ -1799,8 +1813,143 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
           <MaintenanceView adminEmail={adminEmail} />
         )}
 
+        {/* ─── System Health ─── */}
+        {activeTab === 'health' && canManageAdmins && (
+          <SystemHealthView />
+        )}
+
       </main>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// System Health View (crash telemetry dashboard)
+// ---------------------------------------------------------------------------
+interface CrashLogEntry {
+  id: string;
+  target_id: string | null;
+  target_title: string | null;
+  created_at: string;
+}
+
+function SystemHealthView() {
+  const [logs, setLogs] = useState<CrashLogEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error: fetchErr } = await supabase
+        .from('admin_audit_logs')
+        .select('id, target_id, target_title, created_at')
+        .eq('action_taken', 'frontend_crash')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      if (cancelled) return;
+      if (fetchErr) {
+        setError(fetchErr.message);
+      } else {
+        setLogs(data ?? []);
+      }
+      setLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const formatTimestamp = (ts: string) => {
+    const d = new Date(ts);
+    return d.toLocaleString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+    });
+  };
+
+  return (
+    <section className="space-y-6">
+      <div className="flex items-center gap-3 mb-2">
+        <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+          <HeartPulse className="w-5 h-5 text-emerald-400" />
+        </div>
+        <div>
+          <h2 className="text-lg font-bold text-white">System Health Monitor</h2>
+          <p className="text-sm text-zinc-500 mt-0.5">Frontend crash telemetry captured by the Global Error Boundary</p>
+        </div>
+      </div>
+
+      {loading && (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-5 h-5 text-zinc-500 animate-spin" />
+        </div>
+      )}
+
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/25 text-red-400 text-sm">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          {error}
+        </div>
+      )}
+
+      {!loading && !error && logs.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="p-4 rounded-full bg-emerald-500/10 mb-4">
+            <ShieldCheck className="w-8 h-8 text-emerald-400" />
+          </div>
+          <h3 className="text-base font-semibold text-zinc-300">No Crashes Recorded</h3>
+          <p className="text-sm text-zinc-500 mt-1 max-w-sm">
+            The Global Error Boundary has not captured any frontend crashes. System is operating normally.
+          </p>
+        </div>
+      )}
+
+      {!loading && !error && logs.length > 0 && (
+        <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="border-b border-zinc-800 bg-zinc-900/80">
+                <tr>
+                  <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Timestamp</th>
+                  <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Route</th>
+                  <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Error Details</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-800/60">
+                {logs.map((log) => {
+                  const parts = (log.target_title ?? '').split('\n\n--- Component Stack ---\n');
+                  const errorMsg = parts[0] || 'Unknown error';
+                  const stack = parts[1] || '';
+                  return (
+                    <tr key={log.id} className="hover:bg-zinc-800/30 transition-colors">
+                      <td className="px-4 py-3 text-zinc-400 whitespace-nowrap align-top text-xs font-mono">
+                        {formatTimestamp(log.created_at)}
+                      </td>
+                      <td className="px-4 py-3 text-zinc-300 whitespace-nowrap align-top">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded bg-zinc-800 text-xs font-mono text-zinc-300">
+                          {log.target_id || '/'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 align-top max-w-md">
+                        <p className="text-red-300 text-xs font-medium mb-1 break-words">{errorMsg}</p>
+                        {stack && (
+                          <pre className="text-[10px] text-zinc-500 font-mono bg-zinc-950 rounded-lg p-2 max-h-28 overflow-y-auto whitespace-pre-wrap break-words border border-zinc-800">
+                            {stack}
+                          </pre>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div className="px-4 py-2 border-t border-zinc-800 bg-zinc-900/80">
+            <p className="text-xs text-zinc-500">Showing {logs.length} most recent crash{logs.length !== 1 ? 'es' : ''}</p>
+          </div>
+        </div>
+      )}
+    </section>
   );
 }
 

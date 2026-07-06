@@ -2,12 +2,15 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './lib/supabase';
 import App from './App.tsx';
+import GlobalErrorBoundary from './components/GlobalErrorBoundary';
 import './index.css';
 
 localStorage.removeItem('lkb_submissions');
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <GlobalErrorBoundary>
+      <App />
+    </GlobalErrorBoundary>
   </StrictMode>
 );
