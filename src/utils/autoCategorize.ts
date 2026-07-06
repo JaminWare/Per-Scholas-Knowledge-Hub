@@ -88,7 +88,7 @@ const RULE_DATA: {
   },
   // === Core 1 Domain 1.0 (Mobile Devices) ===
   {
-    keywords: ['laptop', 'docking station', 'port replicator', 'laptop battery', 'laptop keyboard', 'trackpad', 'mobile', 'smartphone', 'phone', 'tablet'],
+    keywords: ['laptop', 'docking station', 'port replicator', 'laptop battery', 'laptop keyboard', 'trackpad', 'mobile', 'smartphone', 'phone', 'tablet', 'mobile device', 'handheld', 'portable device', 'wearable', 'ipad', 'android', 'ios', 'gadget', 'on the go'],
     lessonNumbers: ['130'],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 1.0 (Mobile Devices)',
@@ -150,7 +150,7 @@ const RULE_DATA: {
     compObjective: '2.6 SOHO Networks',
   },
   {
-    keywords: ['ethernet', 'lan', 'wan', 'packet', 'osi', 'networking', 'network'],
+    keywords: ['ethernet', 'lan', 'wan', 'packet', 'osi', 'networking', 'network', 'internet', 'connectivity', 'connection', 'telecom', 'bandwidth', 'data transfer', 'topology', 'infrastructure'],
     lessonNumbers: ['133'],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 2.0 (Networking)',
@@ -189,7 +189,7 @@ const RULE_DATA: {
     compObjective: '3.5 Power Supplies',
   },
   {
-    keywords: ['custom pc', 'gaming pc', 'workstation', 'htpc', 'thin client', 'thick client', 'hardware', 'pc build', 'configuration', 'config'],
+    keywords: ['custom pc', 'gaming pc', 'workstation', 'htpc', 'thin client', 'thick client', 'hardware', 'pc build', 'configuration', 'config', 'computer parts', 'components', 'device', 'equipment', 'peripheral', 'desktop', 'tower', 'form factor', 'computer'],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
     compObjective: '3.6 Custom PC Configurations',
@@ -202,7 +202,7 @@ const RULE_DATA: {
   },
   // === Core 1 Domain 4.0 (Cloud) ===
   {
-    keywords: ['cloud', 'iaas', 'paas', 'saas', 'aws', 'azure', 'cloud computing', 'public cloud', 'private cloud', 'hybrid cloud'],
+    keywords: ['cloud', 'iaas', 'paas', 'saas', 'aws', 'azure', 'cloud computing', 'public cloud', 'private cloud', 'hybrid cloud', 'as a service', 'web services', 'remote server', 'hosted', 'scalable', 'on demand', 'gcp', 'google cloud', 'serverless', 'multicloud'],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 4.0 (Cloud)',
     compObjective: '4.1 Cloud Computing Concepts',
@@ -215,7 +215,7 @@ const RULE_DATA: {
   },
   // === Core 1 Domain 5.0 (Troubleshooting) ===
   {
-    keywords: ['troubleshooting methodology', 'identify the problem', 'theory of probable cause', 'plan of action', 'verify functionality', 'document findings', 'troubleshooting', 'troubleshoot', 'diagnose', 'repair'],
+    keywords: ['troubleshooting methodology', 'identify the problem', 'theory of probable cause', 'plan of action', 'verify functionality', 'document findings', 'troubleshooting', 'troubleshoot', 'diagnose', 'repair', 'fix', 'resolve', 'debug', 'root cause', 'symptom', 'issue', 'malfunction', 'broken'],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 5.0 (Troubleshooting)',
     compObjective: '5.1 Troubleshooting Methodology',
@@ -301,7 +301,7 @@ const RULE_DATA: {
     compObjective: '1.7 App Installation/Config',
   },
   {
-    keywords: ['operating system', 'file system', 'ntfs', 'ext4', 'apfs', 'fat32', 'partition', 'os'],
+    keywords: ['operating system', 'file system', 'ntfs', 'ext4', 'apfs', 'fat32', 'partition', 'os', 'platform', 'system software', 'sys admin', 'desktop environment', 'kernel', 'driver', 'system update'],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
     compObjective: '1.8 OS Types & Purposes',
@@ -326,7 +326,7 @@ const RULE_DATA: {
   },
   // === Core 2 Domain 2.0 (Security) ===
   {
-    keywords: ['two-factor', 'mfa', 'authentication', 'biometric', 'smart card', 'token', 'access control list', 'security', 'cybersecurity', 'firewall'],
+    keywords: ['two-factor', 'mfa', 'authentication', 'biometric', 'smart card', 'token', 'access control list', 'security', 'cybersecurity', 'firewall', 'protection', 'defense', 'hardening', 'threat', 'attack', 'exploit', 'vulnerability', 'infosec', 'encryption'],
     lessonNumbers: ['136'],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
@@ -388,7 +388,7 @@ const RULE_DATA: {
   },
   // === Core 2 Domain 3.0 (Software Troubleshooting) ===
   {
-    keywords: ['app crash', 'slow performance', 'startup repair', 'safe mode', 'update failure', 'system restore', 'windows', 'registry', 'software', 'application', 'program'],
+    keywords: ['app crash', 'slow performance', 'startup repair', 'safe mode', 'update failure', 'system restore', 'windows', 'registry', 'software', 'application', 'program', 'install', 'uninstall', 'compatibility', 'patch', 'service pack', 'driver issue', 'performance'],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 3.0 (Software Troubleshooting)',
     compObjective: '3.1 Windows OS Issues',
@@ -419,7 +419,7 @@ const RULE_DATA: {
   },
   // === Core 2 Domain 4.0 (Operational Procedures) ===
   {
-    keywords: ['documentation', 'ticketing', 'knowledge base', 'asset management', 'inventory', 'network diagram'],
+    keywords: ['documentation', 'ticketing', 'knowledge base', 'asset management', 'inventory', 'network diagram', 'operations', 'procedure', 'operational', 'it ops', 'best practice', 'policy', 'workflow', 'sop', 'standard operating procedure', 'itil'],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 4.0 (Operational Procedures)',
     compObjective: '4.1 IT Documentation',
@@ -474,7 +474,7 @@ const RULE_DATA: {
   },
   // === Healthcare IT: EHR Architecture ===
   {
-    keywords: ['ehr', 'emr', 'epic', 'cerner', 'electronic health record', 'electronic medical record', 'patient portal', 'ehr sandbox'],
+    keywords: ['ehr', 'emr', 'epic', 'cerner', 'electronic health record', 'electronic medical record', 'patient portal', 'ehr sandbox', 'health record', 'medical record', 'charting', 'clinical system', 'health information system', 'his', 'meditech', 'allscripts'],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT EHR Architecture',
     compObjective: 'EHR Integrations & Sandboxes',
@@ -499,7 +499,7 @@ const RULE_DATA: {
   },
   // === Healthcare IT: HIPAA Data Security ===
   {
-    keywords: ['phi', 'protected health information', 'hipaa', 'minimum necessary', 'de-identification', 'privacy'],
+    keywords: ['phi', 'protected health information', 'hipaa', 'minimum necessary', 'de-identification', 'privacy', 'health data security', 'patient privacy', 'data protection', 'confidentiality', 'regulation', 'hipaa compliance', 'breach', 'hitech'],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT HIPAA Data Security',
     compObjective: 'PHI Protection Strategies',
@@ -524,7 +524,7 @@ const RULE_DATA: {
   },
   // === Healthcare IT: Clinical Workflows ===
   {
-    keywords: ['patient', 'admission', 'discharge', 'nursing', 'clinical workflow', 'patient flow', 'clinical'],
+    keywords: ['patient', 'admission', 'discharge', 'nursing', 'clinical workflow', 'patient flow', 'clinical', 'healthcare', 'health it', 'hospital', 'clinic', 'medical', 'doctor', 'provider', 'care coordination', 'treatment', 'diagnosis'],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT Clinical Workflows',
     compObjective: 'Patient Admission to Discharge',
@@ -577,6 +577,8 @@ export function autoCategorizeSubmission(
   title: string,
   content: string,
 ): AutoCategoryResult | null {
+  if (!title?.trim() && !content?.trim()) return null;
+
   const combined = `${title} ${content}`.toLowerCase();
 
   let submissionType: 'Diagram' | 'Prompt Playbook' | undefined;
@@ -602,6 +604,7 @@ export function autoCategorizeSubmission(
   let sanitizedText = combined.replace(/[,!?;:()[\]"'{}]/g, ' ');
   sanitizedText = sanitizedText.replace(/[.-](?=\s|$)/g, ' ');
   sanitizedText = sanitizedText.replace(/\s+/g, ' ').trim();
+  if (!sanitizedText) return null;
   const paddedText = ' ' + sanitizedText + ' ';
 
   // Phase 1: Exact substring matching with space-padded boundaries
