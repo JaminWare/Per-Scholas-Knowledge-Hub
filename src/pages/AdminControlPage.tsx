@@ -1163,66 +1163,79 @@ function MaintenanceView({ adminEmail }: { adminEmail: string }) {
   const [resultMessage, setResultMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   const handleDeduplicateArticles = async () => {
-    if (!window.confirm('Are you sure? This will permanently delete duplicate database records.')) return;
+    if (!window.confirm('Are you sure? This will permanently delete duplicate database records from both articles and submissions.')) return;
 
     setIsCleaning(true);
     setResultMessage(null);
 
     try {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('id, title, created_at, content');
-
-      if (error) throw error;
-      if (!data || data.length === 0) {
-        setResultMessage({ type: 'success', text: 'Database is clean: 0 duplicates found.' });
-        return;
-      }
-
-      const groups = new Map<string, { id: string; created_at: string; content: string | null }[]>();
-      for (const row of data) {
-        const key = (row.title ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
-        if (!key) continue;
-        const existing = groups.get(key);
-        if (existing) {
-          existing.push({ id: row.id, created_at: row.created_at, content: row.content });
-        } else {
-          groups.set(key, [{ id: row.id, created_at: row.created_at, content: row.content }]);
-        }
-      }
-
       const contentWeight = (c: string | null): number => {
         if (!c || c.trim() === '' || c.includes('Article Not Found')) return 0;
         return c.length;
       };
 
-      const duplicateIds: string[] = [];
-      for (const entries of groups.values()) {
-        if (entries.length <= 1) continue;
-        entries.sort((a, b) => {
-          const wDiff = contentWeight(b.content) - contentWeight(a.content);
-          if (wDiff !== 0) return wDiff;
-          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
-        });
-        for (let i = 1; i < entries.length; i++) {
-          duplicateIds.push(entries[i].id);
+      const findDuplicates = (rows: { id: string; title: string | null; created_at: string; content: string | null }[]): string[] => {
+        const groups = new Map<string, { id: string; created_at: string; content: string | null }[]>();
+        for (const row of rows) {
+          const key = (row.title ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (!key) continue;
+          const existing = groups.get(key);
+          if (existing) {
+            existing.push({ id: row.id, created_at: row.created_at, content: row.content });
+          } else {
+            groups.set(key, [{ id: row.id, created_at: row.created_at, content: row.content }]);
+          }
         }
-      }
+        const dupIds: string[] = [];
+        for (const entries of groups.values()) {
+          if (entries.length <= 1) continue;
+          entries.sort((a, b) => {
+            const wDiff = contentWeight(b.content) - contentWeight(a.content);
+            if (wDiff !== 0) return wDiff;
+            return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+          });
+          for (let i = 1; i < entries.length; i++) {
+            dupIds.push(entries[i].id);
+          }
+        }
+        return dupIds;
+      };
 
-      if (duplicateIds.length === 0) {
-        setResultMessage({ type: 'success', text: 'Database is clean: 0 duplicates found.' });
-        return;
-      }
-
-      const { error: deleteError } = await supabase
+      // Phase 1: Articles
+      const { data: articlesData, error: articlesError } = await supabase
         .from('articles')
-        .delete()
-        .in('id', duplicateIds);
+        .select('id, title, created_at, content');
+      if (articlesError) throw articlesError;
 
-      if (deleteError) throw deleteError;
+      const articleDupIds = findDuplicates(articlesData ?? []);
+      if (articleDupIds.length > 0) {
+        const { error: delErr } = await supabase.from('articles').delete().in('id', articleDupIds);
+        if (delErr) throw delErr;
+      }
 
-      await logAdminAction(adminEmail, 'dedup_sweep', undefined, `Removed ${duplicateIds.length} duplicate articles`);
-      setResultMessage({ type: 'success', text: `Success: ${duplicateIds.length} duplicate article${duplicateIds.length === 1 ? '' : 's'} removed.` });
+      // Phase 2: Submissions
+      const { data: subsData, error: subsError } = await supabase
+        .from('submissions')
+        .select('id, title, created_at, content');
+      if (subsError) throw subsError;
+
+      const subDupIds = findDuplicates(subsData ?? []);
+      if (subDupIds.length > 0) {
+        const { error: delErr } = await supabase.from('submissions').delete().in('id', subDupIds);
+        if (delErr) throw delErr;
+      }
+
+      const totalRemoved = articleDupIds.length + subDupIds.length;
+      if (totalRemoved === 0) {
+        setResultMessage({ type: 'success', text: 'Database is clean: 0 duplicates found.' });
+      } else {
+        const parts: string[] = [];
+        if (articleDupIds.length > 0) parts.push(`${articleDupIds.length} from articles`);
+        if (subDupIds.length > 0) parts.push(`${subDupIds.length} from submissions`);
+        const text = `Success: ${totalRemoved} duplicate${totalRemoved === 1 ? '' : 's'} removed (${parts.join(', ')}).`;
+        setResultMessage({ type: 'success', text });
+        await logAdminAction(adminEmail, 'dedup_sweep', undefined, text);
+      }
     } catch (err) {
       const msg = handleSupabaseError(err);
       setResultMessage({ type: 'error', text: msg });
@@ -1247,7 +1260,7 @@ function MaintenanceView({ adminEmail }: { adminEmail: string }) {
         <div className="rounded-lg border border-zinc-700/60 bg-zinc-950/40 p-5">
           <h4 className="text-sm font-semibold text-zinc-200 mb-2">Deduplication Sweep</h4>
           <p className="text-xs text-zinc-400 leading-relaxed mb-4">
-            Scans the articles table for entries with identical titles. Keeps the oldest record for each title and permanently deletes newer duplicates.
+            Scans both the articles and submissions tables for entries with identical titles. Keeps the best record (by content weight, then oldest) for each title and permanently deletes duplicates.
           </p>
           <button
             type="button"
@@ -1580,22 +1593,24 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
           </div>
         )}
 
-        {/* Search Bar */}
-        <div className="flex justify-center">
-          <div className="relative w-full max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by title, author, or track..."
-              className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
-            />
+        {/* Sticky sub-nav: Search + Tabs */}
+        <div className="sticky top-[57px] z-30 bg-zinc-950 pt-2 pb-4 -mx-4 px-4 sm:-mx-6 sm:px-6 border-b border-zinc-800/50 space-y-4">
+          {/* Search Bar */}
+          <div className="flex justify-center">
+            <div className="relative w-full max-w-md">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search by title, author, or track..."
+                className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Pill Tab Switcher */}
-        <div className="flex justify-center">
+          {/* Pill Tab Switcher */}
+          <div className="flex justify-center">
           <div className="inline-flex max-w-full overflow-x-auto whitespace-nowrap rounded-full bg-zinc-800/80 border border-zinc-700/60 p-1 scrollbar-hide">
             <button
               type="button"
@@ -1683,6 +1698,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               </button>
             )}
           </div>
+        </div>
         </div>
 
         {/* ─── Pending Queue ─── */}
