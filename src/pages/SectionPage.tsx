@@ -235,37 +235,94 @@ function ResourcePlacard({ activeTab, onTabChange }: { activeTab: ResourceTab; o
 
 function DomainFilterRow({
   domainInfo,
-  activeObjective,
-  onObjectiveChange,
   activeTab,
   onTabChange,
 }: {
   domainInfo: { domain: string; trackIndex: number };
-  activeObjective: string;
-  onObjectiveChange: (obj: string) => void;
   activeTab: ResourceTab;
   onTabChange: (tab: ResourceTab) => void;
 }) {
   if (!domainInfo?.domain) return null;
+
+  return (
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 backdrop-blur-sm px-5 py-4">
+      <div className="flex flex-wrap gap-2">
+        {RESOURCE_TABS.map((tab) => {
+          const TabIcon = TAB_ICONS[tab];
+          const isActive = activeTab === tab;
+          return (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => onTabChange(tab)}
+              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                isActive
+                  ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
+                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+              }`}
+            >
+              <TabIcon className="w-3.5 h-3.5" />
+              {tab}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function DomainBanner({
+  icon: BannerIcon,
+  title,
+  track,
+  domainInfo,
+  activeObjective,
+  onObjectiveChange,
+  onContribute,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  track?: string;
+  domainInfo: { domain: string; trackIndex: number };
+  activeObjective: string;
+  onObjectiveChange: (obj: string) => void;
+  onContribute: () => void;
+}) {
   const canonicalTrack = CANONICAL_DOMAINS[domainInfo.domain] || domainInfo.domain;
   const objectives = COMPTIA_OBJECTIVES[canonicalTrack] ?? [];
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 backdrop-blur-sm px-5 py-4 space-y-3">
-      {objectives.length > 0 && (
-        <div>
-          <div className="flex items-center gap-2 mb-2.5">
-            <Target className="w-3.5 h-3.5 text-sky-500" />
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Filter by Objective</span>
+    <div className="relative rounded-2xl border border-zinc-700/60 overflow-hidden bg-gradient-to-r from-zinc-900 to-zinc-950">
+      <div className="relative px-6 py-8 md:px-8 md:py-10">
+        <div className="flex items-start justify-between gap-4 mb-5">
+          <div className="flex items-start gap-5 flex-1 min-w-0">
+            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
+              <BannerIcon className="w-7 h-7 text-white" />
+            </div>
+            <div className="min-w-0">
+              {track && (
+                <p className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-1">{track}</p>
+              )}
+              <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{title}</h1>
+            </div>
           </div>
+          <button
+            type="button"
+            onClick={onContribute}
+            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-400 hover:bg-sky-500 text-zinc-900 text-sm font-bold shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] transition-all"
+          >
+            Add Intel
+          </button>
+        </div>
+        {objectives.length > 0 && (
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
               onClick={() => onObjectiveChange('All')}
               className={`inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                 activeObjective === 'All'
-                  ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
-                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+                  ? 'bg-sky-500/30 text-sky-300 border-sky-400/50 shadow-sm'
+                  : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
               }`}
             >
               All Objectives
@@ -277,100 +334,15 @@ function DomainFilterRow({
                 onClick={() => onObjectiveChange(obj)}
                 className={`inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                   activeObjective === obj
-                    ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
-                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+                    ? 'bg-sky-500/30 text-sky-300 border-sky-400/50 shadow-sm'
+                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
                 }`}
               >
                 {obj}
               </button>
             ))}
           </div>
-        </div>
-      )}
-      <div className={objectives.length > 0 ? 'border-t border-zinc-800 pt-3' : ''}>
-        {objectives.length > 0 && (
-          <div className="flex items-center gap-2 mb-2.5">
-            <Layers className="w-3.5 h-3.5 text-sky-500" />
-            <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Filter by Type</span>
-          </div>
         )}
-        <div className="flex flex-wrap gap-2">
-          {RESOURCE_TABS.map((tab) => {
-            const TabIcon = TAB_ICONS[tab];
-            const isActive = activeTab === tab;
-            return (
-              <button
-                key={tab}
-                type="button"
-                onClick={() => onTabChange(tab)}
-                className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
-                  isActive
-                    ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
-                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
-                }`}
-              >
-                <TabIcon className="w-3.5 h-3.5" />
-                {tab}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function DomainBanner({
-  icon: BannerIcon,
-  title,
-  track,
-  domainInfo,
-  onContribute,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  title: string;
-  track?: string;
-  domainInfo: { domain: string; trackIndex: number };
-  onContribute: () => void;
-}) {
-  const canonicalTrack = CANONICAL_DOMAINS[domainInfo.domain] || domainInfo.domain;
-  const objectives = COMPTIA_OBJECTIVES[canonicalTrack] ?? [];
-
-  return (
-    <div className="relative rounded-2xl border border-zinc-700/60 overflow-hidden bg-gradient-to-r from-zinc-900 to-zinc-950">
-      <div className="relative px-6 py-8 md:px-8 md:py-10">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-5 flex-1 min-w-0">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
-              <BannerIcon className="w-7 h-7 text-white" />
-            </div>
-            <div className="min-w-0">
-              {track && (
-                <p className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-1">{track}</p>
-              )}
-              <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{title}</h1>
-              {objectives.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mt-3">
-                  {objectives.map((obj) => (
-                    <span
-                      key={obj}
-                      className="inline-flex items-center px-2.5 py-1 rounded-md bg-zinc-800/80 border border-zinc-700/60 text-xs text-zinc-400"
-                    >
-                      {obj}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={onContribute}
-            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-400 hover:bg-sky-500 text-zinc-900 text-sm font-bold shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] transition-all"
-          >
-            Add Intel
-          </button>
-        </div>
       </div>
     </div>
   );
@@ -834,12 +806,12 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
             title={displayTitle}
             track={meta?.track}
             domainInfo={domainInfo}
+            activeObjective={activeObjective}
+            onObjectiveChange={setActiveObjective}
             onContribute={() => setIsModalOpen(true)}
           />
           <DomainFilterRow
             domainInfo={domainInfo}
-            activeObjective={activeObjective}
-            onObjectiveChange={setActiveObjective}
             activeTab={activeTab}
             onTabChange={handleTabChange}
           />
