@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabase';
 import { normalizeUrl } from '../utils/normalizeUrl';
 import { autoFormatContent } from '../utils/autoFormatContent';
 import { autoCategorizeSubmission } from '../utils/autoCategorize';
+import { handleSupabaseError, isAuthError } from '../utils/handleSupabaseError';
 import {
   DOMAIN_REGISTRY, SLUG_TO_CANONICAL, CANONICAL_TO_SLUG,
   resolveToCanonical, resolveTrackSlug,
@@ -214,6 +215,7 @@ function SubmissionCard({
   }, [editedTitle, editedContent, sub.title, suggestionDismissed]);
 
   useEffect(() => {
+    let mounted = true;
     async function checkDuplicate() {
       try {
         if (sub.submission_type === 'Resource Link') {
@@ -223,7 +225,7 @@ function SubmissionCard({
             .select('content')
             .eq('submission_type', 'Resource Link')
             .eq('is_sample', false);
-          if ((data ?? []).some((row) => normalizeUrl(row.content ?? '') === normalized)) {
+          if (mounted && (data ?? []).some((row) => normalizeUrl(row.content ?? '') === normalized)) {
             setIsDuplicate(true);
           }
         } else {
@@ -232,11 +234,12 @@ function SubmissionCard({
             .select('id')
             .ilike('title', sub.title)
             .eq('is_sample', false);
-          if ((data ?? []).length > 0) setIsDuplicate(true);
+          if (mounted && (data ?? []).length > 0) setIsDuplicate(true);
         }
       } catch { /* non-blocking */ }
     }
     checkDuplicate();
+    return () => { mounted = false; };
   }, [sub.id]);
 
   const handleApprove = async () => {
@@ -406,6 +409,7 @@ function SubmissionCard({
                     setSuggestionDismissed(false);
                   }}
                   placeholder="Edit submission title..."
+                  maxLength={200}
                   className="w-full px-4 py-2.5 rounded-lg bg-black border border-zinc-800 text-white text-lg font-semibold placeholder:text-zinc-600 focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 focus:outline-none transition-all"
                 />
                 {suggestedTrack && suggestedTrack !== sub.track && !suggestionApplied && !suggestionDismissed && (
@@ -447,6 +451,7 @@ function SubmissionCard({
                   <textarea
                     value={editedContent}
                     onChange={(e) => setEditedContent(e.target.value)}
+                    maxLength={50000}
                     spellCheck={false}
                     className="flex-1 min-h-[200px] sm:min-h-[320px] w-full px-3 sm:px-4 py-3 rounded-lg bg-black border border-zinc-800 text-zinc-200 text-xs font-mono leading-relaxed resize-y focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 focus:outline-none transition-all"
                   />
@@ -951,6 +956,7 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
   const [inviteEmail, setInviteEmail] = useState('');
   const [grantManage, setGrantManage] = useState(false);
   const [inviting, setInviting] = useState(false);
+  const [revoking, setRevoking] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -987,7 +993,7 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
       .from('admin_whitelist')
       .insert({ email: trimmed, can_manage_admins: grantManage });
     if (insertErr) {
-      setError(insertErr.message);
+      setError(handleSupabaseError(insertErr));
     } else {
       setSuccess(`${trimmed} has been added as an admin.`);
       setInviteEmail('');
@@ -1000,24 +1006,27 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
   };
 
   const handleRevoke = async (entry: WhitelistEntry) => {
+    if (revoking) return;
     if (entry.email === adminEmail) {
       setError('You cannot remove yourself from the whitelist.');
       return;
     }
     if (!window.confirm(`Remove ${entry.email} from the admin whitelist? They will lose all admin access immediately.`)) return;
+    setRevoking(true);
     setError('');
     const { error: deleteErr } = await supabase
       .from('admin_whitelist')
       .delete()
       .eq('id', entry.id);
     if (deleteErr) {
-      setError(deleteErr.message);
+      setError(handleSupabaseError(deleteErr));
     } else {
       setSuccess(`${entry.email} has been removed.`);
       await logAdminAction(adminEmail, 'REVOKED_ADMIN', undefined, entry.email);
       fetchAdmins();
       setTimeout(() => setSuccess(''), 4000);
     }
+    setRevoking(false);
   };
 
   return (
@@ -1058,6 +1067,7 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
             value={inviteEmail}
             onChange={(e) => setInviteEmail(e.target.value)}
             placeholder="admin@example.com"
+            maxLength={254}
             className="flex-1 px-4 py-2.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
           />
           <button
@@ -1127,8 +1137,9 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
                     {entry.email !== adminEmail && (
                       <button
                         onClick={() => handleRevoke(entry)}
+                        disabled={revoking}
                         title={`Remove ${entry.email}`}
-                        className="p-1.5 rounded-md hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition-colors"
+                        className="p-1.5 rounded-md hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition-colors disabled:opacity-50"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -1156,6 +1167,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   const [successMessage, setSuccessMessage] = useState('');
   const [activeTab, setActiveTab] = useState<'pending' | 'archive' | 'access' | 'audit' | 'names'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
+  const fetchVersionRef = useRef(0);
 
   const filteredSubmissions = useMemo(() => {
     if (!searchQuery.trim()) return submissions;
@@ -1178,6 +1190,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   }, [archive, searchQuery]);
 
   const fetchPending = async () => {
+    const version = ++fetchVersionRef.current;
     setLoading(true);
     setFetchError('');
     try {
@@ -1186,12 +1199,15 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         .select('*')
         .eq('status', 'pending')
         .order('created_at', { ascending: false });
+      if (fetchVersionRef.current !== version) return;
       if (error) throw error;
       setSubmissions((data as PendingSubmission[]) ?? []);
     } catch (err) {
-      setFetchError(err instanceof Error ? err.message : 'Failed to load submissions.');
+      if (fetchVersionRef.current !== version) return;
+      const msg = handleSupabaseError(err);
+      setFetchError(msg);
     } finally {
-      setLoading(false);
+      if (fetchVersionRef.current === version) setLoading(false);
     }
   };
 
@@ -1344,7 +1360,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
       .update({ status: 'rejected' })
       .eq('id', id);
     if (error) {
-      throw new Error('Failed to reject submission. Please check Supabase RLS policies.');
+      throw new Error(handleSupabaseError(error));
     }
     setSubmissions((prev) => prev.filter((s) => s.id !== id));
     setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'rejected' } : r));
@@ -1358,7 +1374,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
       .from('submissions')
       .update({ status: 'pending', is_approved: false })
       .eq('id', id);
-    if (error) throw error;
+    if (error) throw new Error(handleSupabaseError(error));
     setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'pending' } : r));
     fetchPending();
     flashSuccess('Submission restored to the pending queue.');
@@ -1371,7 +1387,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
       .from('submissions')
       .delete()
       .eq('id', id);
-    if (error) throw error;
+    if (error) throw new Error(handleSupabaseError(error));
     setArchive((prev) => prev.filter((r) => r.id !== id));
     flashSuccess('Submission permanently deleted.');
     await logAdminAction(adminEmail, 'HARD_DELETED_SUBMISSION', id, row?.title ?? 'Unknown');
@@ -1383,7 +1399,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
       .from('submissions')
       .update({ status: 'pending', is_approved: false })
       .eq('id', id);
-    if (error) throw error;
+    if (error) throw new Error(handleSupabaseError(error));
     setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'pending' } : r));
     fetchPending();
     flashSuccess('Submission unpublished and moved back to pending queue.');

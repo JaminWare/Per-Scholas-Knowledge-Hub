@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
 import { FOUNDER_KEY } from '../constants/config';
@@ -151,8 +151,12 @@ export function useContributorGroups(options?: UseContributorGroupsOptions): Use
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const abortRef = useRef(false);
+
   useEffect(() => {
-    async function fetch() {
+    abortRef.current = false;
+
+    async function fetchData() {
       setIsLoading(true);
       setError(null);
 
@@ -172,6 +176,8 @@ export function useContributorGroups(options?: UseContributorGroupsOptions): Use
             .order('created_at', { ascending: false })
             .limit(200),
         ]);
+
+        if (abortRef.current) return;
 
         if (subResult.error || articleResult.error) {
           setError(subResult.error?.message ?? articleResult.error?.message ?? 'Fetch failed');
@@ -208,14 +214,16 @@ export function useContributorGroups(options?: UseContributorGroupsOptions): Use
           if (!seenTitles.has(key)) { seenTitles.add(key); allEntries.push(entry); }
         }
 
-        setEntries(allEntries);
+        if (!abortRef.current) setEntries(allEntries);
       } catch (e) {
-        setError(e instanceof Error ? e.message : 'Network error');
+        if (!abortRef.current) setError(e instanceof Error ? e.message : 'Network error');
       } finally {
-        setIsLoading(false);
+        if (!abortRef.current) setIsLoading(false);
       }
     }
-    fetch();
+    fetchData();
+
+    return () => { abortRef.current = true; };
   }, []);
 
   useEffect(() => {

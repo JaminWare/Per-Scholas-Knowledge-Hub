@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { ArrowLeft, Share2, Bookmark, BookOpen, ExternalLink, UploadCloud, Pencil } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -413,7 +413,11 @@ export default function ArticlePage() {
   }, [article]);
   const { goBack } = useSmartBack(backFallback);
 
+  const fetchAbortRef = useRef(false);
+
   useEffect(() => {
+    fetchAbortRef.current = false;
+
     async function fetchArticle() {
       if (!slug) { setIsLoading(false); return; }
       try {
@@ -422,6 +426,7 @@ export default function ArticlePage() {
           .select('*, contributor:contributors(*), section:sections(*)')
           .eq('slug', slug)
           .maybeSingle();
+        if (fetchAbortRef.current) return;
         if (error) throw error;
         if (data) {
           setArticle(data);
@@ -433,7 +438,7 @@ export default function ArticlePage() {
               .neq('id', data.id)
               .overlaps('tags', data.tags)
               .limit(3);
-            if (related) setRelatedArticles(related);
+            if (!fetchAbortRef.current && related) setRelatedArticles(related);
           }
         } else if (articleContentMap[slug]) {
           setArticle(makeLocalArticle(slug));
@@ -445,16 +450,19 @@ export default function ArticlePage() {
           setArticle(makeLocalArticle(slug, slugToSampleTitle(slug)));
         }
       } catch (error) {
+        if (fetchAbortRef.current) return;
         console.error('Error fetching article:', error);
         if (articleContentMap[slug]) setArticle(makeLocalArticle(slug));
         else if (contentMap[slug]) setArticle(makeLocalArticle(slug, contentMap[slug].title));
         else if (FOUNDER_SLUGS.has(slug)) setArticle(makeLocalArticle(slug));
         else if (isKnownSampleSlug(slug)) setArticle(makeLocalArticle(slug, slugToSampleTitle(slug)));
       } finally {
-        setIsLoading(false);
+        if (!fetchAbortRef.current) setIsLoading(false);
       }
     }
     fetchArticle();
+
+    return () => { fetchAbortRef.current = true; };
   }, [slug]);
 
   if (isLoading) {

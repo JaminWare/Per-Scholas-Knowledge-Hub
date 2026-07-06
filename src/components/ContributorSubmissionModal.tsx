@@ -13,6 +13,7 @@ import { MASTER_CATEGORIES, getBadgeForTrack } from '../lib/domainRegistry';
 import { autoCategorizeSubmission } from '../utils/autoCategorize';
 import { autoFormatContent } from '../utils/autoFormatContent';
 import { isImageUrl, sanitizeUrlForMarkdown, encodeMarkdownUrl, extractSmartLinkLabel } from '../utils/markdownLinks';
+import { handleSupabaseError } from '../utils/handleSupabaseError';
 
 type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Resource Link' | 'Prompt Playbook';
 
@@ -323,27 +324,30 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   useEffect(() => {
     if (!isOpen) return;
+    let mounted = true;
     supabase
       .from('articles')
       .select('author_name')
       .not('author_name', 'is', null)
       .not('author_name', 'eq', '')
       .then(({ data }) => {
-        if (!data) return;
+        if (!mounted || !data) return;
         const unique = [...new Set(data.map((r) => r.author_name as string).filter(Boolean))].sort();
         setAuthorSuggestions(unique);
       });
+    return () => { mounted = false; };
   }, [isOpen]);
 
   useEffect(() => {
     if (dbObjectives && Object.keys(dbObjectives).length > 0) return;
+    let mounted = true;
     supabase
       .from('articles')
       .select('study_category, comp_objective')
       .not('comp_objective', 'is', null)
       .not('comp_objective', 'eq', '')
       .then(({ data }) => {
-        if (!data) return;
+        if (!mounted || !data) return;
         const map: Record<string, string[]> = {};
         for (const row of data as { study_category: string | null; comp_objective: string | null }[]) {
           const cat = row.study_category?.trim();
@@ -354,6 +358,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         }
         setDbObjectives(map);
       });
+    return () => { mounted = false; };
   }, []);
 
   useEffect(() => {
@@ -539,7 +544,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           .eq('id', editItem.id);
 
         if (updateError) {
-          setFormError('Database Error: ' + updateError.message);
+          setFormError(handleSupabaseError(updateError));
           setIsSubmitting(false);
           return;
         }
@@ -547,7 +552,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         setIsSuccess(true);
         if (onRefresh) onRefresh();
       } catch (err: any) {
-        setFormError('Database Error: ' + (err?.message || JSON.stringify(err)));
+        setFormError(handleSupabaseError(err));
       } finally {
         setIsSubmitting(false);
       }
@@ -615,7 +620,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       const { data, error } = await supabase.from('submissions').insert(insertPayload).select().single();
 
       if (error) {
-        setFormError('Database Error: ' + error.message);
+        setFormError(handleSupabaseError(error));
         setIsSubmitting(false);
         return;
       }
@@ -627,7 +632,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       onSubmitted(sub);
       setIsSuccess(true);
     } catch (err: any) {
-      setFormError('Database Error: ' + (err?.message || JSON.stringify(err)));
+      setFormError(handleSupabaseError(err));
     } finally {
       setIsSubmitting(false);
     }
@@ -704,6 +709,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   onChange={(e) => { setFullName(e.target.value); setShowSuggestions(true); }}
                   onFocus={() => { if (fullName.length > 0) setShowSuggestions(true); }}
                   placeholder="e.g. Jane Smith"
+                  maxLength={100}
                   className={inputCls('fullName')}
                   autoComplete="off"
                 />
@@ -750,7 +756,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
             <div>
               <label className="block text-sm font-semibold mb-1.5 text-zinc-900 dark:text-zinc-100">Contribution Title</label>
-              <input type="text" value={title} onChange={(e) => { setTitle(e.target.value); titleManuallyEdited.current = true; }} placeholder="e.g. TCP/IP Protocol Suite" className={inputCls('title')} />
+              <input type="text" value={title} onChange={(e) => { setTitle(e.target.value); titleManuallyEdited.current = true; }} placeholder="e.g. TCP/IP Protocol Suite" maxLength={200} className={inputCls('title')} />
               {errors.title && <p className="mt-1 text-xs text-red-500">{errors.title}</p>}
             </div>
 
@@ -890,7 +896,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     if (!titleManuallyEdited.current && !title && resourceUrl.trim()) {
                       setTitle(extractSmartLinkLabel(resourceUrl.trim()));
                     }
-                  }} placeholder="https://example.com/your-resource..." className={inputCls('resourceUrl')} />
+                  }} placeholder="https://example.com/your-resource..." maxLength={2000} className={inputCls('resourceUrl')} />
                   <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">Paste any link (PDFs, YouTube, articles, websites). The system will automatically generate a clean, readable title for the knowledge base.</p>
                   {errors.resourceUrl && <p className="mt-1 text-xs text-red-500">{errors.resourceUrl}</p>}
                 </div>
