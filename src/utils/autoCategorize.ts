@@ -25,6 +25,8 @@ interface LessonMapping {
 
 const LX_TRACK = 'Learner Experience & FAQs';
 
+const MINIMUM_CONFIDENCE_SCORE = 2;
+
 const RULE_DATA: {
   keywords: string[];
   lessonNumbers?: string[];
@@ -204,7 +206,6 @@ const RULE_DATA: {
   },
 ];
 
-// Flatten all rules into a single searchable array for Fuse
 const SEARCHABLE_ENTRIES: SearchableEntry[] = RULE_DATA.flatMap((rule) =>
   rule.keywords.map((keyword) => ({
     keyword,
@@ -215,7 +216,6 @@ const SEARCHABLE_ENTRIES: SearchableEntry[] = RULE_DATA.flatMap((rule) =>
   })),
 );
 
-// Separate exact-match lesson number mappings (no fuzzy matching)
 const LESSON_MAPPINGS: LessonMapping[] = RULE_DATA
   .filter((r) => r.lessonNumbers)
   .flatMap((r) =>
@@ -227,14 +227,6 @@ const LESSON_MAPPINGS: LessonMapping[] = RULE_DATA
     })),
   );
 
-// Initialize Fuse with tight threshold (0.3) to avoid false positives on IT terms
-const fuse = new Fuse(SEARCHABLE_ENTRIES, {
-  keys: ['keyword'],
-  threshold: 0.3,
-  ignoreLocation: true,
-  includeScore: true,
-});
-
 const DIAGRAM_KEYWORDS = ['architecture map', 'mermaid', 'flowchart', 'topology', 'diagram', 'blueprint'];
 const PROMPT_KEYWORDS = ['canvas class ai', 'system message', 'prompt', 'llm', 'chatgpt', 'ai role'];
 
@@ -244,7 +236,6 @@ export function autoCategorizeSubmission(
 ): AutoCategoryResult | null {
   const combined = `${title} ${content}`.toLowerCase();
 
-  // Submission type detection (exact match, unchanged)
   let submissionType: 'Diagram' | 'Prompt Playbook' | undefined;
   if (DIAGRAM_KEYWORDS.some((kw) => combined.includes(kw))) {
     submissionType = 'Diagram';
@@ -264,67 +255,39 @@ export function autoCategorizeSubmission(
     }
   }
 
-  // Fuzzy search: search the full title first (catches multi-word phrases)
-  const trackScores = new Map<string, { score: number; entry: SearchableEntry }>();
+  // Inverted Fuse: user text is the dataset, keywords are the queries
+  const fuse = new Fuse([{ text: combined }], {
+    keys: ['text'],
+    threshold: 0.2,
+    ignoreLocation: true,
+    includeScore: true,
+  });
 
-  const addHit = (entry: SearchableEntry, fuseScore: number) => {
-    // Lower Fuse score = better match. Convert to points (1 - score gives higher points for better matches)
-    const points = 1 - fuseScore;
-    const existing = trackScores.get(entry.track);
-    if (existing) {
-      existing.score += points;
-    } else {
-      trackScores.set(entry.track, { score: points, entry });
-    }
-  };
+  const trackScores = new Map<string, { points: number; entry: SearchableEntry }>();
 
-  // Search full title as a phrase
-  const titleLower = title.toLowerCase().trim();
-  if (titleLower.length >= 3) {
-    const titleResults = fuse.search(titleLower, { limit: 5 });
-    for (const r of titleResults) {
-      if (r.score !== undefined && r.score <= 0.3) {
-        addHit(r.item, r.score);
+  for (const entry of SEARCHABLE_ENTRIES) {
+    const results = fuse.search(entry.keyword);
+    if (results.length > 0 && results[0].score !== undefined && results[0].score < 0.3) {
+      const isPhrase = entry.keyword.includes(' ');
+      const points = isPhrase ? 3 : 1;
+
+      const existing = trackScores.get(entry.track);
+      if (existing) {
+        existing.points += points;
+      } else {
+        trackScores.set(entry.track, { points, entry });
       }
     }
   }
 
-  // Tokenize combined text and search each meaningful token
-  const tokens = combined
-    .split(/[\s,;:!?()[\]{}"'\/\\|<>~`]+/)
-    .filter((t) => t.length >= 3);
-
-  // Also extract 2-word and 3-word ngrams from the title for phrase matching
-  const titleTokens = titleLower.split(/\s+/).filter((t) => t.length >= 2);
-  const ngrams: string[] = [];
-  for (let i = 0; i < titleTokens.length - 1; i++) {
-    ngrams.push(`${titleTokens[i]} ${titleTokens[i + 1]}`);
-    if (i < titleTokens.length - 2) {
-      ngrams.push(`${titleTokens[i]} ${titleTokens[i + 1]} ${titleTokens[i + 2]}`);
-    }
-  }
-
-  const searchTerms = [...new Set([...ngrams, ...tokens])];
-
-  for (const term of searchTerms) {
-    const results = fuse.search(term, { limit: 3 });
-    for (const r of results) {
-      if (r.score !== undefined && r.score <= 0.3) {
-        addHit(r.item, r.score);
-      }
-    }
-  }
-
-  // Find the track with the highest aggregated score
-  let bestTrack: { score: number; entry: SearchableEntry } | null = null;
+  let bestTrack: { points: number; entry: SearchableEntry } | null = null;
   for (const candidate of trackScores.values()) {
-    if (!bestTrack || candidate.score > bestTrack.score) {
+    if (!bestTrack || candidate.points > bestTrack.points) {
       bestTrack = candidate;
     }
   }
 
-  // Require at least one strong match (aggregated score > 0.5 means at least one good hit)
-  if (!bestTrack || bestTrack.score < 0.5) {
+  if (!bestTrack || bestTrack.points < MINIMUM_CONFIDENCE_SCORE) {
     if (submissionType) {
       return { masterCategory: '', track: '', submissionType };
     }

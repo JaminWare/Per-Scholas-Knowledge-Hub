@@ -280,36 +280,46 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   }, [isOpen, editItem]);
 
   const runAutoDetect = useCallback(() => {
-    if (userOverride || masterCategory || track) return;
+    if (userOverride) return;
+    const trimmedTitle = title.trim();
+    if (!trimmedTitle) {
+      setMasterCategory('');
+      setTrack('');
+      setCompObjective('');
+      setLxStage('');
+      setAutoDetected(false);
+      return;
+    }
     const textBody = [concept, aPlusRelevance, promptText, promptRole, resourceUrl].filter(Boolean).join(' ');
-    const result = autoCategorizeSubmission(title, textBody);
-    if (!result) return;
+    const result = autoCategorizeSubmission(trimmedTitle, textBody);
+    if (!result) {
+      setMasterCategory('');
+      setTrack('');
+      setCompObjective('');
+      setLxStage('');
+      setAutoDetected(false);
+      return;
+    }
     if (result.submissionType) {
       setSubmissionType(result.submissionType);
     }
-    if (result.masterCategory) {
-      setMasterCategory(result.masterCategory);
-    }
-    if (result.track) {
-      setTrack(result.track);
-    }
-    if (result.compObjective) {
-      setCompObjective(result.compObjective);
-    }
-    if (result.lxStage) {
-      setLxStage(result.lxStage);
-    }
+    setMasterCategory(result.masterCategory || '');
+    setTrack(result.track || '');
+    setCompObjective(result.compObjective || '');
+    setLxStage(result.lxStage || '');
     if (result.masterCategory || result.track) {
       setAutoDetected(true);
+    } else {
+      setAutoDetected(false);
     }
-  }, [title, concept, aPlusRelevance, promptText, promptRole, resourceUrl, userOverride, masterCategory, track]);
+  }, [title, concept, aPlusRelevance, promptText, promptRole, resourceUrl, userOverride]);
 
   useEffect(() => {
-    if (userOverride || masterCategory || track) return;
+    if (userOverride) return;
     if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current);
     autoDetectTimer.current = setTimeout(runAutoDetect, 300);
     return () => { if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current); };
-  }, [title, concept, aPlusRelevance, promptText, promptRole, resourceUrl, runAutoDetect, userOverride, masterCategory, track]);
+  }, [title, concept, aPlusRelevance, promptText, promptRole, resourceUrl, runAutoDetect, userOverride]);
 
   useEffect(() => {
     if (!isOpen) return;
