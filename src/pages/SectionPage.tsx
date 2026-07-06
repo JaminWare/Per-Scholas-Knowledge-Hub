@@ -150,7 +150,7 @@ function groupByObjective(
 function CopyLinkButton({ slug }: { slug: string }) {
   const [copied, setCopied] = useState(false);
   const handleCopy = () => {
-    const url = `${window.location.origin}${window.location.pathname}#/${slug}`;
+    const url = `${window.location.origin}/${slug}`;
     navigator.clipboard.writeText(url).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);

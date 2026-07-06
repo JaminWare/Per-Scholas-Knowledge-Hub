@@ -1,4 +1,4 @@
-import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Sidebar from './components/Sidebar';
 import SearchBar from './components/SearchBar';
@@ -177,11 +177,15 @@ function AppContent() {
   );
 }
 
+const BASENAME = window.location.hostname.includes('github.io')
+  ? '/Per-Scholas-Knowledge-Hub'
+  : '/';
+
 function App() {
   return (
-    <Router>
+    <BrowserRouter basename={BASENAME}>
       <AppContent />
-    </Router>
+    </BrowserRouter>
   );
 }
 

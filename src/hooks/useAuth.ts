@@ -33,7 +33,7 @@ export function useAuth() {
           const returnPath = localStorage.getItem(AUTH_RETURN_PATH_KEY);
           if (returnPath) {
             localStorage.removeItem(AUTH_RETURN_PATH_KEY);
-            window.location.hash = returnPath;
+            window.history.replaceState(null, '', returnPath);
           }
         }
       },
@@ -58,11 +58,11 @@ export function useAuth() {
   };
 
   const signInWithGoogle = async () => {
-    localStorage.setItem(AUTH_RETURN_PATH_KEY, window.location.hash || '#/');
+    localStorage.setItem(AUTH_RETURN_PATH_KEY, window.location.pathname || '/');
     return supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}${window.location.pathname}`,
+        redirectTo: window.location.origin + window.location.pathname,
       },
     });
   };

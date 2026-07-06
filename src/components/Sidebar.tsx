@@ -87,7 +87,7 @@ const trackText = {
 function DomainRow({ domain }: { domain: NavItem }) {
   const location = useLocation();
   const Icon = domain.icon;
-  const isActive = location.hash === `#/${domain.slug}`;
+  const isActive = location.pathname === `/${domain.slug}` || location.pathname.startsWith(`/${domain.slug}/`);
 
   return (
     <Link
@@ -116,7 +116,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
   const [authOpen, setAuthOpen] = useState(false);
   const { user, signOut } = useAuth();
 
-  const lxActive = location.hash === '#/learner-experience';
+  const lxActive = location.pathname === '/learner-experience';
 
   return (
     <div className="flex flex-col h-full bg-black border-r border-zinc-800">
@@ -166,7 +166,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
       <nav className="flex-1 overflow-y-auto py-3 px-2 pb-40 space-y-0.5">
         <Link
           to="/"
-          className={`sidebar-item ${location.hash === '' || location.hash === '#/' ? 'active' : ''}`}
+          className={`sidebar-item ${location.pathname === '/' ? 'active' : ''}`}
         >
           <Home className="w-4 h-4 flex-shrink-0 text-white" />
           <span className="truncate text-[13px] text-white">Home</span>
