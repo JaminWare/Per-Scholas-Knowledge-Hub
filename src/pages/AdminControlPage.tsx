@@ -1612,7 +1612,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
 
           {/* Pill Tab Switcher */}
           <div className="relative w-full">
-            <div className="overflow-x-auto whitespace-nowrap scrollbar-hide flex justify-center [mask-image:linear-gradient(to_right,white_0%,white_80%,transparent_100%)]">
+            <div className="overflow-x-auto whitespace-nowrap scrollbar-hide px-1 [mask-image:linear-gradient(to_right,white_0%,white_90%,transparent_100%)]">
             <div className="inline-flex rounded-full bg-zinc-800/80 border border-zinc-700/60 p-1">
             <button
               type="button"
