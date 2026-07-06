@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import type { User, Session } from '@supabase/supabase-js';
 
+const AUTH_RETURN_PATH_KEY = 'auth_return_path';
+
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -18,11 +20,19 @@ export function useAuth() {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, s) => {
+      (event, s) => {
         if (!mounted) return;
         setSession(s);
         setUser(s?.user ?? null);
         setLoading(false);
+
+        if (event === 'SIGNED_IN' && s) {
+          const returnPath = localStorage.getItem(AUTH_RETURN_PATH_KEY);
+          if (returnPath) {
+            localStorage.removeItem(AUTH_RETURN_PATH_KEY);
+            window.location.hash = returnPath;
+          }
+        }
       },
     );
 
@@ -45,6 +55,7 @@ export function useAuth() {
   };
 
   const signInWithGoogle = async () => {
+    localStorage.setItem(AUTH_RETURN_PATH_KEY, window.location.hash || '#/');
     return supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
