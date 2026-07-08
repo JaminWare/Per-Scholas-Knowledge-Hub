@@ -207,7 +207,7 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
 
 function ResourcePlacard({ activeTab, onTabChange }: { activeTab: ResourceTab; onTabChange: (tab: ResourceTab) => void }) {
   return (
-    <div className="rounded-xl border border-zinc-800/50 bg-zinc-900 px-5 py-4">
+    <div className="rounded-[24px] border border-zinc-800/40 bg-zinc-900 shadow-xl shadow-black/20 px-5 py-4">
       <div className="flex flex-wrap items-center gap-2">
         {RESOURCE_TABS.map((tab) => {
           const Icon = TAB_ICONS[tab];
@@ -217,7 +217,7 @@ function ResourcePlacard({ activeTab, onTabChange }: { activeTab: ResourceTab; o
               key={tab}
               type="button"
               onClick={() => onTabChange(tab)}
-              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-300 ease-in-out ${
                 isActive
                   ? 'bg-sky-500/15 text-sky-300 border-sky-400/40'
                   : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 border-zinc-700'
@@ -245,7 +245,7 @@ function DomainFilterRow({
   if (!domainInfo?.domain) return null;
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 backdrop-blur-sm px-5 py-4">
+    <div className="rounded-[24px] border border-zinc-800/40 bg-zinc-900 shadow-xl shadow-black/20 px-5 py-4">
       <div className="flex flex-wrap gap-2">
         {RESOURCE_TABS.map((tab) => {
           const TabIcon = TAB_ICONS[tab];
@@ -255,7 +255,7 @@ function DomainFilterRow({
               key={tab}
               type="button"
               onClick={() => onTabChange(tab)}
-              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-300 ease-in-out ${
                 isActive
                   ? 'bg-sky-500/15 text-sky-300 border-sky-400/40'
                   : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 border-zinc-700'
@@ -292,7 +292,7 @@ function DomainBanner({
   const objectives = COMPTIA_OBJECTIVES[canonicalTrack] ?? [];
 
   return (
-    <div className="relative rounded-2xl border border-zinc-800/50 overflow-hidden bg-zinc-900 shadow-sm">
+    <div className="relative rounded-[24px] border border-zinc-800/40 overflow-hidden bg-zinc-900 shadow-xl shadow-black/20">
       <div className="relative px-6 py-8 md:px-8 md:py-10">
         <div className="flex items-start justify-between gap-4 mb-5">
           <div className="flex items-start gap-5 flex-1 min-w-0">
@@ -789,7 +789,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const displayTitle = meta?.title ?? (slug?.replace(/[-/]/g, ' ') ?? 'Articles');
 
   return (
-    <div className="space-y-8 max-w-5xl">
+    <div className="space-y-8 max-w-7xl">
       {isSubPage && (
         <button
           onClick={goBack}

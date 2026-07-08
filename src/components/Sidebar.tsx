@@ -121,7 +121,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
   return (
     <div className="flex flex-col h-full bg-black border-r border-zinc-800/50">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/50 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/30 flex-shrink-0">
         <Link to="/" className="flex items-center gap-2.5 flex-1 min-w-0">
           <div className="w-9 h-9 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
             <BookOpen className="w-[18px] h-[18px] text-white" />
@@ -134,7 +134,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         </Link>
         <button
           onClick={onToggle}
-          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors flex-shrink-0"
+          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-all duration-300 ease-in-out flex-shrink-0 outline-none select-none"
           title="Collapse sidebar"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -142,7 +142,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
       </div>
 
       {/* Auth Section */}
-      <div className="px-3 py-2.5 border-b border-zinc-800/50 flex-shrink-0 space-y-1">
+      <div className="px-3 py-2.5 border-b border-zinc-800/30 flex-shrink-0 space-y-1">
         {user ? (
           <button
             onClick={signOut}
@@ -173,13 +173,13 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         </Link>
 
         {/* ── START HERE block ─────────────────────────────── */}
-        <div className="my-2 border-t border-zinc-800/50" />
+        <div className="my-3" />
         <p className="px-2 pt-1 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-sky-400">
           Start Here
         </p>
         <Link
           to="/learner-experience"
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all outline-none select-none ${
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-300 ease-in-out outline-none select-none ${
             lxActive
               ? 'bg-sky-500/10 text-sky-400 border border-sky-500/30'
               : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white active:bg-zinc-800'
@@ -199,12 +199,12 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           <span className="flex-1 truncate">Deskolas</span>
           <ExternalLink className="w-3.5 h-3.5 flex-shrink-0 opacity-50" />
         </a>
-        <div className="my-2 border-t border-zinc-800/50" />
+        <div className="my-3" />
         {/* ── end START HERE block ─────────────────────────── */}
 
         <Link
           to="/recognition"
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 outline-none select-none ${
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-300 ease-in-out outline-none select-none ${
             location.pathname === '/recognition'
               ? 'bg-zinc-800 text-white border border-zinc-700'
               : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:border-zinc-700 hover:bg-zinc-800 hover:text-white active:bg-zinc-800'
@@ -218,7 +218,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           <div key={track.id} className="pt-3">
             <button
               onClick={() => setOpenTracks((p) => ({ ...p, [track.id]: !p[track.id] }))}
-              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border border-zinc-800/50 bg-zinc-950 hover:bg-zinc-900 active:bg-zinc-900 transition-colors mb-1 outline-none select-none`}
+              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border border-zinc-800/50 bg-zinc-950 hover:bg-zinc-900 active:bg-zinc-900 transition-all duration-300 ease-in-out mb-1 outline-none select-none`}
             >
               <div className="flex-1 text-left min-w-0">
                 <p className="text-[11px] font-semibold text-white uppercase tracking-wider truncate">

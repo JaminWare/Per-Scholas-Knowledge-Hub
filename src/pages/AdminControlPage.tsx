@@ -444,7 +444,7 @@ function SubmissionCard({
                         setDomainOverride(suggestedTrack);
                         setSuggestionApplied(true);
                       }}
-                      className="ml-auto px-2.5 py-1 rounded-md bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 text-[10px] font-bold uppercase tracking-wide border border-sky-500/30 transition-colors"
+                      className="ml-auto px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 text-[10px] font-bold uppercase tracking-wide border border-sky-500/30 transition-colors"
                     >
                       Apply
                     </button>
@@ -456,7 +456,7 @@ function SubmissionCard({
                         setSuggestedCompObjective('');
                         setSuggestedLxStage('');
                       }}
-                      className="px-2.5 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-[10px] font-bold uppercase tracking-wide border border-zinc-700 transition-colors"
+                      className="px-2.5 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 text-[10px] font-bold uppercase tracking-wide border border-zinc-700 transition-colors"
                     >
                       Dismiss
                     </button>
@@ -521,7 +521,7 @@ function SubmissionCard({
       )}
 
       {/* Actions */}
-      <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 px-4 sm:px-5 py-3 sm:py-4 border-t border-zinc-800 bg-zinc-900/50">
+      <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-3 px-4 sm:px-5 py-3 sm:py-4 border-t border-zinc-800/30 bg-zinc-900/50">
         <button
           onClick={handleApprove}
           disabled={approving || rejecting}
@@ -585,7 +585,7 @@ function ArchiveTable({
   return (
     <div className="space-y-4">
       {/* Section header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-zinc-800">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-4">
         <div className="flex items-center gap-3">
           <Archive className="w-5 h-5 text-zinc-500" />
           <div>
@@ -636,7 +636,7 @@ function ArchiveTable({
                 <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800/60">
+            <tbody className="divide-y divide-zinc-800/20">
               {filtered.map((row) => (
                 <tr key={row.id} className="hover:bg-zinc-900/50 transition-colors">
                   <td className="px-4 py-3 text-zinc-200 font-medium max-w-[200px] truncate">{row.title}</td>
@@ -653,7 +653,7 @@ function ArchiveTable({
                           <button
                             onClick={() => handleAction(row.id, onRestore)}
                             title="Restore to pending queue"
-                            className="p-1.5 rounded-md hover:bg-amber-500/10 text-zinc-500 hover:text-amber-400 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-amber-500/10 text-zinc-500 hover:text-amber-400 transition-colors"
                           >
                             <RotateCcw className="w-3.5 h-3.5" />
                           </button>
@@ -664,7 +664,7 @@ function ArchiveTable({
                               }
                             }}
                             title="Permanently delete"
-                            className="p-1.5 rounded-md hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition-colors"
+                            className="p-1.5 rounded-lg hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition-colors"
                           >
                             <XCircle className="w-3.5 h-3.5" />
                           </button>
@@ -673,7 +673,7 @@ function ArchiveTable({
                         <button
                           onClick={() => handleAction(row.id, onUnpublish)}
                           title="Unpublish (move back to pending)"
-                          className="p-1.5 rounded-md hover:bg-amber-500/10 text-zinc-500 hover:text-amber-400 transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-amber-500/10 text-zinc-500 hover:text-amber-400 transition-colors"
                         >
                           <EyeOff className="w-3.5 h-3.5" />
                         </button>
@@ -800,10 +800,10 @@ function NameRequestsView({ adminEmail }: { adminEmail: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
-        <UserCheck className="w-5 h-5 text-sky-400" />
+      <div className="flex items-center gap-3 pb-4">
+        <UserCheck className="w-5 h-5 text-zinc-500" />
         <div>
-          <h2 className="text-lg font-bold text-zinc-100">Name Change Requests</h2>
+          <h3 className="text-lg font-bold text-zinc-100">Name Change Requests</h3>
           <p className="text-sm text-zinc-500 mt-0.5">Review and approve or reject display name change requests</p>
         </div>
       </div>
@@ -896,7 +896,7 @@ function AuditTrailView() {
   return (
     <div className="space-y-6">
       {/* Section header */}
-      <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
+      <div className="flex items-center gap-3 pb-4">
         <Activity className="w-5 h-5 text-sky-400" />
         <div>
           <h2 className="text-lg font-bold text-zinc-100">Audit Trail</h2>
@@ -927,7 +927,7 @@ function AuditTrailView() {
                 <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Target</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800/60">
+            <tbody className="divide-y divide-zinc-800/20">
               {logs.map((log) => {
                 const badge = getActionBadge(log.action_taken);
                 return (
@@ -1052,7 +1052,7 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
   return (
     <div className="space-y-6">
       {/* Section header */}
-      <div className="flex items-center gap-3 pb-4 border-b border-zinc-800">
+      <div className="flex items-center gap-3 pb-4">
         <Crown className="w-5 h-5 text-amber-400" />
         <div>
           <h2 className="text-lg font-bold text-zinc-100">Access Control</h2>
@@ -1128,7 +1128,7 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
                 <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-800/60">
+            <tbody className="divide-y divide-zinc-800/20">
               {admins.map((entry) => (
                 <tr key={entry.id} className="hover:bg-zinc-900/50 transition-colors">
                   <td className="px-4 py-3 text-zinc-200 font-medium">
@@ -1159,7 +1159,7 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
                         onClick={() => handleRevoke(entry)}
                         disabled={revoking}
                         title={`Remove ${entry.email}`}
-                        className="p-1.5 rounded-md hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition-colors disabled:opacity-50"
+                        className="p-1.5 rounded-lg hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition-colors disabled:opacity-50"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
@@ -1633,9 +1633,9 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       {/* Unified sticky command strip: header + search + tabs */}
-      <div className="sticky top-0 z-20 bg-zinc-900 backdrop-blur-md border-b border-zinc-800">
+      <div className="sticky top-0 z-20 bg-zinc-900 backdrop-blur-md border-b border-zinc-800/30">
         {/* Title row */}
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">
           <div className="flex items-center gap-3 min-w-0 w-full lg:w-auto">
             <div className="p-2 rounded-lg bg-sky-500/15 border border-sky-500/25 flex-shrink-0">
               <ShieldCheck className="w-6 h-6 text-sky-400" />
@@ -1661,10 +1661,10 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         </div>
 
         {/* Divider between title row and search/tabs */}
-        <div className="border-t border-zinc-800/60" />
+        <div className="h-px" />
 
         {/* Search + Tabs */}
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col gap-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col gap-3">
           {/* Search Bar */}
           <div className="w-full flex justify-center">
             <div className="relative w-full max-w-md">
@@ -1686,7 +1686,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             <button
               type="button"
               onClick={() => setActiveTab('pending')}
-              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
                 activeTab === 'pending'
                   ? 'bg-sky-500 text-white'
                   : 'text-zinc-400 hover:text-zinc-200'
@@ -1706,7 +1706,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             <button
               type="button"
               onClick={() => setActiveTab('archive')}
-              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
                 activeTab === 'archive'
                   ? 'bg-sky-500 text-white'
                   : 'text-zinc-400 hover:text-zinc-200'
@@ -1717,7 +1717,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             <button
               type="button"
               onClick={() => setActiveTab('names')}
-              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
                 activeTab === 'names'
                   ? 'bg-sky-500 text-white'
                   : 'text-zinc-400 hover:text-zinc-200'
@@ -1730,7 +1730,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               <button
                 type="button"
                 onClick={() => setActiveTab('access')}
-                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
                   activeTab === 'access'
                     ? 'bg-sky-500 text-white'
                     : 'text-zinc-400 hover:text-zinc-200'
@@ -1744,7 +1744,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               <button
                 type="button"
                 onClick={() => setActiveTab('audit')}
-                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
                   activeTab === 'audit'
                     ? 'bg-sky-500 text-white'
                     : 'text-zinc-400 hover:text-zinc-200'
@@ -1758,7 +1758,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               <button
                 type="button"
                 onClick={() => setActiveTab('maintenance')}
-                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
                   activeTab === 'maintenance'
                     ? 'bg-sky-500 text-white'
                     : 'text-zinc-400 hover:text-zinc-200'
@@ -1772,7 +1772,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               <button
                 type="button"
                 onClick={() => setActiveTab('health')}
-                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
                   activeTab === 'health'
                     ? 'bg-sky-500 text-white'
                     : 'text-zinc-400 hover:text-zinc-200'
@@ -1788,7 +1788,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         </div>
       </div>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
 
         {/* Success toast */}
         {successMessage && (
@@ -1812,7 +1812,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             {loading ? (
               <div className="space-y-4">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 animate-pulse">
+                  <div key={i} className="bg-zinc-900 border border-zinc-800/40 rounded-xl p-5 animate-pulse">
                     <div className="flex gap-4">
                       <div className="w-9 h-9 rounded-lg bg-zinc-800 flex-shrink-0" />
                       <div className="flex-1 space-y-2">
@@ -1826,7 +1826,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               </div>
             ) : filteredSubmissions.length === 0 ? (
               searchQuery.trim() ? (
-                <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
+                <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800/40 bg-zinc-900/30">
                   <Search className="w-8 h-8 text-zinc-600 mb-4" />
                   <h3 className="text-base font-semibold text-zinc-300">No results found</h3>
                   <p className="text-sm text-zinc-500 mt-1 max-w-xs">
@@ -1834,7 +1834,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                   </p>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
+                <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800/40 bg-zinc-900/30">
                   <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-4">
                     <CheckCircle2 className="w-8 h-8 text-emerald-400" />
                   </div>
@@ -1993,7 +1993,7 @@ function SystemHealthView() {
                   <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Error Details</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800/60">
+              <tbody className="divide-y divide-zinc-800/20">
                 {logs.map((log) => {
                   const parts = (log.target_title ?? '').split('\n\n--- Component Stack ---\n');
                   const errorMsg = parts[0] || 'Unknown error';

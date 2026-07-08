@@ -77,7 +77,7 @@ function AppContent() {
         <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800/50 flex md:hidden items-center gap-3 px-4 py-3">
           <button
             onClick={() => setMobileSidebarOpen(true)}
-            className="p-2 rounded-lg bg-transparent border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800 transition-colors flex-shrink-0 outline-none select-none"
+            className="p-2 rounded-lg bg-transparent border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800 transition-all duration-300 ease-in-out flex-shrink-0 outline-none select-none"
             aria-label="Open navigation menu"
           >
             <Menu className="w-5 h-5" />
@@ -93,7 +93,7 @@ function AppContent() {
           <Link
             to="/cohort-admin"
             title="Admin Command Center"
-            className="p-2 rounded-lg text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors flex-shrink-0"
+            className="p-2 rounded-lg text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-all duration-300 ease-in-out flex-shrink-0 outline-none select-none"
             aria-label="Admin Command Center"
           >
             <ShieldCheck className="w-4.5 h-4.5" />
@@ -102,7 +102,7 @@ function AppContent() {
             <button
               onClick={signOut}
               title="Sign Out"
-              className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors flex-shrink-0"
+              className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all duration-300 ease-in-out flex-shrink-0 outline-none select-none"
               aria-label="Sign out"
             >
               <LogOut className="w-4.5 h-4.5" />
@@ -111,7 +111,7 @@ function AppContent() {
             <button
               onClick={() => setMobileAuthOpen(true)}
               title="Sign In"
-              className="p-2 rounded-lg text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors flex-shrink-0"
+              className="p-2 rounded-lg text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-all duration-300 ease-in-out flex-shrink-0 outline-none select-none"
               aria-label="Sign in"
             >
               <LogIn className="w-4.5 h-4.5" />
@@ -124,7 +124,7 @@ function AppContent() {
           <div className="flex items-center gap-3 px-4 py-3">
             <button
               onClick={() => setDesktopSidebarOpen((v) => !v)}
-              className="p-2 rounded-lg bg-transparent border border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800 transition-colors flex-shrink-0 outline-none select-none"
+              className="p-2 rounded-lg bg-transparent border border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800 transition-all duration-300 ease-in-out flex-shrink-0 outline-none select-none"
               title={desktopSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
             >
               {desktopSidebarOpen
@@ -138,7 +138,7 @@ function AppContent() {
               <Link
                 to="/cohort-admin"
                 title="Admin Command Center"
-                className="p-2 rounded-md text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors"
+                className="p-2 rounded-lg text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-all duration-300 ease-in-out outline-none select-none"
                 aria-label="Admin Command Center"
               >
                 <ShieldCheck className="w-5 h-5" />
@@ -147,7 +147,7 @@ function AppContent() {
                 <button
                   onClick={signOut}
                   title="Sign Out"
-                  className="p-2 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                  className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all duration-300 ease-in-out outline-none select-none"
                 >
                   <LogOut className="w-5 h-5" />
                 </button>
@@ -155,7 +155,7 @@ function AppContent() {
                 <button
                   onClick={() => setMobileAuthOpen(true)}
                   title="Sign In"
-                  className="p-2 rounded-md text-sky-400 hover:text-white hover:bg-sky-500/15 transition-colors"
+                  className="p-2 rounded-lg text-sky-400 hover:text-white hover:bg-sky-500/15 transition-all duration-300 ease-in-out outline-none select-none"
                 >
                   <LogIn className="w-5 h-5" />
                 </button>
@@ -185,7 +185,7 @@ function AppContent() {
           </ErrorBoundary>
         </main>
 
-        <footer className="flex-shrink-0 border-t border-zinc-800/50 py-3 px-4 sm:px-5">
+        <footer className="flex-shrink-0 border-t border-zinc-800/30 py-3 px-4 sm:px-5">
           <div className="max-w-4xl mx-auto text-center text-xs sm:text-sm text-zinc-500">
             <p>Per Scholas Learners Knowledge Base</p>
           </div>

@@ -108,7 +108,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8 items-start">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8 items-start">
 
         {/* ── Main content column (3/4 width) ───────────────── */}
         <div className="lg:col-span-2 xl:col-span-3 space-y-8">

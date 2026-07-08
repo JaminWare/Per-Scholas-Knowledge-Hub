@@ -238,9 +238,9 @@ export default function LearnerExperiencePage() {
   }, [filteredEntries, activeTab]);
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-7xl mx-auto space-y-8">
       {/* ─── Banner ─── */}
-      <div className="relative rounded-2xl bg-zinc-900 border border-zinc-800/50 shadow-sm overflow-hidden">
+      <div className="relative rounded-[24px] bg-zinc-900 border border-zinc-800/40 shadow-xl shadow-black/20 overflow-hidden">
         <div className="relative px-6 py-8 md:px-8 md:py-10">
           <div className="flex items-start gap-5 mb-6">
             <div className="w-14 h-14 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
@@ -262,7 +262,7 @@ export default function LearnerExperiencePage() {
                   key={tab.id}
                   type="button"
                   onClick={() => handleTabChange(tab.id)}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-300 ease-in-out ${
                     isActive
                       ? 'bg-sky-500/15 text-sky-300 border-sky-400/40'
                       : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 border-zinc-700'
@@ -279,7 +279,7 @@ export default function LearnerExperiencePage() {
 
       {/* ─── Category Sub-Navigation ─── */}
       {filters && (
-        <div className="rounded-xl border border-zinc-800/50 bg-zinc-900 p-4 space-y-3">
+        <div className="rounded-[24px] border border-zinc-800/40 bg-zinc-900 shadow-xl shadow-black/20 p-4 space-y-3">
           <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Filter by focus area</span>
           <div className="flex flex-wrap gap-2">
             {filters.map((sub) => {
@@ -293,7 +293,7 @@ export default function LearnerExperiencePage() {
                     setActiveLevel2(isAll ? '' : sub.label);
                     setActiveLevel3('');
                   }}
-                  className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                  className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-300 ease-in-out ${
                     isActive
                       ? 'bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-sm shadow-teal-500/10'
                       : 'bg-zinc-800/50 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/50 border-zinc-700/50'
@@ -320,7 +320,7 @@ export default function LearnerExperiencePage() {
                         key={n.label}
                         type="button"
                         onClick={() => setActiveLevel3(isAll ? '' : (isNested ? '' : n.label))}
-                        className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-200 ${
+                        className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-300 ease-in-out ${
                           isNested
                             ? 'bg-sky-500/20 text-sky-300 border-sky-400/40'
                             : 'bg-zinc-800/30 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/60 border-transparent'

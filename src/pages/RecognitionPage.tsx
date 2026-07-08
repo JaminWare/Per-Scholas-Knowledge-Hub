@@ -341,7 +341,7 @@ export default function RecognitionPage() {
       </section>
 
       {/* Contributors sectiontighter to banner */}
-      <section className="max-w-4xl mx-auto px-4 mt-6">
+      <section className="max-w-7xl mx-auto px-4 mt-6">
         <div className="flex items-center gap-2 mb-3">
           <Award className="w-4 h-4 text-sky-500" />
           <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">

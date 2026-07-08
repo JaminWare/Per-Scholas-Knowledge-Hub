@@ -38,7 +38,7 @@ export default class GlobalErrorBoundary extends Component<Props, State> {
     return (
       <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-zinc-950 p-6">
         <div className="max-w-lg w-full">
-          <div className="relative rounded-2xl border border-red-500/30 bg-gradient-to-b from-zinc-900 to-zinc-950 shadow-2xl shadow-red-500/10 p-8">
+          <div className="relative rounded-2xl border border-red-500/30 bg-zinc-900 shadow-2xl shadow-red-500/10 p-8">
             <div className="absolute inset-0 rounded-2xl bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-500/5 via-transparent to-transparent pointer-events-none" />
 
             <div className="relative">
