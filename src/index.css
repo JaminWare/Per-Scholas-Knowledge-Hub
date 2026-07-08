@@ -45,7 +45,10 @@
   main:focus:not(:focus-visible),
   section:focus:not(:focus-visible),
   div:focus:not(:focus-visible) {
-    outline: none !important;
+    outline: 2px solid transparent !important;
+    outline-offset: 2px !important;
+    --tw-ring-shadow: 0 0 #0000 !important;
+    --tw-ring-offset-shadow: 0 0 #0000 !important;
     box-shadow: none !important;
   }
 
