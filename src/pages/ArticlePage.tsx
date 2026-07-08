@@ -113,7 +113,7 @@ function NetworkTopologyArticleDiagrams() {
             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
             <span className="text-zinc-400">
               <strong className="font-semibold text-zinc-200">Cisco Press:</strong>{' '}
-              <a href="https://www.ciscopress.com/articles/article.asp?p=2202410" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
+              <a href="https://www.ciscopress.com/articles/article.asp?p=2202410" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline underline-offset-2">
                 Campus Network Architecture and Hierarchical Design Models (Core, Distribution, Access)
               </a>
             </span>
@@ -122,7 +122,7 @@ function NetworkTopologyArticleDiagrams() {
             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
             <span className="text-zinc-400">
               <strong className="font-semibold text-zinc-200">IEEE Standards:</strong>{' '}
-              <a href="https://www.ieee802.org/3/" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
+              <a href="https://www.ieee802.org/3/" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline underline-offset-2">
                 IEEE 802.3 Ethernet Working Group LAN/MAN Infrastructure Standards
               </a>
             </span>
@@ -142,10 +142,10 @@ function OSIPDUArticleDiagrams() {
       <div className="space-y-4 text-zinc-400 text-sm leading-relaxed">
         <p>Data encapsulation is the process of wrapping payload data with protocol-specific headers (and sometimes trailers) as it descends through the OSI stack before transmission. Each layer adds its own metadata so the receiving peer at the same layer can process it correctly.</p>
         <p><strong className="text-zinc-200">Layer 7 5 (Application/Presentation/Session):</strong> Raw data is formatted, encrypted if applicable (TLS lives here conceptually), and session multiplexed. PDU is simply called "Data".</p>
-        <p><strong className="text-zinc-200">Layer 4 (Transport):</strong> TCP or UDP adds source/destination ports and, for TCP, sequence numbers and checksum. The PDU becomes a <code className="px-1 bg-zinc-800 rounded font-mono text-sky-400">Segment</code>.</p>
-        <p><strong className="text-zinc-200">Layer 3 (Network):</strong> IP header adds source and destination IP addresses. The PDU becomes a <code className="px-1 bg-zinc-800 rounded font-mono text-sky-400">Packet</code>. Routers operate at this layer.</p>
-        <p><strong className="text-zinc-200">Layer 2 (Data Link):</strong> Ethernet header adds MAC addresses; a trailer adds a Frame Check Sequence (FCS) CRC. PDU = <code className="px-1 bg-zinc-800 rounded font-mono text-sky-400">Frame</code>. Switches operate here.</p>
-        <p><strong className="text-zinc-200">Layer 1 (Physical):</strong> Frames are serialized into electrical voltages, light pulses, or radio waves. PDU = <code className="px-1 bg-zinc-800 rounded font-mono text-sky-400">Bits</code>.</p>
+        <p><strong className="text-zinc-200">Layer 4 (Transport):</strong> TCP or UDP adds source/destination ports and, for TCP, sequence numbers and checksum. The PDU becomes a <code className="px-1 bg-zinc-800 rounded font-mono text-blue-400">Segment</code>.</p>
+        <p><strong className="text-zinc-200">Layer 3 (Network):</strong> IP header adds source and destination IP addresses. The PDU becomes a <code className="px-1 bg-zinc-800 rounded font-mono text-blue-400">Packet</code>. Routers operate at this layer.</p>
+        <p><strong className="text-zinc-200">Layer 2 (Data Link):</strong> Ethernet header adds MAC addresses; a trailer adds a Frame Check Sequence (FCS) CRC. PDU = <code className="px-1 bg-zinc-800 rounded font-mono text-blue-400">Frame</code>. Switches operate here.</p>
+        <p><strong className="text-zinc-200">Layer 1 (Physical):</strong> Frames are serialized into electrical voltages, light pulses, or radio waves. PDU = <code className="px-1 bg-zinc-800 rounded font-mono text-blue-400">Bits</code>.</p>
       </div>
 
       {/* Citations */}
@@ -159,7 +159,7 @@ function OSIPDUArticleDiagrams() {
             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
             <span className="text-zinc-400">
               <strong className="font-semibold text-zinc-200">ISO Standard:</strong>{' '}
-              <a href="https://www.iso.org/standard/20269.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
+              <a href="https://www.iso.org/standard/20269.html" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline underline-offset-2">
                 ISO/IEC 7498-1: Open Systems Interconnection Basic Reference Model
               </a>
             </span>
@@ -168,7 +168,7 @@ function OSIPDUArticleDiagrams() {
             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
             <span className="text-zinc-400">
               <strong className="font-semibold text-zinc-200">Cisco Press:</strong>{' '}
-              <a href="https://www.ciscopress.com/store/interconnecting-cisco-network-devices-part-1-icnd1-9780132877435" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
+              <a href="https://www.ciscopress.com/store/interconnecting-cisco-network-devices-part-1-icnd1-9780132877435" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline underline-offset-2">
                 Interconnecting Cisco Network Devices Data Encapsulation and Segment-to-Bit Flowcharts
               </a>
             </span>
@@ -208,7 +208,7 @@ function TCPIPArticleContent() {
                   <td className="px-4 py-2.5 font-bold text-zinc-100">{row.layer}</td>
                   <td className="px-4 py-2.5 font-medium text-zinc-400 text-[12px]">{row.osi}</td>
                   <td className="px-4 py-2.5 text-zinc-400 text-[12px]">{row.protocols}</td>
-                  <td className="px-4 py-2.5 font-mono text-[11px] text-sky-400">{row.pdu}</td>
+                  <td className="px-4 py-2.5 font-mono text-[11px] text-blue-400">{row.pdu}</td>
                 </tr>
               ))}
             </tbody>
@@ -251,8 +251,8 @@ function TCPIPArticleContent() {
         <p>The two primary Transport layer protocols TCP and UDP represent the fundamental trade-off between reliability and performance in packet delivery.</p>
 
         <div className="grid md:grid-cols-2 gap-4 my-4">
-          <div className="rounded-lg border border-sky-500/30 bg-sky-500/5 p-4">
-            <h4 className="font-bold text-sky-300 text-sm mb-2">TCP Stateful / Connection-Oriented</h4>
+          <div className="rounded-lg border border-blue-600/30 bg-blue-600/5 p-4">
+            <h4 className="font-bold text-blue-300 text-sm mb-2">TCP Stateful / Connection-Oriented</h4>
             <ul className="space-y-1.5 text-[12px] text-zinc-400">
               {[
                 'Three-way handshake (SYN → SYN-ACK → ACK) before data transfer',
@@ -262,7 +262,7 @@ function TCPIPArticleContent() {
                 'Used by: HTTP/S, FTP, SMTP, SSHany protocol requiring guaranteed delivery',
               ].map((item, i) => (
                 <li key={i} className="flex gap-2 items-start">
-                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-sky-500" />
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-blue-600" />
                   <span>{item}</span>
                 </li>
               ))}
@@ -298,7 +298,7 @@ function TCPIPArticleContent() {
             'Know that NAT (Network Address Translation) is required with IPv4 but not with IPv6 due to its enormous address space',
           ].map((item, i) => (
             <li key={i} className="flex gap-2.5 items-start">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-400" />
               <span className="text-zinc-400">{item}</span>
             </li>
           ))}
@@ -316,11 +316,11 @@ function TCPIPArticleContent() {
             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
             <span className="text-zinc-400">
               <strong className="font-semibold text-zinc-200">IETF Standards:</strong>{' '}
-              <a href="https://www.rfc-editor.org/rfc/rfc791" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
+              <a href="https://www.rfc-editor.org/rfc/rfc791" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline underline-offset-2">
                 RFC 791 (Internet Protocol)
               </a>
               {' & '}
-              <a href="https://www.rfc-editor.org/rfc/rfc793" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
+              <a href="https://www.rfc-editor.org/rfc/rfc793" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline underline-offset-2">
                 RFC 793 (Transmission Control Protocol)
               </a>
               {'Core standard documentation.'}
@@ -330,7 +330,7 @@ function TCPIPArticleContent() {
             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
             <span className="text-zinc-400">
               <strong className="font-semibold text-zinc-200">CompTIA Official:</strong>{' '}
-              <a href="https://www.comptia.org/certifications/a" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
+              <a href="https://www.comptia.org/certifications/a" target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline underline-offset-2">
                 CompTIA A+ Core 1 (220-1201) Exam BlueprintSection 2.1 Protocol Suites
               </a>
             </span>
@@ -488,7 +488,7 @@ export default function ArticlePage() {
         </p>
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sky-400 font-medium hover:underline"
+          className="inline-flex items-center gap-2 text-blue-400 font-medium hover:underline"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Home
@@ -517,7 +517,7 @@ export default function ArticlePage() {
       {/* Back button */}
       <button
         onClick={goBack}
-        className="inline-flex items-center gap-2 text-zinc-400 hover:text-sky-400 transition-colors text-sm font-medium mb-5"
+        className="inline-flex items-center gap-2 text-zinc-400 hover:text-blue-400 transition-colors text-sm font-medium mb-5"
       >
         <ArrowLeft className="w-4 h-4" />
         {article.section ? `Back to ${article.section.title}` : 'Back'}
@@ -525,13 +525,13 @@ export default function ArticlePage() {
 
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-zinc-400 mb-5">
-        <Link to="/" className="hover:text-sky-400 transition-colors">Home</Link>
+        <Link to="/" className="hover:text-blue-400 transition-colors">Home</Link>
         <span>/</span>
         {article.section && (
           <>
             <Link
               to={`/${article.section.slug}`}
-              className="hover:text-sky-400 transition-colors"
+              className="hover:text-blue-400 transition-colors"
             >
               {article.section.title}
             </Link>
@@ -546,10 +546,10 @@ export default function ArticlePage() {
         <div className="relative">
           {/* Track label */}
           <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-xl bg-sky-500/20 border border-sky-500/30">
-              <BookOpen className="w-5 h-5 text-sky-400" />
+            <div className="p-2 rounded-xl bg-blue-600/20 border border-blue-600/30">
+              <BookOpen className="w-5 h-5 text-blue-400" />
             </div>
-            <span className="text-xs font-bold text-sky-400 uppercase tracking-widest">{trackLabel}</span>
+            <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">{trackLabel}</span>
           </div>
 
           {/* Title */}
@@ -560,13 +560,13 @@ export default function ArticlePage() {
           {/* Author row */}
           <div className="flex flex-wrap items-center gap-3">
             {isSample ? (
-              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-sky-500/40 text-xs font-bold tracking-wider text-sky-400 bg-sky-500/10" style={{ textShadow: '0 0 8px rgba(56,189,248,0.8)' }}>
+              <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-blue-600/40 text-xs font-bold tracking-wider text-blue-400 bg-blue-600/10" style={{ textShadow: '0 0 8px rgba(37,99,235,0.8)' }}>
                 [OPEN SLOT]
               </span>
             ) : (
               <>
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-md shadow-sky-500/20">
+                  <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center text-white text-sm font-bold flex-shrink-0 shadow-md shadow-blue-600/20">
                     {authorInitial}
                   </div>
                   <span className="text-sm font-medium text-zinc-200">{authorName}</span>
@@ -577,7 +577,7 @@ export default function ArticlePage() {
                   </span>
                 )}
                 {contributor?.name && contributor.name !== FOUNDER_NAME && (
-                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-sky-500/10 text-sky-400">
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-600/10 text-blue-400">
                     [Contributor]
                   </span>
                 )}
@@ -603,7 +603,7 @@ export default function ArticlePage() {
                     setEditItem({ id: article.id, title: article.title, content: article.content ?? '', formatted_content: (article as any).formatted_content ?? null, study_category: article.study_category ?? null, submission_type: (article as any).submission_type ?? null, author_name: (article as any).author_name ?? null });
                     setModalOpen(true);
                   }}
-                  className="p-2 rounded-lg hover:bg-zinc-700/50 text-zinc-400 hover:text-sky-400 transition-colors"
+                  className="p-2 rounded-lg hover:bg-zinc-700/50 text-zinc-400 hover:text-blue-400 transition-colors"
                   title="Suggest an edit"
                 >
                   <Pencil className="w-4 h-4" />
@@ -632,9 +632,9 @@ export default function ArticlePage() {
           <ArticleRenderer blocks={localContentEntry.content} />
         ) : effectiveIsSample ? (
           <div className="max-w-2xl mx-auto text-center my-16">
-            <div className="relative rounded-2xl border-2 border-dashed border-sky-500/30 bg-zinc-800/60 p-10">
+            <div className="relative rounded-2xl border-2 border-dashed border-blue-600/30 bg-zinc-800/60 p-10">
               <div className="flex justify-center mb-6">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center shadow-lg shadow-blue-600/20">
                   <UploadCloud className="w-8 h-8 text-white" />
                 </div>
               </div>
@@ -646,7 +646,7 @@ export default function ArticlePage() {
               </p>
               <button
                 onClick={() => setModalOpen(true)}
-                className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-sky-500 hover:bg-sky-600 text-white text-sm font-bold shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:shadow-[0_0_30px_rgba(56,189,248,0.6)] transition-all"
+                className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] transition-all"
               >
                 <UploadCloud className="w-4.5 h-4.5" />
                 Submit your Contribution
@@ -658,18 +658,18 @@ export default function ArticlePage() {
             href={article.content}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-center gap-4 rounded-xl border border-zinc-700 bg-zinc-800/60 p-5 hover:border-sky-500/50 hover:shadow-lg hover:shadow-sky-500/10 transition-all duration-200"
+            className="group flex items-center gap-4 rounded-xl border border-zinc-700 bg-zinc-800/60 p-5 hover:border-blue-600/50 hover:shadow-lg hover:shadow-blue-600/10 transition-all duration-200"
           >
-            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-sky-500/15 border border-sky-500/25 flex items-center justify-center group-hover:bg-sky-500/25 transition-colors">
-              <ExternalLink className="w-5 h-5 text-sky-400" />
+            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-600/15 border border-blue-600/25 flex items-center justify-center group-hover:bg-blue-600/25 transition-colors">
+              <ExternalLink className="w-5 h-5 text-blue-400" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs text-zinc-400 mb-1 font-medium">Open External Resource</p>
-              <p className="font-mono text-sm text-sky-400 truncate group-hover:text-sky-300 transition-colors">
+              <p className="font-mono text-sm text-blue-400 truncate group-hover:text-blue-300 transition-colors">
                 {article.content}
               </p>
             </div>
-            <ExternalLink className="w-4 h-4 text-zinc-500 group-hover:text-sky-400 flex-shrink-0 transition-colors" />
+            <ExternalLink className="w-4 h-4 text-zinc-500 group-hover:text-blue-400 flex-shrink-0 transition-colors" />
           </a>
         ) : (
           <TicketOrMarkdownContent content={markdownContent} />

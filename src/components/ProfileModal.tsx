@@ -81,8 +81,8 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
       <div className="relative w-full max-w-[400px] bg-zinc-900 rounded-2xl border border-zinc-800/50 shadow-lg overflow-hidden">
         <div className="px-6 pt-6 flex items-start justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center">
-              <UserCog className="w-4.5 h-4.5 text-sky-400" />
+            <div className="w-9 h-9 rounded-xl bg-blue-600/10 border border-blue-600/20 flex items-center justify-center">
+              <UserCog className="w-4.5 h-4.5 text-blue-400" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-zinc-100">Edit Display Name</h2>
@@ -141,7 +141,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder="Enter your corrected name..."
-              className="w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-0 focus:border-sky-500/50 transition-all"
+              className="w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-0 focus:border-blue-600/50 transition-all"
               autoFocus
             />
           </div>
@@ -149,7 +149,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           <button
             type="submit"
             disabled={loading || success}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-white bg-sky-500 hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-white bg-blue-600 hover:bg-blue-400 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</>

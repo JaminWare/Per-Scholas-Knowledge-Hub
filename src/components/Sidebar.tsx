@@ -124,7 +124,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 flex-shrink-0">
         <Link to="/" className="flex items-center gap-2.5 flex-1 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0">
             <BookOpen className="w-[18px] h-[18px] text-white" />
           </div>
           <div className="min-w-0">
@@ -155,7 +155,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         ) : (
           <button
             onClick={() => setAuthOpen(true)}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-semibold text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 border border-sky-500/20 transition-colors ring-0 focus:ring-0 outline-none"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-semibold text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 border border-blue-600/20 transition-colors ring-0 focus:ring-0 outline-none"
           >
             <LogIn className="w-4 h-4 flex-shrink-0" />
             <span className="truncate">Sign In</span>

@@ -15,7 +15,7 @@ const survivalGuideCards = [
     description: 'Canvas workflows, VM setups, and tool access.',
     icon: Compass,
     iconBg: 'bg-zinc-800 border border-zinc-700',
-    iconColor: 'text-sky-400',
+    iconColor: 'text-blue-400',
     tab: 'onboarding',
   },
   {
@@ -24,7 +24,7 @@ const survivalGuideCards = [
     description: 'EHR sandboxes, Active Directory, and infrastructure.',
     icon: BookOpen,
     iconBg: 'bg-zinc-800 border border-zinc-700',
-    iconColor: 'text-sky-400',
+    iconColor: 'text-blue-400',
     tab: 'labs',
   },
   {
@@ -76,7 +76,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           <p className="text-sm text-zinc-400">Welcome to the collaborative resource hub!</p>
           <Link
             to="/learner-experience"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm transition-colors whitespace-nowrap outline-none select-none"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-colors whitespace-nowrap outline-none select-none"
           >
             <LifeBuoy className="w-4 h-4" />
             Start Here
@@ -91,12 +91,12 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
             className="flex items-center gap-3 px-5 py-3 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group outline-none select-none ring-0 focus:ring-0 cursor-pointer"
           >
             <div className="p-2 rounded-xl bg-zinc-800 flex-shrink-0 group-hover:bg-zinc-700 transition-colors">
-              <UploadCloud className="w-5 h-5 text-sky-400" />
+              <UploadCloud className="w-5 h-5 text-blue-400" />
             </div>
-            <p className="text-sm font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
+            <p className="text-sm font-bold text-zinc-100 group-hover:text-blue-400 transition-colors duration-200">
               Add Intel
             </p>
-            <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-blue-400 transition-colors flex-shrink-0" />
           </button>
 
           <Link
@@ -104,12 +104,12 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
             className="flex items-center gap-3 px-5 py-3 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group ring-0 focus:ring-0"
           >
             <div className="p-2 rounded-xl bg-zinc-800 flex-shrink-0">
-              <Users className="w-5 h-5 text-sky-400" />
+              <Users className="w-5 h-5 text-blue-400" />
             </div>
-            <p className="text-sm font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
+            <p className="text-sm font-bold text-zinc-100 group-hover:text-blue-400 transition-colors duration-200">
               View Portfolios
             </p>
-            <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0" />
+            <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-blue-400 transition-colors flex-shrink-0" />
           </Link>
         </div>
 
@@ -117,7 +117,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         <div className="w-full space-y-3">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-zinc-800 border border-zinc-700">
-              <Compass className="w-5 h-5 text-sky-400" />
+              <Compass className="w-5 h-5 text-blue-400" />
             </div>
             <h2 className="text-base font-semibold text-zinc-100">Cohort Survival Guide</h2>
           </div>
@@ -139,7 +139,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                       <p className="font-semibold text-sm text-white">
                         {card.title}
                       </p>
-                      <ChevronRight className="w-4 h-4 text-zinc-600 flex-shrink-0 group-hover/card:text-sky-400 group-hover/card:translate-x-0.5 transition-all" />
+                      <ChevronRight className="w-4 h-4 text-zinc-600 flex-shrink-0 group-hover/card:text-blue-400 group-hover/card:translate-x-0.5 transition-all" />
                     </div>
                     <p className="text-xs text-zinc-400 mt-0.5 line-clamp-2">{card.description}</p>
                   </div>
@@ -151,7 +151,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           <div className="text-left">
             <Link
               to="/learner-experience"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-400 hover:text-sky-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors"
             >
               Explore the full Learner Experience Hub &rarr;
               <ChevronRight className="w-4 h-4" />

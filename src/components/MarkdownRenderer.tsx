@@ -86,14 +86,14 @@ function renderInline(text: string): React.ReactNode {
             return <em key={i} className="italic text-zinc-400">{token.value}</em>;
           case 'code':
             return (
-              <code key={i} className="px-1.5 py-0.5 bg-zinc-800 rounded text-[0.85em] font-mono text-sky-400 border border-zinc-700">
+              <code key={i} className="px-1.5 py-0.5 bg-zinc-800 rounded text-[0.85em] font-mono text-blue-400 border border-zinc-700">
                 {token.value}
               </code>
             );
           case 'link':
             return (
               <a key={i} href={safeHref(token.href)} target="_blank" rel="noopener noreferrer"
-                className="text-sky-400 hover:underline underline-offset-2">
+                className="text-blue-400 hover:underline underline-offset-2">
                 {token.label}
               </a>
             );
@@ -306,7 +306,7 @@ export default function MarkdownRenderer({ content }: Props) {
           }
           case 'h2':
             return (
-              <h2 key={idx} className="text-2xl font-bold text-sky-400 mt-8 mb-3 pb-2 border-b border-zinc-800 first:mt-0">
+              <h2 key={idx} className="text-2xl font-bold text-blue-400 mt-8 mb-3 pb-2 border-b border-zinc-800 first:mt-0">
                 {renderInline(block.content)}
               </h2>
             );
@@ -333,7 +333,7 @@ export default function MarkdownRenderer({ content }: Props) {
             );
           case 'h3':
             return (
-              <h3 key={idx} className="text-lg font-semibold text-sky-400 mt-6 mb-2">
+              <h3 key={idx} className="text-lg font-semibold text-blue-400 mt-6 mb-2">
                 {renderInline(block.content)}
               </h3>
             );
@@ -348,7 +348,7 @@ export default function MarkdownRenderer({ content }: Props) {
               <ul key={idx} className="space-y-2 pl-0 list-none">
                 {block.items.map((item, j) => (
                   <li key={j} className="flex gap-2.5 items-start">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-400" />
                     <span className="text-zinc-200">{renderInline(item)}</span>
                   </li>
                 ))}

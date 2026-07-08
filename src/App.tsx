@@ -62,13 +62,13 @@ function AppContent() {
       <header className="flex-shrink-0 z-30 bg-black/95 backdrop-blur-lg flex md:hidden items-center gap-3 px-4 py-3">
         <button
           onClick={() => setMobileSidebarOpen(true)}
-          className="p-2 rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
+          className="p-2 rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-blue-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
           aria-label="Open navigation menu"
         >
           <Menu className="w-5 h-5" />
         </button>
         <div className="flex items-center gap-2 min-w-0 flex-1">
-          <div className="w-7 h-7 rounded-lg bg-sky-500 flex items-center justify-center flex-shrink-0">
+          <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
             <BookOpen className="w-3.5 h-3.5 text-white" />
           </div>
           <span className="font-bold text-sm text-zinc-100 truncate">
@@ -78,7 +78,7 @@ function AppContent() {
         <Link
           to="/cohort-admin"
           title="Admin Command Center"
-          className="p-2 rounded-lg text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
+          className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
           aria-label="Admin Command Center"
         >
           <ShieldCheck className="w-4.5 h-4.5" />
@@ -96,7 +96,7 @@ function AppContent() {
           <button
             onClick={() => setMobileAuthOpen(true)}
             title="Sign In"
-            className="p-2 rounded-lg text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
+            className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
             aria-label="Sign in"
           >
             <LogIn className="w-4.5 h-4.5" />
@@ -126,7 +126,7 @@ function AppContent() {
             <div className="hidden md:flex flex-wrap items-center gap-3 px-6 py-3 flex-shrink-0 min-w-0">
               <button
                 onClick={() => setDesktopSidebarOpen((v) => !v)}
-                className="p-2 rounded-lg border border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
+                className="p-2 rounded-lg border border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-blue-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
                 title={desktopSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
               >
                 {desktopSidebarOpen
@@ -140,7 +140,7 @@ function AppContent() {
                 <Link
                   to="/cohort-admin"
                   title="Admin Command Center"
-                  className="p-2 rounded-lg text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 outline-none select-none ring-0 focus:ring-0"
+                  className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 outline-none select-none ring-0 focus:ring-0"
                   aria-label="Admin Command Center"
                 >
                   <ShieldCheck className="w-5 h-5" />
@@ -157,7 +157,7 @@ function AppContent() {
                   <button
                     onClick={() => setMobileAuthOpen(true)}
                     title="Sign In"
-                    className="p-2 rounded-lg text-sky-400 hover:text-white hover:bg-sky-500/15 outline-none select-none ring-0 focus:ring-0"
+                    className="p-2 rounded-lg text-blue-400 hover:text-white hover:bg-blue-600/15 outline-none select-none ring-0 focus:ring-0"
                   >
                     <LogIn className="w-5 h-5" />
                   </button>

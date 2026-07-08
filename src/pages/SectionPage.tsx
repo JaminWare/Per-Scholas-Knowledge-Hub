@@ -56,9 +56,9 @@ const CURRICULUM_TRACKS_WITH_ICONS = CURRICULUM_TRACKS.map((t) => ({
 const SLUG_TO_DOMAIN = SLUG_TO_DOMAIN_META;
 
 const TRACK_COLORS = {
-  sky:  { header: 'text-zinc-400',   icon: 'bg-zinc-800 text-sky-400',   domainHeader: 'text-zinc-400'  },
-  teal: { header: 'text-zinc-400', icon: 'bg-zinc-800 text-sky-400', domainHeader: 'text-zinc-400' },
-  cyan: { header: 'text-zinc-400', icon: 'bg-zinc-800 text-sky-400', domainHeader: 'text-zinc-400' },
+  sky:  { header: 'text-zinc-400',   icon: 'bg-zinc-800 text-blue-400',   domainHeader: 'text-zinc-400'  },
+  teal: { header: 'text-zinc-400', icon: 'bg-zinc-800 text-blue-400', domainHeader: 'text-zinc-400' },
+  cyan: { header: 'text-zinc-400', icon: 'bg-zinc-800 text-blue-400', domainHeader: 'text-zinc-400' },
 };
 
 const DASHBOARD_CONTEXTS: Record<string, string> = {};
@@ -161,8 +161,8 @@ function CopyLinkButton({ slug }: { slug: string }) {
       onClick={handleCopy}
       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
         copied
-          ? 'bg-sky-500/10 text-sky-400'
-          : 'bg-zinc-800 text-zinc-400 hover:bg-sky-500/10 hover:text-sky-400'
+          ? 'bg-blue-600/10 text-blue-400'
+          : 'bg-zinc-800 text-zinc-400 hover:bg-blue-600/10 hover:text-blue-400'
       }`}
     >
       {copied ? <Check className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
@@ -297,7 +297,7 @@ function DomainBanner({
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex items-start gap-5 flex-1 min-w-0">
             <div className="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center flex-shrink-0">
-              <BannerIcon className="w-7 h-7 text-sky-400" />
+              <BannerIcon className="w-7 h-7 text-blue-400" />
             </div>
             <div className="min-w-0">
               {track && (
@@ -309,7 +309,7 @@ function DomainBanner({
           <button
             type="button"
             onClick={onContribute}
-            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-400 hover:bg-sky-500 text-zinc-900 text-sm font-bold transition-all"
+            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-400 hover:bg-blue-600 text-zinc-900 text-sm font-bold transition-all"
           >
             Add Intel
           </button>
@@ -334,7 +334,7 @@ function DomainBanner({
                 onClick={() => onObjectiveChange(obj)}
                 className={`inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                   activeObjective === obj
-                    ? 'bg-sky-500/30 text-sky-300 border-sky-400/50'
+                    ? 'bg-blue-600/30 text-blue-300 border-blue-400/50'
                     : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
                 }`}
               >
@@ -395,7 +395,7 @@ function TrackDomains({
                     {groupByObjective(domainArticles, canonicalTarget).map(([objective, items], idx) => (
                       <div key={objective}>
                         <div className={`flex items-center gap-2 pb-2 border-b border-zinc-800/50 ${idx === 0 ? 'mt-0' : 'mt-5'}`}>
-                          <Target className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
+                          <Target className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
                           <h3 className="text-lg font-semibold text-zinc-200">{objective}</h3>
                           <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-zinc-400">
                             {items.length}
@@ -497,7 +497,7 @@ function CurriculumDashboard({
               style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
             >
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse flex-shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse flex-shrink-0" />
                 <span className="text-[10px] font-mono text-zinc-500">first-contribution</span>
               </div>
               <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wider flex-shrink-0 bg-zinc-800 text-zinc-300 border border-zinc-700">
@@ -506,7 +506,7 @@ function CurriculumDashboard({
             </div>
             <div className="flex flex-col gap-3 p-5 flex-1 items-center text-center">
               <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-zinc-800 border border-zinc-700">
-                <Sparkles className="w-6 h-6 text-sky-400" />
+                <Sparkles className="w-6 h-6 text-blue-400" />
               </div>
               <h3 className="font-bold text-base text-white">
                 {emptyLabel ? `No ${emptyLabel} submitted for this domain yet!` : 'Be the first to contribute to this domain!'}
@@ -519,7 +519,7 @@ function CurriculumDashboard({
               <button
                 type="button"
                 onClick={onContribute}
-                className="mt-2 inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-sky-500/10 hover:bg-sky-500 text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500"
+                className="mt-2 inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-blue-600/10 hover:bg-blue-600 text-blue-400 hover:text-white border-blue-600/20 hover:border-blue-600"
               >
                 Submit a Contribution
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -535,7 +535,7 @@ function CurriculumDashboard({
         {groupByObjective(allDomainArticles, canonicalTarget).map(([objective, items], idx) => (
           <div key={objective}>
             <div className={`flex items-center gap-2 pb-2 border-b border-zinc-800/50 ${idx === 0 ? 'mt-0' : 'mt-5'}`}>
-              <Target className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
+              <Target className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />
               <h3 className="text-lg font-semibold text-zinc-200">{objective}</h3>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-zinc-400">
                 {items.length}
@@ -572,7 +572,7 @@ function CurriculumDashboard({
       {uncategorizedArticles.length > 0 && (
         <section>
           <div className="flex items-center gap-2.5 mb-3 pb-3 border-b border-zinc-800/50">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-zinc-800 text-sky-400">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-zinc-800 text-blue-400">
               <BookOpen className="w-4 h-4" />
             </div>
             <h2 className="text-base font-bold uppercase tracking-widest text-zinc-400">General Resources</h2>
@@ -742,7 +742,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
             
             // Add a temporary visual flash so the user sees which item they clicked
             el.style.transition = 'all 0.5s ease-out';
-            el.style.boxShadow = '0 0 0 2px #0ea5e9'; // sky-500 ring
+            el.style.boxShadow = '0 0 0 2px #2563eb'; // blue-600 ring
             setTimeout(() => { 
               el.style.boxShadow = 'none'; 
             }, 2000);
@@ -781,7 +781,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
       <div className="max-w-4xl mx-auto">
         <button
           onClick={goBack}
-          className="text-zinc-400 hover:text-sky-400 transition-colors duration-200 flex items-center gap-2 mb-6 cursor-pointer text-sm font-medium"
+          className="text-zinc-400 hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 mb-6 cursor-pointer text-sm font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Previous Page
@@ -792,7 +792,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
           <div className="relative">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2.5 rounded-xl bg-zinc-800 border border-zinc-700">
-                <Icon className="w-6 h-6 text-sky-400" />
+                <Icon className="w-6 h-6 text-blue-400" />
               </div>
               <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
                 {localContent.trackLabel}
@@ -850,7 +850,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
       {isSubPage && (
         <button
           onClick={goBack}
-          className="text-zinc-400 hover:text-sky-400 transition-colors duration-200 flex items-center gap-2 cursor-pointer text-sm font-medium"
+          className="text-zinc-400 hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 cursor-pointer text-sm font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Previous Page
@@ -887,7 +887,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         <>
           <div className="flex items-center gap-4 pb-6 border-b border-zinc-800/50">
             <div className="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center flex-shrink-0">
-              <Icon className="w-7 h-7 text-sky-400" />
+              <Icon className="w-7 h-7 text-blue-400" />
             </div>
             <div className="flex-1 min-w-0">
               {meta?.track && (
@@ -899,7 +899,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
               <button
                 type="button"
                 onClick={() => setIsModalOpen(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-400 hover:bg-sky-500 text-zinc-900 text-sm font-bold transition-all"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-400 hover:bg-blue-600 text-zinc-900 text-sm font-bold transition-all"
               >
                 Add Intel
               </button>

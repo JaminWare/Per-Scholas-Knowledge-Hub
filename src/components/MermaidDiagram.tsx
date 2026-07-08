@@ -7,7 +7,7 @@ mermaid.initialize({
   startOnLoad: false,
   theme: 'dark',
   themeVariables: {
-    primaryColor: '#0ea5e9',
+    primaryColor: '#2563eb',
     primaryTextColor: '#f4f4f5',
     primaryBorderColor: '#3f3f46',
     lineColor: '#71717a',

@@ -48,7 +48,7 @@ export function FirewallNetworkSegmentationDiagram({ className }: { className?: 
 
         {/* Arrow: center -> right-top (Private LAN) */}
         <line x1="370" y1="70" x2="420" y2="70" stroke="rgba(14, 165, 233, 0.6)" strokeWidth="2" markerEnd="url(#arrowSky)" />
-        <text x="395" y="60" fontSize="11" style={{ fill: 'currentColor' }} className="text-sky-400" textAnchor="middle" fontWeight="bold">
+        <text x="395" y="60" fontSize="11" style={{ fill: 'currentColor' }} className="text-blue-400" textAnchor="middle" fontWeight="bold">
           Allowed
         </text>
 
@@ -155,10 +155,10 @@ export function HealthcareCloudHierarchyDiagram({ className }: { className?: str
       </p>
       <div className={`flex flex-col-reverse gap-3 ${className ?? ''}`}>
         {/* IaaS (bottom) */}
-        <div className="bg-sky-900/30 border border-sky-700 rounded-lg p-4">
+        <div className="bg-blue-900/30 border border-blue-700 rounded-lg p-4">
           <div className="flex justify-between items-center">
-            <span className="text-xs font-bold uppercase text-sky-300">IaaS</span>
-            <span className="text-sm text-sky-300">
+            <span className="text-xs font-bold uppercase text-blue-300">IaaS</span>
+            <span className="text-sm text-blue-300">
               <span className="font-bold">Customer:</span> OS · Apps · Data | <span className="font-bold">Provider:</span> Physical Infra
             </span>
           </div>
@@ -185,8 +185,8 @@ export function HealthcareCloudHierarchyDiagram({ className }: { className?: str
         </div>
 
         {/* BAA Compliance Boundary Annotation */}
-        <div className="mt-4 p-3 border-l-4 border-sky-400 bg-sky-950/20 rounded">
-          <p className="text-xs font-semibold text-sky-300">
+        <div className="mt-4 p-3 border-l-4 border-blue-400 bg-blue-950/20 rounded">
+          <p className="text-xs font-semibold text-blue-300">
             🔒 BAA Compliance BoundaryCustomer-managed zones
           </p>
         </div>
@@ -269,7 +269,7 @@ export function OSIModelStackDiagram({ className }: { className?: string }) {
   ];
 
   const colorMap: Record<string, string> = {
-    sky: 'bg-sky-500',
+    sky: 'bg-blue-600',
     violet: 'bg-violet-500',
     purple: 'bg-purple-500',
     teal: 'bg-teal-500',
@@ -279,7 +279,7 @@ export function OSIModelStackDiagram({ className }: { className?: string }) {
   };
 
   const borderColorMap: Record<string, string> = {
-    sky: 'border-sky-600',
+    sky: 'border-blue-700',
     violet: 'border-violet-600',
     purple: 'border-purple-600',
     teal: 'border-teal-600',

@@ -225,7 +225,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email address"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-sky-500/50 focus:ring-0 transition-all"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-blue-600/50 focus:ring-0 transition-all"
                   autoComplete="email"
                 />
               </div>
@@ -241,7 +241,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={mode === 'signup' ? 'Create a strong password' : 'Password'}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-sky-500/50 focus:ring-0 transition-all"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-blue-600/50 focus:ring-0 transition-all"
                   autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                 />
               </div>
@@ -272,7 +272,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             <button
               type="submit"
               disabled={loading || isSignupBlocked}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-white bg-sky-500 hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed mt-1"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-white bg-blue-600 hover:bg-blue-400 disabled:opacity-60 disabled:cursor-not-allowed mt-1"
             >
               {loading ? (
                 <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
@@ -296,7 +296,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 <button
                   type="button"
                   onClick={() => { setMode('signup'); setError(''); }}
-                  className="font-semibold text-sky-400 hover:text-sky-300 transition-colors"
+                  className="font-semibold text-blue-400 hover:text-blue-300 transition-colors"
                 >
                   Sign Up
                 </button>
@@ -307,7 +307,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                 <button
                   type="button"
                   onClick={() => { setMode('login'); setError(''); }}
-                  className="font-semibold text-sky-400 hover:text-sky-300 transition-colors"
+                  className="font-semibold text-blue-400 hover:text-blue-300 transition-colors"
                 >
                   Sign In
                 </button>

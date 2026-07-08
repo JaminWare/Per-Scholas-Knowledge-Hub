@@ -12,7 +12,7 @@ export default function ArticleRenderer({ blocks }: Props) {
         switch (block.type) {
           case 'intro':
             return (
-              <p key={i} className="text-base text-zinc-300 leading-relaxed border-l-4 border-sky-500 pl-4 py-1 italic">
+              <p key={i} className="text-base text-zinc-300 leading-relaxed border-l-4 border-blue-600 pl-4 py-1 italic">
                 {block.text}
               </p>
             );
@@ -39,9 +39,9 @@ export default function ArticleRenderer({ blocks }: Props) {
 
           case 'tip':
             return (
-              <div key={i} className="flex gap-3 p-4 rounded-xl bg-sky-500/5 border border-sky-500/20">
-                <Lightbulb className="w-5 h-5 text-sky-400 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-sky-300">{block.text}</p>
+              <div key={i} className="flex gap-3 p-4 rounded-xl bg-blue-600/5 border border-blue-600/20">
+                <Lightbulb className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-blue-300">{block.text}</p>
               </div>
             );
 
@@ -50,7 +50,7 @@ export default function ArticleRenderer({ blocks }: Props) {
               <ol key={i} className="space-y-2">
                 {block.items.map((step, j) => (
                   <li key={j} className="flex gap-3 text-sm text-zinc-300">
-                    <ChevronRight className="w-4 h-4 text-sky-400 flex-shrink-0 mt-0.5" />
+                    <ChevronRight className="w-4 h-4 text-blue-400 flex-shrink-0 mt-0.5" />
                     <span>{step}</span>
                   </li>
                 ))}
@@ -61,7 +61,7 @@ export default function ArticleRenderer({ blocks }: Props) {
             return (
               <div key={i} className="rounded-xl overflow-hidden border border-zinc-700">
                 <div className="flex items-center gap-2 px-4 py-2 bg-zinc-700 border-b border-zinc-600">
-                  <Terminal className="w-4 h-4 text-sky-400" />
+                  <Terminal className="w-4 h-4 text-blue-400" />
                   <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">{block.lang}</span>
                   <div className="ml-auto flex gap-1.5">
                     {['#ff5f57', '#febc2e', '#28c840'].map((c) => (
@@ -70,7 +70,7 @@ export default function ArticleRenderer({ blocks }: Props) {
                   </div>
                 </div>
                 <pre className="p-4 bg-zinc-900 overflow-x-auto text-sm">
-                  <code className="text-sky-300 font-mono leading-relaxed whitespace-pre">{block.code}</code>
+                  <code className="text-blue-300 font-mono leading-relaxed whitespace-pre">{block.code}</code>
                 </pre>
               </div>
             );

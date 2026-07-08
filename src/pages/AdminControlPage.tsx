@@ -316,7 +316,7 @@ function SubmissionCard({
       {/* Header */}
       <div className="flex items-start gap-4 p-4">
         <div className={`p-2.5 rounded-lg flex-shrink-0 ${
-          isEditSuggestion ? 'bg-amber-500/10 text-amber-400' : isResource ? 'bg-teal-500/10 text-teal-400' : 'bg-sky-500/10 text-sky-400'
+          isEditSuggestion ? 'bg-amber-500/10 text-amber-400' : isResource ? 'bg-teal-500/10 text-teal-400' : 'bg-blue-600/10 text-blue-400'
         }`}>
           <TypeIcon type={sub.submission_type} />
         </div>
@@ -343,7 +343,7 @@ function SubmissionCard({
               </div>
             </div>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0 ${
-              isEditSuggestion ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : isResource ? 'bg-teal-500/10 text-teal-400 border border-teal-500/20' : 'bg-sky-500/10 text-sky-400 border border-sky-500/20'
+              isEditSuggestion ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : isResource ? 'bg-teal-500/10 text-teal-400 border border-teal-500/20' : 'bg-blue-600/10 text-blue-400 border border-blue-600/20'
             }`}>
               {sub.submission_type}
             </span>
@@ -352,7 +352,7 @@ function SubmissionCard({
           <p className="mt-1.5 text-[11px] text-zinc-500 font-mono truncate">{sub.track}</p>
           {sub.lx_stage && (
             <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[10px]">
-              <span className="px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">
+              <span className="px-1.5 py-0.5 rounded bg-blue-600/10 text-blue-400 border border-blue-600/20">
                 {sub.lx_stage}
               </span>
               {sub.lx_topic && (
@@ -429,7 +429,7 @@ function SubmissionCard({
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => setExpanded((v) => !v)}
-            className="text-[11px] text-sky-500 hover:text-sky-400 font-medium transition-colors"
+            className="text-[11px] text-blue-600 hover:text-blue-400 font-medium transition-colors"
           >
             {expanded ? 'Hide content' : 'Show content'}
           </button>
@@ -457,7 +457,7 @@ function SubmissionCard({
                 href={sub.content}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sky-500 hover:underline break-all font-mono text-xs"
+                className="text-blue-600 hover:underline break-all font-mono text-xs"
               >
                 {sub.content}
               </a>
@@ -471,7 +471,7 @@ function SubmissionCard({
                     const formatted = autoFormatContent(editedContent);
                     if (formatted !== editedContent) setEditedContent(formatted);
                   }}
-                  className="flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded-lg bg-sky-900/20 hover:bg-sky-800/30 text-sky-400 border border-sky-800/50 text-[11px] font-semibold transition-all"
+                  className="flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded-lg bg-blue-900/20 hover:bg-blue-800/30 text-blue-400 border border-blue-800/50 text-[11px] font-semibold transition-all"
                 >
                   <Wand2 className="w-3 h-3" /> Auto-Format
                 </button>
@@ -490,13 +490,13 @@ function SubmissionCard({
                   }}
                   placeholder="Edit submission title..."
                   maxLength={200}
-                  className="w-full px-4 py-2.5 rounded-lg bg-black border border-zinc-800 text-white text-lg font-semibold placeholder:text-zinc-600 focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 focus:outline-none transition-all"
+                  className="w-full px-4 py-2.5 rounded-lg bg-black border border-zinc-800 text-white text-lg font-semibold placeholder:text-zinc-600 focus:border-blue-600/50 focus:ring-1 focus:ring-blue-600/50 focus:outline-none transition-all"
                 />
                 {suggestedTrack && suggestedTrack !== sub.track && !suggestionApplied && !suggestionDismissed && (
-                  <div className="mt-2 flex flex-wrap items-center gap-2 px-3 py-2 rounded-lg bg-sky-500/5 border border-sky-500/20">
-                    <Zap className="w-3.5 h-3.5 text-sky-400 flex-shrink-0" />
-                    <span className="text-[11px] text-sky-300 font-medium">
-                      Auto-detected: <span className="font-bold text-sky-200">{suggestedTrack}</span>
+                  <div className="mt-2 flex flex-wrap items-center gap-2 px-3 py-2 rounded-lg bg-blue-600/5 border border-blue-600/20">
+                    <Zap className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+                    <span className="text-[11px] text-blue-300 font-medium">
+                      Auto-detected: <span className="font-bold text-blue-200">{suggestedTrack}</span>
                     </span>
                     <button
                       type="button"
@@ -504,7 +504,7 @@ function SubmissionCard({
                         setDomainOverride(suggestedTrack);
                         setSuggestionApplied(true);
                       }}
-                      className="ml-auto px-2.5 py-1 rounded-lg bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 text-[10px] font-bold uppercase tracking-wide border border-sky-500/30 transition-colors"
+                      className="ml-auto px-2.5 py-1 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 text-[10px] font-bold uppercase tracking-wide border border-blue-600/30 transition-colors"
                     >
                       Apply
                     </button>
@@ -533,7 +533,7 @@ function SubmissionCard({
                     onChange={(e) => setEditedContent(e.target.value)}
                     maxLength={50000}
                     spellCheck={false}
-                    className="flex-1 min-h-[200px] sm:min-h-[320px] w-full px-3 sm:px-4 py-3 rounded-lg bg-black border border-zinc-800 text-zinc-200 text-xs font-mono leading-relaxed resize-y focus:border-sky-500/50 focus:ring-1 focus:ring-sky-500/50 focus:outline-none transition-all"
+                    className="flex-1 min-h-[200px] sm:min-h-[320px] w-full px-3 sm:px-4 py-3 rounded-lg bg-black border border-zinc-800 text-zinc-200 text-xs font-mono leading-relaxed resize-y focus:border-blue-600/50 focus:ring-1 focus:ring-blue-600/50 focus:outline-none transition-all"
                   />
                 </div>
                 {/* Preview */}
@@ -658,7 +658,7 @@ function ArchiveTable({
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-sky-500/40"
+            className="px-3 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-600/40"
           >
             <option value="all">All Statuses</option>
             <option value="approved">Approved</option>
@@ -895,7 +895,7 @@ function NameRequestsView({ adminEmail }: { adminEmail: string }) {
                 <p className="text-sm text-zinc-200">
                   <span className="font-semibold text-zinc-100">{req.current_name}</span>
                   <span className="text-zinc-500 mx-2">wants to change to</span>
-                  <span className="font-semibold text-sky-400">{req.requested_name}</span>
+                  <span className="font-semibold text-blue-400">{req.requested_name}</span>
                 </p>
                 <p className="text-xs text-zinc-500 mt-1">
                   {new Date(req.created_at).toLocaleString('en-US', {
@@ -957,7 +957,7 @@ function AuditTrailView() {
     <div className="space-y-4">
       {/* Section header */}
       <div className="flex items-center gap-3 pb-3">
-        <Activity className="w-5 h-5 text-sky-400" />
+        <Activity className="w-5 h-5 text-blue-400" />
         <div>
           <h2 className="text-lg font-bold text-zinc-100">Audit Trail</h2>
           <p className="text-sm text-zinc-500 mt-0.5">Chronological log of all moderation actions (most recent first)</p>
@@ -1138,7 +1138,7 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
       {/* Invite Form */}
       <form onSubmit={handleInvite} className="p-5 rounded-xl bg-zinc-900 border border-zinc-800 space-y-4">
         <h3 className="text-sm font-bold text-zinc-200 flex items-center gap-2">
-          <UserPlus className="w-4 h-4 text-sky-400" />
+          <UserPlus className="w-4 h-4 text-blue-400" />
           Invite New Admin
         </h3>
         <div className="flex flex-col sm:flex-row gap-3">
@@ -1148,12 +1148,12 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
             onChange={(e) => setInviteEmail(e.target.value)}
             placeholder="admin@example.com"
             maxLength={254}
-            className="flex-1 px-4 py-2.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+            className="flex-1 px-4 py-2.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/60 transition-all"
           />
           <button
             type="submit"
             disabled={inviting || !inviteEmail.trim()}
-            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-white text-sm font-bold transition-all shadow-md shadow-sky-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-400 text-white text-sm font-bold transition-all shadow-md shadow-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
             Invite
@@ -1164,7 +1164,7 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
             type="checkbox"
             checked={grantManage}
             onChange={(e) => setGrantManage(e.target.checked)}
-            className="w-4 h-4 rounded border-zinc-600 bg-zinc-950 text-sky-500 focus:ring-sky-500/40 focus:ring-offset-0"
+            className="w-4 h-4 rounded border-zinc-600 bg-zinc-950 text-blue-600 focus:ring-blue-600/40 focus:ring-offset-0"
           />
           <span className="text-xs text-zinc-400 group-hover:text-zinc-300 transition-colors">
             Grant Admin Management Privileges (Can invite others)
@@ -1195,7 +1195,7 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
                     <span className="flex items-center gap-2">
                       {entry.email}
                       {entry.email === adminEmail && (
-                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-sky-500/15 text-sky-400 border border-sky-500/25">You</span>
+                        <span className="px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-blue-600/15 text-blue-400 border border-blue-600/25">You</span>
                       )}
                     </span>
                   </td>
@@ -1304,7 +1304,7 @@ function LiveArticlesView({ adminEmail }: { adminEmail: string }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3 pb-3">
-        <FileText className="w-5 h-5 text-sky-400" />
+        <FileText className="w-5 h-5 text-blue-400" />
         <div>
           <h2 className="text-lg font-bold text-zinc-100">Live Articles Master Index</h2>
           <p className="text-sm text-zinc-500 mt-0.5">{articles.length} records in the articles table</p>
@@ -1318,7 +1318,7 @@ function LiveArticlesView({ adminEmail }: { adminEmail: string }) {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by title, track, or slug..."
-          className="w-full bg-zinc-800/50 border border-zinc-800/50 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+          className="w-full bg-zinc-800/50 border border-zinc-800/50 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/60 transition-all"
         />
       </div>
 
@@ -1899,7 +1899,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">
           <div className="flex items-center gap-3 min-w-0 w-full lg:w-auto">
             <div className="p-2 rounded-lg bg-zinc-800 border border-zinc-700 flex-shrink-0">
-              <ShieldCheck className="w-6 h-6 text-sky-400" />
+              <ShieldCheck className="w-6 h-6 text-blue-400" />
             </div>
             <div className="min-w-0 break-words">
               <h1 className="text-zinc-100 font-medium text-lg md:text-xl tracking-tight">Admin Command Center</h1>
@@ -1935,7 +1935,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by title, author, or track..."
-                className="w-full bg-zinc-800/50 border border-zinc-800/50 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+                className="w-full bg-zinc-800/50 border border-zinc-800/50 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/60 transition-all"
               />
             </div>
           </div>
@@ -2011,7 +2011,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                       <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
                         activeTab === 'pending'
                           ? 'bg-white/20 text-white'
-                          : 'bg-sky-500/15 text-sky-400'
+                          : 'bg-blue-600/15 text-blue-400'
                       }`}>
                         {filteredSubmissions.length}
                       </span>
@@ -2437,7 +2437,7 @@ export default function AdminControlPage() {
   if (loading || (user && !adminCheck.checked)) {
     return (
       <div className=" bg-zinc-950 flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-sky-400 animate-spin" />
+        <Loader2 className="w-6 h-6 text-blue-400 animate-spin" />
       </div>
     );
   }
@@ -2460,7 +2460,7 @@ export default function AdminControlPage() {
           </div>
           <button
             onClick={() => setAuthModalOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-sky-500 hover:bg-sky-600 transition-colors shadow-lg shadow-sky-500/20"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"
           >
             <Lock className="w-4 h-4" />
             Sign In or Sign Up

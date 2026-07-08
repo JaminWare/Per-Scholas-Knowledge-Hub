@@ -18,8 +18,8 @@ const tiles: QuickLaunchTile[] = [
     description: 'Ports, protocols, OSI model & TCP/IP deep dives',
     icon: Network,
     route: '/core1-networking',
-    accentClass: 'hover:border-sky-500/40',
-    iconBg: 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20',
+    accentClass: 'hover:border-blue-600/40',
+    iconBg: 'bg-gradient-to-br from-blue-600 to-blue-400 shadow-blue-600/20',
   },
   {
     id: 'healthcare',
@@ -27,8 +27,8 @@ const tiles: QuickLaunchTile[] = [
     description: 'Clinical workflows, EHR devices & lab troubleshooting scenarios',
     icon: HeartPulse,
     route: '/healthcare-clinical',
-    accentClass: 'hover:border-sky-500/40',
-    iconBg: 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20',
+    accentClass: 'hover:border-blue-600/40',
+    iconBg: 'bg-gradient-to-br from-blue-600 to-blue-400 shadow-blue-600/20',
   },
 ];
 
@@ -40,7 +40,7 @@ export default function UniqueHacksGrid() {
       <div className="bg-zinc-600 border border-zinc-500 rounded-xl p-5">
         {/* Header */}
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400">
+          <div className="p-2 rounded-lg bg-gradient-to-br from-blue-600 to-blue-400">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>

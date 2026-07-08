@@ -112,7 +112,7 @@ function ContributorRow({ group, isNew, onEditProfile }: { group: ContributorGro
               type="button"
               onClick={onEditProfile}
               title="Edit Display Name"
-              className="inline-flex items-center text-zinc-500 hover:text-sky-400 transition-colors p-1 rounded-full hover:bg-zinc-800"
+              className="inline-flex items-center text-zinc-500 hover:text-blue-400 transition-colors p-1 rounded-full hover:bg-zinc-800"
             >
               <Pencil className="w-3 h-3" />
             </button>
@@ -138,10 +138,10 @@ function ContributorRow({ group, isNew, onEditProfile }: { group: ContributorGro
 
   return (
     <div className={`flex items-center gap-3 px-3 sm:px-4 py-3 bg-zinc-600 rounded-xl border ${
-      isNew ? 'border-sky-500/30' : 'border-zinc-600'
+      isNew ? 'border-blue-600/30' : 'border-zinc-600'
     }`}>
       <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white text-sm ${
-        isNew ? 'bg-sky-400' : 'bg-zinc-400'
+        isNew ? 'bg-blue-400' : 'bg-zinc-400'
       }`}>
         {initial}
       </div>
@@ -152,13 +152,13 @@ function ContributorRow({ group, isNew, onEditProfile }: { group: ContributorGro
             type="button"
             onClick={onEditProfile}
             title="Edit Display Name"
-            className="inline-flex items-center text-zinc-500 hover:text-sky-400 transition-colors p-1 rounded-full hover:bg-zinc-800"
+            className="inline-flex items-center text-zinc-500 hover:text-blue-400 transition-colors p-1 rounded-full hover:bg-zinc-800"
           >
             <Pencil className="w-3 h-3" />
           </button>
           <BadgeTag badge={group.topBadge} />
           {isNew && (
-            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold bg-sky-500 text-white rounded-full">
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold bg-blue-600 text-white rounded-full">
               <Star className="w-2 h-2" /> NEW
             </span>
           )}
@@ -227,13 +227,13 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge, onE
       {/* Claim your spot CTA */}
       <button
         onClick={onClaimBadge}
-        className="w-full flex items-center gap-3 p-3 sm:p-4 bg-zinc-600 border-2 border-dashed border-zinc-500 hover:border-sky-500/50 hover:bg-sky-500/5 rounded-xl transition-all group text-left"
+        className="w-full flex items-center gap-3 p-3 sm:p-4 bg-zinc-600 border-2 border-dashed border-zinc-500 hover:border-blue-600/50 hover:bg-blue-600/5 rounded-xl transition-all group text-left"
       >
-        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-sky-500/10 flex items-center justify-center group-hover:bg-sky-500/20 transition-colors flex-shrink-0">
-          <Plus className="w-5 h-5 text-sky-400" />
+        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-blue-600/10 flex items-center justify-center group-hover:bg-blue-600/20 transition-colors flex-shrink-0">
+          <Plus className="w-5 h-5 text-blue-400" />
         </div>
         <div>
-          <p className="font-semibold text-sky-400 text-sm">Your Name Here</p>
+          <p className="font-semibold text-blue-400 text-sm">Your Name Here</p>
           <p className="text-xs text-zinc-500 mt-0.5">Submit a contribution to claim your spot on the wall!</p>
         </div>
       </button>

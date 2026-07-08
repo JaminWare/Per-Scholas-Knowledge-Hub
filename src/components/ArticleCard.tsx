@@ -26,7 +26,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
     <>
       {featured && (
         <div className="flex justify-end mb-2">
-          <span className="px-2 py-1 text-xs font-medium bg-sky-500/20 text-sky-300 rounded-full">
+          <span className="px-2 py-1 text-xs font-medium bg-blue-600/20 text-blue-300 rounded-full">
             Featured
           </span>
         </div>
@@ -64,7 +64,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
       target="_blank"
       rel="noopener noreferrer"
       onClick={(e) => e.stopPropagation()}
-      className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-400 hover:text-sky-300 hover:gap-2.5 transition-all duration-200"
+      className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 hover:gap-2.5 transition-all duration-200"
     >
       Open resource <ExternalLink className="w-4 h-4" />
     </a>
@@ -72,7 +72,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
     <Link
       to={articlePath}
       onClick={(e) => e.stopPropagation()}
-      className="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-400 hover:text-sky-300 hover:gap-2.5 transition-all duration-200"
+      className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 hover:gap-2.5 transition-all duration-200"
     >
       Read full article <ArrowRight className="w-4 h-4" />
     </Link>
@@ -99,14 +99,14 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
               href={article.content}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sky-400 text-sm font-medium hover:gap-2 hover:text-sky-300 transition-all"
+              className="inline-flex items-center gap-1 text-blue-400 text-sm font-medium hover:gap-2 hover:text-blue-300 transition-all"
             >
               Open resource <ExternalLink className="w-4 h-4" />
             </a>
           ) : (
             <Link
               to={articlePath}
-              className="inline-flex items-center gap-1 text-sky-400 text-sm font-medium hover:gap-2 hover:text-sky-300 transition-all"
+              className="inline-flex items-center gap-1 text-blue-400 text-sm font-medium hover:gap-2 hover:text-blue-300 transition-all"
             >
               Read more <ArrowRight className="w-4 h-4" />
             </Link>
@@ -136,14 +136,14 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
             href={article.content}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-sky-400 text-sm font-medium hover:gap-2 hover:text-sky-300 transition-all"
+            className="inline-flex items-center gap-1 text-blue-400 text-sm font-medium hover:gap-2 hover:text-blue-300 transition-all"
           >
             Open resource <ExternalLink className="w-4 h-4" />
           </a>
         ) : (
           <Link
             to={articlePath}
-            className="inline-flex items-center gap-1 text-sky-400 text-sm font-medium hover:gap-2 hover:text-sky-300 transition-all"
+            className="inline-flex items-center gap-1 text-blue-400 text-sm font-medium hover:gap-2 hover:text-blue-300 transition-all"
           >
             Read more <ArrowRight className="w-4 h-4" />
           </Link>
