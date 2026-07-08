@@ -179,10 +179,10 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         </p>
         <Link
           to="/learner-experience"
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all ${
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all outline-none select-none ${
             lxActive
               ? 'bg-sky-500/10 text-sky-400 border border-sky-500/30'
-              : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white'
+              : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white active:bg-zinc-800'
           }`}
         >
           <LifeBuoy className="w-4 h-4 flex-shrink-0" />
@@ -204,10 +204,10 @@ export default function Sidebar({ onToggle }: SidebarProps) {
 
         <Link
           to="/recognition"
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 ${
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 outline-none select-none ${
             location.pathname === '/recognition'
               ? 'bg-zinc-800 text-white border border-zinc-700'
-              : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:border-zinc-700 hover:bg-zinc-800 hover:text-white'
+              : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:border-zinc-700 hover:bg-zinc-800 hover:text-white active:bg-zinc-800'
           }`}
         >
           <Award className="w-4 h-4 flex-shrink-0 text-zinc-400" />
@@ -218,7 +218,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           <div key={track.id} className="pt-3">
             <button
               onClick={() => setOpenTracks((p) => ({ ...p, [track.id]: !p[track.id] }))}
-              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border border-zinc-800/50 bg-zinc-950 hover:bg-zinc-900 transition-colors mb-1`}
+              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border border-zinc-800/50 bg-zinc-950 hover:bg-zinc-900 active:bg-zinc-900 transition-colors mb-1 outline-none select-none`}
             >
               <div className="flex-1 text-left min-w-0">
                 <p className="text-[11px] font-semibold text-white uppercase tracking-wider truncate">

@@ -29,12 +29,16 @@
   body {
     @apply bg-zinc-950 text-zinc-200;
   }
+
+  button, a, [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
 @layer components {
   .sidebar-item {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200;
-    @apply text-zinc-300 hover:bg-zinc-800 hover:text-sky-400;
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 outline-none select-none;
+    @apply text-zinc-300 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800;
   }
 
   .sidebar-item.active {
@@ -89,3 +93,8 @@
 .animate-zoom-in {
   animation: zoom-in 0.2s ease-out forwards;
 }
+
+details summary::-webkit-details-marker { display: none; }
+details summary { list-style: none; }
+details[open] .details-chevron { transform: rotate(90deg); }
+.details-chevron { transition: transform 0.2s ease; }

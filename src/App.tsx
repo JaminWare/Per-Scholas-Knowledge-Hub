@@ -77,7 +77,7 @@ function AppContent() {
         <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800/50 flex md:hidden items-center gap-3 px-4 py-3">
           <button
             onClick={() => setMobileSidebarOpen(true)}
-            className="p-2 rounded-lg bg-transparent border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-sky-400 transition-colors flex-shrink-0"
+            className="p-2 rounded-lg bg-transparent border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800 transition-colors flex-shrink-0 outline-none select-none"
             aria-label="Open navigation menu"
           >
             <Menu className="w-5 h-5" />
@@ -124,7 +124,7 @@ function AppContent() {
           <div className="flex items-center gap-3 px-4 py-3">
             <button
               onClick={() => setDesktopSidebarOpen((v) => !v)}
-              className="p-2 rounded-lg bg-transparent border border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-sky-400 transition-colors flex-shrink-0"
+              className="p-2 rounded-lg bg-transparent border border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800 transition-colors flex-shrink-0 outline-none select-none"
               title={desktopSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
             >
               {desktopSidebarOpen

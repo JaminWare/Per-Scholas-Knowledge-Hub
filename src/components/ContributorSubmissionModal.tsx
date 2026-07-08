@@ -797,7 +797,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     if (mergedOpts.length === 0) return null;
                     return (
                       <div className="mt-3">
-                        <label className="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mb-1">Specific Objective</label>
+                        <label className="block text-xs font-semibold text-zinc-400 mb-1">Specific Objective</label>
                         <select
                           value={compObjective}
                           onChange={(e) => { setCompObjective(e.target.value); setUserOverride(true); setAutoDetected(false); }}

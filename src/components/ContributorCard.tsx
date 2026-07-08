@@ -14,7 +14,7 @@ export default function ContributorCard({ contributor }: ContributorCardProps) {
     .slice(0, 2);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-700 dark:to-zinc-800 p-6 border border-zinc-200 dark:border-zinc-600">
+    <div className="relative overflow-hidden rounded-2xl bg-zinc-800 p-6 border border-zinc-600">
       <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-sky-500/10 to-sky-400/10 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-sky-500/10 to-sky-400/10 rounded-full blur-2xl" />
 
@@ -34,20 +34,20 @@ export default function ContributorCard({ contributor }: ContributorCardProps) {
         </div>
 
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-zinc-900 dark:text-zinc-100 text-lg">{contributor.name}</h4>
+          <h4 className="font-semibold text-zinc-100 text-lg">{contributor.name}</h4>
           <div className="flex items-center gap-2 mt-1">
-            <Award className="w-4 h-4 text-sky-500 dark:text-sky-400" />
-            <span className="text-sm text-sky-600 dark:text-sky-400 font-medium">{contributor.cohort_id}</span>
+            <Award className="w-4 h-4 text-sky-400" />
+            <span className="text-sm text-sky-400 font-medium">{contributor.cohort_id}</span>
           </div>
           {contributor.bio && (
-            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400 line-clamp-2">{contributor.bio}</p>
+            <p className="mt-2 text-sm text-zinc-400 line-clamp-2">{contributor.bio}</p>
           )}
           {contributor.linkedin_url && (
             <a
               href={contributor.linkedin_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 mt-3 text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+              className="inline-flex items-center gap-2 mt-3 text-sm font-medium text-zinc-400 hover:text-sky-400 transition-colors"
             >
               <Linkedin className="w-4 h-4" />
               <span>Connect on LinkedIn</span>
@@ -56,10 +56,10 @@ export default function ContributorCard({ contributor }: ContributorCardProps) {
         </div>
       </div>
 
-      <div className="mt-4 pt-4 border-t border-zinc-200 dark:border-zinc-700">
+      <div className="mt-4 pt-4 border-t border-zinc-700">
         <div className="flex items-center justify-between">
           <span className="text-xs text-zinc-500">AI-Enabled Healthcare IT Cohort</span>
-          <span className="px-2 py-1 text-xs font-medium bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 rounded-full">
+          <span className="px-2 py-1 text-xs font-medium bg-sky-900/30 text-sky-400 rounded-full">
             Contributor
           </span>
         </div>

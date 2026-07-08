@@ -81,19 +81,19 @@ function renderInline(text: string): React.ReactNode {
       {tokens.map((token, i) => {
         switch (token.type) {
           case 'bold':
-            return <strong key={i} className="font-semibold text-zinc-900 dark:text-zinc-100">{token.value}</strong>;
+            return <strong key={i} className="font-semibold text-zinc-100">{token.value}</strong>;
           case 'italic':
-            return <em key={i} className="italic text-zinc-500 dark:text-zinc-400">{token.value}</em>;
+            return <em key={i} className="italic text-zinc-400">{token.value}</em>;
           case 'code':
             return (
-              <code key={i} className="px-1.5 py-0.5 bg-zinc-200 dark:bg-zinc-800 rounded text-[0.85em] font-mono text-sky-700 dark:text-sky-400 border border-zinc-300 dark:border-zinc-700">
+              <code key={i} className="px-1.5 py-0.5 bg-zinc-800 rounded text-[0.85em] font-mono text-sky-400 border border-zinc-700">
                 {token.value}
               </code>
             );
           case 'link':
             return (
               <a key={i} href={safeHref(token.href)} target="_blank" rel="noopener noreferrer"
-                className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+                className="text-sky-400 hover:underline underline-offset-2">
                 {token.label}
               </a>
             );
@@ -264,9 +264,9 @@ function ImageBlock({ src, alt }: { src: string; alt: string }) {
   const [failed, setFailed] = useState(false);
   if (failed) {
     return (
-      <div className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 shadow-md max-h-[450px] overflow-hidden bg-gradient-to-br from-zinc-100 via-zinc-50 to-sky-50 dark:from-zinc-900 dark:via-zinc-800 dark:to-sky-950 flex flex-col items-center justify-center py-16 gap-3">
-        <ImageOff className="w-10 h-10 text-zinc-400 dark:text-zinc-600" />
-        <span className="text-sm text-zinc-500 dark:text-zinc-500 font-medium">Image unavailable</span>
+      <div className="w-full rounded-lg border border-zinc-800 shadow-md max-h-[450px] overflow-hidden bg-zinc-900 flex flex-col items-center justify-center py-16 gap-3">
+        <ImageOff className="w-10 h-10 text-zinc-600" />
+        <span className="text-sm text-zinc-500 font-medium">Image unavailable</span>
       </div>
     );
   }
@@ -276,7 +276,7 @@ function ImageBlock({ src, alt }: { src: string; alt: string }) {
         src={src}
         alt={alt}
         onError={() => setFailed(true)}
-        className="w-full rounded-lg border border-zinc-200 dark:border-zinc-800 shadow-md max-h-[450px] object-cover"
+        className="w-full rounded-lg border border-zinc-800 shadow-md max-h-[450px] object-cover"
       />
     </Zoom>
   );
@@ -290,7 +290,7 @@ export default function MarkdownRenderer({ content }: Props) {
   const blocks = parseBlocks(content);
 
   return (
-    <div className="space-y-5 text-zinc-700 dark:text-zinc-300 leading-relaxed">
+    <div className="space-y-5 text-zinc-300 leading-relaxed">
       {blocks.map((block, idx) => {
         switch (block.type) {
           case 'diagram': {
@@ -298,7 +298,7 @@ export default function MarkdownRenderer({ content }: Props) {
             if (!DiagramComp) return null;
             return (
               <Zoom key={idx}>
-                <div className="my-6 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 cursor-zoom-in">
+                <div className="my-6 p-4 rounded-xl bg-zinc-800/60 border border-zinc-700 cursor-zoom-in">
                   <DiagramComp />
                 </div>
               </Zoom>
@@ -306,24 +306,24 @@ export default function MarkdownRenderer({ content }: Props) {
           }
           case 'h2':
             return (
-              <h2 key={idx} className="text-2xl font-bold text-zinc-900 dark:text-sky-400 mt-8 mb-3 pb-2 border-b border-zinc-200 dark:border-zinc-800 first:mt-0">
+              <h2 key={idx} className="text-2xl font-bold text-sky-400 mt-8 mb-3 pb-2 border-b border-zinc-800 first:mt-0">
                 {renderInline(block.content)}
               </h2>
             );
           case 'citations':
             return (
-              <div key={idx} className="mt-10 rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
-                <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
-                  <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-                  <h2 className="text-base font-bold text-amber-700 dark:text-amber-400">
+              <div key={idx} className="mt-10 rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
+                <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-500/20">
+                  <ExternalLink className="w-4 h-4 text-amber-400 flex-shrink-0" />
+                  <h2 className="text-base font-bold text-amber-400">
                     References & Citations
                   </h2>
                 </div>
                 {block.items.length > 0 && (
                   <ul className="px-5 py-4 space-y-2.5">
                     {block.items.map((item, j) => (
-                      <li key={j} className="flex gap-2.5 items-start text-sm text-zinc-600 dark:text-zinc-400">
-                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
+                      <li key={j} className="flex gap-2.5 items-start text-sm text-zinc-400">
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
                         <span>{renderInline(item)}</span>
                       </li>
                     ))}
@@ -333,13 +333,13 @@ export default function MarkdownRenderer({ content }: Props) {
             );
           case 'h3':
             return (
-              <h3 key={idx} className="text-lg font-semibold text-zinc-900 dark:text-sky-400 mt-6 mb-2">
+              <h3 key={idx} className="text-lg font-semibold text-sky-400 mt-6 mb-2">
                 {renderInline(block.content)}
               </h3>
             );
           case 'blockquote':
             return (
-              <blockquote key={idx} className="pl-4 border-l-4 border-zinc-600 dark:border-zinc-700 bg-zinc-50/80 dark:bg-zinc-900/40 rounded-r py-3 pr-4 text-zinc-700 dark:text-zinc-200">
+              <blockquote key={idx} className="pl-4 border-l-4 border-zinc-700 bg-zinc-900/40 rounded-r py-3 pr-4 text-zinc-200">
                 {renderInline(block.content)}
               </blockquote>
             );
@@ -348,20 +348,20 @@ export default function MarkdownRenderer({ content }: Props) {
               <ul key={idx} className="space-y-2 pl-0 list-none">
                 {block.items.map((item, j) => (
                   <li key={j} className="flex gap-2.5 items-start">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 dark:bg-sky-400" />
-                    <span className="text-zinc-600 dark:text-zinc-200">{renderInline(item)}</span>
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
+                    <span className="text-zinc-200">{renderInline(item)}</span>
                   </li>
                 ))}
               </ul>
             );
           case 'table':
             return (
-              <div key={idx} className="block w-full overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700 my-6">
+              <div key={idx} className="block w-full overflow-x-auto rounded-lg border border-zinc-700 my-6">
                 <table className="min-w-full w-full text-sm border-collapse table-fixed">
                   <thead>
-                    <tr className="bg-zinc-200/60 dark:bg-zinc-800/60">
+                    <tr className="bg-zinc-800/60">
                       {block.headers.map((header, hIdx) => (
-                        <th key={hIdx} className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700 whitespace-nowrap">
+                        <th key={hIdx} className="px-4 py-3 text-left font-semibold text-zinc-100 border-b border-zinc-700 whitespace-nowrap">
                           {renderInline(header)}
                         </th>
                       ))}
@@ -369,9 +369,9 @@ export default function MarkdownRenderer({ content }: Props) {
                   </thead>
                   <tbody>
                     {block.rows.map((row, rIdx) => (
-                      <tr key={rIdx} className="border-b border-zinc-100 dark:border-zinc-800 last:border-0 hover:bg-zinc-100/50 dark:hover:bg-zinc-800/30 transition-colors">
+                      <tr key={rIdx} className="border-b border-zinc-800 last:border-0 hover:bg-zinc-800/30 transition-colors">
                         {row.map((cell, cIdx) => (
-                          <td key={cIdx} className="px-4 py-3 align-top text-left whitespace-normal break-words text-zinc-600 dark:text-zinc-400">
+                          <td key={cIdx} className="px-4 py-3 align-top text-left whitespace-normal break-words text-zinc-400">
                             {renderInline(cell)}
                           </td>
                         ))}
@@ -386,8 +386,8 @@ export default function MarkdownRenderer({ content }: Props) {
               return <MermaidDiagram key={idx} chart={block.code} />;
             }
             return (
-              <div key={idx} className="rounded-xl overflow-hidden border border-zinc-300 dark:border-zinc-700 my-4">
-                <div className="flex items-center gap-2 px-4 py-2 bg-zinc-800 dark:bg-zinc-900 border-b border-zinc-700">
+              <div key={idx} className="rounded-xl overflow-hidden border border-zinc-700 my-4">
+                <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900 border-b border-zinc-700">
                   <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider">{block.lang}</span>
                   <div className="ml-auto flex gap-1.5">
                     {['#ff5f57', '#febc2e', '#28c840'].map((c) => (
@@ -409,10 +409,10 @@ export default function MarkdownRenderer({ content }: Props) {
             );
           case 'paragraph':
             if (block.content === '---') {
-              return <hr key={idx} className="border-zinc-200 dark:border-zinc-700 my-6" />;
+              return <hr key={idx} className="border-zinc-700 my-6" />;
             }
             return (
-              <p key={idx} className="text-zinc-600 dark:text-zinc-200 leading-7">
+              <p key={idx} className="text-zinc-200 leading-7">
                 {renderInline(block.content)}
               </p>
             );

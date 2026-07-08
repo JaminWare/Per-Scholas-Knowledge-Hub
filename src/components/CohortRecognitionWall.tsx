@@ -41,12 +41,12 @@ function pluralizeType(type: string, count: number): string {
 // ── Type pill colours (homepage variant) ─────────────────
 
 const TYPE_PILL_COLORS: Record<string, { base: string; founder: string }> = {
-  'Article':         { base: 'bg-sky-100/70 text-sky-900 dark:bg-zinc-800/80 dark:text-zinc-100', founder: 'bg-amber-100/60 text-amber-950 dark:bg-zinc-800/80 dark:text-zinc-100' },
-  'Resource Link':   { base: 'bg-emerald-100/70 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300', founder: 'bg-emerald-100/60 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300' },
-  'Diagram':         { base: 'bg-blue-100/70 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300', founder: 'bg-blue-100/60 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' },
+  'Article':         { base: 'bg-zinc-800/80 text-zinc-100', founder: 'bg-zinc-800/80 text-zinc-100' },
+  'Resource Link':   { base: 'bg-emerald-900/30 text-emerald-300', founder: 'bg-emerald-900/30 text-emerald-300' },
+  'Diagram':         { base: 'bg-blue-900/30 text-blue-300', founder: 'bg-blue-900/30 text-blue-300' },
 };
 
-const DEFAULT_PILL = { base: 'bg-zinc-100/80 text-zinc-600 dark:bg-zinc-800/80 dark:text-zinc-300', founder: 'bg-zinc-100/80 text-zinc-600 dark:bg-zinc-800/80 dark:text-zinc-300' };
+const DEFAULT_PILL = { base: 'bg-zinc-800/80 text-zinc-300', founder: 'bg-zinc-800/80 text-zinc-300' };
 
 // ── Type icons for the mini icon row ─────────────────────
 
@@ -67,22 +67,22 @@ function TrackBadges({ tracks, objectives }: { tracks: string[]; objectives: str
   return (
     <div className="flex flex-wrap gap-1 mt-1.5">
       {visibleTracks.map((t) => (
-        <span key={t} className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-100 dark:bg-zinc-700/60 text-zinc-600 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-600">
+        <span key={t} className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-700/60 text-zinc-300 border border-zinc-600">
           {t}
         </span>
       ))}
       {overflowTracks > 0 && (
-        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-100 dark:bg-zinc-700/60 text-zinc-500 dark:text-zinc-400">
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-zinc-700/60 text-zinc-400">
           +{overflowTracks} more
         </span>
       )}
       {visibleObjectives.map((o) => (
-        <span key={o} className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+        <span key={o} className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
           {o}
         </span>
       ))}
       {overflowObjectives > 0 && (
-        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-500 dark:text-emerald-400">
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-400">
           +{overflowObjectives} more
         </span>
       )}
@@ -98,16 +98,16 @@ function ContributorRow({ group, isNew, onEditProfile }: { group: ContributorGro
 
   if (isFounder) {
     return (
-      <div className="flex items-center gap-3 px-3 sm:px-5 py-3 sm:py-4 bg-sky-50/90 dark:bg-zinc-700/80 rounded-xl border border-sky-300/60 dark:border-amber-500/30 shadow-sm shadow-amber-500/5">
+      <div className="flex items-center gap-3 px-3 sm:px-5 py-3 sm:py-4 bg-zinc-700/80 rounded-xl border border-amber-500/30 shadow-sm shadow-amber-500/5">
         <div className="flex flex-col items-center gap-1 flex-shrink-0">
           <Crown className="w-4 h-4 text-amber-500" />
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500 to-amber-400 flex items-center justify-center font-bold text-white text-base shadow-md shadow-amber-500/20">
+          <div className="w-11 h-11 rounded-xl bg-amber-400 flex items-center justify-center font-bold text-white text-base shadow-md shadow-amber-500/20">
             {initial}
           </div>
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-bold text-zinc-800 dark:text-zinc-100 text-sm">{group.name}</span>
+            <span className="font-bold text-zinc-100 text-sm">{group.name}</span>
             <button
               type="button"
               onClick={onEditProfile}
@@ -137,17 +137,17 @@ function ContributorRow({ group, isNew, onEditProfile }: { group: ContributorGro
   }
 
   return (
-    <div className={`flex items-center gap-3 px-3 sm:px-4 py-3 bg-white dark:bg-zinc-600 rounded-xl border ${
-      isNew ? 'border-sky-400/40 dark:border-sky-500/30' : 'border-zinc-200 dark:border-zinc-600'
+    <div className={`flex items-center gap-3 px-3 sm:px-4 py-3 bg-zinc-600 rounded-xl border ${
+      isNew ? 'border-sky-500/30' : 'border-zinc-600'
     }`}>
       <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white text-sm ${
-        isNew ? 'bg-gradient-to-br from-sky-500 to-sky-400' : 'bg-gradient-to-br from-zinc-500 to-zinc-400'
+        isNew ? 'bg-sky-400' : 'bg-zinc-400'
       }`}>
         {initial}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="font-semibold text-zinc-800 dark:text-zinc-100 text-sm">{group.name}</span>
+          <span className="font-semibold text-zinc-100 text-sm">{group.name}</span>
           <button
             type="button"
             onClick={onEditProfile}
@@ -179,7 +179,7 @@ function ContributorRow({ group, isNew, onEditProfile }: { group: ContributorGro
       </div>
       <div className="hidden sm:flex items-center gap-1 flex-shrink-0">
         {Object.keys(group.rawTypeCounts).map((type) => (
-          <span key={type} className="text-zinc-400 dark:text-zinc-600" title={type}>
+          <span key={type} className="text-zinc-600" title={type}>
             {TYPE_ICON[type] ?? <Zap className="w-3 h-3" />}
           </span>
         ))}
@@ -197,15 +197,15 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge, onE
       {/* Header */}
       <div className="flex items-center justify-between mb-4 sm:mb-5 flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-amber-100 dark:bg-amber-500/10">
-            <Award className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+          <div className="p-2 rounded-xl bg-amber-500/10">
+            <Award className="w-5 h-5 text-amber-400" />
           </div>
           <div>
-            <h2 className="text-lg sm:text-xl font-bold text-zinc-800 dark:text-zinc-100">Cohort Recognition Wall</h2>
+            <h2 className="text-lg sm:text-xl font-bold text-zinc-100">Cohort Recognition Wall</h2>
             <p className="text-xs sm:text-sm text-zinc-500">{COHORT_LABEL}</p>
           </div>
         </div>
-        <span className="px-3 py-1 text-xs font-semibold bg-amber-100 dark:bg-amber-500/10 text-amber-700 dark:text-amber-400 rounded-full">
+        <span className="px-3 py-1 text-xs font-semibold bg-amber-500/10 text-amber-400 rounded-full">
           {allGroups.length} contributor{allGroups.length !== 1 ? 's' : ''}
         </span>
       </div>
@@ -227,13 +227,13 @@ export default function CohortRecognitionWall({ newSubmission, onClaimBadge, onE
       {/* Claim your spot CTA */}
       <button
         onClick={onClaimBadge}
-        className="w-full flex items-center gap-3 p-3 sm:p-4 bg-white dark:bg-zinc-600 border-2 border-dashed border-zinc-300 dark:border-zinc-500 hover:border-sky-400 dark:hover:border-sky-500/50 hover:bg-sky-50 dark:hover:bg-sky-500/5 rounded-xl transition-all group text-left"
+        className="w-full flex items-center gap-3 p-3 sm:p-4 bg-zinc-600 border-2 border-dashed border-zinc-500 hover:border-sky-500/50 hover:bg-sky-500/5 rounded-xl transition-all group text-left"
       >
-        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-sky-100 dark:bg-sky-500/10 flex items-center justify-center group-hover:bg-sky-200 dark:group-hover:bg-sky-500/20 transition-colors flex-shrink-0">
-          <Plus className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-sky-500/10 flex items-center justify-center group-hover:bg-sky-500/20 transition-colors flex-shrink-0">
+          <Plus className="w-5 h-5 text-sky-400" />
         </div>
         <div>
-          <p className="font-semibold text-sky-600 dark:text-sky-400 text-sm">Your Name Here</p>
+          <p className="font-semibold text-sky-400 text-sm">Your Name Here</p>
           <p className="text-xs text-zinc-500 mt-0.5">Submit a contribution to claim your spot on the wall!</p>
         </div>
       </button>

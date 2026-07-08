@@ -91,38 +91,38 @@ function deriveAuthorName(contributor: Contributor | null, article: Article): st
 function NetworkTopologyArticleDiagrams() {
   return (
     <div className="space-y-8">
-      <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700">
+      <div className="p-4 rounded-xl bg-zinc-800/60 border border-zinc-700">
         <FirewallNetworkSegmentationDiagram />
       </div>
-      <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700">
+      <div className="p-4 rounded-xl bg-zinc-800/60 border border-zinc-700">
         <FirewallPacketInspectionDiagram />
       </div>
-      <div className="prose-style space-y-4 text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
-        <p>The three-tier network topology model divides enterprise switching infrastructure into three distinct functional layers. The <strong className="text-zinc-800 dark:text-zinc-200">Core Layer</strong> provides high-speed backbone connectivity between distribution switches with sub-millisecond failover. The <strong className="text-zinc-800 dark:text-zinc-200">Distribution Layer</strong> enforces routing policy, VLAN segmentation, and inter-subnet ACLs. The <strong className="text-zinc-800 dark:text-zinc-200">Access Layer</strong> connects end-user devices with port security, 802.1X authentication, and Power over Ethernet (PoE).</p>
+      <div className="prose-style space-y-4 text-zinc-400 text-sm leading-relaxed">
+        <p>The three-tier network topology model divides enterprise switching infrastructure into three distinct functional layers. The <strong className="text-zinc-200">Core Layer</strong> provides high-speed backbone connectivity between distribution switches with sub-millisecond failover. The <strong className="text-zinc-200">Distribution Layer</strong> enforces routing policy, VLAN segmentation, and inter-subnet ACLs. The <strong className="text-zinc-200">Access Layer</strong> connects end-user devices with port security, 802.1X authentication, and Power over Ethernet (PoE).</p>
         <p>The firewall segmentation diagram above illustrates how the DMZ acts as a controlled buffer zone. Public-facing services (web servers, DNS resolvers) sit in the DMZ reachable from the internet but fully isolated from the private LAN. Stateful Packet Inspection (SPI) tracks each TCP/UDP session in a state table, allowing return traffic for established connections while silently dropping unsolicited inbound probes.</p>
       </div>
 
       {/* Citations */}
-      <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
-          <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-          <h2 className="text-base font-bold text-amber-700 dark:text-amber-400">References &amp; Citations</h2>
+      <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-500/20">
+          <ExternalLink className="w-4 h-4 text-amber-400 flex-shrink-0" />
+          <h2 className="text-base font-bold text-amber-400">References &amp; Citations</h2>
         </div>
         <ul className="px-5 py-4 space-y-2.5">
           <li className="flex gap-2.5 items-start text-sm">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
-            <span className="text-zinc-600 dark:text-zinc-400">
-              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Cisco Press:</strong>{' '}
-              <a href="https://www.ciscopress.com/articles/article.asp?p=2202410" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+            <span className="text-zinc-400">
+              <strong className="font-semibold text-zinc-200">Cisco Press:</strong>{' '}
+              <a href="https://www.ciscopress.com/articles/article.asp?p=2202410" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
                 Campus Network Architecture and Hierarchical Design Models (Core, Distribution, Access)
               </a>
             </span>
           </li>
           <li className="flex gap-2.5 items-start text-sm">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
-            <span className="text-zinc-600 dark:text-zinc-400">
-              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">IEEE Standards:</strong>{' '}
-              <a href="https://www.ieee802.org/3/" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+            <span className="text-zinc-400">
+              <strong className="font-semibold text-zinc-200">IEEE Standards:</strong>{' '}
+              <a href="https://www.ieee802.org/3/" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
                 IEEE 802.3 Ethernet Working Group LAN/MAN Infrastructure Standards
               </a>
             </span>
@@ -136,39 +136,39 @@ function NetworkTopologyArticleDiagrams() {
 function OSIPDUArticleDiagrams() {
   return (
     <div className="space-y-8">
-      <div className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700">
+      <div className="p-4 rounded-xl bg-zinc-800/60 border border-zinc-700">
         <OSIModelStackDiagram />
       </div>
-      <div className="space-y-4 text-zinc-600 dark:text-zinc-400 text-sm leading-relaxed">
+      <div className="space-y-4 text-zinc-400 text-sm leading-relaxed">
         <p>Data encapsulation is the process of wrapping payload data with protocol-specific headers (and sometimes trailers) as it descends through the OSI stack before transmission. Each layer adds its own metadata so the receiving peer at the same layer can process it correctly.</p>
-        <p><strong className="text-zinc-800 dark:text-zinc-200">Layer 7–5 (Application/Presentation/Session):</strong> Raw data is formatted, encrypted if applicable (TLS lives here conceptually), and session multiplexed. PDU is simply called "Data".</p>
-        <p><strong className="text-zinc-800 dark:text-zinc-200">Layer 4 (Transport):</strong> TCP or UDP adds source/destination ports and, for TCP, sequence numbers and checksum. The PDU becomes a <code className="px-1 bg-zinc-200 dark:bg-zinc-800 rounded font-mono text-sky-700 dark:text-sky-400">Segment</code>.</p>
-        <p><strong className="text-zinc-800 dark:text-zinc-200">Layer 3 (Network):</strong> IP header adds source and destination IP addresses. The PDU becomes a <code className="px-1 bg-zinc-200 dark:bg-zinc-800 rounded font-mono text-sky-700 dark:text-sky-400">Packet</code>. Routers operate at this layer.</p>
-        <p><strong className="text-zinc-800 dark:text-zinc-200">Layer 2 (Data Link):</strong> Ethernet header adds MAC addresses; a trailer adds a Frame Check Sequence (FCS) CRC. PDU = <code className="px-1 bg-zinc-200 dark:bg-zinc-800 rounded font-mono text-sky-700 dark:text-sky-400">Frame</code>. Switches operate here.</p>
-        <p><strong className="text-zinc-800 dark:text-zinc-200">Layer 1 (Physical):</strong> Frames are serialized into electrical voltages, light pulses, or radio waves. PDU = <code className="px-1 bg-zinc-200 dark:bg-zinc-800 rounded font-mono text-sky-700 dark:text-sky-400">Bits</code>.</p>
+        <p><strong className="text-zinc-200">Layer 7–5 (Application/Presentation/Session):</strong> Raw data is formatted, encrypted if applicable (TLS lives here conceptually), and session multiplexed. PDU is simply called "Data".</p>
+        <p><strong className="text-zinc-200">Layer 4 (Transport):</strong> TCP or UDP adds source/destination ports and, for TCP, sequence numbers and checksum. The PDU becomes a <code className="px-1 bg-zinc-800 rounded font-mono text-sky-400">Segment</code>.</p>
+        <p><strong className="text-zinc-200">Layer 3 (Network):</strong> IP header adds source and destination IP addresses. The PDU becomes a <code className="px-1 bg-zinc-800 rounded font-mono text-sky-400">Packet</code>. Routers operate at this layer.</p>
+        <p><strong className="text-zinc-200">Layer 2 (Data Link):</strong> Ethernet header adds MAC addresses; a trailer adds a Frame Check Sequence (FCS) CRC. PDU = <code className="px-1 bg-zinc-800 rounded font-mono text-sky-400">Frame</code>. Switches operate here.</p>
+        <p><strong className="text-zinc-200">Layer 1 (Physical):</strong> Frames are serialized into electrical voltages, light pulses, or radio waves. PDU = <code className="px-1 bg-zinc-800 rounded font-mono text-sky-400">Bits</code>.</p>
       </div>
 
       {/* Citations */}
-      <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
-          <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-          <h2 className="text-base font-bold text-amber-700 dark:text-amber-400">References &amp; Citations</h2>
+      <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-500/20">
+          <ExternalLink className="w-4 h-4 text-amber-400 flex-shrink-0" />
+          <h2 className="text-base font-bold text-amber-400">References &amp; Citations</h2>
         </div>
         <ul className="px-5 py-4 space-y-2.5">
           <li className="flex gap-2.5 items-start text-sm">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
-            <span className="text-zinc-600 dark:text-zinc-400">
-              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">ISO Standard:</strong>{' '}
-              <a href="https://www.iso.org/standard/20269.html" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+            <span className="text-zinc-400">
+              <strong className="font-semibold text-zinc-200">ISO Standard:</strong>{' '}
+              <a href="https://www.iso.org/standard/20269.html" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
                 ISO/IEC 7498-1: Open Systems Interconnection Basic Reference Model
               </a>
             </span>
           </li>
           <li className="flex gap-2.5 items-start text-sm">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
-            <span className="text-zinc-600 dark:text-zinc-400">
-              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">Cisco Press:</strong>{' '}
-              <a href="https://www.ciscopress.com/store/interconnecting-cisco-network-devices-part-1-icnd1-9780132877435" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+            <span className="text-zinc-400">
+              <strong className="font-semibold text-zinc-200">Cisco Press:</strong>{' '}
+              <a href="https://www.ciscopress.com/store/interconnecting-cisco-network-devices-part-1-icnd1-9780132877435" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
                 Interconnecting Cisco Network Devices Data Encapsulation and Segment-to-Bit Flowcharts
               </a>
             </span>
@@ -182,19 +182,19 @@ function OSIPDUArticleDiagrams() {
 function TCPIPArticleContent() {
   return (
     <div className="space-y-8">
-      <div className="space-y-5 text-zinc-700 dark:text-zinc-300 text-sm leading-relaxed">
-        <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-800 pb-2">TCP/IP Protocol Suite Four-Layer Model</h2>
+      <div className="space-y-5 text-zinc-300 text-sm leading-relaxed">
+        <h2 className="text-xl font-bold text-zinc-100 border-b border-zinc-800 pb-2">TCP/IP Protocol Suite Four-Layer Model</h2>
 
-        <p>The <strong className="font-semibold text-zinc-900 dark:text-zinc-100">TCP/IP model</strong> is the practical implementation framework for internet communication, developed by DARPA in the 1970s and formally standardized through IETF RFCs. Unlike the theoretical 7-layer OSI model, TCP/IP collapses communication into four functional layers, each of which maps to one or more OSI layers.</p>
+        <p>The <strong className="font-semibold text-zinc-100">TCP/IP model</strong> is the practical implementation framework for internet communication, developed by DARPA in the 1970s and formally standardized through IETF RFCs. Unlike the theoretical 7-layer OSI model, TCP/IP collapses communication into four functional layers, each of which maps to one or more OSI layers.</p>
 
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700 my-4">
+        <div className="overflow-x-auto rounded-lg border border-zinc-700 my-4">
           <table className="min-w-full text-sm border-collapse">
             <thead>
-              <tr className="bg-zinc-200/60 dark:bg-zinc-800/60">
-                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">TCP/IP Layer</th>
-                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">OSI Equivalent</th>
-                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">Key Protocols</th>
-                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">PDU</th>
+              <tr className="bg-zinc-800/60">
+                <th className="px-4 py-3 text-left font-semibold text-zinc-100 border-b border-zinc-700">TCP/IP Layer</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-100 border-b border-zinc-700">OSI Equivalent</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-100 border-b border-zinc-700">Key Protocols</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-100 border-b border-zinc-700">PDU</th>
               </tr>
             </thead>
             <tbody>
@@ -204,27 +204,27 @@ function TCPIPArticleContent() {
                 { layer: 'Internet',      osi: 'Layer 3',          protocols: 'IP (RFC 791), ICMP, OSPF, BGP',        pdu: 'Packet'  },
                 { layer: 'Network Access',osi: 'Layers 1, 2',      protocols: 'Ethernet 802.3, Wi-Fi 802.11, ARP',   pdu: 'Frame / Bits' },
               ].map((row, i) => (
-                <tr key={row.layer} className={`border-b border-zinc-100 dark:border-zinc-800 last:border-0 ${i % 2 === 0 ? '' : 'bg-zinc-50/50 dark:bg-zinc-800/20'}`}>
-                  <td className="px-4 py-2.5 font-bold text-zinc-900 dark:text-zinc-100">{row.layer}</td>
-                  <td className="px-4 py-2.5 font-medium text-zinc-600 dark:text-zinc-400 text-[12px]">{row.osi}</td>
-                  <td className="px-4 py-2.5 text-zinc-600 dark:text-zinc-400 text-[12px]">{row.protocols}</td>
-                  <td className="px-4 py-2.5 font-mono text-[11px] text-sky-700 dark:text-sky-400">{row.pdu}</td>
+                <tr key={row.layer} className={`border-b border-zinc-800 last:border-0 ${i % 2 === 0 ? '' : 'bg-zinc-800/20'}`}>
+                  <td className="px-4 py-2.5 font-bold text-zinc-100">{row.layer}</td>
+                  <td className="px-4 py-2.5 font-medium text-zinc-400 text-[12px]">{row.osi}</td>
+                  <td className="px-4 py-2.5 text-zinc-400 text-[12px]">{row.protocols}</td>
+                  <td className="px-4 py-2.5 font-mono text-[11px] text-sky-400">{row.pdu}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mt-6">IPv4 vs. IPv6 Header Architecture</h3>
+        <h3 className="text-base font-semibold text-zinc-100 mt-6">IPv4 vs. IPv6 Header Architecture</h3>
         <p>The shift from IPv4 to IPv6 was driven by IPv4 address exhaustion (32-bit address space = ~4.3 billion unique addresses) and the need for a simpler, more scalable packet format. IPv6 uses 128-bit addresses, providing 3.4 × 10³⁸ unique addresses.</p>
 
-        <div className="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700 my-4">
+        <div className="overflow-x-auto rounded-lg border border-zinc-700 my-4">
           <table className="min-w-full text-sm border-collapse">
             <thead>
-              <tr className="bg-zinc-200/60 dark:bg-zinc-800/60">
-                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">Field</th>
-                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">IPv4 (RFC 791)</th>
-                <th className="px-4 py-3 text-left font-semibold text-zinc-900 dark:text-zinc-100 border-b border-zinc-200 dark:border-zinc-700">IPv6</th>
+              <tr className="bg-zinc-800/60">
+                <th className="px-4 py-3 text-left font-semibold text-zinc-100 border-b border-zinc-700">Field</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-100 border-b border-zinc-700">IPv4 (RFC 791)</th>
+                <th className="px-4 py-3 text-left font-semibold text-zinc-100 border-b border-zinc-700">IPv6</th>
               </tr>
             </thead>
             <tbody>
@@ -237,23 +237,23 @@ function TCPIPArticleContent() {
                 { field: 'NAT Required',     v4: 'Yes (address scarcity)',       v6: 'No (vast address space)'          },
                 { field: 'Auto-config',      v4: 'DHCP required',               v6: 'SLAAC built-in (RFC 4862)'        },
               ].map((row, i) => (
-                <tr key={row.field} className={`border-b border-zinc-100 dark:border-zinc-800 last:border-0 ${i % 2 === 0 ? '' : 'bg-zinc-50/50 dark:bg-zinc-800/20'}`}>
-                  <td className="px-4 py-2.5 font-semibold text-zinc-800 dark:text-zinc-200">{row.field}</td>
-                  <td className="px-4 py-2.5 text-zinc-600 dark:text-zinc-400 text-[12px]">{row.v4}</td>
-                  <td className="px-4 py-2.5 text-zinc-600 dark:text-zinc-400 text-[12px]">{row.v6}</td>
+                <tr key={row.field} className={`border-b border-zinc-800 last:border-0 ${i % 2 === 0 ? '' : 'bg-zinc-800/20'}`}>
+                  <td className="px-4 py-2.5 font-semibold text-zinc-200">{row.field}</td>
+                  <td className="px-4 py-2.5 text-zinc-400 text-[12px]">{row.v4}</td>
+                  <td className="px-4 py-2.5 text-zinc-400 text-[12px]">{row.v6}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
 
-        <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mt-6">Stateful vs. Stateless Packet Transmission</h3>
+        <h3 className="text-base font-semibold text-zinc-100 mt-6">Stateful vs. Stateless Packet Transmission</h3>
         <p>The two primary Transport layer protocols TCP and UDP represent the fundamental trade-off between reliability and performance in packet delivery.</p>
 
         <div className="grid md:grid-cols-2 gap-4 my-4">
-          <div className="rounded-lg border border-sky-200 dark:border-sky-500/30 bg-sky-50/60 dark:bg-sky-500/5 p-4">
-            <h4 className="font-bold text-sky-800 dark:text-sky-300 text-sm mb-2">TCP Stateful / Connection-Oriented</h4>
-            <ul className="space-y-1.5 text-[12px] text-zinc-600 dark:text-zinc-400">
+          <div className="rounded-lg border border-sky-500/30 bg-sky-500/5 p-4">
+            <h4 className="font-bold text-sky-300 text-sm mb-2">TCP Stateful / Connection-Oriented</h4>
+            <ul className="space-y-1.5 text-[12px] text-zinc-400">
               {[
                 'Three-way handshake (SYN → SYN-ACK → ACK) before data transfer',
                 'Sequence numbers track every byteout-of-order segments are reordered',
@@ -268,9 +268,9 @@ function TCPIPArticleContent() {
               ))}
             </ul>
           </div>
-          <div className="rounded-lg border border-teal-200 dark:border-teal-500/30 bg-teal-50/60 dark:bg-teal-500/5 p-4">
-            <h4 className="font-bold text-teal-800 dark:text-teal-300 text-sm mb-2">UDP Stateless / Connectionless</h4>
-            <ul className="space-y-1.5 text-[12px] text-zinc-600 dark:text-zinc-400">
+          <div className="rounded-lg border border-teal-500/30 bg-teal-500/5 p-4">
+            <h4 className="font-bold text-teal-300 text-sm mb-2">UDP Stateless / Connectionless</h4>
+            <ul className="space-y-1.5 text-[12px] text-zinc-400">
               {[
                 'No handshake datagrams sent immediately without session establishment',
                 'No sequence numbers, no acknowledgements, no retransmission',
@@ -287,7 +287,7 @@ function TCPIPArticleContent() {
           </div>
         </div>
 
-        <h3 className="text-base font-semibold text-zinc-900 dark:text-zinc-100 mt-6">CompTIA A+ Core 1 Exam Focus Areas</h3>
+        <h3 className="text-base font-semibold text-zinc-100 mt-6">CompTIA A+ Core 1 Exam Focus Areas</h3>
         <p>CompTIA A+ Core 1 (220-1201) Section 2.1 Protocol Suites tests your ability to:</p>
         <ul className="space-y-1.5 pl-0 list-none">
           {[
@@ -298,39 +298,39 @@ function TCPIPArticleContent() {
             'Know that NAT (Network Address Translation) is required with IPv4 but not with IPv6 due to its enormous address space',
           ].map((item, i) => (
             <li key={i} className="flex gap-2.5 items-start">
-              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 dark:bg-sky-400" />
-              <span className="text-zinc-600 dark:text-zinc-400">{item}</span>
+              <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-400" />
+              <span className="text-zinc-400">{item}</span>
             </li>
           ))}
         </ul>
       </div>
 
       {/* Citations */}
-      <div className="rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
-        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
-          <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-          <h2 className="text-base font-bold text-amber-700 dark:text-amber-400">References &amp; Citations</h2>
+      <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
+        <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-500/20">
+          <ExternalLink className="w-4 h-4 text-amber-400 flex-shrink-0" />
+          <h2 className="text-base font-bold text-amber-400">References &amp; Citations</h2>
         </div>
         <ul className="px-5 py-4 space-y-2.5">
           <li className="flex gap-2.5 items-start text-sm">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
-            <span className="text-zinc-600 dark:text-zinc-400">
-              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">IETF Standards:</strong>{' '}
-              <a href="https://www.rfc-editor.org/rfc/rfc791" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+            <span className="text-zinc-400">
+              <strong className="font-semibold text-zinc-200">IETF Standards:</strong>{' '}
+              <a href="https://www.rfc-editor.org/rfc/rfc791" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
                 RFC 791 (Internet Protocol)
               </a>
               {' & '}
-              <a href="https://www.rfc-editor.org/rfc/rfc793" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+              <a href="https://www.rfc-editor.org/rfc/rfc793" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
                 RFC 793 (Transmission Control Protocol)
               </a>
               {'Core standard documentation.'}
             </span>
           </li>
           <li className="flex gap-2.5 items-start text-sm">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500 dark:bg-amber-400" />
-            <span className="text-zinc-600 dark:text-zinc-400">
-              <strong className="font-semibold text-zinc-800 dark:text-zinc-200">CompTIA Official:</strong>{' '}
-              <a href="https://www.comptia.org/certifications/a" target="_blank" rel="noopener noreferrer" className="text-sky-600 dark:text-sky-400 hover:underline underline-offset-2">
+            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
+            <span className="text-zinc-400">
+              <strong className="font-semibold text-zinc-200">CompTIA Official:</strong>{' '}
+              <a href="https://www.comptia.org/certifications/a" target="_blank" rel="noopener noreferrer" className="text-sky-400 hover:underline underline-offset-2">
                 CompTIA A+ Core 1 (220-1201) Exam BlueprintSection 2.1 Protocol Suites
               </a>
             </span>
@@ -352,15 +352,15 @@ function TicketOrMarkdownContent({ content }: { content: string }) {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-xl border-l-4 border-amber-400/70 bg-amber-50 dark:bg-amber-500/5 px-5 py-4 space-y-2">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">Problem</h3>
-        <div className="text-sm text-amber-900 dark:text-amber-200/80 leading-relaxed whitespace-pre-wrap">
+      <div className="rounded-xl border-l-4 border-amber-400/70 bg-amber-500/5 px-5 py-4 space-y-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-amber-400">Problem</h3>
+        <div className="text-sm text-amber-200/80 leading-relaxed whitespace-pre-wrap">
           {problem.replace(/^#+\s*/gm, '').replace(/\*\*/g, '')}
         </div>
       </div>
-      <div className="rounded-xl border-l-4 border-emerald-400/70 bg-emerald-50 dark:bg-emerald-500/5 px-5 py-4 space-y-2">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Solution</h3>
-        <div className="text-sm text-emerald-900 dark:text-emerald-200/80 leading-relaxed whitespace-pre-wrap">
+      <div className="rounded-xl border-l-4 border-emerald-400/70 bg-emerald-500/5 px-5 py-4 space-y-2">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-emerald-400">Solution</h3>
+        <div className="text-sm text-emerald-200/80 leading-relaxed whitespace-pre-wrap">
           {solution.replace(/^#+\s*/gm, '').replace(/\*\*/g, '')}
         </div>
       </div>
@@ -468,12 +468,12 @@ export default function ArticlePage() {
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto animate-pulse">
-        <div className="h-8 bg-zinc-200 dark:bg-zinc-800 rounded w-1/3 mb-6" />
-        <div className="h-48 bg-zinc-200 dark:bg-zinc-800 rounded-2xl mb-6" />
+        <div className="h-8 bg-zinc-800 rounded w-1/3 mb-6" />
+        <div className="h-48 bg-zinc-800 rounded-2xl mb-6" />
         <div className="space-y-4">
-          <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-full" />
-          <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-5/6" />
-          <div className="h-4 bg-zinc-200 dark:bg-zinc-800 rounded w-4/6" />
+          <div className="h-4 bg-zinc-800 rounded w-full" />
+          <div className="h-4 bg-zinc-800 rounded w-5/6" />
+          <div className="h-4 bg-zinc-800 rounded w-4/6" />
         </div>
       </div>
     );
@@ -482,13 +482,13 @@ export default function ArticlePage() {
   if (!article) {
     return (
       <div className="max-w-4xl mx-auto text-center py-20">
-        <h1 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100 mb-4">Article Not Found</h1>
-        <p className="text-zinc-500 dark:text-zinc-400 mb-6">
+        <h1 className="text-2xl font-bold text-zinc-100 mb-4">Article Not Found</h1>
+        <p className="text-zinc-400 mb-6">
           The article you're looking for doesn't exist or has been moved.
         </p>
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sky-600 dark:text-sky-400 font-medium hover:underline"
+          className="inline-flex items-center gap-2 text-sky-400 font-medium hover:underline"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Home
@@ -517,28 +517,28 @@ export default function ArticlePage() {
       {/* Back button */}
       <button
         onClick={goBack}
-        className="inline-flex items-center gap-2 text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors text-sm font-medium mb-5"
+        className="inline-flex items-center gap-2 text-zinc-400 hover:text-sky-400 transition-colors text-sm font-medium mb-5"
       >
         <ArrowLeft className="w-4 h-4" />
         {article.section ? `Back to ${article.section.title}` : 'Back'}
       </button>
 
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400 mb-5">
-        <Link to="/" className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors">Home</Link>
+      <nav className="flex items-center gap-2 text-sm text-zinc-400 mb-5">
+        <Link to="/" className="hover:text-sky-400 transition-colors">Home</Link>
         <span>/</span>
         {article.section && (
           <>
             <Link
               to={`/${article.section.slug}`}
-              className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+              className="hover:text-sky-400 transition-colors"
             >
               {article.section.title}
             </Link>
             <span>/</span>
           </>
         )}
-        <span className="text-zinc-800 dark:text-zinc-100 truncate max-w-xs">{article.title}</span>
+        <span className="text-zinc-100 truncate max-w-xs">{article.title}</span>
       </nav>
 
       {/* ── Hero Banner ──────────────────────────────────────── */}
@@ -621,7 +621,7 @@ export default function ArticlePage() {
       </div>
 
       {/* ── Article body ─────────────────────────────────────── */}
-      <div className="bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 md:p-8">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 md:p-8">
         {isNetworkTopologyArticle ? (
           <NetworkTopologyArticleDiagrams />
         ) : isOSIPDUArticle ? (
@@ -632,16 +632,16 @@ export default function ArticlePage() {
           <ArticleRenderer blocks={localContentEntry.content} />
         ) : effectiveIsSample ? (
           <div className="max-w-2xl mx-auto text-center my-16">
-            <div className="relative rounded-2xl border-2 border-dashed border-sky-300 dark:border-sky-500/30 bg-sky-50/40 dark:bg-zinc-800/60 p-10">
+            <div className="relative rounded-2xl border-2 border-dashed border-sky-500/30 bg-zinc-800/60 p-10">
               <div className="flex justify-center mb-6">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20">
                   <UploadCloud className="w-8 h-8 text-white" />
                 </div>
               </div>
-              <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-4">
+              <h2 className="text-2xl font-bold text-zinc-100 mb-4">
                 Claim this Open Slot
               </h2>
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-lg mx-auto mb-8">
+              <p className="text-sm text-zinc-400 leading-relaxed max-w-lg mx-auto mb-8">
                 This curriculum endpoint is currently open for peer review and documentation. Submit your verified research, definitions, or script matrices to populate this hub node!
               </p>
               <button
@@ -682,7 +682,7 @@ export default function ArticlePage() {
           {article.tags.map((tag) => (
             <span
               key={tag}
-              className="px-3 py-1 bg-zinc-200 dark:bg-zinc-100 text-zinc-700 dark:text-zinc-700 rounded-full text-sm"
+              className="px-3 py-1 bg-zinc-800 text-zinc-300 rounded-full text-sm"
             >
               {tag}
             </span>
@@ -692,13 +692,13 @@ export default function ArticlePage() {
 
       {/* References & Citationsonly for live non-founder-diagram articles */}
       {!effectiveIsSample && !isNetworkTopologyArticle && !isOSIPDUArticle && !isTCPIPArticle && (
-        <div className="mt-8 rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50/60 dark:bg-amber-500/5 overflow-hidden">
-          <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-200 dark:border-amber-500/20">
-            <ExternalLink className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-            <h2 className="text-base font-bold text-amber-700 dark:text-amber-400">References &amp; Citations</h2>
+        <div className="mt-8 rounded-xl border border-amber-500/20 bg-amber-500/5 overflow-hidden">
+          <div className="flex items-center gap-2.5 px-5 py-3.5 border-b border-amber-500/20">
+            <ExternalLink className="w-4 h-4 text-amber-400 flex-shrink-0" />
+            <h2 className="text-base font-bold text-amber-400">References &amp; Citations</h2>
           </div>
           <div className="px-5 py-4">
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
+            <p className="text-sm text-zinc-400">
               Contributors: add your references and citations using standard format (APA, MLA, or URL) in your submission via the portal below. External links will open in a new tab.
             </p>
           </div>
@@ -707,8 +707,8 @@ export default function ArticlePage() {
 
       {/* Related articles */}
       {relatedArticles.length > 0 && !strictlyIsSample && (
-        <div className="mt-12 pt-8 border-t border-zinc-300 dark:border-zinc-800">
-          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-6">Related Articles</h2>
+        <div className="mt-12 pt-8 border-t border-zinc-800">
+          <h2 className="text-lg font-semibold text-zinc-100 mb-6">Related Articles</h2>
           <div className="grid md:grid-cols-3 gap-6">
             {relatedArticles.map((related) => (
               <ArticleCard key={related.id} article={related} />
