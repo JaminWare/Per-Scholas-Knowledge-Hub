@@ -207,7 +207,7 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
 
 function ResourcePlacard({ activeTab, onTabChange }: { activeTab: ResourceTab; onTabChange: (tab: ResourceTab) => void }) {
   return (
-    <div className="rounded-[24px] border border-zinc-800/40 bg-zinc-900 shadow-xl shadow-black/20 px-5 py-4">
+    <div className="rounded-2xl border border-zinc-800/30 bg-zinc-950/50 px-5 py-4">
       <div className="flex flex-wrap items-center gap-2">
         {RESOURCE_TABS.map((tab) => {
           const Icon = TAB_ICONS[tab];
@@ -245,7 +245,7 @@ function DomainFilterRow({
   if (!domainInfo?.domain) return null;
 
   return (
-    <div className="rounded-[24px] border border-zinc-800/40 bg-zinc-900 shadow-xl shadow-black/20 px-5 py-4">
+    <div className="rounded-2xl border border-zinc-800/30 bg-zinc-950/50 px-5 py-4">
       <div className="flex flex-wrap gap-2">
         {RESOURCE_TABS.map((tab) => {
           const TabIcon = TAB_ICONS[tab];
@@ -292,7 +292,7 @@ function DomainBanner({
   const objectives = COMPTIA_OBJECTIVES[canonicalTrack] ?? [];
 
   return (
-    <div className="relative rounded-[24px] border border-zinc-800/40 overflow-hidden bg-zinc-900 shadow-xl shadow-black/20">
+    <div className="relative rounded-2xl border border-zinc-800/30 overflow-hidden bg-zinc-950/50">
       <div className="relative px-6 py-8 md:px-8 md:py-10">
         <div className="flex items-start justify-between gap-4 mb-5">
           <div className="flex items-start gap-5 flex-1 min-w-0">

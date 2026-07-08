@@ -30,7 +30,7 @@ function AppContent() {
   const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
   const location = useLocation();
   const { user, signOut } = useAuth();
-  const mainRef = useRef<HTMLElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMobileSidebarOpen(false);
@@ -38,7 +38,7 @@ function AppContent() {
 
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col bg-black text-zinc-100">
-      <ScrollToTop scrollRef={mainRef} />
+      <ScrollToTop scrollRef={scrollRef} />
 
       {/* ── Mobile Sidebar Overlay ─────────────────────────── */}
       {mobileSidebarOpen && (
@@ -108,21 +108,21 @@ function AppContent() {
         <SearchBar onMenuClick={() => setMobileSidebarOpen(true)} />
       </div>
 
-      {/* ── Single Centered Canvas (rigid bounding box) ───── */}
-      <div className="flex-1 overflow-hidden max-w-[90rem] w-full mx-auto px-4 md:px-8 md:py-8">
-        <div className="h-full flex flex-col md:flex-row gap-6 md:gap-8">
+      {/* ── Two-Container Canvas ──────────────────────────── */}
+      <div className="flex-1 overflow-hidden max-w-[90rem] w-full mx-auto px-4 md:px-8 py-4 md:py-12 lg:py-16">
+        <div className="h-full max-h-[88vh] mx-auto flex flex-col md:flex-row gap-6 md:gap-6 my-auto">
 
-          {/* ── Sidebar (desktop scroll container) ────────── */}
+          {/* ── Sidebar Container ─────────────────────────── */}
           {desktopSidebarOpen && (
-            <aside className="hidden md:block w-72 flex-shrink-0 h-full overflow-y-auto overscroll-contain rounded-[24px]">
+            <aside className="hidden md:block w-80 flex-shrink-0 h-full overflow-y-auto overscroll-contain rounded-[24px]">
               <Sidebar onToggle={() => setDesktopSidebarOpen(false)} />
             </aside>
           )}
 
-          {/* ── Module Host (main scroll container) ──────── */}
-          <main ref={mainRef} className="flex-1 min-w-0 w-full h-full overflow-y-auto overscroll-contain">
+          {/* ── Main Module Host Container ────────────────── */}
+          <main className="flex-1 min-w-0 w-full h-full flex flex-col overflow-hidden bg-zinc-900 rounded-[24px] shadow-xl shadow-black/20 border border-zinc-800/40">
             {/* Desktop toolbar row */}
-            <div className="hidden md:flex items-center gap-3 mb-6">
+            <div className="hidden md:flex items-center gap-3 px-6 py-4 border-b border-zinc-800/40 flex-shrink-0">
               <button
                 onClick={() => setDesktopSidebarOpen((v) => !v)}
                 className="p-2 rounded-lg border border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
@@ -164,23 +164,25 @@ function AppContent() {
               </div>
             </div>
 
-            {/* Route content */}
-            <ErrorBoundary>
-              <Routes>
-                <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
-                <Route path="/cohort-admin" element={<AdminControlPage />} />
-                <Route path="/recognition" element={<RecognitionPage />} />
-                <Route path="/learner-experience" element={<LearnerExperiencePage />} />
-                <Route path="/article/:slug" element={<ArticlePage />} />
-                <Route path="/article/:slug/*" element={<ArticlePage />} />
-                <Route path="/:slug/*" element={<SectionPage refreshKey={refreshKey} />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </ErrorBoundary>
+            {/* Scrollable route content area */}
+            <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain p-6 md:p-8">
+              <ErrorBoundary>
+                <Routes>
+                  <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
+                  <Route path="/cohort-admin" element={<AdminControlPage />} />
+                  <Route path="/recognition" element={<RecognitionPage />} />
+                  <Route path="/learner-experience" element={<LearnerExperiencePage />} />
+                  <Route path="/article/:slug" element={<ArticlePage />} />
+                  <Route path="/article/:slug/*" element={<ArticlePage />} />
+                  <Route path="/:slug/*" element={<SectionPage refreshKey={refreshKey} />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </ErrorBoundary>
 
-            {/* Footer */}
-            <div className="mt-12 pb-4 text-center text-xs text-zinc-500">
-              <p>Per Scholas Learners Knowledge Base</p>
+              {/* Footer */}
+              <div className="mt-12 pb-4 text-center text-xs text-zinc-500">
+                <p>Per Scholas Learners Knowledge Base</p>
+              </div>
             </div>
           </main>
         </div>

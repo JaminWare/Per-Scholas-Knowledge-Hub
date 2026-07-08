@@ -1633,7 +1633,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   return (
     <div className="text-zinc-100">
       {/* Command strip card */}
-      <div className="bg-zinc-900 rounded-[24px] shadow-lg shadow-black/20 border border-zinc-800/40 mb-6">
+      <div className="bg-zinc-950/50 rounded-2xl border border-zinc-800/30 mb-6">
         {/* Title row */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">
           <div className="flex items-center gap-3 min-w-0 w-full lg:w-auto">

@@ -114,8 +114,8 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         {/* ── Main content column (3/4 width) ───────────────── */}
         <div className="lg:col-span-2 xl:col-span-3 space-y-8">
 
-          {/* Hero - Floating Pane */}
-          <section className="relative overflow-hidden rounded-[24px] border border-zinc-800/40 bg-zinc-900 shadow-xl shadow-black/20">
+          {/* Hero */}
+          <section className="relative overflow-hidden rounded-2xl border border-zinc-800/30 bg-zinc-950/50">
             <div className="relative px-6 py-8 md:px-8 md:py-10">
               <div className="max-w-2xl flex flex-col gap-2">
                 <div className="flex flex-wrap items-center gap-3">
@@ -188,9 +188,9 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
             </div>
           </CollapsibleCard>
 
-          {/* Featured Articles - Floating Pane */}
+          {/* Featured Articles */}
           {featuredArticles.length > 0 && (
-            <section className="bg-zinc-900 rounded-[24px] border border-zinc-800/40 shadow-xl shadow-black/20 p-6 md:p-8">
+            <section className="bg-zinc-950/50 rounded-2xl border border-zinc-800/30 p-6 md:p-8">
               <h2 className="text-zinc-100 font-medium text-lg md:text-xl tracking-tight mb-6">Featured Articles</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {featuredArticles.map((article) => (
@@ -233,7 +233,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Widget 1 - Contribute */}
           <button
             onClick={() => setModalOpen(true)}
-            className="w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-zinc-900 border border-zinc-800/40 rounded-[20px] shadow-xl shadow-black/20 cursor-pointer hover:border-zinc-700 transition-all duration-200 group outline-none select-none ring-0 focus:ring-0"
+            className="w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-zinc-950/50 border border-zinc-800/30 rounded-xl cursor-pointer hover:border-zinc-700 transition-all duration-200 group outline-none select-none ring-0 focus:ring-0"
           >
             <div className="flex items-center gap-3 w-full">
               <div className="p-2.5 rounded-xl bg-sky-500/15 flex-shrink-0 group-hover:bg-sky-500/25 transition-colors">
@@ -249,7 +249,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Widget 2 - View Portfolios */}
           <Link
             to="/recognition"
-            className="block w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-zinc-900 border border-zinc-800/40 rounded-[20px] shadow-xl shadow-black/20 hover:border-zinc-700 transition-all duration-200 group ring-0 focus:ring-0"
+            className="block w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-zinc-950/50 border border-zinc-800/30 rounded-xl hover:border-zinc-700 transition-all duration-200 group ring-0 focus:ring-0"
           >
             <div className="flex items-center gap-3 w-full">
               <div className="p-2.5 rounded-xl bg-sky-500/15 flex-shrink-0">

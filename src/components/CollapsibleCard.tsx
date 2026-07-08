@@ -13,7 +13,7 @@ export default function CollapsibleCard({ title, icon, children, defaultOpen = f
   const panelId = useId();
 
   return (
-    <section className="bg-zinc-900 rounded-[24px] shadow-xl shadow-black/20 border border-zinc-800/40 p-6 md:p-8 transition-all duration-300 ease-out">
+    <section className="bg-zinc-950/50 rounded-2xl border border-zinc-800/30 p-6 md:p-8 transition-all duration-300 ease-out">
       <button
         type="button"
         onClick={() => setIsOpen((v) => !v)}

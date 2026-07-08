@@ -240,7 +240,7 @@ export default function LearnerExperiencePage() {
   return (
     <div className="max-w-7xl mx-auto space-y-8">
       {/* ─── Banner ─── */}
-      <div className="relative rounded-[24px] bg-zinc-900 border border-zinc-800/40 shadow-xl shadow-black/20 overflow-hidden">
+      <div className="relative rounded-2xl bg-zinc-950/50 border border-zinc-800/30 overflow-hidden">
         <div className="relative px-6 py-8 md:px-8 md:py-10">
           <div className="flex items-start gap-5 mb-6">
             <div className="w-14 h-14 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
@@ -279,7 +279,7 @@ export default function LearnerExperiencePage() {
 
       {/* ─── Category Sub-Navigation ─── */}
       {filters && (
-        <div className="rounded-[24px] border border-zinc-800/40 bg-zinc-900 shadow-xl shadow-black/20 p-4 space-y-3">
+        <div className="rounded-2xl border border-zinc-800/30 bg-zinc-950/50 p-4 space-y-3">
           <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Filter by focus area</span>
           <div className="flex flex-wrap gap-2">
             {filters.map((sub) => {
