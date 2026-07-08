@@ -5,7 +5,7 @@ export interface AutoCategoryResult {
   track: string;
   compObjective?: string;
   lxStage?: string;
-  submissionType?: 'Diagram' | 'Prompt Playbook';
+  submissionType?: 'Diagram' | 'Prompt Playbook' | 'Study Tip';
 }
 
 interface SearchableEntry {
@@ -84,6 +84,77 @@ const RULE_DATA: {
     masterCategory: LX_TRACK,
     track: LX_TRACK,
     compObjective: 'Tech Solutions',
+    lxStage: 'labs',
+  },
+  // === Deskolas Tech Solutions: Hardware & AV ===
+  {
+    keywords: [
+      'monitor not working', 'webcam issue', 'mic not detected', 'headset audio',
+      'display flickering', 'usb not recognized', 'hdmi no signal', 'external monitor',
+      'second screen', 'dual monitor', 'audio crackling', 'speaker no sound',
+      'keyboard layout', 'mouse lag', 'bluetooth pairing', 'docking station issue',
+      'monitor', 'webcam', 'mic', 'headset', 'display', 'peripheral',
+      'audio output', 'screen share', 'projector',
+    ],
+    masterCategory: 'Deskolas Tech Solutions',
+    track: 'Learner Experience Tech Solutions',
+    compObjective: 'Hardware & AV Setup',
+    lxStage: 'labs',
+  },
+  // === Deskolas Tech Solutions: Network & Access ===
+  {
+    keywords: [
+      'wifi not working', 'vpn not connecting', 'internet disconnecting', 'proxy error',
+      'firewall blocked', 'dns not resolving', 'ip conflict', 'network timeout',
+      'wifi dropping', 'cant access website', 'connection refused', 'bandwidth throttle',
+      'slow internet', 'hotspot', 'tethering issue', 'campus wifi',
+      'network drive', 'remote desktop lag',
+    ],
+    masterCategory: 'Deskolas Tech Solutions',
+    track: 'Learner Experience Tech Solutions',
+    compObjective: 'Network & Access',
+    lxStage: 'labs',
+  },
+  // === Deskolas Tech Solutions: Software & IDEs ===
+  {
+    keywords: [
+      'vscode crash', 'extension error', 'vscode not opening', 'terminal not working',
+      'virtualbox error', 'vm not starting', 'install failed', 'software update stuck',
+      'permission denied install', 'dependency missing', 'node version', 'npm error',
+      'python path', 'java version', 'compiler error', 'ide freeze',
+      'dark mode vscode', 'settings sync', 'workspace config',
+    ],
+    masterCategory: 'Deskolas Tech Solutions',
+    track: 'Learner Experience Tech Solutions',
+    compObjective: 'Software & IDEs',
+    lxStage: 'labs',
+  },
+  // === Deskolas Tech Solutions: Git & GitHub ===
+  {
+    keywords: [
+      'git push rejected', 'merge conflict resolution', 'git clone failed', 'branch not found',
+      'commit message', 'git pull error', 'detached head', 'git reset',
+      'github authentication', 'ssh key github', 'permission denied git',
+      'remote origin', 'git stash', 'rebase conflict', 'fork sync',
+      'pull request', 'github pages', 'git ignore not working',
+    ],
+    masterCategory: 'Deskolas Tech Solutions',
+    track: 'Learner Experience Tech Solutions',
+    compObjective: 'Git & GitHub',
+    lxStage: 'labs',
+  },
+  // === Deskolas Tech Solutions: Accounts & LMS ===
+  {
+    keywords: [
+      'canvas locked', 'coursera module', 'enrollment issue', 'login failed',
+      'password reset link', 'mfa not working', '2fa lost', 'account locked out',
+      'email verification', 'student portal', 'canvas submission', 'quiz timer',
+      'gradebook error', 'assignment upload', 'discussion board', 'zoom link expired',
+      'teams meeting', 'slack invite',
+    ],
+    masterCategory: 'Deskolas Tech Solutions',
+    track: 'Learner Experience Tech Solutions',
+    compObjective: 'Accounts & LMS',
     lxStage: 'labs',
   },
   // === Core 1 Domain 1.0 (Mobile Devices) ===
@@ -581,7 +652,7 @@ export function autoCategorizeSubmission(
 
   const combined = `${title} ${content}`.toLowerCase();
 
-  let submissionType: 'Diagram' | 'Prompt Playbook' | undefined;
+  let submissionType: 'Diagram' | 'Prompt Playbook' | 'Study Tip' | undefined;
   if (DIAGRAM_KEYWORDS.some((kw) => combined.includes(kw))) {
     submissionType = 'Diagram';
   } else if (PROMPT_KEYWORDS.some((kw) => combined.includes(kw))) {
@@ -636,12 +707,14 @@ export function autoCategorizeSubmission(
   }
 
   if (bestMatch && bestMatch.points >= MINIMUM_CONFIDENCE_SCORE) {
+    const resolvedType = bestMatch.entry.masterCategory === 'Deskolas Tech Solutions'
+      ? 'Study Tip' : submissionType;
     return {
       masterCategory: bestMatch.entry.masterCategory,
       track: bestMatch.entry.track,
       compObjective: bestMatch.entry.compObjective,
       lxStage: bestMatch.entry.lxStage,
-      submissionType,
+      submissionType: resolvedType,
     };
   }
 
@@ -676,12 +749,14 @@ export function autoCategorizeSubmission(
   }
 
   if (fallbackBest && fallbackBest.points >= MINIMUM_CONFIDENCE_SCORE) {
+    const resolvedType = fallbackBest.entry.masterCategory === 'Deskolas Tech Solutions'
+      ? 'Study Tip' : submissionType;
     return {
       masterCategory: fallbackBest.entry.masterCategory,
       track: fallbackBest.entry.track,
       compObjective: fallbackBest.entry.compObjective,
       lxStage: fallbackBest.entry.lxStage,
-      submissionType,
+      submissionType: resolvedType,
     };
   }
 

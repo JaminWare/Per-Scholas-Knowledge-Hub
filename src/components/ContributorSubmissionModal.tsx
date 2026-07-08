@@ -488,17 +488,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   const handleSubmit = async () => {
     const e: Record<string, string> = {};
-    if (!fullName.trim()) e.fullName = 'Required.';
     if (!title.trim()) e.title = 'Required.';
-    if (!editItem && !masterCategory) e.masterCategory = 'Please select a category.';
-
-    if (isLearnerExperience && !lxStage) {
-      e.lxStage = 'Please select a stage.';
-    }
-
-    if (!isLearnerExperience && masterCategory && domainOptions.length > 0 && !track) {
-      e.track = 'Please select a domain.';
-    }
 
     if (isResourceLink) {
       if (!/^https?:\/\/.+/.test(resourceUrl.trim())) e.resourceUrl = 'Valid URL required.';
@@ -524,6 +514,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setErrors(e);
     if (Object.keys(e).length > 0) return;
 
+    const resolvedName = fullName.trim() || 'Anonymous Contributor';
     let rawContent = assembleContent();
 
     if (PROFANITY_PATTERN.test(title) || PROFANITY_PATTERN.test(rawContent)) {
@@ -598,10 +589,13 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       payloadTrack = 'Learner Experience Tech Solutions';
       payloadBadge = 'Community Contributor';
     }
+    if (!payloadTrack.trim()) {
+      payloadTrack = 'Pending Triage';
+    }
 
     const formattedContent = (submissionType === 'Article' && !isLearnerExperience && !isDeskolas)
       ? buildFormattedContent(
-          fullName.trim(), payloadTrack, submissionType,
+          resolvedName, payloadTrack, submissionType,
           concept.trim(), aPlusRelevance.trim(), impact.trim(), references.trim(),
           diagramUrl.trim() || undefined,
         )
@@ -615,7 +609,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       : formattedContent;
 
     const insertPayload = {
-      full_name: fullName.trim(),
+      full_name: resolvedName,
       track: payloadTrack,
       badge: payloadBadge,
       title: title.trim(),
@@ -640,7 +634,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
       const sub: NewSubmission = { ...(data as NewSubmission), badge: payloadBadge, submission_type: submissionType };
 
-      try { localStorage.setItem('learnerHub_authorName', fullName.trim()); } catch {}
+      try { localStorage.setItem('learnerHub_authorName', resolvedName); } catch {}
 
       onSubmitted(sub);
       setIsSuccess(true);
@@ -714,14 +708,14 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
           <div className="space-y-6">
 
             <div>
-              <label className="block text-sm font-semibold mb-1.5 text-zinc-200">Full Name / Discord Handle</label>
+              <label className="block text-sm font-semibold mb-1.5 text-zinc-200">Full Name / Discord Handle <span className="text-zinc-500 font-normal">(optional)</span></label>
               <div className="relative" ref={authorFieldRef}>
                 <input
                   type="text"
                   value={fullName}
                   onChange={(e) => { setFullName(e.target.value); setShowSuggestions(true); }}
                   onFocus={() => { if (fullName.length > 0) setShowSuggestions(true); }}
-                  placeholder="e.g. Jane Smith"
+                  placeholder="Optional - defaults to Anonymous Contributor"
                   maxLength={100}
                   className={inputCls('fullName')}
                   autoComplete="off"
