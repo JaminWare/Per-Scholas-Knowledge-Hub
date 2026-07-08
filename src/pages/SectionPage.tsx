@@ -293,8 +293,8 @@ function DomainBanner({
 
   return (
     <div className="relative rounded-2xl border border-zinc-800/30 overflow-hidden bg-zinc-950/50">
-      <div className="relative px-6 py-8 md:px-8 md:py-10">
-        <div className="flex items-start justify-between gap-4 mb-5">
+      <div className="relative px-6 py-5 md:px-8 md:py-6">
+        <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex items-start gap-5 flex-1 min-w-0">
             <div className="w-14 h-14 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
               <BannerIcon className="w-7 h-7 text-white" />
@@ -366,7 +366,7 @@ function TrackDomains({
   gridMode?: boolean;
 }) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       {domains.map((domain) => {
         const canonicalTarget = CANONICAL_DOMAINS[domain] || domain;
         const domainArticles = articles.filter((a) => a.study_category === canonicalTarget);
@@ -385,7 +385,7 @@ function TrackDomains({
             {gridMode ? (
               <>
                 {isLoading ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <AppletSkeleton />
                     <AppletSkeleton />
                     <AppletSkeleton />
@@ -394,21 +394,21 @@ function TrackDomains({
                   <div className="space-y-0">
                     {groupByObjective(domainArticles, canonicalTarget).map(([objective, items], idx) => (
                       <div key={objective}>
-                        <div className={`flex items-center gap-2 pb-2 border-b border-zinc-800/50 ${idx === 0 ? 'mt-0' : 'mt-8'}`}>
+                        <div className={`flex items-center gap-2 pb-2 border-b border-zinc-800/50 ${idx === 0 ? 'mt-0' : 'mt-5'}`}>
                           <Target className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
                           <h3 className="text-lg font-semibold text-zinc-200">{objective}</h3>
                           <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-zinc-400">
                             {items.length}
                           </span>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
                           {items.map((a) => <AppletCard key={a.id} article={a} gridMode />)}
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <OpenSlotPlaceholder domain={domain} context={context} onContribute={onContribute} gridMode />
                   </div>
                 )}
@@ -479,7 +479,7 @@ function CurriculumDashboard({
 
     if (isLoading) {
       return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <AppletSkeleton />
           <AppletSkeleton />
           <AppletSkeleton />
@@ -534,14 +534,14 @@ function CurriculumDashboard({
       <div className="space-y-0">
         {groupByObjective(allDomainArticles, canonicalTarget).map(([objective, items], idx) => (
           <div key={objective}>
-            <div className={`flex items-center gap-2 pb-2 border-b border-zinc-800/50 ${idx === 0 ? 'mt-0' : 'mt-8'}`}>
+            <div className={`flex items-center gap-2 pb-2 border-b border-zinc-800/50 ${idx === 0 ? 'mt-0' : 'mt-5'}`}>
               <Target className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
               <h3 className="text-lg font-semibold text-zinc-200">{objective}</h3>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-zinc-400">
                 {items.length}
               </span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
               {items.map((a) => <AppletCard key={a.id} article={a} gridMode />)}
             </div>
           </div>
@@ -568,10 +568,10 @@ function CurriculumDashboard({
   }, [visibleArticles, allCanonicalTargets]);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6">
       {uncategorizedArticles.length > 0 && (
         <section>
-          <div className="flex items-center gap-2.5 mb-4 pb-3 border-b border-zinc-800/50">
+          <div className="flex items-center gap-2.5 mb-3 pb-3 border-b border-zinc-800/50">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-sky-500/10 text-sky-500">
               <BookOpen className="w-4 h-4" />
             </div>
@@ -585,9 +585,9 @@ function CurriculumDashboard({
           </div>
         </section>
       )}
-      <div className="grid grid-cols-2 gap-6 items-start min-w-[640px] md:min-w-0 overflow-x-auto md:overflow-x-visible">
+      <div className="grid grid-cols-2 gap-4 items-start min-w-[640px] md:min-w-0 overflow-x-auto md:overflow-x-visible">
         <section className="min-w-[300px]">
-          <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-800/50">
+          <div className="flex items-center gap-2.5 mb-3 pb-3 border-b border-zinc-800/50">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[core1.color].icon}`}>
               <core1.icon className="w-4 h-4" />
             </div>
@@ -604,7 +604,7 @@ function CurriculumDashboard({
         </section>
 
         <section className="min-w-[300px]">
-          <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-800/50">
+          <div className="flex items-center gap-2.5 mb-3 pb-3 border-b border-zinc-800/50">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[core2.color].icon}`}>
               <core2.icon className="w-4 h-4" />
             </div>
@@ -622,7 +622,7 @@ function CurriculumDashboard({
       </div>
 
       <section>
-        <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-800/50">
+        <div className="flex items-center gap-2.5 mb-3 pb-3 border-b border-zinc-800/50">
           <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[healthcare.color].icon}`}>
             <healthcare.icon className="w-4 h-4" />
           </div>
@@ -789,7 +789,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const displayTitle = meta?.title ?? (slug?.replace(/[-/]/g, ' ') ?? 'Articles');
 
   return (
-    <div className="space-y-8 max-w-7xl">
+    <div className="space-y-5 max-w-7xl">
       {isSubPage && (
         <button
           onClick={goBack}

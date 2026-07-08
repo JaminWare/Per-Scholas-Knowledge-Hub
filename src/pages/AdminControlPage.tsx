@@ -290,7 +290,7 @@ function SubmissionCard({
   return (
     <div className="bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden hover:border-zinc-700 transition-colors">
       {/* Header */}
-      <div className="flex items-start gap-4 p-5">
+      <div className="flex items-start gap-4 p-4">
         <div className={`p-2.5 rounded-lg flex-shrink-0 ${
           isResource ? 'bg-teal-500/10 text-teal-400' : 'bg-sky-500/10 text-sky-400'
         }`}>
@@ -365,7 +365,7 @@ function SubmissionCard({
       </div>
 
       {/* Content preview & editor toggle */}
-      <div className="px-5 pb-3">
+      <div className="px-4 pb-2">
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => setExpanded((v) => !v)}
@@ -583,9 +583,9 @@ function ArchiveTable({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Section header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3">
         <div className="flex items-center gap-3">
           <Archive className="w-5 h-5 text-zinc-500" />
           <div>
@@ -624,27 +624,27 @@ function ArchiveTable({
           <p className="text-center text-sm text-zinc-600 py-8">No submissions match this filter.</p>
         )
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-zinc-800">
+        <div className="overflow-x-auto max-h-[400px] overflow-y-auto rounded-xl border border-zinc-800">
           <table className="w-full text-left text-sm">
-            <thead>
+            <thead className="sticky top-0 z-10">
               <tr className="bg-zinc-900/80 border-b border-zinc-800">
-                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Title</th>
-                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Submitter</th>
-                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 hidden md:table-cell">Date</th>
-                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 hidden lg:table-cell">Track</th>
-                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Status</th>
-                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 text-right">Actions</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Title</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Submitter</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 hidden md:table-cell">Date</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 hidden lg:table-cell">Track</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Status</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800/20">
               {filtered.map((row) => (
                 <tr key={row.id} className="hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-4 py-3 text-zinc-200 font-medium max-w-[200px] truncate">{row.title}</td>
-                  <td className="px-4 py-3 text-zinc-400 whitespace-nowrap">{row.full_name}</td>
-                  <td className="px-4 py-3 text-zinc-500 whitespace-nowrap hidden md:table-cell">{formatDate(row.created_at)}</td>
-                  <td className="px-4 py-3 text-zinc-500 max-w-[160px] truncate hidden lg:table-cell">{trackDisplayName(row.track)}</td>
-                  <td className="px-4 py-3"><StatusPill status={row.status} /></td>
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-2 text-zinc-200 font-medium max-w-[200px] truncate">{row.title}</td>
+                  <td className="px-4 py-2 text-zinc-400 whitespace-nowrap">{row.full_name}</td>
+                  <td className="px-4 py-2 text-zinc-500 whitespace-nowrap hidden md:table-cell">{formatDate(row.created_at)}</td>
+                  <td className="px-4 py-2 text-zinc-500 max-w-[160px] truncate hidden lg:table-cell">{trackDisplayName(row.track)}</td>
+                  <td className="px-4 py-2"><StatusPill status={row.status} /></td>
+                  <td className="px-4 py-2">
                     <div className="flex items-center justify-end gap-1.5">
                       {busyId === row.id ? (
                         <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-500" />
@@ -894,9 +894,9 @@ function AuditTrailView() {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Section header */}
-      <div className="flex items-center gap-3 pb-4">
+      <div className="flex items-center gap-3 pb-3">
         <Activity className="w-5 h-5 text-sky-400" />
         <div>
           <h2 className="text-lg font-bold text-zinc-100">Audit Trail</h2>
@@ -917,14 +917,14 @@ function AuditTrailView() {
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-zinc-800">
+        <div className="overflow-x-auto max-h-[400px] overflow-y-auto rounded-xl border border-zinc-800">
           <table className="w-full text-left text-sm">
-            <thead>
+            <thead className="sticky top-0 z-10">
               <tr className="bg-zinc-900/80 border-b border-zinc-800">
-                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Timestamp</th>
-                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Admin</th>
-                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Action</th>
-                <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Target</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Timestamp</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Admin</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Action</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Target</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-800/20">
@@ -932,21 +932,21 @@ function AuditTrailView() {
                 const badge = getActionBadge(log.action_taken);
                 return (
                   <tr key={log.id} className="hover:bg-zinc-900/50 transition-colors">
-                    <td className="px-4 py-3 text-zinc-400 whitespace-nowrap text-xs">
+                    <td className="px-4 py-2 text-zinc-400 whitespace-nowrap text-xs">
                       {new Date(log.created_at).toLocaleString('en-US', {
                         month: 'short', day: 'numeric', year: 'numeric',
                         hour: 'numeric', minute: '2-digit', hour12: true,
                       })}
                     </td>
-                    <td className="px-4 py-3 text-zinc-200 font-medium text-xs">
+                    <td className="px-4 py-2 text-zinc-200 font-medium text-xs">
                       {log.admin_email}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2">
                       <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase border ${badge.className}`}>
                         {badge.label}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-zinc-300 text-xs max-w-[240px] truncate">
+                    <td className="px-4 py-2 text-zinc-300 text-xs max-w-[240px] truncate">
                       {log.target_title ?? '---'}
                     </td>
                   </tr>
@@ -1793,7 +1793,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5 space-y-5">
 
         {/* Success toast */}
         {successMessage && (
@@ -1815,9 +1815,9 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         {activeTab === 'pending' && (
           <>
             {loading ? (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="bg-zinc-900 border border-zinc-800/40 rounded-xl p-5 animate-pulse">
+                  <div key={i} className="bg-zinc-900 border border-zinc-800/40 rounded-xl p-4 animate-pulse">
                     <div className="flex gap-4">
                       <div className="w-9 h-9 rounded-lg bg-zinc-800 flex-shrink-0" />
                       <div className="flex-1 space-y-2">
@@ -1850,7 +1850,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 </div>
               )
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {filteredSubmissions.map((sub) => (
                   <SubmissionCard
                     key={sub.id}
@@ -1951,8 +1951,8 @@ function SystemHealthView() {
   };
 
   return (
-    <section className="space-y-6">
-      <div className="flex items-center gap-3 mb-2">
+    <section className="space-y-4">
+      <div className="flex items-center gap-3">
         <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
           <HeartPulse className="w-5 h-5 text-emerald-400" />
         </div>
@@ -1989,13 +1989,13 @@ function SystemHealthView() {
 
       {!loading && !error && logs.length > 0 && (
         <div className="rounded-xl border border-zinc-800 bg-zinc-900/50 overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
             <table className="w-full text-left text-sm">
-              <thead className="border-b border-zinc-800 bg-zinc-900/80">
+              <thead className="border-b border-zinc-800 bg-zinc-900/80 sticky top-0 z-10">
                 <tr>
-                  <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Timestamp</th>
-                  <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Route</th>
-                  <th className="px-4 py-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Error Details</th>
+                  <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Timestamp</th>
+                  <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 whitespace-nowrap">Route</th>
+                  <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Error Details</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-800/20">
@@ -2005,15 +2005,15 @@ function SystemHealthView() {
                   const stack = parts[1] || '';
                   return (
                     <tr key={log.id} className="hover:bg-zinc-800/30 transition-colors">
-                      <td className="px-4 py-3 text-zinc-400 whitespace-nowrap align-top text-xs font-mono">
+                      <td className="px-4 py-2 text-zinc-400 whitespace-nowrap align-top text-xs font-mono">
                         {formatTimestamp(log.created_at)}
                       </td>
-                      <td className="px-4 py-3 text-zinc-300 whitespace-nowrap align-top">
+                      <td className="px-4 py-2 text-zinc-300 whitespace-nowrap align-top">
                         <span className="inline-flex items-center px-2 py-0.5 rounded bg-zinc-800 text-xs font-mono text-zinc-300">
                           {log.target_id || '/'}
                         </span>
                       </td>
-                      <td className="px-4 py-3 align-top max-w-md">
+                      <td className="px-4 py-2 align-top max-w-md">
                         <p className="text-red-300 text-xs font-medium mb-1 break-words">{errorMsg}</p>
                         {stack && (
                           <pre className="text-[10px] text-zinc-500 font-mono bg-zinc-950 rounded-lg p-2 max-h-28 overflow-y-auto whitespace-pre-wrap break-words border border-zinc-800">

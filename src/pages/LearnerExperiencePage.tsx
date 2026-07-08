@@ -238,11 +238,11 @@ export default function LearnerExperiencePage() {
   }, [filteredEntries, activeTab]);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="max-w-7xl mx-auto space-y-4">
       {/* ─── Banner ─── */}
       <div className="relative rounded-2xl bg-zinc-950/50 border border-zinc-800/30 overflow-hidden">
-        <div className="relative px-6 py-8 md:px-8 md:py-10">
-          <div className="flex items-start gap-5 mb-6">
+        <div className="relative px-6 py-5 md:px-8 md:py-6">
+          <div className="flex items-start gap-5 mb-4">
             <div className="w-14 h-14 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
               <LifeBuoy className="w-7 h-7 text-white" />
             </div>
@@ -339,13 +339,13 @@ export default function LearnerExperiencePage() {
 
       {/* ─── Content Grid ─── */}
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <AppletSkeleton gridMode />
           <AppletSkeleton gridMode />
           <AppletSkeleton gridMode />
         </div>
       ) : filteredEntries.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {displayEntries.map((entry) => (
             <AppletCard key={entry.id} article={entry} gridMode isPinned={pinnedSet.has(entry.id)} />
           ))}
@@ -371,7 +371,7 @@ export default function LearnerExperiencePage() {
 function EmptyStateInvite({ tab, onContribute }: { tab: JourneyTab; onContribute: () => void }) {
   const Icon = tab.icon;
   return (
-    <div className="flex flex-col items-center justify-center gap-6 py-16 text-center rounded-xl border border-dashed border-zinc-700 bg-zinc-900/50">
+    <div className="flex flex-col items-center justify-center gap-6 py-10 text-center rounded-xl border border-dashed border-zinc-700 bg-zinc-900/50">
       <div className="w-16 h-16 rounded-2xl bg-sky-500/10 border border-sky-400/20 flex items-center justify-center">
         <Icon className="w-8 h-8 text-sky-400" />
       </div>

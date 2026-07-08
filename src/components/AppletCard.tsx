@@ -55,11 +55,6 @@ export function AppletCard({ article, gridMode = false, isPinned = false }: { ar
       <h3 className="font-semibold text-white transition-colors">
         {article.title}
       </h3>
-      {!isSample && (
-        <p className="text-xs text-zinc-400 mt-1">
-          by {article.author || authorName}
-        </p>
-      )}
       {!isSample && article.excerpt && !article.excerpt.startsWith('Contributed by ') && (
         <p className="mt-2 text-sm text-zinc-400 line-clamp-2">{article.excerpt}</p>
       )}
