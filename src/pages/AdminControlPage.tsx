@@ -1506,7 +1506,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
 
   useEffect(() => {
     const scrollContainer = document.querySelector('[class*="overflow-y-auto"][class*="overscroll-contain"][class*="p-6"]');
-    scrollContainer?.scrollTo(0, 0);
+    setTimeout(() => { scrollContainer?.scrollTo(0, 0); }, 150);
   }, []);
 
   const filteredSubmissions = useMemo(() => {
