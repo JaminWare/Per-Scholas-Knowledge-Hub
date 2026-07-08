@@ -27,6 +27,24 @@ function getDashboardRoute(result: SearchResult): string {
   const category = (result.study_category ?? '').trim();
   if (!category) return `/article/${result.slug}`;
 
+  // Route to Learner Experience with deep-link parameters
+  if (category.toLowerCase().includes('learner experience')) {
+    const params = new URLSearchParams();
+    if (result.lx_stage) params.set('tab', result.lx_stage);
+    if (result.lx_topic) params.set('level2', result.lx_topic);
+    if (result.lx_focus) params.set('level3', result.lx_focus);
+    const qs = params.toString();
+    return `/learner-experience${qs ? '?' + qs : ''}`;
+  }
+
+  // Route to Domain Tracks and attach the highlight parameter for auto-expansion
+  const resolved = resolveTrackSlug(category, result.slug);
+  if (resolved) return `/${resolved.slug}?highlight=${result.slug}`;
+
+  // Fallback
+  return `/article/${result.slug}`;
+}
+
   if (category.toLowerCase().includes('learner experience')) {
     const params = new URLSearchParams();
     if (result.lx_stage) params.set('tab', result.lx_stage);
