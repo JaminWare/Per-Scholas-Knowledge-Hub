@@ -20,58 +20,81 @@ export async function checkForDuplicate(
   submissionType: string,
 ): Promise<string | null> {
   const normalized = normalizeTitle(title);
-  if (!normalized) return null;
+  if (!normalized || normalized.length < 3) return null;
 
-  const titlePattern = `%${normalized}%`;
+  // Use exact match for short titles (< 8 chars), substring for longer ones
+  const useExact = normalized.length < 8;
+  const titlePattern = useExact ? normalized : `%${normalized}%`;
+  const titleFilter = useExact ? 'eq' : 'ilike';
 
-  // Title fuzzy check across both tables
+  // Title check across both tables
   const [articlesByTitle, submissionsByTitle] = await Promise.all([
-    supabase
-      .from('articles')
-      .select('id')
-      .ilike('title', titlePattern)
-      .eq('is_sample', false)
-      .limit(1),
-    supabase
-      .from('submissions')
-      .select('id')
-      .ilike('title', titlePattern)
-      .limit(1),
+    titleFilter === 'eq'
+      ? supabase
+          .from('articles')
+          .select('id, title')
+          .eq('is_sample', false)
+          .limit(50)
+      : supabase
+          .from('articles')
+          .select('id')
+          .ilike('title', titlePattern)
+          .eq('is_sample', false)
+          .limit(1),
+    titleFilter === 'eq'
+      ? supabase
+          .from('submissions')
+          .select('id, title')
+          .limit(50)
+      : supabase
+          .from('submissions')
+          .select('id')
+          .ilike('title', titlePattern)
+          .limit(1),
   ]);
 
-  if (
-    (articlesByTitle.data && articlesByTitle.data.length > 0) ||
-    (submissionsByTitle.data && submissionsByTitle.data.length > 0)
-  ) {
-    return DUPLICATE_MSG;
+  if (useExact) {
+    // For short titles, do client-side exact normalized comparison
+    const articleMatch = (articlesByTitle.data ?? []).some(
+      (row: { title?: string }) => normalizeTitle(row.title ?? '') === normalized
+    );
+    const submissionMatch = (submissionsByTitle.data ?? []).some(
+      (row: { title?: string }) => normalizeTitle(row.title ?? '') === normalized
+    );
+    if (articleMatch || submissionMatch) return DUPLICATE_MSG;
+  } else {
+    if (
+      (articlesByTitle.data && articlesByTitle.data.length > 0) ||
+      (submissionsByTitle.data && submissionsByTitle.data.length > 0)
+    ) {
+      return DUPLICATE_MSG;
+    }
   }
 
   // URL exact match (Resource Link type)
   if (submissionType === 'Resource Link' && resourceUrl?.trim()) {
     const normalizedInput = normalizeUrl(resourceUrl);
-    const urlPattern = `%${normalizedInput}%`;
+    if (normalizedInput.length >= 5) {
+      const [articlesByUrl, submissionsByUrl] = await Promise.all([
+        supabase
+          .from('articles')
+          .select('id, content')
+          .eq('submission_type', 'Resource Link')
+          .eq('is_sample', false),
+        supabase
+          .from('submissions')
+          .select('id, content')
+          .eq('submission_type', 'Resource Link'),
+      ]);
 
-    const [articlesByUrl, submissionsByUrl] = await Promise.all([
-      supabase
-        .from('articles')
-        .select('id')
-        .eq('submission_type', 'Resource Link')
-        .eq('is_sample', false)
-        .ilike('content', urlPattern)
-        .limit(1),
-      supabase
-        .from('submissions')
-        .select('id')
-        .eq('submission_type', 'Resource Link')
-        .ilike('content', urlPattern)
-        .limit(1),
-    ]);
+      const articleUrlMatch = (articlesByUrl.data ?? []).some(
+        (row: { content?: string | null }) => normalizeUrl(row.content ?? '') === normalizedInput
+      );
+      const submissionUrlMatch = (submissionsByUrl.data ?? []).some(
+        (row: { content?: string | null }) => normalizeUrl(row.content ?? '') === normalizedInput
+      );
 
-    if (
-      (articlesByUrl.data && articlesByUrl.data.length > 0) ||
-      (submissionsByUrl.data && submissionsByUrl.data.length > 0)
-    ) {
-      return DUPLICATE_MSG;
+      if (articleUrlMatch || submissionUrlMatch) return DUPLICATE_MSG;
     }
   }
 

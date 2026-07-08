@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Sidebar from './components/Sidebar';
 import SearchBar from './components/SearchBar';
@@ -12,7 +12,8 @@ import AdminControlPage from './pages/AdminControlPage';
 import NotFoundPage from './pages/NotFoundPage';
 import AuthModal from './components/AuthModal';
 import { useAuth } from './hooks/useAuth';
-import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen, LogIn, LogOut } from 'lucide-react';
+import { supabase } from './lib/supabase';
+import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen, LogIn, LogOut, ShieldCheck } from 'lucide-react';
 
 function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | null> }) {
   const { pathname } = useLocation();
@@ -32,6 +33,21 @@ function AppContent() {
   const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
   const location = useLocation();
   const { user, signOut } = useAuth();
+
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    if (!user?.email) { setIsAdmin(false); return; }
+    let mounted = true;
+    (async () => {
+      const { data } = await supabase
+        .from('admin_whitelist')
+        .select('email')
+        .eq('email', user.email!)
+        .maybeSingle();
+      if (mounted) setIsAdmin(!!data);
+    })();
+    return () => { mounted = false; };
+  }, [user?.email]);
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -90,14 +106,26 @@ function AppContent() {
             </span>
           </div>
           {user ? (
-            <button
-              onClick={signOut}
-              title="Sign Out"
-              className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors flex-shrink-0"
-              aria-label="Sign out"
-            >
-              <LogOut className="w-4.5 h-4.5" />
-            </button>
+            <>
+              {isAdmin && (
+                <Link
+                  to="/cohort-admin"
+                  title="Admin Command Center"
+                  className="p-2 rounded-lg text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors flex-shrink-0"
+                  aria-label="Admin Command Center"
+                >
+                  <ShieldCheck className="w-4.5 h-4.5" />
+                </Link>
+              )}
+              <button
+                onClick={signOut}
+                title="Sign Out"
+                className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors flex-shrink-0"
+                aria-label="Sign out"
+              >
+                <LogOut className="w-4.5 h-4.5" />
+              </button>
+            </>
           ) : (
             <button
               onClick={() => setMobileAuthOpen(true)}
@@ -126,13 +154,25 @@ function AppContent() {
               <SearchBar onMenuClick={() => setDesktopSidebarOpen(true)} />
             </div>
             {user ? (
-              <button
-                onClick={signOut}
-                title="Sign Out"
-                className="ml-auto p-2 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
-              >
-                <LogOut className="w-5 h-5" />
-              </button>
+              <div className="ml-auto flex items-center gap-1">
+                {isAdmin && (
+                  <Link
+                    to="/cohort-admin"
+                    title="Admin Command Center"
+                    className="p-2 rounded-md text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors"
+                    aria-label="Admin Command Center"
+                  >
+                    <ShieldCheck className="w-5 h-5" />
+                  </Link>
+                )}
+                <button
+                  onClick={signOut}
+                  title="Sign Out"
+                  className="p-2 rounded-md text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                >
+                  <LogOut className="w-5 h-5" />
+                </button>
+              </div>
             ) : (
               <button
                 onClick={() => setMobileAuthOpen(true)}

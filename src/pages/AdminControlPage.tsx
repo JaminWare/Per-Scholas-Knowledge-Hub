@@ -1412,20 +1412,6 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
       const resolvedSlug = resolveCanonicalSlug(effectiveTrack) ?? (domainOverride ? CANONICAL_TO_SLUG[domainOverride] : null);
       const targetSectionId = await resolveSectionId(resolvedSlug);
 
-      // Step 3: find an open slot in the resolved section
-      let openSlot: { id: string } | null = null;
-      if (targetSectionId) {
-        const { data } = await supabase
-          .from('articles')
-          .select('id')
-          .eq('is_sample', true)
-          .eq('section_id', targetSectionId)
-          .order('created_at', { ascending: true })
-          .limit(1)
-          .maybeSingle();
-        openSlot = data as { id: string } | null;
-      }
-
       const publishContent = editedContent ?? sub.formatted_content ?? sub.content;
       const isResourceLink = sub.submission_type === 'Resource Link';
       const finalContent = isResourceLink ? publishContent : autoFormatContent(publishContent);
@@ -1444,18 +1430,25 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
 
       const studyCategory = resolveStudyCategory(effectiveTrack) ?? (domainOverride || effectiveTrack);
 
-      if (openSlot) {
-        const baseSlug = `${sectionPrefix}/${slugify(cleanedTitle || `contribution-${Date.now()}`)}`;
-        const uniqueSlug = await ensureUniqueSlug(baseSlug);
+      // Step 3: Check if this submission was previously published (republish scenario)
+      const { data: existingArticle } = await supabase
+        .from('articles')
+        .select('id, slug')
+        .ilike('title', cleanedTitle || sub.title)
+        .eq('author_name', sub.full_name)
+        .eq('is_sample', false)
+        .limit(1)
+        .maybeSingle();
+
+      if (existingArticle) {
+        // Republish: update the existing article instead of creating a duplicate
         const { error: updateError } = await supabase
           .from('articles')
           .update({
             title: cleanedTitle || sub.title,
-            slug: uniqueSlug,
             content: finalContent || '',
             study_category: studyCategory,
             section_id: targetSectionId,
-            is_sample: false,
             is_featured: false,
             submission_type: sub.submission_type,
             author_name: sub.full_name,
@@ -1464,34 +1457,75 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             lx_topic: sub.lx_topic || null,
             lx_focus: sub.lx_focus || null,
             excerpt,
+            status: 'published',
             updated_at: new Date().toISOString(),
           })
-          .eq('id', openSlot.id);
+          .eq('id', existingArticle.id);
         if (updateError) throw updateError;
       } else {
-        const baseSlug = `${sectionPrefix}/${slugify(cleanedTitle || `contribution-${Date.now()}`)}`;
-        const uniqueSlug = await ensureUniqueSlug(baseSlug);
+        // Step 4: find an open slot in the resolved section
+        let openSlot: { id: string } | null = null;
+        if (targetSectionId) {
+          const { data } = await supabase
+            .from('articles')
+            .select('id')
+            .eq('is_sample', true)
+            .eq('section_id', targetSectionId)
+            .order('created_at', { ascending: true })
+            .limit(1)
+            .maybeSingle();
+          openSlot = data as { id: string } | null;
+        }
 
-        const { error: insertError } = await supabase
-          .from('articles')
-          .insert({
-            title: cleanedTitle || sub.title,
-            slug: uniqueSlug,
-            content: finalContent || '',
-            study_category: studyCategory,
-            section_id: targetSectionId,
-            is_sample: false,
-            is_featured: false,
-            submission_type: sub.submission_type,
-            author_name: sub.full_name,
-            comp_objective: metadataOverrides?.compObjective || sub.comp_objective || null,
-            lx_stage: metadataOverrides?.lxStage || sub.lx_stage || null,
-            lx_topic: sub.lx_topic || null,
-            lx_focus: sub.lx_focus || null,
-            excerpt,
-            tags: [],
-          });
-        if (insertError) throw insertError;
+        if (openSlot) {
+          const baseSlug = `${sectionPrefix}/${slugify(cleanedTitle || `contribution-${Date.now()}`)}`;
+          const uniqueSlug = await ensureUniqueSlug(baseSlug);
+          const { error: updateError } = await supabase
+            .from('articles')
+            .update({
+              title: cleanedTitle || sub.title,
+              slug: uniqueSlug,
+              content: finalContent || '',
+              study_category: studyCategory,
+              section_id: targetSectionId,
+              is_sample: false,
+              is_featured: false,
+              submission_type: sub.submission_type,
+              author_name: sub.full_name,
+              comp_objective: metadataOverrides?.compObjective || sub.comp_objective || null,
+              lx_stage: metadataOverrides?.lxStage || sub.lx_stage || null,
+              lx_topic: sub.lx_topic || null,
+              lx_focus: sub.lx_focus || null,
+              excerpt,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', openSlot.id);
+          if (updateError) throw updateError;
+        } else {
+          const baseSlug = `${sectionPrefix}/${slugify(cleanedTitle || `contribution-${Date.now()}`)}`;
+          const uniqueSlug = await ensureUniqueSlug(baseSlug);
+
+          const { error: insertError } = await supabase
+            .from('articles')
+            .insert({
+              title: cleanedTitle || sub.title,
+              slug: uniqueSlug,
+              content: finalContent || '',
+              study_category: studyCategory,
+              section_id: targetSectionId,
+              is_sample: false,
+              is_featured: false,
+              submission_type: sub.submission_type,
+              author_name: sub.full_name,
+              comp_objective: metadataOverrides?.compObjective || sub.comp_objective || null,
+              lx_stage: metadataOverrides?.lxStage || sub.lx_stage || null,
+              lx_topic: sub.lx_topic || null,
+              lx_focus: sub.lx_focus || null,
+              excerpt,
+              tags: [],
+            });
+          if (insertError) throw insertError;
+        }
       }
     } catch (publishError) {
       // Rollback: revert approval so the submission remains visible in the admin queue
@@ -1555,6 +1589,22 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
       .update({ status: 'pending', is_approved: false })
       .eq('id', id);
     if (error) throw new Error(handleSupabaseError(error));
+
+    // Remove the live article that was created when this submission was approved
+    if (row?.title) {
+      const { data: liveArticles } = await supabase
+        .from('articles')
+        .select('id')
+        .ilike('title', row.title)
+        .eq('is_sample', false);
+      if (liveArticles && liveArticles.length > 0) {
+        await supabase
+          .from('articles')
+          .delete()
+          .in('id', liveArticles.map((a) => a.id));
+      }
+    }
+
     setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'pending' } : r));
     fetchPending();
     flashSuccess('Submission unpublished and moved back to pending queue.');
