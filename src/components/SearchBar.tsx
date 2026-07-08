@@ -4,6 +4,7 @@ import { Search, X, FileText, Folder, Loader2 } from 'lucide-react';
 import Fuse from 'fuse.js';
 import { supabase } from '../lib/supabase';
 import { resolveTrackSlug } from '../lib/domainRegistry';
+import { JOURNEY_TABS } from '../constants/learnerExperience';
 import type { SearchResult } from '../types/database';
 
 interface SearchBarProps {
@@ -30,10 +31,23 @@ function getDashboardRoute(result: SearchResult): string {
   // Route to Learner Experience with deep-link parameters
   if (category.toLowerCase().includes('learner experience')) {
     const params = new URLSearchParams();
-    if (result.lx_stage) params.set('tab', result.lx_stage);
+
+    // Use lx_stage if available; otherwise infer from study_category suffix
+    let tabId = result.lx_stage;
+    if (!tabId) {
+      const suffix = category.replace(/^learner experience\s*/i, '').trim();
+      if (suffix) {
+        const match = JOURNEY_TABS.find(
+          (t) => t.trackSuffix && t.trackSuffix.toLowerCase() === suffix.toLowerCase()
+        );
+        if (match) tabId = match.id;
+      }
+    }
+
+    if (tabId) params.set('tab', tabId);
     if (result.lx_topic) params.set('level2', result.lx_topic);
     if (result.lx_focus) params.set('level3', result.lx_focus);
-    params.set('highlight', result.slug); // Ensure Learner Experience also gets the highlight tag
+    params.set('highlight', result.slug);
     const qs = params.toString();
     return `/learner-experience${qs ? '?' + qs : ''}#${result.slug}`;
   }

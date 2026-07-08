@@ -676,7 +676,9 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const { user } = useAuth();
 
   useEffect(() => {
-    setActiveObjective('All');
+    if (!searchParams.get('highlight')) {
+      setActiveObjective('All');
+    }
   }, [slug]);
 
   console.log('SectionPage Data:', { slug, tracksLength: CURRICULUM_TRACKS?.length });
