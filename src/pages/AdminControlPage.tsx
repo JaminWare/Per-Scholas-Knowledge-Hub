@@ -1804,7 +1804,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         {/* Title row */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">
           <div className="flex items-center gap-3 min-w-0 w-full lg:w-auto">
-            <div className="p-2 rounded-lg bg-sky-500/15 border border-sky-500/25 flex-shrink-0">
+            <div className="p-2 rounded-lg bg-zinc-800 border border-zinc-700 flex-shrink-0">
               <ShieldCheck className="w-6 h-6 text-sky-400" />
             </div>
             <div className="min-w-0 break-words">
@@ -1855,8 +1855,8 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 onClick={() => { setActiveCategory('content'); setActiveTab('pending'); }}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all duration-200 ${
                   activeCategory === 'content'
-                    ? 'bg-sky-500/10 border-sky-500/40 text-sky-300 shadow-sm shadow-sky-500/10'
-                    : 'bg-zinc-900/50 border-zinc-800/50 text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200 hover:border-zinc-700/60'
+                    ? 'bg-zinc-800 border-zinc-700 text-white shadow-sm'
+                    : 'bg-zinc-900/50 border-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-300 hover:border-zinc-700'
                 }`}
               >
                 <FileText className="w-5 h-5 flex-shrink-0" />
@@ -1870,8 +1870,8 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 onClick={() => { setActiveCategory('users'); setActiveTab('names'); }}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all duration-200 ${
                   activeCategory === 'users'
-                    ? 'bg-sky-500/10 border-sky-500/40 text-sky-300 shadow-sm shadow-sky-500/10'
-                    : 'bg-zinc-900/50 border-zinc-800/50 text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200 hover:border-zinc-700/60'
+                    ? 'bg-zinc-800 border-zinc-700 text-white shadow-sm'
+                    : 'bg-zinc-900/50 border-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-300 hover:border-zinc-700'
                 }`}
               >
                 <Users className="w-5 h-5 flex-shrink-0" />
@@ -1886,8 +1886,8 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                   onClick={() => { setActiveCategory('system'); setActiveTab('audit'); }}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all duration-200 ${
                     activeCategory === 'system'
-                      ? 'bg-sky-500/10 border-sky-500/40 text-sky-300 shadow-sm shadow-sky-500/10'
-                      : 'bg-zinc-900/50 border-zinc-800/50 text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200 hover:border-zinc-700/60'
+                      ? 'bg-zinc-800 border-zinc-700 text-white shadow-sm'
+                      : 'bg-zinc-900/50 border-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-300 hover:border-zinc-700'
                   }`}
                 >
                   <Settings className="w-5 h-5 flex-shrink-0" />
@@ -1908,7 +1908,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                     onClick={() => setActiveTab('pending')}
                     className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
                       activeTab === 'pending'
-                        ? 'bg-sky-500 text-white border-sky-500'
+                        ? 'bg-zinc-700 text-white border-zinc-600'
                         : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
                     }`}
                   >
@@ -1928,7 +1928,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                     onClick={() => setActiveTab('archive')}
                     className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
                       activeTab === 'archive'
-                        ? 'bg-sky-500 text-white border-sky-500'
+                        ? 'bg-zinc-700 text-white border-zinc-600'
                         : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
                     }`}
                   >
@@ -1940,7 +1940,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                       onClick={() => setActiveTab('articles')}
                       className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
                         activeTab === 'articles'
-                          ? 'bg-sky-500 text-white border-sky-500'
+                          ? 'bg-zinc-700 text-white border-zinc-600'
                           : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
                       }`}
                     >
@@ -1957,7 +1957,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                     onClick={() => setActiveTab('names')}
                     className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
                       activeTab === 'names'
-                        ? 'bg-sky-500 text-white border-sky-500'
+                        ? 'bg-zinc-700 text-white border-zinc-600'
                         : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
                     }`}
                   >
@@ -1970,7 +1970,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                       onClick={() => setActiveTab('access')}
                       className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
                         activeTab === 'access'
-                          ? 'bg-sky-500 text-white border-sky-500'
+                          ? 'bg-zinc-700 text-white border-zinc-600'
                           : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
                       }`}
                     >
@@ -1987,7 +1987,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                     onClick={() => setActiveTab('audit')}
                     className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
                       activeTab === 'audit'
-                        ? 'bg-sky-500 text-white border-sky-500'
+                        ? 'bg-zinc-700 text-white border-zinc-600'
                         : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
                     }`}
                   >
@@ -1999,7 +1999,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                     onClick={() => setActiveTab('maintenance')}
                     className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
                       activeTab === 'maintenance'
-                        ? 'bg-sky-500 text-white border-sky-500'
+                        ? 'bg-zinc-700 text-white border-zinc-600'
                         : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
                     }`}
                   >
@@ -2011,7 +2011,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                     onClick={() => setActiveTab('health')}
                     className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
                       activeTab === 'health'
-                        ? 'bg-sky-500 text-white border-sky-500'
+                        ? 'bg-zinc-700 text-white border-zinc-600'
                         : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
                     }`}
                   >

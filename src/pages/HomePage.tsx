@@ -14,7 +14,8 @@ const survivalGuideCards = [
     title: 'Onboarding Hurdles',
     description: 'Canvas workflows, VM setups, and tool access.',
     icon: Compass,
-    iconBg: 'bg-sky-500',
+    iconBg: 'bg-zinc-800 border border-zinc-700',
+    iconColor: 'text-sky-400',
     tab: 'onboarding',
   },
   {
@@ -22,7 +23,8 @@ const survivalGuideCards = [
     title: 'Lab Survival Guides',
     description: 'EHR sandboxes, Active Directory, and infrastructure.',
     icon: BookOpen,
-    iconBg: 'bg-sky-500',
+    iconBg: 'bg-zinc-800 border border-zinc-700',
+    iconColor: 'text-sky-400',
     tab: 'labs',
   },
   {
@@ -30,7 +32,8 @@ const survivalGuideCards = [
     title: 'The Mid Program Slump',
     description: 'Mental endurance, imposter syndrome, and time management.',
     icon: Flame,
-    iconBg: 'bg-amber-500',
+    iconBg: 'bg-amber-500/15 border border-amber-500/30',
+    iconColor: 'text-amber-400',
     tab: 'slump',
   },
   {
@@ -38,7 +41,8 @@ const survivalGuideCards = [
     title: 'Job Hunt & Certs',
     description: 'Test day strategies, resume reality checks, and interviews.',
     icon: Briefcase,
-    iconBg: 'bg-zinc-600',
+    iconBg: 'bg-zinc-800 border border-zinc-700',
+    iconColor: 'text-zinc-300',
     tab: 'job',
   },
 ];
@@ -59,13 +63,13 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
         {/* Welcome header */}
         <div className="text-left space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 text-xs font-medium">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs font-medium">
             <TrendingUp className="w-3.5 h-3.5" />
             <span>Per Scholas</span>
           </div>
           <h1 className="text-lg md:text-xl font-bold text-white leading-tight">
             Learners Hub
-            <span className="block text-sky-400 text-sm md:text-base font-semibold mt-0.5">
+            <span className="block text-zinc-400 text-sm md:text-base font-semibold mt-0.5">
               AI Enabled Healthcare IT
             </span>
           </h1>
@@ -86,8 +90,8 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
             onClick={() => setModalOpen(true)}
             className="flex items-center gap-3 px-5 py-3 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group outline-none select-none ring-0 focus:ring-0 cursor-pointer"
           >
-            <div className="p-2 rounded-xl bg-sky-500/15 flex-shrink-0 group-hover:bg-sky-500/25 transition-colors">
-              <UploadCloud className="w-5 h-5 text-sky-500" />
+            <div className="p-2 rounded-xl bg-zinc-800 flex-shrink-0 group-hover:bg-zinc-700 transition-colors">
+              <UploadCloud className="w-5 h-5 text-sky-400" />
             </div>
             <p className="text-sm font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
               Add Intel
@@ -99,8 +103,8 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
             to="/recognition"
             className="flex items-center gap-3 px-5 py-3 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group ring-0 focus:ring-0"
           >
-            <div className="p-2 rounded-xl bg-sky-500/15 flex-shrink-0">
-              <Users className="w-5 h-5 text-sky-500" />
+            <div className="p-2 rounded-xl bg-zinc-800 flex-shrink-0">
+              <Users className="w-5 h-5 text-sky-400" />
             </div>
             <p className="text-sm font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
               View Portfolios
@@ -112,8 +116,8 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         {/* Cohort Survival Guide */}
         <div className="w-full space-y-3">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-sky-500">
-              <Compass className="w-5 h-5 text-white" />
+            <div className="p-2 rounded-lg bg-zinc-800 border border-zinc-700">
+              <Compass className="w-5 h-5 text-sky-400" />
             </div>
             <h2 className="text-base font-semibold text-zinc-100">Cohort Survival Guide</h2>
           </div>
@@ -128,7 +132,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                   className="group/card flex items-start gap-3 p-3.5 text-left bg-zinc-950/50 rounded-xl border border-zinc-800/50 transition-all hover:border-zinc-700 hover:bg-zinc-800/50 outline-none select-none"
                 >
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover/card:scale-105 transition-transform ${card.iconBg}`}>
-                    <Icon className="w-4.5 h-4.5 text-white" />
+                    <Icon className={`w-4.5 h-4.5 ${card.iconColor}`} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">

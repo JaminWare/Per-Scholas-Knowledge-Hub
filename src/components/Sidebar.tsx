@@ -67,19 +67,19 @@ const tracks: TrackSection[] = [
 // ─── Color maps ───────────────────────────────────────────
 
 const trackBorder = {
-  sky:  'border-sky-500/30',
-  teal: 'border-sky-500/30',
-  cyan: 'border-sky-500/30',
+  sky:  'border-zinc-700',
+  teal: 'border-zinc-700',
+  cyan: 'border-zinc-700',
 };
 const trackBadge = {
-  sky:  'bg-sky-500/10 text-sky-400',
-  teal: 'bg-sky-500/10 text-sky-400',
-  cyan: 'bg-sky-500/10 text-sky-400',
+  sky:  'bg-zinc-800 text-zinc-300',
+  teal: 'bg-zinc-800 text-zinc-300',
+  cyan: 'bg-zinc-800 text-zinc-300',
 };
 const trackText = {
-  sky:  'text-sky-400',
-  teal: 'text-sky-400',
-  cyan: 'text-sky-400',
+  sky:  'text-zinc-400',
+  teal: 'text-zinc-400',
+  cyan: 'text-zinc-400',
 };
 
 // ─── Domain row (flat direct link, no children) ───────────
@@ -175,15 +175,15 @@ export default function Sidebar({ onToggle }: SidebarProps) {
 
         {/* ── START HERE block ─────────────────────────────── */}
         <div className="my-3" />
-        <p className="inline-block rounded-full bg-zinc-800/40 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-sky-400">
+        <p className="inline-block rounded-full bg-zinc-800/40 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
           Start Here
         </p>
         <Link
           to="/learner-experience"
           className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] outline-none select-none ${
             lxActive
-              ? 'bg-sky-500/10 text-sky-400 border border-sky-500/30'
-              : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white active:bg-sky-500/10'
+              ? 'bg-zinc-800 text-white border border-zinc-700'
+              : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white'
           }`}
         >
           <LifeBuoy className="w-4 h-4 flex-shrink-0" />
@@ -193,8 +193,8 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           to="/deskolas"
           className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] outline-none select-none ${
             deskolasActive
-              ? 'bg-sky-500/10 text-sky-400 border border-sky-500/30'
-              : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white active:bg-sky-500/10'
+              ? 'bg-zinc-800 text-white border border-zinc-700'
+              : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white'
           }`}
         >
           <Headphones className="w-4 h-4 flex-shrink-0" />

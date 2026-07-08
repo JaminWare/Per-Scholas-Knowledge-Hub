@@ -56,9 +56,9 @@ const CURRICULUM_TRACKS_WITH_ICONS = CURRICULUM_TRACKS.map((t) => ({
 const SLUG_TO_DOMAIN = SLUG_TO_DOMAIN_META;
 
 const TRACK_COLORS = {
-  sky:  { header: 'text-sky-400',   icon: 'bg-sky-500/10 text-sky-500',   domainHeader: 'text-sky-400'  },
-  teal: { header: 'text-sky-400', icon: 'bg-sky-500/10 text-sky-500', domainHeader: 'text-sky-400' },
-  cyan: { header: 'text-sky-400', icon: 'bg-sky-500/10 text-sky-500', domainHeader: 'text-sky-400' },
+  sky:  { header: 'text-zinc-400',   icon: 'bg-zinc-800 text-sky-400',   domainHeader: 'text-zinc-400'  },
+  teal: { header: 'text-zinc-400', icon: 'bg-zinc-800 text-sky-400', domainHeader: 'text-zinc-400' },
+  cyan: { header: 'text-zinc-400', icon: 'bg-zinc-800 text-sky-400', domainHeader: 'text-zinc-400' },
 };
 
 const DASHBOARD_CONTEXTS: Record<string, string> = {};
@@ -219,7 +219,7 @@ function ResourcePlacard({ activeTab, onTabChange }: { activeTab: ResourceTab; o
               onClick={() => onTabChange(tab)}
               className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-300 ease-in-out ${
                 isActive
-                  ? 'bg-sky-500/15 text-sky-300 border-sky-400/40'
+                  ? 'bg-zinc-800 text-white border-zinc-700'
                   : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 border-zinc-700'
               }`}
             >
@@ -257,7 +257,7 @@ function DomainFilterRow({
               onClick={() => onTabChange(tab)}
               className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-300 ease-in-out ${
                 isActive
-                  ? 'bg-sky-500/15 text-sky-300 border-sky-400/40'
+                  ? 'bg-zinc-800 text-white border-zinc-700'
                   : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 border-zinc-700'
               }`}
             >
@@ -296,12 +296,12 @@ function DomainBanner({
       <div className="relative px-6 py-5 md:px-8 md:py-6">
         <div className="flex items-start justify-between gap-4 mb-4">
           <div className="flex items-start gap-5 flex-1 min-w-0">
-            <div className="w-14 h-14 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
-              <BannerIcon className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center flex-shrink-0">
+              <BannerIcon className="w-7 h-7 text-sky-400" />
             </div>
             <div className="min-w-0">
               {track && (
-                <p className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-1">{track}</p>
+                <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">{track}</p>
               )}
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{title}</h1>
             </div>
@@ -321,7 +321,7 @@ function DomainBanner({
               onClick={() => onObjectiveChange('All')}
               className={`inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                 activeObjective === 'All'
-                  ? 'bg-sky-500/30 text-sky-300 border-sky-400/50'
+                  ? 'bg-zinc-700 text-white border-zinc-600'
                   : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
               }`}
             >
@@ -500,13 +500,13 @@ function CurriculumDashboard({
                 <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse flex-shrink-0" />
                 <span className="text-[10px] font-mono text-zinc-500">first-contribution</span>
               </div>
-              <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wider flex-shrink-0 bg-sky-500/20 text-sky-400 border border-sky-500/20" style={{ textShadow: '0 0 8px rgba(56,189,248,0.8)' }}>
+              <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wider flex-shrink-0 bg-zinc-800 text-zinc-300 border border-zinc-700">
                 [PIONEER]
               </span>
             </div>
             <div className="flex flex-col gap-3 p-5 flex-1 items-center text-center">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-sky-500">
-                <Sparkles className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-zinc-800 border border-zinc-700">
+                <Sparkles className="w-6 h-6 text-sky-400" />
               </div>
               <h3 className="font-bold text-base text-white">
                 {emptyLabel ? `No ${emptyLabel} submitted for this domain yet!` : 'Be the first to contribute to this domain!'}
@@ -572,10 +572,10 @@ function CurriculumDashboard({
       {uncategorizedArticles.length > 0 && (
         <section>
           <div className="flex items-center gap-2.5 mb-3 pb-3 border-b border-zinc-800/50">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-sky-500/10 text-sky-500">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-zinc-800 text-sky-400">
               <BookOpen className="w-4 h-4" />
             </div>
-            <h2 className="text-base font-bold uppercase tracking-widest text-sky-400">General Resources</h2>
+            <h2 className="text-base font-bold uppercase tracking-widest text-zinc-400">General Resources</h2>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-zinc-400">
               {uncategorizedArticles.length}
             </span>
@@ -788,20 +788,20 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         </button>
 
         <div className="relative overflow-hidden rounded-2xl bg-zinc-900 border border-zinc-800/50 p-8 mb-8">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-700/10 rounded-full blur-3xl pointer-events-none" />
           <div className="relative">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2.5 rounded-xl bg-sky-500/20 border border-sky-500/30">
+              <div className="p-2.5 rounded-xl bg-zinc-800 border border-zinc-700">
                 <Icon className="w-6 h-6 text-sky-400" />
               </div>
-              <span className="text-xs font-semibold text-sky-400 uppercase tracking-wider">
+              <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
                 {localContent.trackLabel}
               </span>
             </div>
             <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-4">{localContent.title}</h1>
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-sky-500 flex items-center justify-center text-white text-xs font-bold">
+                <div className="w-7 h-7 rounded-lg bg-zinc-700 flex items-center justify-center text-white text-xs font-bold">
                   {localContent.contributor.charAt(0)}
                 </div>
                 <span className="text-sm text-zinc-300">{localContent.contributor}</span>
@@ -811,7 +811,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
                   [{localContent.contributorRole}]
                 </span>
               )}
-              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-sky-500/10 text-sky-400 border border-sky-500/20">
+              <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-zinc-800 text-zinc-300 border border-zinc-700">
                 {localContent.cohort}
               </span>
               {localContent.tags.slice(0, 3).map((tag) => (
@@ -886,12 +886,12 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
       ) : (
         <>
           <div className="flex items-center gap-4 pb-6 border-b border-zinc-800/50">
-            <div className="w-14 h-14 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
-              <Icon className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center flex-shrink-0">
+              <Icon className="w-7 h-7 text-sky-400" />
             </div>
             <div className="flex-1 min-w-0">
               {meta?.track && (
-                <p className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-1">{meta.track}</p>
+                <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">{meta.track}</p>
               )}
               <h1 className="text-2xl font-bold text-zinc-100">{displayTitle}</h1>
             </div>

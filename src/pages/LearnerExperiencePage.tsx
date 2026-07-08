@@ -283,8 +283,8 @@ export default function LearnerExperiencePage() {
       <div className="relative rounded-2xl bg-zinc-950/50 border border-zinc-800/30 overflow-hidden">
         <div className="relative px-6 py-5 md:px-8 md:py-6">
           <div className="flex items-start gap-5 mb-4">
-            <div className="w-14 h-14 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
-              <LifeBuoy className="w-7 h-7 text-white" />
+            <div className="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center flex-shrink-0">
+              <LifeBuoy className="w-7 h-7 text-sky-400" />
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Learner Experience & FAQs</h1>
@@ -304,7 +304,7 @@ export default function LearnerExperiencePage() {
                   onClick={() => handleTabChange(tab.id)}
                   className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-300 ease-in-out ${
                     isActive
-                      ? 'bg-sky-500/15 text-sky-300 border-sky-400/40'
+                      ? 'bg-zinc-800 text-white border-zinc-700'
                       : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 border-zinc-700'
                   }`}
                 >
@@ -335,7 +335,7 @@ export default function LearnerExperiencePage() {
                   }}
                   className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-300 ease-in-out ${
                     isActive
-                      ? 'bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-sm shadow-teal-500/10'
+                      ? 'bg-zinc-800 text-white border-zinc-700'
                       : 'bg-zinc-800/50 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/50 border-zinc-700/50'
                   }`}
                 >
@@ -349,8 +349,8 @@ export default function LearnerExperiencePage() {
             const activeSub = filters.find((s) => s.label === activeLevel2);
             if (!activeSub || activeSub.nested.length === 0) return null;
             return (
-              <div className="pl-3 border-l-2 border-sky-500/30 space-y-2">
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-sky-500/70">Narrow further</span>
+              <div className="pl-3 border-l-2 border-zinc-700 space-y-2">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Narrow further</span>
                 <div className="flex flex-wrap gap-1.5">
                   {activeSub.nested.map((n) => {
                     const isAll = n.keywords.length === 0;
@@ -362,7 +362,7 @@ export default function LearnerExperiencePage() {
                         onClick={() => setActiveLevel3(isAll ? '' : (isNested ? '' : n.label))}
                         className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-300 ease-in-out ${
                           isNested
-                            ? 'bg-sky-500/20 text-sky-300 border-sky-400/40'
+                            ? 'bg-zinc-700 text-white border-zinc-600'
                             : 'bg-zinc-800/30 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/60 border-transparent'
                         }`}
                       >
@@ -412,7 +412,7 @@ function EmptyStateInvite({ tab, onContribute }: { tab: JourneyTab; onContribute
   const Icon = tab.icon;
   return (
     <div className="flex flex-col items-center justify-center gap-6 py-10 text-center rounded-xl border border-dashed border-zinc-700 bg-zinc-900/50">
-      <div className="w-16 h-16 rounded-2xl bg-sky-500/10 border border-sky-400/20 flex items-center justify-center">
+      <div className="w-16 h-16 rounded-2xl bg-zinc-800 border border-zinc-700 flex items-center justify-center">
         <Icon className="w-8 h-8 text-sky-400" />
       </div>
       <div className="space-y-2 max-w-md">

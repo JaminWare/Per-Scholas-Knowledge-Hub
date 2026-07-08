@@ -47,7 +47,7 @@ export function AppletCard({ article, gridMode = false, isPinned = false }: { ar
     <>
       {isSample && (
         <div className="flex justify-end mb-2">
-          <span className="px-2 py-1 text-xs font-medium bg-sky-500/20 text-sky-300 rounded-full">
+          <span className="px-2 py-1 text-xs font-medium bg-zinc-800 text-zinc-300 rounded-full border border-zinc-700">
             Open Slot
           </span>
         </div>
@@ -179,24 +179,24 @@ export function OpenSlotPlaceholder({
           <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse flex-shrink-0" />
           <span className="text-[10px] font-mono text-zinc-500 truncate max-w-[120px]">open slot</span>
         </div>
-        <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wider flex-shrink-0 bg-sky-500 text-white border border-sky-500">
+        <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wider flex-shrink-0 bg-zinc-700 text-white border border-zinc-600">
           [OPEN SLOT]
         </span>
       </div>
       <div className="flex flex-col gap-3 p-4 flex-1">
         <div className="flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-sky-500">
-            <Lightbulb className="w-4 h-4 text-white" />
+          <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-zinc-800 border border-zinc-700">
+            <Lightbulb className="w-4 h-4 text-sky-400" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-sm leading-snug text-white transition-colors duration-200 hover:text-sky-400">
               {domain}{context}
             </h3>
             <div className="flex items-center gap-1.5 mt-1">
-              <div className="w-4 h-4 rounded bg-sky-500 flex items-center justify-center flex-shrink-0">
+              <div className="w-4 h-4 rounded bg-zinc-700 flex items-center justify-center flex-shrink-0">
               <span className="text-white text-[8px] font-bold">?</span>
               </div>
-              <span className="text-[11px] text-white truncate font-mono font-bold tracking-wider transition-colors duration-200 hover:text-sky-400">[OPEN SLOT]</span>
+              <span className="text-[11px] text-white truncate font-mono font-bold tracking-wider transition-colors duration-200 hover:text-zinc-300">[OPEN SLOT]</span>
             </div>
           </div>
         </div>
