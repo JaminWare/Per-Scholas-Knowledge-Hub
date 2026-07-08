@@ -1343,6 +1343,11 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   const [searchQuery, setSearchQuery] = useState('');
   const fetchVersionRef = useRef(0);
 
+  useEffect(() => {
+    const scrollContainer = document.querySelector('[class*="overflow-y-auto"][class*="overscroll-contain"][class*="p-6"]');
+    scrollContainer?.scrollTo(0, 0);
+  }, []);
+
   const filteredSubmissions = useMemo(() => {
     if (!searchQuery.trim()) return submissions;
     const q = searchQuery.toLowerCase();

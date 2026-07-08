@@ -46,10 +46,12 @@ export function useAuth() {
   }, []);
 
   const signIn = async (email: string, password: string) => {
+    localStorage.removeItem(AUTH_RETURN_PATH_KEY);
     return supabase.auth.signInWithPassword({ email, password });
   };
 
   const signUp = async (email: string, password: string) => {
+    localStorage.removeItem(AUTH_RETURN_PATH_KEY);
     return supabase.auth.signUp({ email, password });
   };
 
