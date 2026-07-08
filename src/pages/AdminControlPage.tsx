@@ -1640,7 +1640,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             <div className="p-2 rounded-lg bg-sky-500/15 border border-sky-500/25 flex-shrink-0">
               <ShieldCheck className="w-6 h-6 text-sky-400" />
             </div>
-            <div className="min-w-0">
+            <div className="min-w-0 break-words">
               <h1 className="text-zinc-100 font-medium text-lg md:text-xl tracking-tight">Admin Command Center</h1>
               <p className="text-[11px] text-zinc-500 mt-0.5">Per Scholas 2026-RTT-23 Cohort</p>
             </div>

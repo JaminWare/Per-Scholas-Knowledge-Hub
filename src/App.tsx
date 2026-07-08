@@ -122,7 +122,7 @@ function AppContent() {
           {/* ── Main Module Host Container ────────────────── */}
           <main className="flex-1 min-w-0 w-full h-full flex flex-col overflow-hidden bg-zinc-900 rounded-[24px] shadow-xl shadow-black/20 border border-zinc-800/40">
             {/* Desktop toolbar row */}
-            <div className="hidden md:flex items-center gap-3 px-6 py-4 border-b border-zinc-800/40 flex-shrink-0">
+            <div className="hidden md:flex items-center gap-3 px-6 py-4 border-b border-zinc-800/40 flex-shrink-0 min-w-0">
               <button
                 onClick={() => setDesktopSidebarOpen((v) => !v)}
                 className="p-2 rounded-lg border border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
@@ -132,7 +132,7 @@ function AppContent() {
                   ? <PanelLeftClose className="w-5 h-5" />
                   : <PanelLeftOpen className="w-5 h-5" />}
               </button>
-              <div className="flex-1 max-w-2xl">
+              <div className="flex-1 max-w-2xl min-w-0">
                 <SearchBar onMenuClick={() => setDesktopSidebarOpen(true)} />
               </div>
               <div className="ml-auto flex items-center gap-1">
@@ -180,7 +180,7 @@ function AppContent() {
               </ErrorBoundary>
 
               {/* Footer */}
-              <div className="mt-12 pb-4 text-center text-xs text-zinc-500">
+              <div className="mt-4 pb-2 text-center text-xs text-zinc-500">
                 <p>Per Scholas Learners Knowledge Base</p>
               </div>
             </div>

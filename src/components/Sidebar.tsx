@@ -96,7 +96,7 @@ function DomainRow({ domain }: { domain: NavItem }) {
       style={{ paddingLeft: '12px' }}
     >
       <Icon className="w-4 h-4 flex-shrink-0" />
-      <span className="flex-1 truncate text-[12px] font-medium text-zinc-200">{domain.title}</span>
+      <span className="flex-1 truncate text-[13px] font-medium text-zinc-200">{domain.title}</span>
       <ChevronRight className="w-3 h-3 text-zinc-500 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
     </Link>
   );
@@ -111,7 +111,7 @@ interface SidebarProps {
 export default function Sidebar({ onToggle }: SidebarProps) {
   const location = useLocation();
   const [openTracks, setOpenTracks] = useState<Record<string, boolean>>({
-    core1: true, core2: false, healthcare: false,
+    core1: false, core2: false, healthcare: false,
   });
   const [authOpen, setAuthOpen] = useState(false);
   const { user, signOut } = useAuth();

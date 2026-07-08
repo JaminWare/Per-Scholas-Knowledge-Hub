@@ -55,73 +55,100 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
   return (
     <>
-      <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8 items-start">
+      <div className="h-full w-full flex flex-col items-center justify-center gap-6 md:gap-8">
 
-        {/* ── Left: Welcome + Survival Guide ──────────────── */}
-        <div className="space-y-8">
-
-          {/* Welcome header */}
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 text-xs font-medium">
-                <TrendingUp className="w-3.5 h-3.5" />
-                <span>Per Scholas</span>
-              </div>
-            </div>
-            <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">
-              Learners Hub
-              <span className="block text-sky-400 text-base md:text-lg font-semibold mt-0.5">
-                AI Enabled Healthcare IT
-              </span>
-            </h1>
-            <div className="flex items-center gap-3">
-              <p className="text-sm text-zinc-400">Welcome to the collaborative resource hub!</p>
-              <Link
-                to="/learner-experience"
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs transition-colors whitespace-nowrap flex-shrink-0 outline-none select-none"
-              >
-                <LifeBuoy className="w-3.5 h-3.5" />
-                Start Here
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
+        {/* Welcome header */}
+        <div className="text-center space-y-3">
+          <div className="flex justify-center">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 text-xs font-medium">
+              <TrendingUp className="w-3.5 h-3.5" />
+              <span>Per Scholas</span>
             </div>
           </div>
+          <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">
+            Learners Hub
+            <span className="block text-sky-400 text-base md:text-lg font-semibold mt-0.5">
+              AI Enabled Healthcare IT
+            </span>
+          </h1>
+          <p className="text-sm md:text-base text-zinc-400">Welcome to the collaborative resource hub!</p>
+          <div className="flex justify-center">
+            <Link
+              to="/learner-experience"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm transition-colors whitespace-nowrap outline-none select-none"
+            >
+              <LifeBuoy className="w-4 h-4" />
+              Start Here
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
 
-          {/* Cohort Survival Guide */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-sky-500">
-                <Compass className="w-5 h-5 text-white" />
-              </div>
-              <h2 className="text-base font-semibold text-zinc-100">Cohort Survival Guide</h2>
+        {/* Action buttons row */}
+        <div className="flex flex-wrap justify-center gap-4">
+          <button
+            onClick={() => setModalOpen(true)}
+            className="flex items-center gap-3 px-5 py-3 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group outline-none select-none ring-0 focus:ring-0 cursor-pointer"
+          >
+            <div className="p-2 rounded-xl bg-sky-500/15 flex-shrink-0 group-hover:bg-sky-500/25 transition-colors">
+              <UploadCloud className="w-5 h-5 text-sky-500" />
             </div>
+            <p className="text-sm font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
+              Add Intel
+            </p>
+            <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0" />
+          </button>
 
-            <div className="grid sm:grid-cols-2 gap-4">
-              {survivalGuideCards.map((card) => {
-                const Icon = card.icon;
-                return (
-                  <Link
-                    key={card.id}
-                    to={`/learner-experience?tab=${card.tab}`}
-                    className="group/card flex items-start gap-4 p-4 text-left bg-zinc-950/50 rounded-xl border border-zinc-800/50 transition-all hover:border-zinc-700 hover:bg-zinc-800/50 outline-none select-none"
-                  >
-                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 group-hover/card:scale-105 transition-transform ${card.iconBg}`}>
-                      <Icon className="w-5 h-5 text-white" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2">
-                        <p className="font-semibold text-sm text-white">
-                          {card.title}
-                        </p>
-                        <ChevronRight className="w-4 h-4 text-zinc-600 flex-shrink-0 group-hover/card:text-sky-400 group-hover/card:translate-x-0.5 transition-all" />
-                      </div>
-                      <p className="text-xs text-zinc-400 mt-1 line-clamp-2">{card.description}</p>
-                    </div>
-                  </Link>
-                );
-              })}
+          <Link
+            to="/recognition"
+            className="flex items-center gap-3 px-5 py-3 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group ring-0 focus:ring-0"
+          >
+            <div className="p-2 rounded-xl bg-sky-500/15 flex-shrink-0">
+              <Users className="w-5 h-5 text-sky-500" />
             </div>
+            <p className="text-sm font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
+              View Portfolios
+            </p>
+            <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0" />
+          </Link>
+        </div>
 
+        {/* Cohort Survival Guide */}
+        <div className="max-w-3xl w-full mx-auto space-y-4">
+          <div className="flex items-center justify-center gap-3">
+            <div className="p-2 rounded-lg bg-sky-500">
+              <Compass className="w-5 h-5 text-white" />
+            </div>
+            <h2 className="text-base font-semibold text-zinc-100">Cohort Survival Guide</h2>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-3">
+            {survivalGuideCards.map((card) => {
+              const Icon = card.icon;
+              return (
+                <Link
+                  key={card.id}
+                  to={`/learner-experience?tab=${card.tab}`}
+                  className="group/card flex items-start gap-3 p-3.5 text-left bg-zinc-950/50 rounded-xl border border-zinc-800/50 transition-all hover:border-zinc-700 hover:bg-zinc-800/50 outline-none select-none"
+                >
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover/card:scale-105 transition-transform ${card.iconBg}`}>
+                    <Icon className="w-4.5 h-4.5 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-semibold text-sm text-white">
+                        {card.title}
+                      </p>
+                      <ChevronRight className="w-4 h-4 text-zinc-600 flex-shrink-0 group-hover/card:text-sky-400 group-hover/card:translate-x-0.5 transition-all" />
+                    </div>
+                    <p className="text-xs text-zinc-400 mt-0.5 line-clamp-2">{card.description}</p>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="text-center">
             <Link
               to="/learner-experience"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-400 hover:text-sky-300 transition-colors"
@@ -130,37 +157,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
               <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
-
         </div>
-
-        {/* ── Right: Action buttons ───────────────────────── */}
-        <aside className="space-y-3 lg:pt-10">
-          <button
-            onClick={() => setModalOpen(true)}
-            className="w-full flex items-center gap-3 text-left px-5 py-4 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group outline-none select-none ring-0 focus:ring-0 cursor-pointer"
-          >
-            <div className="p-2.5 rounded-xl bg-sky-500/15 flex-shrink-0 group-hover:bg-sky-500/25 transition-colors">
-              <UploadCloud className="w-6 h-6 text-sky-500" />
-            </div>
-            <p className="text-base font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
-              Add Intel
-            </p>
-            <ChevronRight className="w-5 h-5 text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0 ml-auto" />
-          </button>
-
-          <Link
-            to="/recognition"
-            className="flex items-center gap-3 px-5 py-4 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group ring-0 focus:ring-0"
-          >
-            <div className="p-2.5 rounded-xl bg-sky-500/15 flex-shrink-0">
-              <Users className="w-6 h-6 text-sky-500" />
-            </div>
-            <p className="text-base font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
-              View Portfolios &rarr;
-            </p>
-            <ChevronRight className="w-5 h-5 text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0 ml-auto" />
-          </Link>
-        </aside>
 
       </div>
 

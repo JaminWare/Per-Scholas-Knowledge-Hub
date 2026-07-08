@@ -116,7 +116,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
   };
 
   return (
-    <div ref={containerRef} className="relative w-full max-w-2xl">
+    <div ref={containerRef} className="relative w-full max-w-2xl min-w-0">
       <div className="relative">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
         <input
