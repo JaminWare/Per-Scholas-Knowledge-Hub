@@ -55,37 +55,33 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
   return (
     <>
-      <div className="h-full w-full flex flex-col items-center justify-center gap-6 md:gap-8">
+      <div className="h-full w-full flex flex-col items-start justify-center gap-4 md:gap-5 max-w-3xl mx-auto">
 
         {/* Welcome header */}
-        <div className="text-center space-y-3">
-          <div className="flex justify-center">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 text-xs font-medium">
-              <TrendingUp className="w-3.5 h-3.5" />
-              <span>Per Scholas</span>
-            </div>
+        <div className="text-left space-y-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 text-xs font-medium">
+            <TrendingUp className="w-3.5 h-3.5" />
+            <span>Per Scholas</span>
           </div>
-          <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">
+          <h1 className="text-lg md:text-xl font-bold text-white leading-tight">
             Learners Hub
-            <span className="block text-sky-400 text-base md:text-lg font-semibold mt-0.5">
+            <span className="block text-sky-400 text-sm md:text-base font-semibold mt-0.5">
               AI Enabled Healthcare IT
             </span>
           </h1>
-          <p className="text-sm md:text-base text-zinc-400">Welcome to the collaborative resource hub!</p>
-          <div className="flex justify-center">
-            <Link
-              to="/learner-experience"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm transition-colors whitespace-nowrap outline-none select-none"
-            >
-              <LifeBuoy className="w-4 h-4" />
-              Start Here
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
+          <p className="text-sm text-zinc-400">Welcome to the collaborative resource hub!</p>
+          <Link
+            to="/learner-experience"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm transition-colors whitespace-nowrap outline-none select-none"
+          >
+            <LifeBuoy className="w-4 h-4" />
+            Start Here
+            <ChevronRight className="w-4 h-4" />
+          </Link>
         </div>
 
         {/* Action buttons row */}
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="flex flex-wrap justify-start gap-3">
           <button
             onClick={() => setModalOpen(true)}
             className="flex items-center gap-3 px-5 py-3 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group outline-none select-none ring-0 focus:ring-0 cursor-pointer"
@@ -114,8 +110,8 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         </div>
 
         {/* Cohort Survival Guide */}
-        <div className="max-w-3xl w-full mx-auto space-y-4">
-          <div className="flex items-center justify-center gap-3">
+        <div className="w-full space-y-3">
+          <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-sky-500">
               <Compass className="w-5 h-5 text-white" />
             </div>
@@ -148,7 +144,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
             })}
           </div>
 
-          <div className="text-center">
+          <div className="text-left">
             <Link
               to="/learner-experience"
               className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-400 hover:text-sky-300 transition-colors"
