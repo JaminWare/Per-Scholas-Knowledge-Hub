@@ -8,8 +8,9 @@ import SuccessToast from '../components/SuccessToast';
 import contentMap from '../data/contentMap';
 import {
   TrendingUp, Users, UploadCloud,
-  Compass, BookOpen, Flame, Briefcase, ChevronRight, Award, LifeBuoy, ChevronDown,
+  Compass, BookOpen, Flame, Briefcase, ChevronRight, Award, LifeBuoy,
 } from 'lucide-react';
+import CollapsibleCard from '../components/CollapsibleCard';
 
 const PINNED_SLUGS = ['learner-experience/navigation', 'learner-experience/adding-intel'] as const;
 
@@ -144,57 +145,48 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
             </div>
           </section>
 
-          {/* Cohort Survival Guide - Collapsible Floating Pane */}
-          <section className="bg-zinc-900 rounded-[24px] border border-zinc-800/40 shadow-xl shadow-black/20 p-6 md:p-8">
-            <details open>
-              <summary className="flex items-center gap-3 cursor-pointer select-none outline-none group">
-                <div className="p-2 rounded-lg bg-sky-500">
-                  <Compass className="w-5 h-5 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h2 className="text-zinc-100 font-medium text-lg md:text-xl tracking-tight">Cohort Survival Guide</h2>
-                  <p className="text-sm text-zinc-500">Real talk from learners who've been there</p>
-                </div>
-                <ChevronDown className="w-5 h-5 text-zinc-500 details-chevron flex-shrink-0 group-hover:text-zinc-300 transition-colors" />
-              </summary>
-
-              <div className="mt-6 grid sm:grid-cols-2 gap-4">
-                {survivalGuideCards.map((card) => {
-                  const Icon = card.icon;
-                  return (
-                    <Link
-                      key={card.id}
-                      to={`/learner-experience?tab=${card.tab}`}
-                      className="group/card flex items-start gap-4 p-4 text-left bg-zinc-950/50 rounded-xl border border-zinc-800/50 transition-all hover:border-zinc-700 hover:bg-zinc-800/50 outline-none select-none"
-                    >
-                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 group-hover/card:scale-105 transition-transform ${card.iconBg}`}>
-                        <Icon className="w-5 h-5 text-white" />
+          {/* Cohort Survival Guide - CollapsibleCard */}
+          <CollapsibleCard
+            title="Cohort Survival Guide"
+            icon={<div className="p-2 rounded-lg bg-sky-500"><Compass className="w-5 h-5 text-white" /></div>}
+            defaultOpen
+          >
+            <div className="grid sm:grid-cols-2 gap-4">
+              {survivalGuideCards.map((card) => {
+                const Icon = card.icon;
+                return (
+                  <Link
+                    key={card.id}
+                    to={`/learner-experience?tab=${card.tab}`}
+                    className="group/card flex items-start gap-4 p-4 text-left bg-zinc-950/50 rounded-xl border border-zinc-800/50 transition-all hover:border-zinc-700 hover:bg-zinc-800/50 outline-none select-none"
+                  >
+                    <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 group-hover/card:scale-105 transition-transform ${card.iconBg}`}>
+                      <Icon className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="font-semibold text-sm text-white">
+                          {card.title}
+                        </p>
+                        <ChevronRight className="w-4 h-4 text-zinc-600 flex-shrink-0 group-hover/card:text-sky-400 group-hover/card:translate-x-0.5 transition-all" />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="font-semibold text-sm text-white">
-                            {card.title}
-                          </p>
-                          <ChevronRight className="w-4 h-4 text-zinc-600 flex-shrink-0 group-hover/card:text-sky-400 group-hover/card:translate-x-0.5 transition-all" />
-                        </div>
-                        <p className="text-xs text-zinc-400 mt-1 line-clamp-2">{card.description}</p>
-                      </div>
-                    </Link>
-                  );
-                })}
-              </div>
+                      <p className="text-xs text-zinc-400 mt-1 line-clamp-2">{card.description}</p>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
 
-              <div className="mt-4 pt-4 border-t border-zinc-800/50">
-                <Link
-                  to="/learner-experience"
-                  className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-400 hover:text-sky-300 transition-colors"
-                >
-                  Explore the full Learner Experience Hub &rarr;
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </details>
-          </section>
+            <div className="mt-4 pt-4 border-t border-zinc-800/30">
+              <Link
+                to="/learner-experience"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-400 hover:text-sky-300 transition-colors"
+              >
+                Explore the full Learner Experience Hub &rarr;
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </CollapsibleCard>
 
           {/* Featured Articles - Floating Pane */}
           {featuredArticles.length > 0 && (
@@ -208,39 +200,30 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
             </section>
           )}
 
-          {/* Recent Articles - Collapsible Floating Pane */}
-          <section className="bg-zinc-900 rounded-[24px] border border-zinc-800/40 shadow-xl shadow-black/20 p-6 md:p-8">
-            <details open>
-              <summary className="flex items-center justify-between cursor-pointer select-none outline-none group">
-                <h2 className="text-zinc-100 font-medium text-lg md:text-xl tracking-tight">Recent Field Notes</h2>
-                <ChevronDown className="w-5 h-5 text-zinc-500 details-chevron flex-shrink-0 group-hover:text-zinc-300 transition-colors" />
-              </summary>
-
-              <div className="mt-6">
-                {isLoading ? (
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {[...Array(6)].map((_, i) => (
-                      <div key={i} className="card p-5 animate-pulse">
-                        <div className="h-5 bg-zinc-800 rounded w-3/4" />
-                        <div className="h-4 bg-zinc-800 rounded w-full mt-3" />
-                      </div>
-                    ))}
+          {/* Recent Articles - CollapsibleCard */}
+          <CollapsibleCard title="Recent Field Notes" defaultOpen>
+            {isLoading ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="card p-5 animate-pulse">
+                    <div className="h-5 bg-zinc-800 rounded w-3/4" />
+                    <div className="h-4 bg-zinc-800 rounded w-full mt-3" />
                   </div>
-                ) : recentArticles.length > 0 ? (
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {recentArticles.map((article) => (
-                      <ArticleCard key={article.id} article={article} />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="card p-12 text-center">
-                    <Award className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
-                    <p className="text-zinc-500">No articles yet. Check back soon!</p>
-                  </div>
-                )}
+                ))}
               </div>
-            </details>
-          </section>
+            ) : recentArticles.length > 0 ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {recentArticles.map((article) => (
+                  <ArticleCard key={article.id} article={article} />
+                ))}
+              </div>
+            ) : (
+              <div className="card p-12 text-center">
+                <Award className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+                <p className="text-zinc-500">No articles yet. Check back soon!</p>
+              </div>
+            )}
+          </CollapsibleCard>
 
         </div>{/* end main column */}
 
@@ -250,7 +233,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Widget 1 - Contribute */}
           <button
             onClick={() => setModalOpen(true)}
-            className="w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-zinc-900 border border-zinc-800/40 rounded-[20px] shadow-xl shadow-black/20 cursor-pointer hover:border-zinc-700 transition-all duration-200 group outline-none select-none"
+            className="w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-zinc-900 border border-zinc-800/40 rounded-[20px] shadow-xl shadow-black/20 cursor-pointer hover:border-zinc-700 transition-all duration-200 group outline-none select-none ring-0 focus:ring-0"
           >
             <div className="flex items-center gap-3 w-full">
               <div className="p-2.5 rounded-xl bg-sky-500/15 flex-shrink-0 group-hover:bg-sky-500/25 transition-colors">
@@ -266,7 +249,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Widget 2 - View Portfolios */}
           <Link
             to="/recognition"
-            className="block w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-zinc-900 border border-zinc-800/40 rounded-[20px] shadow-xl shadow-black/20 hover:border-zinc-700 transition-all duration-200 group"
+            className="block w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-zinc-900 border border-zinc-800/40 rounded-[20px] shadow-xl shadow-black/20 hover:border-zinc-700 transition-all duration-200 group ring-0 focus:ring-0"
           >
             <div className="flex items-center gap-3 w-full">
               <div className="p-2.5 rounded-xl bg-sky-500/15 flex-shrink-0">

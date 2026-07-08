@@ -134,7 +134,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         </Link>
         <button
           onClick={onToggle}
-          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-all duration-300 ease-in-out flex-shrink-0 outline-none select-none"
+          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-all duration-300 ease-in-out flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
           title="Collapse sidebar"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -146,7 +146,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         {user ? (
           <button
             onClick={signOut}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors ring-0 focus:ring-0 outline-none"
           >
             <LogOut className="w-4 h-4 flex-shrink-0" />
             <span className="truncate">Sign Out</span>
@@ -154,7 +154,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         ) : (
           <button
             onClick={() => setAuthOpen(true)}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-semibold text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 border border-sky-500/20 transition-colors"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-semibold text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 border border-sky-500/20 transition-colors ring-0 focus:ring-0 outline-none"
           >
             <LogIn className="w-4 h-4 flex-shrink-0" />
             <span className="truncate">Sign In</span>
@@ -218,7 +218,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           <div key={track.id} className="pt-3">
             <button
               onClick={() => setOpenTracks((p) => ({ ...p, [track.id]: !p[track.id] }))}
-              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border border-zinc-800/50 bg-zinc-950 hover:bg-zinc-900 active:bg-zinc-900 transition-all duration-300 ease-in-out mb-1 outline-none select-none`}
+              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border border-zinc-800/50 bg-zinc-950 hover:bg-zinc-900 active:bg-zinc-900 transition-all duration-300 ease-in-out mb-1 outline-none select-none ring-0 focus:ring-0`}
             >
               <div className="flex-1 text-left min-w-0">
                 <p className="text-[11px] font-semibold text-white uppercase tracking-wider truncate">
