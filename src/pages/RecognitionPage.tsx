@@ -325,14 +325,14 @@ export default function RecognitionPage() {
               <ArrowLeft className="w-4 h-4" />
               Back to Previous Page
             </button>
-            {user && !isUserMatched && (
+            {(!user || !isUserMatched) && (
               <button
                 type="button"
-                onClick={() => setProfileOpen(true)}
+                onClick={() => user ? setProfileOpen(true) : setAuthOpen(true)}
                 className="inline-flex items-center gap-2 bg-transparent hover:bg-zinc-800 text-zinc-300 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
               >
                 <UserCog className="w-4 h-4" />
-                Edit My Name
+                Claim My Profile
               </button>
             )}
           </div>
