@@ -33,13 +33,26 @@ function getDashboardRoute(result: SearchResult): string {
     if (result.lx_stage) params.set('tab', result.lx_stage);
     if (result.lx_topic) params.set('level2', result.lx_topic);
     if (result.lx_focus) params.set('level3', result.lx_focus);
+    params.set('highlight', result.slug); // Ensure Learner Experience also gets the highlight tag
     const qs = params.toString();
-    return `/learner-experience${qs ? '?' + qs : ''}`;
+    return `/learner-experience${qs ? '?' + qs : ''}#${result.slug}`;
   }
 
   // Route to Domain Tracks and attach the highlight parameter for auto-expansion
   const resolved = resolveTrackSlug(category, result.slug);
-  if (resolved) return `/${resolved.slug}?highlight=${result.slug}`;
+  
+  // Safely extract the track slug whether the registry returns a string or an object
+  let trackSlug = '';
+  if (typeof resolved === 'string') {
+    trackSlug = resolved;
+  } else if (resolved && typeof resolved === 'object') {
+    trackSlug = (resolved as any).slug || (resolved as any).path?.replace(/^\//, '') || '';
+  }
+
+  if (trackSlug) {
+    // Append both the URL query param (for our React hook) and an anchor hash (for native browser scrolling)
+    return `/${trackSlug}?highlight=${result.slug}#${result.slug}`;
+  }
 
   // Fallback
   return `/article/${result.slug}`;
@@ -136,7 +149,12 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
   }, []);
 
   const handleSelect = (result: SearchResult) => {
-    navigate(getDashboardRoute(result));
+    const targetRoute = getDashboardRoute(result);
+    // Force React Router to push the state change even if we are already on the current domain
+    navigate(targetRoute, { 
+      replace: false, 
+      state: { highlight: result.slug, timestamp: Date.now() } 
+    });
     setIsOpen(false);
     setQuery('');
   };
