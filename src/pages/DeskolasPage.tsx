@@ -260,10 +260,10 @@ export default function DeskolasPage() {
                   setActiveLevel2(isAll ? '' : sub.label);
                   setActiveLevel3('');
                 }}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-300 ease-in-out ${
+                className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                   isActive
-                    ? 'bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-sm shadow-teal-500/10'
-                    : 'bg-zinc-800/50 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/50 border-zinc-700/50'
+                    ? 'bg-zinc-700 text-white border-zinc-600'
+                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
                 }`}
               >
                 {sub.label}
@@ -276,8 +276,8 @@ export default function DeskolasPage() {
           const activeSub = DESKOLAS_CATEGORIES.find((s) => s.label === activeLevel2);
           if (!activeSub || activeSub.nested.length === 0) return null;
           return (
-            <div className="pl-3 border-l-2 border-blue-600/30 space-y-2">
-              <span className="text-[10px] font-semibold uppercase tracking-widest text-blue-600/70">Narrow further</span>
+            <div className="pl-3 border-l-2 border-zinc-700 space-y-2">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Narrow further</span>
               <div className="flex flex-wrap gap-1.5">
                 {activeSub.nested.map((n) => {
                   const isAll = n.keywords.length === 0;
@@ -287,10 +287,10 @@ export default function DeskolasPage() {
                       key={n.label}
                       type="button"
                       onClick={() => setActiveLevel3(isAll ? '' : (isNested ? '' : n.label))}
-                      className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-300 ease-in-out ${
+                      className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-200 ${
                         isNested
-                          ? 'bg-blue-600/20 text-blue-300 border-blue-400/40'
-                          : 'bg-zinc-800/30 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/60 border-transparent'
+                          ? 'bg-blue-600/30 text-blue-300 border-blue-400/50'
+                          : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
                       }`}
                     >
                       {n.label}

@@ -302,9 +302,9 @@ export default function LearnerExperiencePage() {
                   key={tab.id}
                   type="button"
                   onClick={() => handleTabChange(tab.id)}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-300 ease-in-out ${
+                  className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                     isActive
-                      ? 'bg-zinc-800 text-white border-zinc-700'
+                      ? 'bg-blue-600/20 text-blue-300 border-blue-400/40'
                       : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 border-zinc-700'
                   }`}
                 >
@@ -333,10 +333,10 @@ export default function LearnerExperiencePage() {
                     setActiveLevel2(isAll ? '' : sub.label);
                     setActiveLevel3('');
                   }}
-                  className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-300 ease-in-out ${
+                  className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                     isActive
-                      ? 'bg-zinc-800 text-white border-zinc-700'
-                      : 'bg-zinc-800/50 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/50 border-zinc-700/50'
+                      ? 'bg-zinc-700 text-white border-zinc-600'
+                      : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
                   }`}
                 >
                   {sub.label}
@@ -360,10 +360,10 @@ export default function LearnerExperiencePage() {
                         key={n.label}
                         type="button"
                         onClick={() => setActiveLevel3(isAll ? '' : (isNested ? '' : n.label))}
-                        className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-300 ease-in-out ${
+                        className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-200 ${
                           isNested
-                            ? 'bg-zinc-700 text-white border-zinc-600'
-                            : 'bg-zinc-800/30 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/60 border-transparent'
+                            ? 'bg-blue-600/30 text-blue-300 border-blue-400/50'
+                            : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
                         }`}
                       >
                         {n.label}
