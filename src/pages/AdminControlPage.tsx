@@ -42,6 +42,7 @@ interface PendingSubmission {
   lx_stage: string | null;
   lx_topic: string | null;
   lx_focus: string | null;
+  edit_article_id: string | null;
 }
 
 interface ArchiveRow {
@@ -134,6 +135,7 @@ function TypeIcon({ type }: { type: string }) {
     'Diagram': GitBranch,
     'Quick Reference': Zap,
     'Resource Link': Link2,
+    'Edit Suggestion': Pencil,
   };
   const Icon = map[type] ?? FileText;
   return <Icon className="w-3.5 h-3.5" />;
@@ -277,6 +279,7 @@ function SubmissionCard({
   };
 
   const isResource = sub.submission_type === 'Resource Link';
+  const isEditSuggestion = sub.submission_type === 'Edit Suggestion';
   const submittedAt = (() => {
     const raw = sub.created_at;
     const utcStr = raw.endsWith('Z') || /[+-]\d{2}:\d{2}$/.test(raw) ? raw : raw + 'Z';
@@ -292,7 +295,7 @@ function SubmissionCard({
       {/* Header */}
       <div className="flex items-start gap-4 p-4">
         <div className={`p-2.5 rounded-lg flex-shrink-0 ${
-          isResource ? 'bg-teal-500/10 text-teal-400' : 'bg-sky-500/10 text-sky-400'
+          isEditSuggestion ? 'bg-amber-500/10 text-amber-400' : isResource ? 'bg-teal-500/10 text-teal-400' : 'bg-sky-500/10 text-sky-400'
         }`}>
           <TypeIcon type={sub.submission_type} />
         </div>
@@ -319,7 +322,7 @@ function SubmissionCard({
               </div>
             </div>
             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0 ${
-              isResource ? 'bg-teal-500/10 text-teal-400 border border-teal-500/20' : 'bg-sky-500/10 text-sky-400 border border-sky-500/20'
+              isEditSuggestion ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' : isResource ? 'bg-teal-500/10 text-teal-400 border border-teal-500/20' : 'bg-sky-500/10 text-sky-400 border border-sky-500/20'
             }`}>
               {sub.submission_type}
             </span>
@@ -1594,6 +1597,31 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
     if (approveError) throw approveError;
 
     try {
+      // ─── EDIT SUGGESTION: apply changes to the original article ───
+      if (sub.edit_article_id) {
+        const publishContent = editedContent ?? sub.formatted_content ?? sub.content;
+        const finalContent = autoFormatContent(publishContent);
+        const { error: updateError } = await supabase
+          .from('articles')
+          .update({
+            title: cleanedTitle || sub.title,
+            content: finalContent || '',
+            study_category: domainOverride || sub.track,
+            comp_objective: metadataOverrides?.compObjective || sub.comp_objective || null,
+            status: 'published',
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', sub.edit_article_id);
+        if (updateError) throw updateError;
+
+        setSubmissions((prev) => prev.filter((s) => s.id !== id));
+        setArchive((prev) => prev.map((r) => r.id === id ? { ...r, status: 'approved' } : r));
+        flashSuccess(`Edit suggestion "${cleanedTitle || sub.title}" approved and applied.`);
+        await logAdminAction(adminEmail, 'APPROVED_EDIT_SUGGESTION', id, cleanedTitle || sub.title);
+        return;
+      }
+
+      // ─── NEW SUBMISSION: resolve section and publish ───
       // Step 2: resolve the target section dynamically
       const resolvedSlug = resolveCanonicalSlug(effectiveTrack) ?? (domainOverride ? CANONICAL_TO_SLUG[domainOverride] : null);
       const targetSectionId = await resolveSectionId(resolvedSlug);

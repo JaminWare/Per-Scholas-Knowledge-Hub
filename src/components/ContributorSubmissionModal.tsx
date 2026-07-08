@@ -524,28 +524,32 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
     setIsSubmitting(true);
 
-    // ─── EDIT MODE: update existing article, route back to pending ───
+    // ─── EDIT MODE: route edit suggestion through submissions queue for admin approval ───
     if (editItem) {
       if (!isResourceLink) {
         rawContent = autoFormatContent(rawContent);
       }
 
-      try {
-        const { error: updateError } = await supabase
-          .from('articles')
-          .update({
-            title: title.trim(),
-            content: rawContent,
-            study_category: track || masterCategory || editItem.study_category,
-            submission_type: submissionType,
-            comp_objective: compObjective || null,
-            status: 'pending',
-            updated_at: new Date().toISOString(),
-          })
-          .eq('id', editItem.id);
+      const editPayload = {
+        full_name: resolvedName,
+        track: track || masterCategory || editItem.study_category || 'Pending Triage',
+        badge: 'Community Contributor',
+        title: title.trim(),
+        content: rawContent,
+        submission_type: 'Edit Suggestion',
+        formatted_content: !isResourceLink ? autoFormatContent(rawContent) : null,
+        is_approved: false,
+        comp_objective: compObjective || null,
+        edit_article_id: editItem.id,
+      };
 
-        if (updateError) {
-          setFormError(handleSupabaseError(updateError));
+      try {
+        const { error: insertError } = await supabase
+          .from('submissions')
+          .insert(editPayload);
+
+        if (insertError) {
+          setFormError(handleSupabaseError(insertError));
           setIsSubmitting(false);
           return;
         }
