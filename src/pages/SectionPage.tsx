@@ -708,6 +708,25 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
     return newLocals.length > 0 ? [...safe, ...newLocals] : safe;
   }, [allArticles, slug, domainInfo, dashboardContext]);
 
+  // --- Deep Linking Auto-Expand ---
+  useEffect(() => {
+    const highlight = searchParams.get('highlight');
+    if (highlight && mergedArticles.length > 0) {
+      const targetArticle = mergedArticles.find(a => a.slug === highlight);
+      if (targetArticle && targetArticle.comp_objective) {
+        // Set the active tab/objective to match the article's location
+        setActiveObjective(targetArticle.comp_objective);
+        
+        // Quietly clear the highlight param from the URL so it doesn't stick
+        setSearchParams(prev => {
+          const newParams = new URLSearchParams(prev);
+          newParams.delete('highlight');
+          return newParams;
+        }, { replace: true });
+      }
+    }
+  }, [searchParams, mergedArticles, setSearchParams]);
+
   const isKnownSlug = !!(meta || localContent || dashboardContext || domainInfo);
 
   useEffect(() => {
