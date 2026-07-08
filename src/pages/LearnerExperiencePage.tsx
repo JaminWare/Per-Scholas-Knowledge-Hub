@@ -278,7 +278,7 @@ export default function LearnerExperiencePage() {
   }, [filteredEntries, activeTab]);
 
   return (
-    <div className="max-w-7xl mx-auto space-y-4">
+    <div className="max-w-7xl mx-auto space-y-4 animate-page-in">
       {/* ─── Banner ─── */}
       <div className="relative rounded-2xl bg-zinc-950/50 border border-zinc-800/30 overflow-hidden">
         <div className="relative px-6 py-5 md:px-8 md:py-6">
@@ -378,6 +378,7 @@ export default function LearnerExperiencePage() {
       )}
 
       {/* ─── Content Grid ─── */}
+      <div className="min-h-[50vh]">
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <AppletSkeleton gridMode />
@@ -385,7 +386,7 @@ export default function LearnerExperiencePage() {
           <AppletSkeleton gridMode />
         </div>
       ) : filteredEntries.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-content-in">
           {displayEntries.map((entry) => (
             <AppletCard key={entry.id} article={entry} gridMode isPinned={pinnedSet.has(entry.id)} />
           ))}
@@ -393,6 +394,7 @@ export default function LearnerExperiencePage() {
       ) : (
         <EmptyStateInvite tab={currentTab} onContribute={() => setIsModalOpen(true)} />
       )}
+      </div>
 
       {/* ─── Submission Modal ─── */}
       <ContributorSubmissionModal

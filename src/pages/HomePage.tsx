@@ -59,7 +59,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
   return (
     <>
-      <div className="flex-1 shrink-0 w-full flex flex-col items-start gap-4 md:gap-5 max-w-3xl mx-auto">
+      <div className="flex-1 shrink-0 w-full flex flex-col items-start gap-4 md:gap-5 max-w-3xl mx-auto animate-page-in">
 
         {/* Welcome header */}
         <div className="text-left space-y-2">

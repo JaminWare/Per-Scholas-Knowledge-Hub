@@ -211,7 +211,7 @@ export default function DeskolasPage() {
   }, [entries, lxMeta, activeLevel2, activeLevel3]);
 
   return (
-    <div className="relative max-w-7xl mx-auto space-y-4 pb-20">
+    <div className="relative max-w-7xl mx-auto space-y-4 pb-20 animate-page-in">
       {/* Banner */}
       <div className="relative rounded-2xl bg-zinc-950/50 border border-zinc-800/30 overflow-hidden">
         <div className="relative px-6 py-5 md:px-8 md:py-6">
@@ -304,6 +304,7 @@ export default function DeskolasPage() {
       </div>
 
       {/* Content Grid */}
+      <div className="min-h-[40vh]">
       {isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <AppletSkeleton gridMode />
@@ -313,7 +314,7 @@ export default function DeskolasPage() {
       ) : fetchError ? (
         <div className="text-center py-10 text-red-400">{fetchError}</div>
       ) : filteredEntries.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-content-in">
           {filteredEntries.map((entry) => (
             <AppletCard key={entry.id} article={entry} gridMode />
           ))}
@@ -338,6 +339,7 @@ export default function DeskolasPage() {
           </button>
         </div>
       )}
+      </div>
 
       {/* Floating contribute button */}
       {filteredEntries.length > 0 && (

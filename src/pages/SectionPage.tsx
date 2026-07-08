@@ -84,7 +84,7 @@ const TAB_TO_SUBMISSION_TYPE: Record<ResourceTab, string | null> = {
   'Playbooks': 'Prompt Playbook',
 };
 
-const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-track]:bg-transparent';
+const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory min-h-[250px] animate-content-in [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-track]:bg-transparent';
 
 
 function contentMapEntryToArticle(slug: string, entry: LocalArticle): ArticleWithContributor {
@@ -531,7 +531,7 @@ function CurriculumDashboard({
     }
 
     return (
-      <div className="space-y-0">
+      <div className="space-y-0 min-h-[50vh]">
         {groupByObjective(allDomainArticles, canonicalTarget).map(([objective, items], idx) => (
           <div key={objective}>
             <div className={`flex items-center gap-2 pb-2 border-b border-zinc-800/50 ${idx === 0 ? 'mt-0' : 'mt-5'}`}>
@@ -541,7 +541,7 @@ function CurriculumDashboard({
                 {items.length}
               </span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3 animate-content-in">
               {items.map((a) => <AppletCard key={a.id} article={a} gridMode />)}
             </div>
           </div>
@@ -568,7 +568,7 @@ function CurriculumDashboard({
   }, [visibleArticles, allCanonicalTargets]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 min-h-[50vh]">
       {uncategorizedArticles.length > 0 && (
         <section>
           <div className="flex items-center gap-2.5 mb-3 pb-3 border-b border-zinc-800/50">
@@ -778,7 +778,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   if (localContent && !isDomainSection) {
     const roleColor = roleColors[localContent.contributorRole ?? ''] ?? 'bg-zinc-800 text-zinc-400';
     return (
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto animate-page-in">
         <button
           onClick={goBack}
           className="text-zinc-400 hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 mb-6 cursor-pointer text-sm font-medium"
@@ -846,7 +846,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const displayTitle = meta?.title ?? (slug?.replace(/[-/]/g, ' ') ?? 'Articles');
 
   return (
-    <div className="space-y-5 max-w-7xl">
+    <div className="space-y-5 max-w-7xl animate-page-in">
       {isSubPage && (
         <button
           onClick={goBack}

@@ -13,7 +13,7 @@ export default function CollapsibleCard({ title, icon, children, defaultOpen = f
   const panelId = useId();
 
   return (
-    <section className="bg-zinc-950/50 rounded-2xl border border-zinc-800/30 p-6 md:p-8 transition-all duration-300 ease-out">
+    <section className="bg-zinc-950/50 rounded-2xl border border-zinc-800/30 p-6 md:p-8 transition-all duration-200 ease-out">
       <button
         type="button"
         onClick={() => setIsOpen((v) => !v)}
@@ -28,7 +28,7 @@ export default function CollapsibleCard({ title, icon, children, defaultOpen = f
           {title}
         </span>
         <ChevronRight
-          className={`w-4 h-4 text-zinc-500 flex-shrink-0 ml-auto transition-transform duration-300 ease-in-out group-hover:text-zinc-300 ${
+          className={`w-4 h-4 text-zinc-500 flex-shrink-0 ml-auto transition-transform duration-200 ease-out group-hover:text-zinc-300 ${
             isOpen ? 'rotate-90' : ''
           }`}
         />
@@ -36,7 +36,7 @@ export default function CollapsibleCard({ title, icon, children, defaultOpen = f
 
       <div
         id={panelId}
-        className={`grid transition-all duration-300 ease-in-out ${
+        className={`grid transition-all duration-200 ease-out ${
           isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
         }`}
       >
