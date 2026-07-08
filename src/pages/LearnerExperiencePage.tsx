@@ -77,10 +77,14 @@ export default function LearnerExperiencePage() {
     setActiveLevel3('');
   };
 
+  // --- Deep Linking Auto-Expand & Scroll ---
   useEffect(() => {
     const paramTab = searchParams.get('tab') || 'all';
     const paramLevel2 = searchParams.get('level2') || '';
     const paramLevel3 = searchParams.get('level3') || '';
+    const highlight = searchParams.get('highlight');
+
+    // 1. Set the active folders based on the URL params
     if (paramTab !== activeTab) {
       setActiveTab(paramTab);
       setActiveLevel2(paramLevel2);
@@ -89,7 +93,32 @@ export default function LearnerExperiencePage() {
       if (paramLevel2 && paramLevel2 !== activeLevel2) setActiveLevel2(paramLevel2);
       if (paramLevel3 && paramLevel3 !== activeLevel3) setActiveLevel3(paramLevel3);
     }
-  }, [searchParams]);
+
+    // 2. Find the card and scroll to it if highlighted
+    if (highlight && entries.length > 0) {
+      const targetArticle = entries.find(a => a.slug === highlight);
+      if (targetArticle) {
+        setTimeout(() => {
+          const el = document.getElementById(targetArticle.id);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Add a temporary visual flash
+            el.style.transition = 'all 0.5s ease-out';
+            el.style.boxShadow = '0 0 0 2px #0ea5e9'; // sky-500 ring
+            setTimeout(() => { el.style.boxShadow = 'none'; }, 2000);
+          }
+        }, 300);
+
+        // Clean up the URL behind the scenes
+        setSearchParams(prev => {
+          const newParams = new URLSearchParams(prev);
+          newParams.delete('highlight');
+          return newParams;
+        }, { replace: true });
+      }
+    }
+  }, [searchParams, entries, activeTab, activeLevel2, activeLevel3, setSearchParams]);
 
   useEffect(() => {
     abortRef.current = false;
