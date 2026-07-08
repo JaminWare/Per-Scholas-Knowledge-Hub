@@ -4,6 +4,7 @@ import { normalizeUrl } from '../utils/normalizeUrl';
 import { autoFormatContent } from '../utils/autoFormatContent';
 import { autoCategorizeSubmission } from '../utils/autoCategorize';
 import { handleSupabaseError, isAuthError } from '../utils/handleSupabaseError';
+import { deriveFocusArea } from '../utils/normalizeDeskolas';
 import { calculateSimilarity } from '../utils/textSimilarity';
 import {
   DOMAIN_REGISTRY, SLUG_TO_CANONICAL, CANONICAL_TO_SLUG,
@@ -325,6 +326,24 @@ function SubmissionCard({
           </div>
 
           <p className="mt-1.5 text-[11px] text-zinc-500 font-mono truncate">{sub.track}</p>
+          {sub.lx_stage && (
+            <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[10px]">
+              <span className="px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                {sub.lx_stage}
+              </span>
+              {sub.lx_topic && (
+                <span className="px-1.5 py-0.5 rounded bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                  {sub.lx_topic}
+                </span>
+              )}
+              {(sub.lx_focus || (sub.lx_topic && deriveFocusArea(sub.lx_topic, sub.title, sub.content))) && (
+                <span className={`px-1.5 py-0.5 rounded border ${sub.lx_focus ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-zinc-800 text-zinc-400 border-zinc-700 italic'}`}>
+                  {sub.lx_focus ?? deriveFocusArea(sub.lx_topic!, sub.title, sub.content)}
+                  {!sub.lx_focus && ' (derived)'}
+                </span>
+              )}
+            </div>
+          )}
           {needsOverride && (
             <div className="mt-2 p-2.5 rounded-lg bg-amber-500/5 border border-amber-500/20">
               <label className="block text-[10px] font-bold uppercase tracking-wider text-amber-400 mb-1.5">
@@ -1455,7 +1474,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             comp_objective: metadataOverrides?.compObjective || sub.comp_objective || null,
             lx_stage: metadataOverrides?.lxStage || sub.lx_stage || null,
             lx_topic: sub.lx_topic || null,
-            lx_focus: sub.lx_focus || null,
+            lx_focus: sub.lx_focus || (sub.lx_topic ? deriveFocusArea(sub.lx_topic, sub.title, sub.content) : null),
             excerpt,
             status: 'published',
             updated_at: new Date().toISOString(),
@@ -1495,7 +1514,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               comp_objective: metadataOverrides?.compObjective || sub.comp_objective || null,
               lx_stage: metadataOverrides?.lxStage || sub.lx_stage || null,
               lx_topic: sub.lx_topic || null,
-              lx_focus: sub.lx_focus || null,
+              lx_focus: sub.lx_focus || (sub.lx_topic ? deriveFocusArea(sub.lx_topic, sub.title, sub.content) : null),
               excerpt,
               updated_at: new Date().toISOString(),
             })
@@ -1520,7 +1539,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               comp_objective: metadataOverrides?.compObjective || sub.comp_objective || null,
               lx_stage: metadataOverrides?.lxStage || sub.lx_stage || null,
               lx_topic: sub.lx_topic || null,
-              lx_focus: sub.lx_focus || null,
+              lx_focus: sub.lx_focus || (sub.lx_topic ? deriveFocusArea(sub.lx_topic, sub.title, sub.content) : null),
               excerpt,
               tags: [],
             });
