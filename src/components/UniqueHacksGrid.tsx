@@ -44,7 +44,7 @@ export default function UniqueHacksGrid() {
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-zinc-100">Unique Hacks Quick-Reference Grid</h2>
+            <h2 className="text-lg font-bold text-zinc-100">Unique Hacks Quick Reference Grid</h2>
             <p className="text-sm text-zinc-500">Jump directly into a Control Panelno searching required</p>
           </div>
         </div>

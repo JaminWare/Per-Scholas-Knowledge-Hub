@@ -177,7 +177,7 @@ export function OpenSlotPlaceholder({
       >
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse flex-shrink-0" />
-          <span className="text-[10px] font-mono text-zinc-500 truncate max-w-[120px]">open-slot</span>
+          <span className="text-[10px] font-mono text-zinc-500 truncate max-w-[120px]">open slot</span>
         </div>
         <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wider flex-shrink-0 bg-sky-500 text-white border border-sky-500">
           [OPEN SLOT]

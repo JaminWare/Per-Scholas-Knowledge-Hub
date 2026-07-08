@@ -2,7 +2,7 @@
 
 ## The Shift to Cloud Infrastructure
 
-The healthcare industry is rapidly migrating from legacy, on-premises server rooms to scalable cloud environments (AWS, Azure, Google Cloud). This transition allows hospital networks to leverage elastic computing for massive data workloads, such as genomic sequencing and high-resolution medical imaging (PACS), without maintaining expensive local hardware.
+The healthcare industry is rapidly migrating from legacy, on premises server rooms to scalable cloud environments (AWS, Azure, Google Cloud). This transition allows hospital networks to leverage elastic computing for massive data workloads, such as genomic sequencing and high resolution medical imaging (PACS), without maintaining expensive local hardware.
 
 ## The Business Associate Agreement (BAA)
 
@@ -30,9 +30,9 @@ Cloud architecture in healthcare requires strict compliance configurations:
 
 Cloud migration dramatically improves healthcare disaster recovery capabilities:
 
-- **Geo-redundant replication** ensures that a regional outage does not bring down EHR systems.
+- **Geo redundant replication** ensures that a regional outage does not bring down EHR systems.
 - **Recovery Time Objective (RTO)** and **Recovery Point Objective (RPO)** targets are more achievable with cloud snapshots vs. tape backup.
-- **Auto-scaling** prevents downtime during peak clinical hours or mass-casualty events.
+- **Auto scaling** prevents downtime during peak clinical hours or mass casualty events.
 
 ## References & Citations
 

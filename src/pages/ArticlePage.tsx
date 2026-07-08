@@ -141,7 +141,7 @@ function OSIPDUArticleDiagrams() {
       </div>
       <div className="space-y-4 text-zinc-400 text-sm leading-relaxed">
         <p>Data encapsulation is the process of wrapping payload data with protocol-specific headers (and sometimes trailers) as it descends through the OSI stack before transmission. Each layer adds its own metadata so the receiving peer at the same layer can process it correctly.</p>
-        <p><strong className="text-zinc-200">Layer 7–5 (Application/Presentation/Session):</strong> Raw data is formatted, encrypted if applicable (TLS lives here conceptually), and session multiplexed. PDU is simply called "Data".</p>
+        <p><strong className="text-zinc-200">Layer 7 5 (Application/Presentation/Session):</strong> Raw data is formatted, encrypted if applicable (TLS lives here conceptually), and session multiplexed. PDU is simply called "Data".</p>
         <p><strong className="text-zinc-200">Layer 4 (Transport):</strong> TCP or UDP adds source/destination ports and, for TCP, sequence numbers and checksum. The PDU becomes a <code className="px-1 bg-zinc-800 rounded font-mono text-sky-400">Segment</code>.</p>
         <p><strong className="text-zinc-200">Layer 3 (Network):</strong> IP header adds source and destination IP addresses. The PDU becomes a <code className="px-1 bg-zinc-800 rounded font-mono text-sky-400">Packet</code>. Routers operate at this layer.</p>
         <p><strong className="text-zinc-200">Layer 2 (Data Link):</strong> Ethernet header adds MAC addresses; a trailer adds a Frame Check Sequence (FCS) CRC. PDU = <code className="px-1 bg-zinc-800 rounded font-mono text-sky-400">Frame</code>. Switches operate here.</p>
@@ -229,7 +229,7 @@ function TCPIPArticleContent() {
             </thead>
             <tbody>
               {[
-                { field: 'Header Size',      v4: '20–60 bytes (variable)',      v6: '40 bytes (fixed)'                  },
+                { field: 'Header Size',      v4: '20 60 bytes (variable)',      v6: '40 bytes (fixed)'                  },
                 { field: 'Address Length',   v4: '32 bits (4 octets)',           v6: '128 bits (16 octets)'              },
                 { field: 'Address Format',   v4: 'Dotted-decimal (192.168.1.1)', v6: 'Colon-hex (2001:db8::1)'          },
                 { field: 'Checksum',         v4: 'Included in header',           v6: 'Removed (handled by transport)'   },

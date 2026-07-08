@@ -104,7 +104,7 @@ export interface JourneyTab {
 export const JOURNEY_TABS: JourneyTab[] = [
   { id: 'all', label: 'All', icon: Compass, emptyPrompt: 'Be the first to share a peer survival tip. Your cohort is waiting.' },
   { id: 'onboarding', label: 'Onboarding Hurdles', icon: Lightbulb, trackSuffix: 'Onboarding Hurdles', emptyPrompt: 'Did you survive the first week setup chaos? Click here to drop a tip for the next cohort.' },
-  { id: 'slump', label: 'The Mid Program Slump', icon: Flame, trackSuffix: 'The Mid-Program Slump', emptyPrompt: 'Hit a wall mid way through and broken through it? Share your strategy here.' },
+  { id: 'slump', label: 'The Mid Program Slump', icon: Flame, trackSuffix: 'The Mid Program Slump', emptyPrompt: 'Hit a wall mid way through and broken through it? Share your strategy here.' },
   { id: 'cert', label: 'Certification Prep', icon: Shield, trackSuffix: 'Certification Prep', emptyPrompt: 'Have a test day hack or anxiety management trick? The cohort needs it.' },
   { id: 'job', label: 'Job Hunt Triage', icon: Briefcase, trackSuffix: 'Job Hunt Triage', emptyPrompt: 'Landed an interview or fixed your resume? Drop your advice for the next wave.' },
 ];

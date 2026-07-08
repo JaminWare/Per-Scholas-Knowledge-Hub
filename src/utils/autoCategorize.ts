@@ -46,7 +46,7 @@ const RULE_DATA: {
     ],
     masterCategory: LX_TRACK,
     track: LX_TRACK,
-    compObjective: 'The Mid-Program Slump',
+    compObjective: 'The Mid Program Slump',
     lxStage: 'slump',
   },
   {

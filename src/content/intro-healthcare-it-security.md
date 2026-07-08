@@ -6,13 +6,13 @@ Healthcare Information Technology (HIT) security is built upon the critical need
 
 The core of this security model relies on the **CIA Triad**:
 
-- **Confidentiality:** Ensuring PHI is only accessible to authorized personnel (e.g., Role-Based Access Control).
+- **Confidentiality:** Ensuring PHI is only accessible to authorized personnel (e.g., Role Based Access Control).
 - **Integrity:** Guaranteeing that medical records have not been improperly altered or destroyed.
 - **Availability:** Ensuring EHR (Electronic Health Record) systems and network infrastructure have maximum uptime, often requiring localized redundancies.
 
 ## Endpoint and Network Protections
 
-With the rise of telehealth and mobile nursing stations (WOWs  - Workstations on Wheels), endpoint security is paramount. Modern healthcare environments utilize heavily managed endpoints with Mobile Device Management (MDM) profiles, encrypted hard drives, and aggressive screen-lock timeouts to prevent "shoulder surfing" in busy corridors.
+With the rise of telehealth and mobile nursing stations (WOWs  - Workstations on Wheels), endpoint security is paramount. Modern healthcare environments utilize heavily managed endpoints with Mobile Device Management (MDM) profiles, encrypted hard drives, and aggressive screen lock timeouts to prevent "shoulder surfing" in busy corridors.
 
 > **Key Rule:** A system left unlocked in a clinical environment is an immediate HIPAA violation.
 
@@ -30,7 +30,7 @@ Physical security is often underestimated in healthcare IT. Critical controls in
 
 - **Workstation Use Policies:** Clear procedures for how and where workstations can be used, especially in shared clinical spaces.
 - **Device Controls:** Policies governing the transfer and disposal of PHI stored on physical media (hard drives, USB drives)  - including mandatory degaussing or physical destruction before disposal.
-- **Facility Access Controls:** Badge-controlled access to server rooms and data centers; visitor logs maintained for all access.
+- **Facility Access Controls:** Badge controlled access to server rooms and data centers; visitor logs maintained for all access.
 
 ## References & Citations
 

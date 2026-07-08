@@ -58,7 +58,7 @@ export default function ContributorCard({ contributor }: ContributorCardProps) {
 
       <div className="mt-4 pt-4 border-t border-zinc-700">
         <div className="flex items-center justify-between">
-          <span className="text-xs text-zinc-500">AI-Enabled Healthcare IT Cohort</span>
+          <span className="text-xs text-zinc-500">AI Enabled Healthcare IT Cohort</span>
           <span className="px-2 py-1 text-xs font-medium bg-sky-900/30 text-sky-400 rounded-full">
             Contributor
           </span>

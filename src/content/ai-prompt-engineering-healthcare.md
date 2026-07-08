@@ -6,13 +6,13 @@ Artificial Intelligence and Large Language Models (LLMs) are transforming health
 
 ## Effective Prompting Strategies
 
-### Role-Prompting
+### Role Prompting
 Assigning the AI a highly specific clinical or technical persona increases the precision and relevance of outputs.
 
-> *Example: "Act as a senior EHR database administrator with expertise in HL7 FHIR R4 standards. Analyze the following patient data payload and identify any non-conformant fields..."*
+> *Example: "Act as a senior EHR database administrator with expertise in HL7 FHIR R4 standards. Analyze the following patient data payload and identify any non conformant fields..."*
 
-### Few-Shot Prompting
-Providing the model with 2–3 accurate examples of the desired output format before asking it to process new data drastically reduces the error rate in clinical summarizations.
+### Few Shot Prompting
+Providing the model with 2 3 accurate examples of the desired output format before asking it to process new data drastically reduces the error rate in clinical summarizations.
 
 ```
 Example Input: "Patient presented with chest pain, shortness of breath."
@@ -26,14 +26,14 @@ Explicitly instructing the model not to guess eliminates dangerous hallucinated 
 
 > *Example: "If the patient's discharge date is not explicitly stated in the text below, output 'DATA NOT FOUND'. Do not infer or estimate the date."*
 
-### Chain-of-Thought (CoT) Prompting
-For complex diagnostic or troubleshooting tasks, instruct the model to reason step by step before providing its final answer. This significantly improves accuracy on multi-step IT and clinical problems.
+### Chain of Thought (CoT) Prompting
+For complex diagnostic or troubleshooting tasks, instruct the model to reason step by step before providing its final answer. This significantly improves accuracy on multi step IT and clinical problems.
 
 ## The PHI Scrubbing Rule
 
-The most critical rule of prompt engineering in healthcare is that **unredacted PHI must never be entered into public, consumer-grade AI tools** (like standard ChatGPT). All prompt testing and execution must occur within enterprise-secured, BAA-covered, local or private cloud LLM instances.
+The most critical rule of prompt engineering in healthcare is that **unredacted PHI must never be entered into public, consumer grade AI tools** (like standard ChatGPT). All prompt testing and execution must occur within enterprise secured, BAA covered, local or private cloud LLM instances.
 
-**Pre-prompt PHI checklist:**
+**Pre prompt PHI checklist:**
 - [ ] Remove patient names, dates of birth, and SSNs
 - [ ] Remove MRN (Medical Record Numbers) and account numbers
 - [ ] Remove geographic data smaller than state level
@@ -41,7 +41,7 @@ The most critical rule of prompt engineering in healthcare is that **unredacted 
 
 ## Evaluating AI Output Quality
 
-Before using any AI-generated clinical or administrative output, apply the TRACE framework:
+Before using any AI generated clinical or administrative output, apply the TRACE framework:
 
 | Letter | Check |
 |--------|-------|
