@@ -708,19 +708,55 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
     return newLocals.length > 0 ? [...safe, ...newLocals] : safe;
   }, [allArticles, slug, domainInfo, dashboardContext]);
 
-  // --- Deep Linking Auto-Expand ---
+  // --- Deep Linking Auto-Expand & Scroll ---
   useEffect(() => {
     const highlight = searchParams.get('highlight');
     if (highlight && mergedArticles.length > 0) {
       const targetArticle = mergedArticles.find(a => a.slug === highlight);
-      if (targetArticle && targetArticle.comp_objective) {
-        // Set the active tab/objective to match the article's location
-        setActiveObjective(targetArticle.comp_objective);
+      
+      if (targetArticle) {
+        // 1. Set the Active Objective Category
+        if (targetArticle.comp_objective) {
+          setActiveObjective(targetArticle.comp_objective);
+        } else {
+          setActiveObjective('All');
+        }
         
-        // Quietly clear the highlight param from the URL so it doesn't stick
+        // 2. Set the Active Resource Tab based on submission type
+        let matchingTab: ResourceTab = 'All';
+        for (const [tab, type] of Object.entries(TAB_TO_SUBMISSION_TYPE)) {
+          if (type === targetArticle.submission_type) {
+            matchingTab = tab as ResourceTab;
+            break;
+          }
+        }
+        setActiveTab(matchingTab);
+        
+        // 3. Scroll to the specific card element ID
+        setTimeout(() => {
+          const el = document.getElementById(targetArticle.id);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // Add a temporary visual flash so the user sees which item they clicked
+            el.style.transition = 'all 0.5s ease-out';
+            el.style.boxShadow = '0 0 0 2px #0ea5e9'; // sky-500 ring
+            setTimeout(() => { 
+              el.style.boxShadow = 'none'; 
+            }, 2000);
+          }
+        }, 300); // Small delay to let React render the new tab/objective content
+        
+        // 4. Clean up the URL
         setSearchParams(prev => {
           const newParams = new URLSearchParams(prev);
           newParams.delete('highlight');
+          // Ensure tab is synced to URL if we changed it
+          if (matchingTab === 'All') {
+            newParams.delete('tab');
+          } else {
+            newParams.set('tab', matchingTab);
+          }
           return newParams;
         }, { replace: true });
       }
