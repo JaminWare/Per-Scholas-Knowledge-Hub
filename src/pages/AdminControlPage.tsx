@@ -6,6 +6,7 @@ import { autoCategorizeSubmission } from '../utils/autoCategorize';
 import { handleSupabaseError, isAuthError } from '../utils/handleSupabaseError';
 import { deriveFocusArea } from '../utils/normalizeDeskolas';
 import { calculateSimilarity } from '../utils/textSimilarity';
+import { DESKOLAS_CATEGORIES } from '../constants/deskolas';
 import {
   DOMAIN_REGISTRY, SLUG_TO_CANONICAL, CANONICAL_TO_SLUG,
   resolveToCanonical, resolveTrackSlug,
@@ -168,7 +169,7 @@ function SubmissionCard({
   onReject,
 }: {
   sub: PendingSubmission;
-  onApprove: (id: string, domainOverride?: string, editedContent?: string, editedTitle?: string, metadataOverrides?: { compObjective?: string; lxStage?: string }) => Promise<void>;
+  onApprove: (id: string, domainOverride?: string, editedContent?: string, editedTitle?: string, metadataOverrides?: { compObjective?: string; lxStage?: string; lxTopic?: string; lxFocus?: string }) => Promise<void>;
   onReject: (id: string) => Promise<void>;
 }) {
   const [approving, setApproving] = useState(false);
@@ -183,8 +184,20 @@ function SubmissionCard({
   const [editedTitle, setEditedTitle] = useState(sub.title);
   const hasEdits = editedContent !== initialContent || editedTitle !== sub.title;
 
-  const needsOverride = !sub.track.toLowerCase().includes('learner experience') && resolveCanonicalSlug(sub.track) === null;
+  const trackLower = sub.track.toLowerCase();
+  const isDeskolas = trackLower.includes('deskolas') || trackLower.includes('tech solutions');
+  const needsOverride = !trackLower.includes('learner experience') && !isDeskolas && resolveCanonicalSlug(sub.track) === null;
   const [domainOverride, setDomainOverride] = useState('');
+
+  // Deskolas triage state (always editable)
+  const deskolasTopicOptions = DESKOLAS_CATEGORIES.filter((f) => !f.id.startsWith('all-'));
+  const [deskolasTopicOverride, setDeskolasTopicOverride] = useState(sub.lx_topic || '');
+  const [deskolasFocusOverride, setDeskolasFocusOverride] = useState(sub.lx_focus || '');
+  const selectedDeskolasTopicObj = deskolasTopicOptions.find((t) => t.label === deskolasTopicOverride);
+  const deskolasFocusOptions = selectedDeskolasTopicObj
+    ? selectedDeskolasTopicObj.nested.filter((n) => n.keywords.length > 0)
+    : [];
+  const showDeskolasPanel = isDeskolas || domainOverride === 'Deskolas Tech Solutions';
 
   // Auto-categorization state for admin title edits
   const [suggestedTrack, setSuggestedTrack] = useState('');
@@ -255,9 +268,17 @@ function SubmissionCard({
     setActionError('');
     try {
       const effectiveDomainOverride = domainOverride || (needsOverride ? '' : undefined);
-      const metaOverrides = suggestionApplied && (suggestedCompObjective || suggestedLxStage)
-        ? { compObjective: suggestedCompObjective || undefined, lxStage: suggestedLxStage || undefined }
-        : undefined;
+      const baseMetaOverrides: { compObjective?: string; lxStage?: string; lxTopic?: string; lxFocus?: string } = {};
+      if (suggestionApplied) {
+        if (suggestedCompObjective) baseMetaOverrides.compObjective = suggestedCompObjective;
+        if (suggestedLxStage) baseMetaOverrides.lxStage = suggestedLxStage;
+      }
+      if (showDeskolasPanel) {
+        baseMetaOverrides.lxStage = 'labs';
+        if (deskolasTopicOverride) baseMetaOverrides.lxTopic = deskolasTopicOverride;
+        if (deskolasFocusOverride) baseMetaOverrides.lxFocus = deskolasFocusOverride;
+      }
+      const metaOverrides = Object.keys(baseMetaOverrides).length > 0 ? baseMetaOverrides : undefined;
       await onApprove(sub.id, effectiveDomainOverride || undefined, editedContent, editedTitle !== sub.title ? editedTitle : undefined, metaOverrides);
     } catch (err) {
       setActionError(err instanceof Error ? err.message : 'Approval failed.');
@@ -348,20 +369,56 @@ function SubmissionCard({
             </div>
           )}
           {needsOverride && (
-            <div className="mt-2 p-2.5 rounded-lg bg-amber-500/5 border border-amber-500/20">
-              <label className="block text-[10px] font-bold uppercase tracking-wider text-amber-400 mb-1.5">
+            <div className="mt-2 p-2.5 rounded-lg bg-zinc-800/50 border border-zinc-700">
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-300 mb-1.5">
                 Unrecognized track -- select correct domain:
               </label>
               <select
                 value={domainOverride}
-                onChange={(e) => setDomainOverride(e.target.value)}
-                className="w-full px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                onChange={(e) => {
+                  setDomainOverride(e.target.value);
+                  if (e.target.value !== 'Deskolas Tech Solutions') {
+                    setDeskolasTopicOverride('');
+                    setDeskolasFocusOverride('');
+                  }
+                }}
+                className="w-full px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-zinc-500/40"
               >
                 <option value="">Select a domain...</option>
                 {DOMAIN_REGISTRY.map((d) => (
                   <option key={d.canonical} value={d.canonical}>{d.canonical}</option>
                 ))}
+                <option value="Deskolas Tech Solutions">Deskolas Tech Solutions</option>
               </select>
+            </div>
+          )}
+          {showDeskolasPanel && (
+            <div className="mt-2 p-2.5 rounded-lg bg-zinc-800/50 border border-zinc-700 space-y-2">
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-zinc-300">
+                Deskolas Classification
+              </label>
+              <select
+                value={deskolasTopicOverride}
+                onChange={(e) => { setDeskolasTopicOverride(e.target.value); setDeskolasFocusOverride(''); }}
+                className="w-full px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-zinc-500/40"
+              >
+                <option value="">Select topic...</option>
+                {deskolasTopicOptions.map((t) => (
+                  <option key={t.id} value={t.label}>{t.label}</option>
+                ))}
+              </select>
+              {deskolasTopicOverride && deskolasFocusOptions.length > 0 && (
+                <select
+                  value={deskolasFocusOverride}
+                  onChange={(e) => setDeskolasFocusOverride(e.target.value)}
+                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-zinc-500/40"
+                >
+                  <option value="">Select focus area...</option>
+                  {deskolasFocusOptions.map((f) => (
+                    <option key={f.label} value={f.label}>{f.label}</option>
+                  ))}
+                </select>
+              )}
             </div>
           )}
         </div>
@@ -1581,7 +1638,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
     setTimeout(() => setSuccessMessage(''), 4000);
   };
 
-  const handleApprove = async (id: string, domainOverride?: string, editedContent?: string, editedTitle?: string, metadataOverrides?: { compObjective?: string; lxStage?: string }) => {
+  const handleApprove = async (id: string, domainOverride?: string, editedContent?: string, editedTitle?: string, metadataOverrides?: { compObjective?: string; lxStage?: string; lxTopic?: string; lxFocus?: string }) => {
     const sub = submissions.find((s) => s.id === id);
     if (!sub) return;
 
@@ -1608,6 +1665,9 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             content: finalContent || '',
             study_category: domainOverride || sub.track,
             comp_objective: metadataOverrides?.compObjective || sub.comp_objective || null,
+            lx_stage: metadataOverrides?.lxStage || sub.lx_stage || null,
+            lx_topic: metadataOverrides?.lxTopic || sub.lx_topic || null,
+            lx_focus: metadataOverrides?.lxFocus || sub.lx_focus || null,
             status: 'published',
             updated_at: new Date().toISOString(),
           })
@@ -1622,9 +1682,13 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
       }
 
       // ─── NEW SUBMISSION: resolve section and publish ───
-      // Step 2: resolve the target section dynamically
-      const resolvedSlug = resolveCanonicalSlug(effectiveTrack) ?? (domainOverride ? CANONICAL_TO_SLUG[domainOverride] : null);
-      const targetSectionId = await resolveSectionId(resolvedSlug);
+      // Detect Deskolas track (bypasses sections table)
+      const effectiveTrackLower = effectiveTrack.toLowerCase();
+      const isDeskolasTrack = effectiveTrackLower.includes('deskolas') || effectiveTrackLower.includes('tech solutions');
+
+      // Step 2: resolve the target section dynamically (skip for Deskolas)
+      const resolvedSlug = isDeskolasTrack ? null : (resolveCanonicalSlug(effectiveTrack) ?? (domainOverride ? CANONICAL_TO_SLUG[domainOverride] : null));
+      const targetSectionId = isDeskolasTrack ? null : await resolveSectionId(resolvedSlug);
 
       const publishContent = editedContent ?? sub.formatted_content ?? sub.content;
       const isResourceLink = sub.submission_type === 'Resource Link';
@@ -1636,13 +1700,15 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
       const trackLower = effectiveTrack.toLowerCase();
       const isLX = trackLower.includes('learner experience');
       const isHealthcare = trackLower.includes('healthcare');
-      const sectionPrefix = isLX
-        ? 'learner-experience'
-        : isHealthcare
-          ? 'advanced-healthcare-it'
-          : (resolvedSlug || 'general');
+      const sectionPrefix = isDeskolasTrack
+        ? 'deskolas-tech-solutions'
+        : isLX
+          ? 'learner-experience'
+          : isHealthcare
+            ? 'advanced-healthcare-it'
+            : (resolvedSlug || 'general');
 
-      const studyCategory = resolveStudyCategory(effectiveTrack) ?? (domainOverride || effectiveTrack);
+      const studyCategory = isDeskolasTrack ? 'Deskolas Tech Solutions' : (resolveStudyCategory(effectiveTrack) ?? (domainOverride || effectiveTrack));
 
       // Step 3: Check if this submission was previously published (republish scenario)
       const { data: existingArticle } = await supabase
@@ -1668,8 +1734,8 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             author_name: sub.full_name,
             comp_objective: metadataOverrides?.compObjective || sub.comp_objective || null,
             lx_stage: metadataOverrides?.lxStage || sub.lx_stage || null,
-            lx_topic: sub.lx_topic || null,
-            lx_focus: sub.lx_focus || (sub.lx_topic ? deriveFocusArea(sub.lx_topic, sub.title, sub.content) : null),
+            lx_topic: metadataOverrides?.lxTopic || sub.lx_topic || null,
+            lx_focus: metadataOverrides?.lxFocus || sub.lx_focus || (sub.lx_topic ? deriveFocusArea(sub.lx_topic, sub.title, sub.content) : null),
             excerpt,
             status: 'published',
             updated_at: new Date().toISOString(),
@@ -1708,8 +1774,8 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               author_name: sub.full_name,
               comp_objective: metadataOverrides?.compObjective || sub.comp_objective || null,
               lx_stage: metadataOverrides?.lxStage || sub.lx_stage || null,
-              lx_topic: sub.lx_topic || null,
-              lx_focus: sub.lx_focus || (sub.lx_topic ? deriveFocusArea(sub.lx_topic, sub.title, sub.content) : null),
+              lx_topic: metadataOverrides?.lxTopic || sub.lx_topic || null,
+              lx_focus: metadataOverrides?.lxFocus || sub.lx_focus || (sub.lx_topic ? deriveFocusArea(sub.lx_topic, sub.title, sub.content) : null),
               excerpt,
               updated_at: new Date().toISOString(),
             })
@@ -1733,8 +1799,8 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               author_name: sub.full_name,
               comp_objective: metadataOverrides?.compObjective || sub.comp_objective || null,
               lx_stage: metadataOverrides?.lxStage || sub.lx_stage || null,
-              lx_topic: sub.lx_topic || null,
-              lx_focus: sub.lx_focus || (sub.lx_topic ? deriveFocusArea(sub.lx_topic, sub.title, sub.content) : null),
+              lx_topic: metadataOverrides?.lxTopic || sub.lx_topic || null,
+              lx_focus: metadataOverrides?.lxFocus || sub.lx_focus || (sub.lx_topic ? deriveFocusArea(sub.lx_topic, sub.title, sub.content) : null),
               excerpt,
               tags: [],
             });
