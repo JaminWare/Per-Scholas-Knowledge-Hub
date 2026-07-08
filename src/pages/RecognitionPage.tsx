@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
   Lightbulb, GitBranch, Sparkles, Star, Crown, Link2, UploadCloud,
-  Laptop, Monitor, Heart, LifeBuoy, Layers, Pencil,
+  Laptop, Monitor, Heart, LifeBuoy, Layers, Pencil, UserCog,
 } from 'lucide-react';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import { useSmartBack } from '../hooks/useSmartBack';
@@ -281,6 +281,10 @@ export default function RecognitionPage() {
   const [authOpen, setAuthOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const currentUserName = localStorage.getItem('learnerHub_authorName') || '';
+  const isUserMatched = useMemo(() => {
+    if (!user || !currentUserName) return false;
+    return contributors.some((g) => g.name.toLowerCase() === currentUserName.toLowerCase());
+  }, [user, currentUserName, contributors]);
 
   const TRACK_FILTER_OPTIONS = [
     { value: 'All', label: 'All Tracks', icon: Layers },
@@ -313,13 +317,25 @@ export default function RecognitionPage() {
       <section className="relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900">
         <div className="relative px-6 py-4 md:px-8 md:py-5">
           {/* Back button inside the banner */}
-          <button
-            onClick={goBack}
-            className="inline-flex items-center gap-2 text-sky-200/80 hover:text-white transition-colors text-sm font-medium mb-8"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Previous Page
-          </button>
+          <div className="flex items-center justify-between mb-8">
+            <button
+              onClick={goBack}
+              className="inline-flex items-center gap-2 text-sky-200/80 hover:text-white transition-colors text-sm font-medium"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Previous Page
+            </button>
+            {user && !isUserMatched && (
+              <button
+                type="button"
+                onClick={() => setProfileOpen(true)}
+                className="inline-flex items-center gap-2 bg-transparent hover:bg-zinc-800 text-zinc-300 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+              >
+                <UserCog className="w-4 h-4" />
+                Edit My Name
+              </button>
+            )}
+          </div>
 
           <div className="max-w-2xl">
             <div className="flex items-center gap-3 mb-3">
@@ -383,7 +399,7 @@ export default function RecognitionPage() {
                 isNew={g.name === newestName && g.topBadge !== 'Founder'}
                 isOpen={openContributor === g.name}
                 onToggle={() => setOpenContributor((prev) => prev === g.name ? null : g.name)}
-                onEditProfile={() => user ? setProfileOpen(true) : setAuthOpen(true)}
+                onEditProfile={user && currentUserName && g.name.toLowerCase() === currentUserName.toLowerCase() ? () => setProfileOpen(true) : undefined}
               />
             ))}
           </div>
