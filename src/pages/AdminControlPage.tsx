@@ -20,7 +20,7 @@ import {
   GitBranch, Zap, BookOpen, Tag, User, Calendar, Wand2,
   Pencil, SplitSquareHorizontal, Archive, Filter,
   RotateCcw, XCircle, ShieldOff, Search, UserPlus, Crown, X,
-  Activity, UserCheck, Database, HeartPulse,
+  Activity, UserCheck, Database, HeartPulse, Users, Settings,
 } from 'lucide-react';
 
 // ---------------------------------------------------------------------------
@@ -1501,6 +1501,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   const [fetchError, setFetchError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [activeTab, setActiveTab] = useState<'pending' | 'archive' | 'access' | 'audit' | 'names' | 'maintenance' | 'health' | 'articles'>('pending');
+  const [activeCategory, setActiveCategory] = useState<'content' | 'users' | 'system'>('content');
   const [searchQuery, setSearchQuery] = useState('');
   const fetchVersionRef = useRef(0);
 
@@ -1845,124 +1846,180 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             </div>
           </div>
 
-          {/* Pill Tab Switcher */}
-          <div className="relative w-full">
-            <div className="overflow-x-auto whitespace-nowrap scrollbar-hide px-1 transform-gpu [mask-image:linear-gradient(to_right,white_0%,white_90%,transparent_100%)]">
-            <div className="inline-flex rounded-full bg-zinc-800/80 border border-zinc-800/50 p-1">
-            <button
-              type="button"
-              onClick={() => setActiveTab('pending')}
-              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
-                activeTab === 'pending'
-                  ? 'bg-sky-500 text-white'
-                  : 'text-zinc-400 hover:text-zinc-200'
-              }`}
-            >
-              Pending Submissions
-              {filteredSubmissions.length > 0 && (
-                <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
-                  activeTab === 'pending'
-                    ? 'bg-white/20 text-white'
-                    : 'bg-amber-500/15 text-amber-400'
-                }`}>
-                  {filteredSubmissions.length}
-                </span>
+          {/* 2-Tier Category Navigation */}
+          <div className="space-y-3">
+            {/* Parent Category Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <button
+                type="button"
+                onClick={() => { setActiveCategory('content'); setActiveTab('pending'); }}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all duration-200 ${
+                  activeCategory === 'content'
+                    ? 'bg-sky-500/10 border-sky-500/40 text-sky-300 shadow-sm shadow-sky-500/10'
+                    : 'bg-zinc-900/50 border-zinc-800/50 text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200 hover:border-zinc-700/60'
+                }`}
+              >
+                <FileText className="w-5 h-5 flex-shrink-0" />
+                <div>
+                  <span className="text-sm font-semibold block">Content</span>
+                  <span className="text-[11px] text-zinc-500">Submissions & Articles</span>
+                </div>
+              </button>
+              <button
+                type="button"
+                onClick={() => { setActiveCategory('users'); setActiveTab('names'); }}
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all duration-200 ${
+                  activeCategory === 'users'
+                    ? 'bg-sky-500/10 border-sky-500/40 text-sky-300 shadow-sm shadow-sky-500/10'
+                    : 'bg-zinc-900/50 border-zinc-800/50 text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200 hover:border-zinc-700/60'
+                }`}
+              >
+                <Users className="w-5 h-5 flex-shrink-0" />
+                <div>
+                  <span className="text-sm font-semibold block">Users</span>
+                  <span className="text-[11px] text-zinc-500">Names & Access</span>
+                </div>
+              </button>
+              {canManageAdmins && (
+                <button
+                  type="button"
+                  onClick={() => { setActiveCategory('system'); setActiveTab('audit'); }}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all duration-200 ${
+                    activeCategory === 'system'
+                      ? 'bg-sky-500/10 border-sky-500/40 text-sky-300 shadow-sm shadow-sky-500/10'
+                      : 'bg-zinc-900/50 border-zinc-800/50 text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200 hover:border-zinc-700/60'
+                  }`}
+                >
+                  <Settings className="w-5 h-5 flex-shrink-0" />
+                  <div>
+                    <span className="text-sm font-semibold block">System</span>
+                    <span className="text-[11px] text-zinc-500">Audit, Maintenance & Health</span>
+                  </div>
+                </button>
               )}
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('archive')}
-              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
-                activeTab === 'archive'
-                  ? 'bg-sky-500 text-white'
-                  : 'text-zinc-400 hover:text-zinc-200'
-              }`}
-            >
-              All Submissions
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab('names')}
-              className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
-                activeTab === 'names'
-                  ? 'bg-sky-500 text-white'
-                  : 'text-zinc-400 hover:text-zinc-200'
-              }`}
-            >
-              <UserCheck className="w-3.5 h-3.5" />
-              Name Requests
-            </button>
-            {canManageAdmins && (
-              <button
-                type="button"
-                onClick={() => setActiveTab('access')}
-                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
-                  activeTab === 'access'
-                    ? 'bg-sky-500 text-white'
-                    : 'text-zinc-400 hover:text-zinc-200'
-                }`}
-              >
-                <Crown className="w-3.5 h-3.5" />
-                Access Control
-              </button>
-            )}
-            {canManageAdmins && (
-              <button
-                type="button"
-                onClick={() => setActiveTab('audit')}
-                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
-                  activeTab === 'audit'
-                    ? 'bg-sky-500 text-white'
-                    : 'text-zinc-400 hover:text-zinc-200'
-                }`}
-              >
-                <Activity className="w-3.5 h-3.5" />
-                Audit Trail
-              </button>
-            )}
-            {canManageAdmins && (
-              <button
-                type="button"
-                onClick={() => setActiveTab('maintenance')}
-                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
-                  activeTab === 'maintenance'
-                    ? 'bg-sky-500 text-white'
-                    : 'text-zinc-400 hover:text-zinc-200'
-                }`}
-              >
-                <Database className="w-3.5 h-3.5" />
-                Maintenance
-              </button>
-            )}
-            {canManageAdmins && (
-              <button
-                type="button"
-                onClick={() => setActiveTab('health')}
-                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
-                  activeTab === 'health'
-                    ? 'bg-sky-500 text-white'
-                    : 'text-zinc-400 hover:text-zinc-200'
-                }`}
-              >
-                <HeartPulse className="w-3.5 h-3.5" />
-                System Health
-              </button>
-            )}
-            {canManageAdmins && (
-              <button
-                type="button"
-                onClick={() => setActiveTab('articles')}
-                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
-                  activeTab === 'articles'
-                    ? 'bg-sky-500 text-white'
-                    : 'text-zinc-400 hover:text-zinc-200'
-                }`}
-              >
-                <FileText className="w-3.5 h-3.5" />
-                Live Articles
-              </button>
-            )}
-          </div>
+            </div>
+
+            {/* Sub-Pill Row */}
+            <div className="flex flex-wrap gap-2 px-1">
+              {activeCategory === 'content' && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('pending')}
+                    className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                      activeTab === 'pending'
+                        ? 'bg-sky-500 text-white border-sky-500'
+                        : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
+                    }`}
+                  >
+                    Pending
+                    {filteredSubmissions.length > 0 && (
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+                        activeTab === 'pending'
+                          ? 'bg-white/20 text-white'
+                          : 'bg-sky-500/15 text-sky-400'
+                      }`}>
+                        {filteredSubmissions.length}
+                      </span>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('archive')}
+                    className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                      activeTab === 'archive'
+                        ? 'bg-sky-500 text-white border-sky-500'
+                        : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
+                    }`}
+                  >
+                    All Submissions
+                  </button>
+                  {canManageAdmins && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('articles')}
+                      className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                        activeTab === 'articles'
+                          ? 'bg-sky-500 text-white border-sky-500'
+                          : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
+                      }`}
+                    >
+                      <FileText className="w-3.5 h-3.5" />
+                      Live Articles
+                    </button>
+                  )}
+                </>
+              )}
+              {activeCategory === 'users' && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('names')}
+                    className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                      activeTab === 'names'
+                        ? 'bg-sky-500 text-white border-sky-500'
+                        : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
+                    }`}
+                  >
+                    <UserCheck className="w-3.5 h-3.5" />
+                    Name Requests
+                  </button>
+                  {canManageAdmins && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('access')}
+                      className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                        activeTab === 'access'
+                          ? 'bg-sky-500 text-white border-sky-500'
+                          : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
+                      }`}
+                    >
+                      <Crown className="w-3.5 h-3.5" />
+                      Access Control
+                    </button>
+                  )}
+                </>
+              )}
+              {activeCategory === 'system' && canManageAdmins && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('audit')}
+                    className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                      activeTab === 'audit'
+                        ? 'bg-sky-500 text-white border-sky-500'
+                        : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
+                    }`}
+                  >
+                    <Activity className="w-3.5 h-3.5" />
+                    Audit Trail
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('maintenance')}
+                    className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                      activeTab === 'maintenance'
+                        ? 'bg-sky-500 text-white border-sky-500'
+                        : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
+                    }`}
+                  >
+                    <Database className="w-3.5 h-3.5" />
+                    Maintenance
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('health')}
+                    className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                      activeTab === 'health'
+                        ? 'bg-sky-500 text-white border-sky-500'
+                        : 'bg-zinc-800/50 text-zinc-400 border-zinc-700/50 hover:text-zinc-200 hover:bg-zinc-700/50'
+                    }`}
+                  >
+                    <HeartPulse className="w-3.5 h-3.5" />
+                    System Health
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
