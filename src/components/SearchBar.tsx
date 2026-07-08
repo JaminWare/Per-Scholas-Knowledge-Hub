@@ -45,21 +45,6 @@ function getDashboardRoute(result: SearchResult): string {
   return `/article/${result.slug}`;
 }
 
-  if (category.toLowerCase().includes('learner experience')) {
-    const params = new URLSearchParams();
-    if (result.lx_stage) params.set('tab', result.lx_stage);
-    if (result.lx_topic) params.set('level2', result.lx_topic);
-    if (result.lx_focus) params.set('level3', result.lx_focus);
-    const qs = params.toString();
-    return `/learner-experience${qs ? '?' + qs : ''}`;
-  }
-
-  const resolved = resolveTrackSlug(category, result.slug);
-  if (resolved) return `/${resolved.slug}`;
-
-  return `/article/${result.slug}`;
-}
-
 export default function SearchBar({ onMenuClick }: SearchBarProps) {
   const [query, setQuery] = useState('');
   const [rawResults, setRawResults] = useState<SearchResult[]>([]);
