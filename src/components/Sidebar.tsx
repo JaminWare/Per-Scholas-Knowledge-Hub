@@ -193,8 +193,8 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           to="/deskolas"
           className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] outline-none select-none ${
             deskolasActive
-              ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-              : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white active:bg-amber-500/10'
+              ? 'bg-sky-500/10 text-sky-400 border border-sky-500/30'
+              : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white active:bg-sky-500/10'
           }`}
         >
           <Headphones className="w-4 h-4 flex-shrink-0" />

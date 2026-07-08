@@ -75,7 +75,7 @@ export default function DeskolasPage() {
           if (el) {
             el.scrollIntoView({ behavior: 'smooth', block: 'center' });
             el.style.transition = 'all 0.5s ease-out';
-            el.style.boxShadow = '0 0 0 2px #f59e0b';
+            el.style.boxShadow = '0 0 0 2px #0ea5e9';
             setTimeout(() => { el.style.boxShadow = 'none'; }, 2000);
           }
         }, 300);
@@ -213,10 +213,10 @@ export default function DeskolasPage() {
   return (
     <div className="max-w-7xl mx-auto space-y-4">
       {/* Banner */}
-      <div className="relative rounded-2xl bg-gradient-to-br from-amber-950/30 to-zinc-950/50 border border-amber-800/20 overflow-hidden">
+      <div className="relative rounded-2xl bg-zinc-950/50 border border-zinc-800/30 overflow-hidden">
         <div className="relative px-6 py-5 md:px-8 md:py-6">
           <div className="flex items-start gap-5 mb-4">
-            <div className="w-14 h-14 rounded-xl bg-amber-500 flex items-center justify-center flex-shrink-0">
+            <div className="w-14 h-14 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
               <Headphones className="w-7 h-7 text-white" />
             </div>
             <div className="flex-1">
@@ -227,7 +227,7 @@ export default function DeskolasPage() {
               href={DESKOLAS_APP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-900 font-bold text-sm transition-all duration-200 shadow-lg shadow-amber-500/20 hover:shadow-amber-400/30 flex-shrink-0"
+              className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm transition-all duration-200 shadow-lg shadow-sky-500/20 hover:shadow-sky-400/30 flex-shrink-0"
             >
               Open Deskolas
               <ExternalLink className="w-4 h-4" />
@@ -237,7 +237,7 @@ export default function DeskolasPage() {
             href={DESKOLAS_APP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="sm:hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-900 font-bold text-sm transition-all duration-200 shadow-lg shadow-amber-500/20"
+            className="sm:hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm transition-all duration-200 shadow-lg shadow-sky-500/20"
           >
             Open Deskolas
             <ExternalLink className="w-4 h-4" />
@@ -262,7 +262,7 @@ export default function DeskolasPage() {
                 }}
                 className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-300 ease-in-out ${
                   isActive
-                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 shadow-sm shadow-amber-500/10'
+                    ? 'bg-teal-500/20 text-teal-300 border-teal-500/40 shadow-sm shadow-teal-500/10'
                     : 'bg-zinc-800/50 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/50 border-zinc-700/50'
                 }`}
               >
@@ -276,8 +276,8 @@ export default function DeskolasPage() {
           const activeSub = DESKOLAS_CATEGORIES.find((s) => s.label === activeLevel2);
           if (!activeSub || activeSub.nested.length === 0) return null;
           return (
-            <div className="pl-3 border-l-2 border-amber-500/30 space-y-2">
-              <span className="text-[10px] font-semibold uppercase tracking-widest text-amber-500/70">Narrow further</span>
+            <div className="pl-3 border-l-2 border-sky-500/30 space-y-2">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-sky-500/70">Narrow further</span>
               <div className="flex flex-wrap gap-1.5">
                 {activeSub.nested.map((n) => {
                   const isAll = n.keywords.length === 0;
@@ -289,7 +289,7 @@ export default function DeskolasPage() {
                       onClick={() => setActiveLevel3(isAll ? '' : (isNested ? '' : n.label))}
                       className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-300 ease-in-out ${
                         isNested
-                          ? 'bg-amber-500/20 text-amber-300 border-amber-400/40'
+                          ? 'bg-sky-500/20 text-sky-300 border-sky-400/40'
                           : 'bg-zinc-800/30 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/60 border-transparent'
                       }`}
                     >
@@ -320,8 +320,8 @@ export default function DeskolasPage() {
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center gap-6 py-10 text-center rounded-xl border border-dashed border-zinc-700 bg-zinc-900/50">
-          <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-400/20 flex items-center justify-center">
-            <Headphones className="w-8 h-8 text-amber-400" />
+          <div className="w-16 h-16 rounded-2xl bg-sky-500/10 border border-sky-400/20 flex items-center justify-center">
+            <Headphones className="w-8 h-8 text-sky-400" />
           </div>
           <div className="space-y-2 max-w-md">
             <h2 className="text-lg font-bold text-zinc-100">No tickets yet</h2>
@@ -331,7 +331,7 @@ export default function DeskolasPage() {
           </div>
           <button
             onClick={() => user ? setIsModalOpen(true) : setAuthModalOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-900 font-bold text-sm transition-all duration-200"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm transition-all duration-200"
           >
             <Plus className="w-4 h-4" />
             Add a Fix
@@ -344,7 +344,7 @@ export default function DeskolasPage() {
         <div className="fixed bottom-6 right-6 z-30">
           <button
             onClick={() => user ? setIsModalOpen(true) : setAuthModalOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-amber-500 hover:bg-amber-400 text-zinc-900 font-bold text-sm shadow-xl shadow-amber-500/20 transition-all duration-200 hover:scale-105"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm shadow-xl shadow-sky-500/20 transition-all duration-200 hover:scale-105"
           >
             <Plus className="w-4 h-4" />
             Add a Fix
