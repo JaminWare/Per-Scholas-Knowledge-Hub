@@ -16,16 +16,16 @@ import { useContributorGroups, mapToPortalBucket, resolveTrack, groupItemsByTrac
 // ── Badge colour map ──────────────────────────────────────
 
 const badgeColors: Record<string, string> = {
-  'Founder':             'bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-500/20',
-  'Core 1 Expert':       'bg-sky-500/10 text-sky-600 dark:text-sky-400',
-  'Core 2 Expert':       'bg-sky-500/10 text-sky-600 dark:text-sky-400',
-  'HealthIT Specialist': 'bg-sky-500/10 text-sky-600 dark:text-sky-400',
-  'Diagram Architect':   'bg-sky-500/10 text-sky-600 dark:text-sky-400',
-  'Reference Author':    'bg-amber-500/10 text-amber-600 dark:text-amber-400',
-  'Playbook Engineer':   'bg-sky-500/10 text-sky-600 dark:text-sky-400',
-  'Cohort Contributor':  'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-400',
-  'Domain Expert':       'bg-sky-500/15 text-sky-700 dark:text-sky-300 border border-sky-400/30',
-  'Master Architect':    'bg-amber-500/15 text-amber-700 dark:text-amber-300 border border-amber-400/30',
+  'Founder':             'bg-amber-500/15 text-amber-400 border border-amber-500/20',
+  'Core 1 Expert':       'bg-sky-500/10 text-sky-400',
+  'Core 2 Expert':       'bg-sky-500/10 text-sky-400',
+  'HealthIT Specialist': 'bg-sky-500/10 text-sky-400',
+  'Diagram Architect':   'bg-sky-500/10 text-sky-400',
+  'Reference Author':    'bg-amber-500/10 text-amber-400',
+  'Playbook Engineer':   'bg-sky-500/10 text-sky-400',
+  'Cohort Contributor':  'bg-zinc-700 text-zinc-400',
+  'Domain Expert':       'bg-sky-500/15 text-sky-300 border border-sky-400/30',
+  'Master Architect':    'bg-amber-500/15 text-amber-300 border border-amber-400/30',
 };
 
 function BadgeTag({ badge }: { badge: string }) {
@@ -45,7 +45,7 @@ function getDomainName(urlString: string): string {
   }
 }
 
-const SECTION_HDR = 'bg-zinc-100/80 dark:bg-zinc-800/60 text-zinc-700 dark:text-zinc-300 font-mono text-[10px] uppercase tracking-wider border-y border-zinc-200 dark:border-zinc-800 px-3 py-1 block first:border-t-0';
+const SECTION_HDR = 'bg-zinc-800/40 text-zinc-400 font-mono text-[10px] uppercase tracking-wider border-y border-zinc-800/50 px-3 py-1 block first:border-t-0';
 
 // ── Category icon helper ─────────────────────────────────
 
@@ -93,10 +93,10 @@ function ContributorCard({ group, isNew, isOpen, onToggle, onEditProfile }: {
   return (
     <div className={`rounded-xl border overflow-hidden transition-all ${
       isFounder
-        ? 'border-sky-500/30 bg-gradient-to-r from-zinc-900 to-zinc-950 shadow-[0_0_15px_rgba(14,165,233,0.15)] hover:shadow-[0_0_25px_rgba(14,165,233,0.25)] transition-shadow duration-500'
+        ? 'border-sky-500/20 bg-zinc-900 hover:border-sky-400/30 transition-colors'
         : isOpen
-          ? 'border-sky-500/30 bg-gradient-to-r from-zinc-900 to-zinc-950'
-          : 'border-zinc-700/60 bg-gradient-to-r from-zinc-900 to-zinc-950 hover:border-zinc-600'
+          ? 'border-sky-500/20 bg-zinc-900'
+          : 'border-zinc-800/50 bg-zinc-900 hover:border-zinc-700'
     }`}>
 
       {/* Header */}
@@ -108,10 +108,10 @@ function ContributorCard({ group, isNew, isOpen, onToggle, onEditProfile }: {
           {isFounder && <Crown className="w-5 h-5 text-sky-400 flex-shrink-0" />}
           <div className={`${isFounder ? 'w-12 h-12' : 'w-10 h-10'} rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-white ${isFounder ? 'text-lg' : 'text-sm'} ${
             isFounder
-              ? 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-md shadow-sky-500/20'
+              ? 'bg-sky-500'
               : isNew
-                ? 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-md shadow-sky-500/20'
-                : 'bg-gradient-to-br from-zinc-500 to-zinc-400'
+                ? 'bg-sky-500'
+                : 'bg-zinc-500'
           }`}>
             {initial}
           </div>
@@ -154,9 +154,9 @@ function ContributorCard({ group, isNew, isOpen, onToggle, onEditProfile }: {
                 className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-sm font-medium transition-colors duration-200 ${
                   isActive
                     ? (isFounder
-                        ? 'bg-amber-100 border-amber-300 text-amber-800 dark:bg-amber-500/20 dark:border-amber-500/50 dark:text-amber-400'
-                        : 'bg-sky-100 border-sky-300 text-sky-800 dark:bg-sky-500/20 dark:border-sky-500/50 dark:text-sky-400')
-                    : 'bg-zinc-800 border-zinc-700/60 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
+                        ? 'bg-amber-500/20 border-amber-500/50 text-amber-400'
+                        : 'bg-sky-500/20 border-sky-500/50 text-sky-400')
+                    : 'bg-zinc-800 border-zinc-800/50 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
                 }`}
               >
                 {getCategoryIcon(type, isFounder)}
@@ -172,12 +172,12 @@ function ContributorCard({ group, isNew, isOpen, onToggle, onEditProfile }: {
         const categoryItems = group.items.filter((i) => mapToPortalBucket(i.submission_type) === openCategory);
         const trackGroups = groupItemsByTrack(categoryItems);
         return (
-          <div className={`border-t ${isFounder ? 'border-amber-500/15' : 'border-zinc-700/60'} px-5 py-4`}>
+          <div className={`border-t ${isFounder ? 'border-zinc-800/50' : 'border-zinc-800/50'} px-5 py-4`}>
             <div className="bg-zinc-900/60 rounded-lg p-2 border border-zinc-800 max-h-56 overflow-y-auto">
               {Array.from(trackGroups.entries()).map(([bucket, items]) => (
                 <div key={bucket}>
                   {trackGroups.size > 1 && <span className={SECTION_HDR}>{bucket}</span>}
-                  <div className="divide-y divide-slate-200 dark:divide-zinc-800">
+                  <div className="divide-y divide-zinc-800/50">
                     {items.map((s) => {
                       const itemType = s.submission_type ?? 'Article';
                       const itemBucket = mapToPortalBucket(itemType);
@@ -192,9 +192,9 @@ function ContributorCard({ group, isNew, isOpen, onToggle, onEditProfile }: {
                               key={s.id}
                               className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent opacity-50"
                             >
-                              <Link2 className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                              <span className="text-sm text-slate-500 dark:text-zinc-500 truncate">{s.title}</span>
-                              <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-100 dark:bg-zinc-800/60 text-slate-400 dark:text-zinc-600 flex-shrink-0">No URL</span>
+                              <Link2 className="w-3.5 h-3.5 text-zinc-500 flex-shrink-0" />
+                              <span className="text-sm text-zinc-600 truncate">{s.title}</span>
+                              <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-800/60 text-zinc-600 flex-shrink-0">No URL</span>
                             </div>
                           );
                         }
@@ -207,10 +207,10 @@ function ContributorCard({ group, isNew, isOpen, onToggle, onEditProfile }: {
                             className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent hover:bg-sky-500/10 hover:border-sky-400 transition-all group"
                           >
                             <Link2 className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
-                            <span className="text-sm text-slate-800 dark:text-zinc-100 truncate group-hover:text-sky-600 dark:group-hover:text-sky-300">{s.title}</span>
+                            <span className="text-sm text-zinc-200 truncate group-hover:text-sky-400">{s.title}</span>
                             <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
                               <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{getDomainName(s.content)}</span>
-                              <ChevronRight className="w-3 h-3 text-slate-400 dark:text-zinc-600 group-hover:text-sky-400" />
+                              <ChevronRight className="w-3 h-3 text-zinc-600 group-hover:text-sky-400" />
                             </span>
                           </a>
                         );
@@ -226,12 +226,12 @@ function ContributorCard({ group, isNew, isOpen, onToggle, onEditProfile }: {
                             }`}
                           >
                             {getCategoryIcon(itemBucket, isFounder)}
-                            <span className={`text-sm text-slate-800 dark:text-zinc-100 truncate ${
-                              isFounder ? 'group-hover:text-amber-600 dark:group-hover:text-amber-300' : 'group-hover:text-sky-600 dark:group-hover:text-sky-300'
+                            <span className={`text-sm text-zinc-200 truncate ${
+                              isFounder ? 'group-hover:text-amber-400' : 'group-hover:text-sky-400'
                             }`}>{s.title}</span>
                             <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
                               <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/10 text-sky-500">{itemBucket}</span>
-                              <ChevronRight className={`w-3 h-3 text-slate-400 dark:text-zinc-600 ${
+                              <ChevronRight className={`w-3 h-3 text-zinc-600 ${
                                 isFounder ? 'group-hover:text-amber-400' : 'group-hover:text-sky-400'
                               }`} />
                             </span>
@@ -245,8 +245,8 @@ function ContributorCard({ group, isNew, isOpen, onToggle, onEditProfile }: {
                           className="flex items-center gap-3 px-4 py-2.5 border-l-4 border-transparent"
                         >
                           {getCategoryIcon(itemBucket, isFounder)}
-                          <span className="text-sm text-slate-700 dark:text-zinc-300 truncate">{s.title}</span>
-                          <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-200 dark:bg-zinc-800/60 text-slate-600 dark:text-zinc-500 flex-shrink-0">{itemBucket}</span>
+                          <span className="text-sm text-zinc-300 truncate">{s.title}</span>
+                          <span className="ml-auto text-[9px] font-mono px-1.5 py-0.5 rounded bg-zinc-800/60 text-zinc-500 flex-shrink-0">{itemBucket}</span>
                         </div>
                       );
                     })}
@@ -310,7 +310,7 @@ export default function RecognitionPage() {
     <div className="pb-32">
 
       {/* Full-bleed cinematic hero banner */}
-      <section className="relative overflow-hidden rounded-2xl border border-zinc-700/60 bg-gradient-to-r from-zinc-900 to-zinc-950">
+      <section className="relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900">
         <div className="relative px-6 py-4 md:px-8 md:py-5">
           {/* Back button inside the banner */}
           <button
@@ -344,10 +344,10 @@ export default function RecognitionPage() {
       <section className="max-w-4xl mx-auto px-4 mt-6">
         <div className="flex items-center gap-2 mb-3">
           <Award className="w-4 h-4 text-sky-500" />
-          <h2 className="text-sm font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-widest">
+          <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">
             Cohort Contributors
           </h2>
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-100 dark:bg-zinc-700 text-zinc-500">
+          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-zinc-700 text-zinc-400">
             {filteredContributors.length}
           </span>
         </div>
@@ -363,8 +363,8 @@ export default function RecognitionPage() {
                 onClick={() => setTrackFilter(opt.value)}
                 className={`inline-flex items-center gap-1.5 rounded-full px-3 sm:px-4 py-2 sm:py-1.5 text-xs sm:text-sm font-medium border transition-all duration-200 ${
                   isActive
-                    ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
-                    : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+                    ? 'bg-sky-600 text-white shadow-sm border-transparent'
+                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
                 }`}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -388,9 +388,9 @@ export default function RecognitionPage() {
             ))}
           </div>
         ) : (
-          <div className="rounded-xl border-2 border-dashed border-zinc-200 dark:border-zinc-700 p-8 text-center">
-            <Award className="w-10 h-10 text-zinc-300 dark:text-zinc-700 mx-auto mb-3" />
-            <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+          <div className="rounded-xl border-2 border-dashed border-zinc-700 p-8 text-center">
+            <Award className="w-10 h-10 text-zinc-700 mx-auto mb-3" />
+            <p className="text-sm font-medium text-zinc-400">
               No contributions yet. Be the first to contribute!
             </p>
             <button

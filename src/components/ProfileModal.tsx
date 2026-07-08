@@ -78,7 +78,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
         className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative w-full max-w-[400px] bg-zinc-900 rounded-2xl shadow-2xl shadow-black/60 border border-zinc-800 overflow-hidden">
+      <div className="relative w-full max-w-[400px] bg-zinc-900 rounded-2xl border border-zinc-800/50 shadow-lg overflow-hidden">
         <div className="px-6 pt-6 flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-center">
@@ -110,7 +110,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-zinc-400 mb-1.5">
+            <label className="block text-xs font-semibold text-zinc-500 mb-1.5">
               Current Name
               {isManualClaim && (
                 <span className="ml-2 text-amber-400 font-normal">(type the name you used before)</span>
@@ -122,14 +122,14 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 value={currentName}
                 onChange={(e) => setCurrentName(e.target.value)}
                 placeholder="Enter your exact previous display name"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-950/60 border border-amber-500/30 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-zinc-950 border border-amber-500/30 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-0 focus:border-amber-500/50 transition-all"
               />
             ) : (
               <input
                 type="text"
                 value={currentName}
                 disabled
-                className="w-full px-4 py-3 rounded-xl bg-zinc-950/60 border border-zinc-800 text-sm text-zinc-500 cursor-not-allowed"
+                className="w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-500 cursor-not-allowed"
               />
             )}
           </div>
@@ -141,7 +141,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder="Enter your corrected name..."
-              className="w-full px-4 py-3 rounded-xl bg-zinc-950/60 border border-zinc-700/60 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/40 transition-all"
+              className="w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-0 focus:border-sky-500/50 transition-all"
               autoFocus
             />
           </div>
@@ -149,7 +149,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           <button
             type="submit"
             disabled={loading || success}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-white bg-sky-500 hover:bg-sky-400 shadow-lg shadow-sky-500/20 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-white bg-sky-500 hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</>

@@ -32,12 +32,12 @@ export default function CardZoomOverlay({ open, onClose, children }: CardZoomOve
     >
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm animate-fade-in" />
       <div
-        className="relative z-10 max-w-lg w-full max-h-[85vh] overflow-y-auto rounded-2xl bg-white dark:bg-zinc-900 shadow-2xl border border-zinc-200 dark:border-zinc-700 animate-zoom-in"
+        className="relative z-10 max-w-lg w-full max-h-[85vh] overflow-y-auto rounded-2xl bg-zinc-900 border border-zinc-800/50 shadow-lg animate-zoom-in"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 z-20 p-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-500 dark:text-zinc-400 transition-colors"
+          className="absolute top-3 right-3 z-20 p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-zinc-300 transition-colors"
           aria-label="Close zoom"
         >
           <X className="w-4 h-4" />

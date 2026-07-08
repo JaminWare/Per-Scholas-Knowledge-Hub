@@ -46,8 +46,8 @@ const survivalGuideCards = [
     title: 'Onboarding Hurdles',
     description: 'Canvas workflows, VM setups, and tool access.',
     icon: Compass,
-    accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
-    iconBg: 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20',
+    accentClass: 'hover:border-zinc-700',
+    iconBg: 'bg-sky-500',
     tab: 'onboarding',
   },
   {
@@ -55,8 +55,8 @@ const survivalGuideCards = [
     title: 'Lab Survival Guides',
     description: 'EHR sandboxes, Active Directory, and infrastructure.',
     icon: BookOpen,
-    accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
-    iconBg: 'bg-gradient-to-br from-sky-500 to-sky-400 shadow-sky-500/20',
+    accentClass: 'hover:border-zinc-700',
+    iconBg: 'bg-sky-500',
     tab: 'labs',
   },
   {
@@ -64,8 +64,8 @@ const survivalGuideCards = [
     title: 'The Mid Program Slump',
     description: 'Mental endurance, imposter syndrome, and time management.',
     icon: Flame,
-    accentClass: 'hover:border-amber-400/50 dark:hover:border-amber-500/40',
-    iconBg: 'bg-gradient-to-br from-amber-500 to-amber-400 shadow-amber-500/20',
+    accentClass: 'hover:border-zinc-700',
+    iconBg: 'bg-amber-500',
     tab: 'slump',
   },
   {
@@ -73,8 +73,8 @@ const survivalGuideCards = [
     title: 'Job Hunt & Certs',
     description: 'Test day strategies, resume reality checks, and interviews.',
     icon: Briefcase,
-    accentClass: 'hover:border-sky-400/50 dark:hover:border-sky-500/40',
-    iconBg: 'bg-gradient-to-br from-zinc-600 to-zinc-500 shadow-zinc-500/20',
+    accentClass: 'hover:border-zinc-700',
+    iconBg: 'bg-zinc-600',
     tab: 'job',
   },
 ];
@@ -114,7 +114,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         <div className="lg:col-span-2 xl:col-span-3 space-y-10">
 
           {/* Hero */}
-          <section className="relative overflow-hidden rounded-2xl border border-zinc-700/60 bg-gradient-to-r from-zinc-900 to-zinc-950">
+          <section className="relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900">
             <div className="relative px-6 py-8 md:px-8 md:py-10">
               <div className="max-w-2xl flex flex-col gap-2">
                 <div className="flex flex-wrap items-center gap-3">
@@ -133,7 +133,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                   <p className="text-sm text-zinc-400">Welcome to the collaborative resource hub!</p>
                   <Link
                     to="/learner-experience"
-                    className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs transition-all shadow-md shadow-sky-500/30 hover:shadow-sky-400/40 hover:scale-[1.02] whitespace-nowrap flex-shrink-0"
+                    className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs transition-colors whitespace-nowrap flex-shrink-0"
                   >
                     <LifeBuoy className="w-3.5 h-3.5" />
                     Start Here
@@ -146,13 +146,13 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
           {/* The Cohort Survival Guide */}
           <section>
-            <div className="bg-gradient-to-r from-zinc-900 to-zinc-950 border border-zinc-700/60 rounded-xl p-5">
+            <div className="bg-zinc-900 border border-zinc-800/50 rounded-xl p-5">
               <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400">
+                <div className="p-2 rounded-lg bg-sky-500">
                   <Compass className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-white">Cohort Survival Guide</h2>
+                  <h2 className="text-zinc-100 font-medium text-lg md:text-xl tracking-tight">Cohort Survival Guide</h2>
                   <p className="text-sm text-zinc-400">Real talk from learners who've been there</p>
                 </div>
               </div>
@@ -164,9 +164,9 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                     <Link
                       key={card.id}
                       to={`/learner-experience?tab=${card.tab}`}
-                      className="group flex items-start gap-4 p-4 text-left bg-zinc-900/80 border border-zinc-800 rounded-xl transition-all hover:border-zinc-700/60 hover:shadow-[0_0_15px_rgba(56,189,248,0.3)]"
+                      className="group flex items-start gap-4 p-4 text-left bg-zinc-900 rounded-xl border border-zinc-800/50 transition-all hover:border-zinc-700 hover:bg-zinc-800/50"
                     >
-                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-105 transition-transform ${card.iconBg}`}>
+                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform ${card.iconBg}`}>
                         <Icon className="w-5 h-5 text-white" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -183,7 +183,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
                 })}
               </div>
 
-              <div className="mt-4 pt-4 border-t border-zinc-700/60">
+              <div className="mt-4 pt-4 border-t border-zinc-800/50">
                 <Link
                   to="/learner-experience"
                   className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-400 hover:text-sky-300 transition-colors"
@@ -198,7 +198,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Featured Articles */}
           {featuredArticles.length > 0 && (
             <section>
-              <h2 className="text-xl font-bold text-zinc-800 dark:text-white mb-6">Featured Articles</h2>
+              <h2 className="text-zinc-100 font-medium text-lg md:text-xl tracking-tight mb-6">Featured Articles</h2>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {featuredArticles.map((article) => (
                   <ArticleCard key={article.id} article={article} featured />
@@ -210,14 +210,14 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Recent Articles */}
           <section>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-zinc-800 dark:text-white">Recent Field Notes</h2>
+              <h2 className="text-zinc-100 font-medium text-lg md:text-xl tracking-tight">Recent Field Notes</h2>
             </div>
             {isLoading ? (
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[...Array(6)].map((_, i) => (
                   <div key={i} className="card p-5 animate-pulse">
-                    <div className="h-5 bg-zinc-200 dark:bg-zinc-200 rounded w-3/4" />
-                    <div className="h-4 bg-zinc-200 dark:bg-zinc-200 rounded w-full mt-3" />
+                    <div className="h-5 bg-zinc-800 rounded w-3/4" />
+                    <div className="h-4 bg-zinc-800 rounded w-full mt-3" />
                   </div>
                 ))}
               </div>
@@ -229,8 +229,8 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
               </div>
             ) : (
               <div className="card p-12 text-center">
-                <Award className="w-12 h-12 text-zinc-300 dark:text-zinc-700 mx-auto mb-4" />
-                <p className="text-zinc-500 dark:text-zinc-500">No articles yet. Check back soon!</p>
+                <Award className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
+                <p className="text-zinc-500">No articles yet. Check back soon!</p>
               </div>
             )}
           </section>
@@ -243,32 +243,32 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
           {/* Widget 1Contribute Placard (opens modal) */}
           <button
             onClick={() => setModalOpen(true)}
-            className="w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-gradient-to-r from-sky-50 to-sky-50 dark:from-zinc-800 dark:to-zinc-900 border border-sky-200 dark:border-zinc-700/60 rounded-xl cursor-pointer shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] hover:border-sky-300 dark:hover:border-sky-700/50 transition-all duration-200 group"
+            className="w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-zinc-900 border border-zinc-800/50 rounded-xl cursor-pointer hover:border-zinc-700 transition-all duration-200 group"
           >
             <div className="flex items-center gap-3 w-full">
-              <div className="p-2.5 rounded-xl bg-sky-100 dark:bg-sky-500/15 flex-shrink-0 group-hover:bg-sky-200 dark:group-hover:bg-sky-500/25 transition-colors">
+              <div className="p-2.5 rounded-xl bg-sky-500/15 flex-shrink-0 group-hover:bg-sky-500/25 transition-colors">
                 <UploadCloud className="w-6 h-6 text-sky-500" />
               </div>
-              <p className="text-base font-bold text-zinc-800 dark:text-zinc-100 group-hover:text-sky-700 dark:group-hover:text-sky-400 transition-colors duration-200">
+              <p className="text-base font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
                 Add Intel
               </p>
-              <ChevronRight className="w-5 h-5 text-zinc-300 dark:text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0 ml-auto" />
+              <ChevronRight className="w-5 h-5 text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0 ml-auto" />
             </div>
           </button>
 
           {/* Widget 2View Detailed Portfolios emblem */}
           <Link
             to="/recognition"
-            className="block w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-gradient-to-r from-sky-50 to-slate-50 dark:from-zinc-800 dark:to-zinc-900 border border-sky-200 dark:border-zinc-700/60 rounded-xl hover:shadow-lg hover:shadow-sky-500/10 hover:border-sky-300 dark:hover:border-sky-700/60 transition-all duration-200 group"
+            className="block w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-zinc-900 border border-zinc-800/50 rounded-xl hover:border-zinc-700 transition-all duration-200 group"
           >
             <div className="flex items-center gap-3 w-full">
-              <div className="p-2.5 rounded-xl bg-sky-100 dark:bg-sky-500/15 flex-shrink-0">
+              <div className="p-2.5 rounded-xl bg-sky-500/15 flex-shrink-0">
                 <Users className="w-6 h-6 text-sky-500" />
               </div>
-              <p className="text-base font-bold text-zinc-800 dark:text-zinc-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors duration-200">
+              <p className="text-base font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
                 View Portfolios &rarr;
               </p>
-              <ChevronRight className="w-5 h-5 text-zinc-300 dark:text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0 ml-auto" />
+              <ChevronRight className="w-5 h-5 text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0 ml-auto" />
             </div>
           </Link>
 

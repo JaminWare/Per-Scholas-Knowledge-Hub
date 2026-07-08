@@ -1633,7 +1633,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
       {/* Unified sticky command strip: header + search + tabs */}
-      <div className="sticky top-0 z-20 bg-black backdrop-blur-md border-b border-zinc-800">
+      <div className="sticky top-0 z-20 bg-zinc-900 backdrop-blur-md border-b border-zinc-800">
         {/* Title row */}
         <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">
           <div className="flex items-center gap-3 min-w-0 w-full lg:w-auto">
@@ -1641,7 +1641,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               <ShieldCheck className="w-6 h-6 text-sky-400" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-3xl sm:text-4xl font-bold text-zinc-100 leading-tight tracking-tight">Admin Command Center</h1>
+              <h1 className="text-zinc-100 font-medium text-lg md:text-xl tracking-tight">Admin Command Center</h1>
               <p className="text-[11px] text-zinc-500 mt-0.5">Per Scholas 2026-RTT-23 Cohort</p>
             </div>
           </div>
@@ -1674,7 +1674,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by title, author, or track..."
-                className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+                className="w-full bg-zinc-800/50 border border-zinc-800/50 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
               />
             </div>
           </div>
@@ -1682,13 +1682,13 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
           {/* Pill Tab Switcher */}
           <div className="relative w-full">
             <div className="overflow-x-auto whitespace-nowrap scrollbar-hide px-1 transform-gpu [mask-image:linear-gradient(to_right,white_0%,white_90%,transparent_100%)]">
-            <div className="inline-flex rounded-full bg-zinc-800/80 border border-zinc-700/60 p-1">
+            <div className="inline-flex rounded-full bg-zinc-800/80 border border-zinc-800/50 p-1">
             <button
               type="button"
               onClick={() => setActiveTab('pending')}
               className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
                 activeTab === 'pending'
-                  ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                  ? 'bg-sky-500 text-white'
                   : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
@@ -1708,7 +1708,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               onClick={() => setActiveTab('archive')}
               className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
                 activeTab === 'archive'
-                  ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                  ? 'bg-sky-500 text-white'
                   : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
@@ -1719,7 +1719,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
               onClick={() => setActiveTab('names')}
               className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
                 activeTab === 'names'
-                  ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                  ? 'bg-sky-500 text-white'
                   : 'text-zinc-400 hover:text-zinc-200'
               }`}
             >
@@ -1732,7 +1732,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 onClick={() => setActiveTab('access')}
                 className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
                   activeTab === 'access'
-                    ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                    ? 'bg-sky-500 text-white'
                     : 'text-zinc-400 hover:text-zinc-200'
                 }`}
               >
@@ -1746,7 +1746,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 onClick={() => setActiveTab('audit')}
                 className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
                   activeTab === 'audit'
-                    ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                    ? 'bg-sky-500 text-white'
                     : 'text-zinc-400 hover:text-zinc-200'
                 }`}
               >
@@ -1760,7 +1760,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 onClick={() => setActiveTab('maintenance')}
                 className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
                   activeTab === 'maintenance'
-                    ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                    ? 'bg-sky-500 text-white'
                     : 'text-zinc-400 hover:text-zinc-200'
                 }`}
               >
@@ -1774,7 +1774,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 onClick={() => setActiveTab('health')}
                 className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
                   activeTab === 'health'
-                    ? 'bg-sky-500 text-white shadow-lg shadow-sky-500/25'
+                    ? 'bg-sky-500 text-white'
                     : 'text-zinc-400 hover:text-zinc-200'
                 }`}
               >

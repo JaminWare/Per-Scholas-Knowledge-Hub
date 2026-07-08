@@ -61,7 +61,7 @@ function AppContent() {
 
       {/* ── Desktop Sidebar (pinned) ──────────────────────── */}
       <div
-        className={`hidden md:block flex-shrink-0 border-r border-zinc-800 h-full overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`hidden md:block flex-shrink-0 border-r border-zinc-800/50 h-full overflow-hidden transition-all duration-300 ease-in-out ${
           desktopSidebarOpen ? 'w-72' : 'w-0'
         }`}
       >
@@ -74,16 +74,16 @@ function AppContent() {
       <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
 
         {/* Mobile top header */}
-        <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800 flex md:hidden items-center gap-3 px-4 py-3">
+        <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800/50 flex md:hidden items-center gap-3 px-4 py-3">
           <button
             onClick={() => setMobileSidebarOpen(true)}
-            className="p-2 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-sky-400 transition-colors flex-shrink-0"
+            className="p-2 rounded-lg bg-transparent border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-sky-400 transition-colors flex-shrink-0"
             aria-label="Open navigation menu"
           >
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2 min-w-0 flex-1">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center flex-shrink-0">
+            <div className="w-7 h-7 rounded-lg bg-sky-500 flex items-center justify-center flex-shrink-0">
               <BookOpen className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-bold text-sm text-zinc-100 truncate">
@@ -120,11 +120,11 @@ function AppContent() {
         </header>
 
         {/* Desktop top header */}
-        <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800 hidden md:block">
+        <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800/50 hidden md:block">
           <div className="flex items-center gap-3 px-4 py-3">
             <button
               onClick={() => setDesktopSidebarOpen((v) => !v)}
-              className="p-2 rounded-lg bg-zinc-700 text-zinc-400 hover:bg-zinc-600 hover:text-sky-400 transition-colors flex-shrink-0"
+              className="p-2 rounded-lg bg-transparent border border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-sky-400 transition-colors flex-shrink-0"
               title={desktopSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
             >
               {desktopSidebarOpen
@@ -165,7 +165,7 @@ function AppContent() {
         </header>
 
         {/* Mobile search bar (below mobile header) */}
-        <div className="flex-shrink-0 md:hidden px-4 py-2 border-b border-zinc-800 bg-zinc-950/80">
+        <div className="flex-shrink-0 md:hidden px-4 py-2 border-b border-zinc-800/50 bg-zinc-950/80">
           <SearchBar onMenuClick={() => setMobileSidebarOpen(true)} />
         </div>
 
@@ -185,7 +185,7 @@ function AppContent() {
           </ErrorBoundary>
         </main>
 
-        <footer className="flex-shrink-0 border-t border-zinc-800 py-3 px-4 sm:px-5">
+        <footer className="flex-shrink-0 border-t border-zinc-800/50 py-3 px-4 sm:px-5">
           <div className="max-w-4xl mx-auto text-center text-xs sm:text-sm text-zinc-500">
             <p>Per Scholas Learners Knowledge Base</p>
           </div>

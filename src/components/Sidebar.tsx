@@ -119,11 +119,11 @@ export default function Sidebar({ onToggle }: SidebarProps) {
   const lxActive = location.pathname === '/learner-experience';
 
   return (
-    <div className="flex flex-col h-full bg-black border-r border-zinc-800">
+    <div className="flex flex-col h-full bg-black border-r border-zinc-800/50">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/50 flex-shrink-0">
         <Link to="/" className="flex items-center gap-2.5 flex-1 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
             <BookOpen className="w-[18px] h-[18px] text-white" />
           </div>
           <div className="min-w-0">
@@ -142,7 +142,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
       </div>
 
       {/* Auth Section */}
-      <div className="px-3 py-2.5 border-b border-zinc-800 flex-shrink-0 space-y-1">
+      <div className="px-3 py-2.5 border-b border-zinc-800/50 flex-shrink-0 space-y-1">
         {user ? (
           <button
             onClick={signOut}
@@ -173,7 +173,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         </Link>
 
         {/* ── START HERE block ─────────────────────────────── */}
-        <div className="my-2 border-t border-sky-500/20" />
+        <div className="my-2 border-t border-zinc-800/50" />
         <p className="px-2 pt-1 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-sky-400">
           Start Here
         </p>
@@ -181,8 +181,8 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           to="/learner-experience"
           className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all ${
             lxActive
-              ? 'bg-white/10 text-white border-2 border-white shadow-[0_0_15px_rgba(56,189,248,0.6)]'
-              : 'bg-white/5 text-zinc-300 border border-white/20 hover:bg-white/10 hover:border-white/40 hover:text-white'
+              ? 'bg-sky-500/10 text-sky-400 border border-sky-500/30'
+              : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white'
           }`}
         >
           <LifeBuoy className="w-4 h-4 flex-shrink-0" />
@@ -193,21 +193,21 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           target="_blank"
           rel="noopener noreferrer"
           title="Opens in a new tab"
-          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 hover:scale-[1.02] active:scale-95 text-white hover:bg-sky-500/10"
+          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 text-white hover:bg-zinc-800"
         >
           <Headphones className="w-4 h-4 flex-shrink-0" />
           <span className="flex-1 truncate">Deskolas</span>
           <ExternalLink className="w-3.5 h-3.5 flex-shrink-0 opacity-50" />
         </a>
-        <div className="my-2 border-t border-sky-500/20" />
+        <div className="my-2 border-t border-zinc-800/50" />
         {/* ── end START HERE block ─────────────────────────── */}
 
         <Link
           to="/recognition"
           className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 ${
             location.pathname === '/recognition'
-              ? 'bg-zinc-800 text-white border border-zinc-600'
-              : 'bg-zinc-900 text-zinc-300 border border-zinc-700/60 hover:border-zinc-600 hover:bg-zinc-800 hover:text-white'
+              ? 'bg-zinc-800 text-white border border-zinc-700'
+              : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:border-zinc-700 hover:bg-zinc-800 hover:text-white'
           }`}
         >
           <Award className="w-4 h-4 flex-shrink-0 text-zinc-400" />
@@ -218,7 +218,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           <div key={track.id} className="pt-3">
             <button
               onClick={() => setOpenTracks((p) => ({ ...p, [track.id]: !p[track.id] }))}
-              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border border-zinc-800 bg-zinc-950 hover:bg-zinc-900 transition-colors mb-1`}
+              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border border-zinc-800/50 bg-zinc-950 hover:bg-zinc-900 transition-colors mb-1`}
             >
               <div className="flex-1 text-left min-w-0">
                 <p className="text-[11px] font-semibold text-white uppercase tracking-wider truncate">

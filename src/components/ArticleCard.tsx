@@ -79,14 +79,14 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
   );
 
   const overlayFooter = (
-    <div className="mt-4 pt-4 border-t border-zinc-700/60">
+    <div className="mt-4 pt-4 border-t border-zinc-800/50">
       {linkElement}
     </div>
   );
 
   if (featured) {
     return (
-      <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-zinc-900 to-zinc-950 border border-zinc-700/60 flex flex-col">
+      <div className="group relative overflow-hidden rounded-2xl bg-zinc-900 border border-zinc-800/50 flex flex-col">
         <div
           className="cursor-zoom-in p-6 pb-0"
           onClick={() => setZoomed(true)}
@@ -123,7 +123,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
   }
 
   return (
-    <div className="group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out bg-gradient-to-r from-zinc-900 to-zinc-950 border-zinc-700/60 hover:border-zinc-600">
+    <div className="group flex flex-col rounded-xl border overflow-hidden transition-all duration-300 ease-out bg-zinc-900 border-zinc-800/50 hover:border-zinc-700">
       <div
         className="cursor-zoom-in p-5 pb-0"
         onClick={() => setZoomed(true)}

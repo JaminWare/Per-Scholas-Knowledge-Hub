@@ -26,42 +26,23 @@
     background-color: #52525b;
   }
 
-  html.dark body {
-    @apply bg-[#2b2e33] text-slate-200;
-  }
-
-  html:not(.dark) body {
-    @apply bg-slate-200 text-zinc-900;
+  body {
+    @apply bg-zinc-950 text-zinc-200;
   }
 }
 
 @layer components {
-  /* ── Sidebar items  - always on dark charcoal canvas ── */
   .sidebar-item {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200;
-    @apply text-zinc-300 hover:bg-sky-500/10 hover:text-sky-400;
+    @apply text-zinc-300 hover:bg-zinc-800 hover:text-sky-400;
   }
 
   .sidebar-item.active {
-    @apply bg-black border border-zinc-700/60 shadow-[0_0_10px_rgba(56,189,248,0.15)] text-sky-400;
+    @apply bg-zinc-900 border border-zinc-800/50 text-sky-400;
   }
 
-  /* ── Cards ── */
-  html.dark .card {
-    @apply bg-zinc-900 rounded-xl border border-zinc-700 shadow-sm hover:shadow-md hover:border-sky-500/50 transition-all duration-200;
-  }
-
-  html:not(.dark) .card {
-    @apply bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-sky-300 transition-all duration-200;
-  }
-
-  .glow {
-    @apply relative;
-  }
-
-  .glow::before {
-    content: '';
-    @apply absolute -inset-1 bg-gradient-to-r from-sky-500 to-sky-400 rounded-lg blur opacity-20;
+  .card {
+    @apply bg-zinc-900 rounded-2xl border border-zinc-800/50 shadow-sm hover:border-zinc-700 transition-all duration-200;
   }
 }
 
@@ -107,13 +88,4 @@
 
 .animate-zoom-in {
   animation: zoom-in 0.2s ease-out forwards;
-}
-
-@keyframes founder-glow {
-  0%, 100% { box-shadow: 0 0 15px rgba(245,158,11,0.2); }
-  50% { box-shadow: 0 0 25px rgba(245,158,11,0.4); }
-}
-
-html.dark .founder-glow {
-  animation: founder-glow 3s ease-in-out infinite;
 }

@@ -157,7 +157,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
         onClick={handleClose}
       />
 
-      <div onClick={(e) => e.stopPropagation()} className="relative w-full max-w-[420px] bg-zinc-900 rounded-2xl shadow-2xl shadow-black/60 border border-zinc-800 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div onClick={(e) => e.stopPropagation()} className="relative w-full max-w-[420px] bg-zinc-900 rounded-2xl border border-zinc-800/50 shadow-lg overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
         <div className="px-7 pt-7 pb-0 flex items-start justify-between">
           <div>
@@ -204,7 +204,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           {/* Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-zinc-700/60" />
+              <div className="w-full border-t border-zinc-800/50" />
             </div>
             <div className="relative flex justify-center">
               <span className="px-3 bg-zinc-900 text-xs font-medium text-zinc-500 uppercase tracking-wider">
@@ -225,7 +225,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email address"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-950/80 border border-zinc-700/60 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/40 transition-all"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-sky-500/50 focus:ring-0 transition-all"
                   autoComplete="email"
                 />
               </div>
@@ -241,7 +241,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={mode === 'signup' ? 'Create a strong password' : 'Password'}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-950/80 border border-zinc-700/60 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/40 transition-all"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-sky-500/50 focus:ring-0 transition-all"
                   autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                 />
               </div>
@@ -272,7 +272,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             <button
               type="submit"
               disabled={loading || isSignupBlocked}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-white bg-sky-500 hover:bg-sky-400 shadow-lg shadow-sky-500/20 hover:shadow-sky-400/30 disabled:opacity-60 disabled:cursor-not-allowed mt-1"
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-white bg-sky-500 hover:bg-sky-400 disabled:opacity-60 disabled:cursor-not-allowed mt-1"
             >
               {loading ? (
                 <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>

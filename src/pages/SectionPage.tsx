@@ -56,9 +56,9 @@ const CURRICULUM_TRACKS_WITH_ICONS = CURRICULUM_TRACKS.map((t) => ({
 const SLUG_TO_DOMAIN = SLUG_TO_DOMAIN_META;
 
 const TRACK_COLORS = {
-  sky:  { header: 'text-sky-600 dark:text-sky-400',   icon: 'bg-sky-500/10 text-sky-500',   domainHeader: 'text-sky-500 dark:text-sky-400'  },
-  teal: { header: 'text-sky-600 dark:text-sky-400', icon: 'bg-sky-500/10 text-sky-500', domainHeader: 'text-sky-500 dark:text-sky-400' },
-  cyan: { header: 'text-sky-600 dark:text-sky-400', icon: 'bg-sky-500/10 text-sky-500', domainHeader: 'text-sky-500 dark:text-sky-400' },
+  sky:  { header: 'text-sky-400',   icon: 'bg-sky-500/10 text-sky-500',   domainHeader: 'text-sky-400'  },
+  teal: { header: 'text-sky-400', icon: 'bg-sky-500/10 text-sky-500', domainHeader: 'text-sky-400' },
+  cyan: { header: 'text-sky-400', icon: 'bg-sky-500/10 text-sky-500', domainHeader: 'text-sky-400' },
 };
 
 const DASHBOARD_CONTEXTS: Record<string, string> = {};
@@ -84,7 +84,7 @@ const TAB_TO_SUBMISSION_TYPE: Record<ResourceTab, string | null> = {
   'Playbooks': 'Prompt Playbook',
 };
 
-const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-300 dark:[&::-webkit-scrollbar-thumb]:bg-zinc-600 [&::-webkit-scrollbar-track]:bg-transparent';
+const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-track]:bg-transparent';
 
 
 function contentMapEntryToArticle(slug: string, entry: LocalArticle): ArticleWithContributor {
@@ -161,8 +161,8 @@ function CopyLinkButton({ slug }: { slug: string }) {
       onClick={handleCopy}
       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
         copied
-          ? 'bg-sky-500/10 text-sky-500 dark:text-sky-400'
-          : 'bg-zinc-200 dark:bg-zinc-100 text-zinc-500 dark:text-zinc-700 hover:bg-sky-100 dark:hover:bg-sky-500/10 hover:text-sky-600 dark:hover:text-sky-400'
+          ? 'bg-sky-500/10 text-sky-400'
+          : 'bg-zinc-800 text-zinc-400 hover:bg-sky-500/10 hover:text-sky-400'
       }`}
     >
       {copied ? <Check className="w-3.5 h-3.5" /> : <Link2 className="w-3.5 h-3.5" />}
@@ -175,9 +175,9 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
   const { goBack } = useSmartBack('/');
   if (minimal) {
     return (
-      <div className={`${CARD_WIDTH} flex flex-col items-center justify-center gap-3 p-8 bg-white/80 dark:bg-slate-700/60 border border-dashed border-zinc-300 dark:border-slate-600 rounded-xl text-center`}>
+      <div className={`${CARD_WIDTH} flex flex-col items-center justify-center gap-3 p-8 bg-zinc-900 border border-dashed border-zinc-800/50 rounded-xl text-center`}>
         <Construction className="w-7 h-7 text-amber-400" />
-        <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+        <p className="text-sm font-medium text-zinc-400">
           This module is currently being built or undergoing moderation review. Check back shortly!
         </p>
       </div>
@@ -186,17 +186,17 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
   return (
     <div className="flex flex-col items-center justify-center gap-6 py-16 text-center">
       <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-400/20 flex items-center justify-center">
-        <Construction className="w-8 h-8 text-amber-500 dark:text-amber-400" />
+        <Construction className="w-8 h-8 text-amber-500" />
       </div>
       <div className="space-y-2">
-        <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100">Coming Soon</h2>
-        <p className="text-zinc-500 dark:text-zinc-400 max-w-md leading-relaxed">
+        <h2 className="text-xl font-bold text-zinc-100">Coming Soon</h2>
+        <p className="text-zinc-400 max-w-md leading-relaxed">
           This module is currently being built or undergoing moderation review by our Cohort Leaders. Check back shortly!
         </p>
       </div>
       <button
         onClick={goBack}
-        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-800 dark:hover:text-zinc-200 text-sm font-medium transition-all"
+        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-800/50 text-zinc-400 hover:text-zinc-200 text-sm font-medium transition-all"
       >
         <ArrowLeft className="w-4 h-4" />
         Go Back
@@ -207,7 +207,7 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
 
 function ResourcePlacard({ activeTab, onTabChange }: { activeTab: ResourceTab; onTabChange: (tab: ResourceTab) => void }) {
   return (
-    <div className="rounded-xl border border-zinc-200 dark:border-zinc-700/60 bg-slate-50 dark:bg-zinc-800/50 px-5 py-4">
+    <div className="rounded-xl border border-zinc-800/50 bg-zinc-900 px-5 py-4">
       <div className="flex flex-wrap items-center gap-2">
         {RESOURCE_TABS.map((tab) => {
           const Icon = TAB_ICONS[tab];
@@ -219,8 +219,8 @@ function ResourcePlacard({ activeTab, onTabChange }: { activeTab: ResourceTab; o
               onClick={() => onTabChange(tab)}
               className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                 isActive
-                  ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
-                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+                  ? 'bg-sky-500/15 text-sky-300 border-sky-400/40'
+                  : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 border-zinc-700'
               }`}
             >
               <Icon className="w-3.5 h-3.5" />
@@ -257,8 +257,8 @@ function DomainFilterRow({
               onClick={() => onTabChange(tab)}
               className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                 isActive
-                  ? 'bg-sky-600 text-white shadow-sm border-transparent dark:bg-sky-500/30 dark:text-sky-300 dark:border-sky-400/50'
-                  : 'bg-slate-200 text-slate-700 hover:bg-slate-300 border-transparent dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700 dark:hover:text-white dark:border-zinc-700'
+                  ? 'bg-sky-500/15 text-sky-300 border-sky-400/40'
+                  : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 border-zinc-700'
               }`}
             >
               <TabIcon className="w-3.5 h-3.5" />
@@ -292,11 +292,11 @@ function DomainBanner({
   const objectives = COMPTIA_OBJECTIVES[canonicalTrack] ?? [];
 
   return (
-    <div className="relative rounded-2xl border border-zinc-700/60 overflow-hidden bg-gradient-to-r from-zinc-900 to-zinc-950">
+    <div className="relative rounded-2xl border border-zinc-800/50 overflow-hidden bg-zinc-900 shadow-sm">
       <div className="relative px-6 py-8 md:px-8 md:py-10">
         <div className="flex items-start justify-between gap-4 mb-5">
           <div className="flex items-start gap-5 flex-1 min-w-0">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
+            <div className="w-14 h-14 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
               <BannerIcon className="w-7 h-7 text-white" />
             </div>
             <div className="min-w-0">
@@ -309,7 +309,7 @@ function DomainBanner({
           <button
             type="button"
             onClick={onContribute}
-            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-400 hover:bg-sky-500 text-zinc-900 text-sm font-bold shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] transition-all"
+            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-400 hover:bg-sky-500 text-zinc-900 text-sm font-bold transition-all"
           >
             Add Intel
           </button>
@@ -321,7 +321,7 @@ function DomainBanner({
               onClick={() => onObjectiveChange('All')}
               className={`inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                 activeObjective === 'All'
-                  ? 'bg-sky-500/30 text-sky-300 border-sky-400/50 shadow-sm'
+                  ? 'bg-sky-500/30 text-sky-300 border-sky-400/50'
                   : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
               }`}
             >
@@ -334,7 +334,7 @@ function DomainBanner({
                 onClick={() => onObjectiveChange(obj)}
                 className={`inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
                   activeObjective === obj
-                    ? 'bg-sky-500/30 text-sky-300 border-sky-400/50 shadow-sm'
+                    ? 'bg-sky-500/30 text-sky-300 border-sky-400/50'
                     : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
                 }`}
               >
@@ -376,7 +376,7 @@ function TrackDomains({
               <div className="flex items-center gap-2 mb-3">
                 <h3 className={`text-sm font-bold ${colors.domainHeader}`}>{domain}</h3>
                 {!isLoading && (
-                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700">
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-zinc-400">
                     {domainArticles.length}
                   </span>
                 )}
@@ -394,10 +394,10 @@ function TrackDomains({
                   <div className="space-y-0">
                     {groupByObjective(domainArticles, canonicalTarget).map(([objective, items], idx) => (
                       <div key={objective}>
-                        <div className={`flex items-center gap-2 pb-2 border-b border-zinc-200 dark:border-zinc-700/50 ${idx === 0 ? 'mt-0' : 'mt-8'}`}>
+                        <div className={`flex items-center gap-2 pb-2 border-b border-zinc-800/50 ${idx === 0 ? 'mt-0' : 'mt-8'}`}>
                           <Target className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
-                          <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-200">{objective}</h3>
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700">
+                          <h3 className="text-lg font-semibold text-zinc-200">{objective}</h3>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-zinc-400">
                             {items.length}
                           </span>
                         </div>
@@ -491,9 +491,9 @@ function CurriculumDashboard({
       const emptyLabel = typeFilter ? activeTab : null;
       return (
         <div className="flex justify-center py-12">
-          <div className="w-full max-w-sm group flex flex-col rounded-xl border overflow-hidden bg-slate-50 dark:bg-zinc-900 border-sky-200/60 dark:border-zinc-800">
+          <div className="w-full max-w-sm group flex flex-col rounded-xl border overflow-hidden bg-zinc-900 border-zinc-800">
             <div
-              className="flex items-center justify-between px-3 py-1.5 bg-zinc-800 dark:bg-zinc-900/80"
+              className="flex items-center justify-between px-3 py-1.5 bg-zinc-800"
               style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
             >
               <div className="flex items-center gap-2">
@@ -505,13 +505,13 @@ function CurriculumDashboard({
               </span>
             </div>
             <div className="flex flex-col gap-3 p-5 flex-1 items-center text-center">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br from-sky-400 to-sky-500 shadow-lg shadow-sky-500/20">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-sky-500">
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-bold text-base text-zinc-800 dark:text-white">
+              <h3 className="font-bold text-base text-white">
                 {emptyLabel ? `No ${emptyLabel} submitted for this domain yet!` : 'Be the first to contribute to this domain!'}
               </h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+              <p className="text-xs text-zinc-400 leading-relaxed">
                 {emptyLabel
                   ? `Be the first to submit ${emptyLabel.toLowerCase()} for this curriculum track.`
                   : 'No peer submissions exist yet. Your contribution will pioneer this curriculum track for the cohort.'}
@@ -519,7 +519,7 @@ function CurriculumDashboard({
               <button
                 type="button"
                 onClick={onContribute}
-                className="mt-2 inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-sky-500/10 hover:bg-sky-500 text-sky-700 dark:text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500 shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)]"
+                className="mt-2 inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-sky-500/10 hover:bg-sky-500 text-sky-400 hover:text-white border-sky-500/20 hover:border-sky-500"
               >
                 Submit a Contribution
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -534,10 +534,10 @@ function CurriculumDashboard({
       <div className="space-y-0">
         {groupByObjective(allDomainArticles, canonicalTarget).map(([objective, items], idx) => (
           <div key={objective}>
-            <div className={`flex items-center gap-2 pb-2 border-b border-zinc-200 dark:border-zinc-700/50 ${idx === 0 ? 'mt-0' : 'mt-8'}`}>
+            <div className={`flex items-center gap-2 pb-2 border-b border-zinc-800/50 ${idx === 0 ? 'mt-0' : 'mt-8'}`}>
               <Target className="w-3.5 h-3.5 text-sky-500 flex-shrink-0" />
-              <h3 className="text-lg font-semibold text-zinc-700 dark:text-zinc-200">{objective}</h3>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700">
+              <h3 className="text-lg font-semibold text-zinc-200">{objective}</h3>
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-zinc-400">
                 {items.length}
               </span>
             </div>
@@ -571,12 +571,12 @@ function CurriculumDashboard({
     <div className="space-y-10">
       {uncategorizedArticles.length > 0 && (
         <section>
-          <div className="flex items-center gap-2.5 mb-4 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+          <div className="flex items-center gap-2.5 mb-4 pb-3 border-b border-zinc-800/50">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-sky-500/10 text-sky-500">
               <BookOpen className="w-4 h-4" />
             </div>
-            <h2 className="text-base font-bold uppercase tracking-widest text-sky-600 dark:text-sky-400">General Resources</h2>
-            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-100 text-zinc-600 dark:text-zinc-700">
+            <h2 className="text-base font-bold uppercase tracking-widest text-sky-400">General Resources</h2>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-zinc-400">
               {uncategorizedArticles.length}
             </span>
           </div>
@@ -587,7 +587,7 @@ function CurriculumDashboard({
       )}
       <div className="grid grid-cols-2 gap-6 items-start min-w-[640px] md:min-w-0 overflow-x-auto md:overflow-x-visible">
         <section className="min-w-[300px]">
-          <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+          <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-800/50">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[core1.color].icon}`}>
               <core1.icon className="w-4 h-4" />
             </div>
@@ -604,7 +604,7 @@ function CurriculumDashboard({
         </section>
 
         <section className="min-w-[300px]">
-          <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+          <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-800/50">
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[core2.color].icon}`}>
               <core2.icon className="w-4 h-4" />
             </div>
@@ -622,7 +622,7 @@ function CurriculumDashboard({
       </div>
 
       <section>
-        <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+        <div className="flex items-center gap-2.5 mb-6 pb-3 border-b border-zinc-800/50">
           <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${TRACK_COLORS[healthcare.color].icon}`}>
             <healthcare.icon className="w-4 h-4" />
           </div>
@@ -724,13 +724,13 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
       <div className="max-w-4xl mx-auto">
         <button
           onClick={goBack}
-          className="text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200 flex items-center gap-2 mb-6 cursor-pointer text-sm font-medium"
+          className="text-zinc-400 hover:text-sky-400 transition-colors duration-200 flex items-center gap-2 mb-6 cursor-pointer text-sm font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Previous Page
         </button>
 
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-zinc-900 via-zinc-800 to-sky-950 dark:from-zinc-900 dark:via-zinc-800 dark:to-sky-950 border border-zinc-300 dark:border-zinc-700 p-8 mb-8">
+        <div className="relative overflow-hidden rounded-2xl bg-zinc-900 border border-zinc-800/50 p-8 mb-8">
           <div className="absolute top-0 right-0 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
           <div className="relative">
             <div className="flex items-center gap-3 mb-4">
@@ -744,7 +744,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
             <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 mb-4">{localContent.title}</h1>
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center text-white text-xs font-bold">
+                <div className="w-7 h-7 rounded-lg bg-sky-500 flex items-center justify-center text-white text-xs font-bold">
                   {localContent.contributor.charAt(0)}
                 </div>
                 <span className="text-sm text-zinc-300">{localContent.contributor}</span>
@@ -767,13 +767,13 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
           </div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-xl p-6 md:p-8">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 md:p-8">
           <ArticleRenderer blocks={localContent.content} />
         </div>
 
         {!isLoading && mergedArticles.length > 0 && (
           <div className="mt-10">
-            <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-100 mb-4">More in this section</h2>
+            <h2 className="text-lg font-bold text-zinc-100 mb-4">More in this section</h2>
             <div className={SCROLL_TRACK}>
               {mergedArticles.filter(a => {
                 const canonicalTarget = CANONICAL_DOMAINS[meta?.title ?? ''] || meta?.title;
@@ -793,7 +793,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
       {isSubPage && (
         <button
           onClick={goBack}
-          className="text-zinc-500 dark:text-zinc-400 hover:text-sky-600 dark:hover:text-sky-400 transition-colors duration-200 flex items-center gap-2 cursor-pointer text-sm font-medium"
+          className="text-zinc-400 hover:text-sky-400 transition-colors duration-200 flex items-center gap-2 cursor-pointer text-sm font-medium"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Previous Page
@@ -828,21 +828,21 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
         </>
       ) : (
         <>
-          <div className="flex items-center gap-4 pb-6 border-b border-zinc-300 dark:border-zinc-800">
-            <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-sky-500 to-sky-400 flex items-center justify-center shadow-lg shadow-sky-500/20 flex-shrink-0">
+          <div className="flex items-center gap-4 pb-6 border-b border-zinc-800/50">
+            <div className="w-14 h-14 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
               <Icon className="w-7 h-7 text-white" />
             </div>
             <div className="flex-1 min-w-0">
               {meta?.track && (
-                <p className="text-xs font-bold text-sky-500 dark:text-sky-400 uppercase tracking-wider mb-1">{meta.track}</p>
+                <p className="text-xs font-bold text-sky-400 uppercase tracking-wider mb-1">{meta.track}</p>
               )}
-              <h1 className="text-2xl font-bold text-zinc-800 dark:text-zinc-100">{displayTitle}</h1>
+              <h1 className="text-2xl font-bold text-zinc-100">{displayTitle}</h1>
             </div>
             <div className="flex flex-col items-center gap-1 flex-shrink-0">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-400 hover:bg-sky-500 text-zinc-900 text-sm font-bold shadow-[0_0_15px_rgba(56,189,248,0.3)] hover:shadow-[0_0_25px_rgba(56,189,248,0.5)] transition-all"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-400 hover:bg-sky-500 text-zinc-900 text-sm font-bold transition-all"
               >
                 Add Intel
               </button>
