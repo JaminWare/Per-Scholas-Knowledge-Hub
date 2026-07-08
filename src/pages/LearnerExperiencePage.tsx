@@ -189,7 +189,13 @@ export default function LearnerExperiencePage() {
         const merged = [
           ...fromArticles,
           ...fromSubs.filter((s) => !existingTitles.has(s.title.toLowerCase())),
-        ];
+        ].filter((entry) => {
+          const meta = metaMap.get(entry.id);
+          if (meta?.lx_stage === 'labs') return false;
+          const cat = (entry.study_category ?? '').toLowerCase();
+          if (cat.includes('tech solutions') || cat.includes('deskolas')) return false;
+          return true;
+        });
         merged.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
         if (!abortRef.current) {

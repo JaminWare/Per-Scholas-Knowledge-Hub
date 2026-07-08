@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   Home, ChevronDown, ChevronRight, ChevronLeft,
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
-  BookOpen, LifeBuoy, Headphones, ExternalLink,
+  BookOpen, LifeBuoy, Headphones,
   Laptop, Monitor, Heart, Database, Award, LogIn, LogOut,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -117,6 +117,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
   const { user, signOut } = useAuth();
 
   const lxActive = location.pathname === '/learner-experience';
+  const deskolasActive = location.pathname === '/deskolas';
 
   return (
     <div className="flex flex-col bg-zinc-900 rounded-[24px] shadow-xl shadow-black/20 border border-zinc-800/40 outline-none">
@@ -188,17 +189,17 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           <LifeBuoy className="w-4 h-4 flex-shrink-0" />
           <span className="flex-1 truncate">Learner Experience & FAQs</span>
         </Link>
-        <a
-          href="https://deskolas.vercel.app"
-          target="_blank"
-          rel="noopener noreferrer"
-          title="Opens in a new tab"
-          className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 text-white hover:bg-zinc-800"
+        <Link
+          to="/deskolas"
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] outline-none select-none ${
+            deskolasActive
+              ? 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
+              : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white active:bg-amber-500/10'
+          }`}
         >
           <Headphones className="w-4 h-4 flex-shrink-0" />
-          <span className="flex-1 truncate">Deskolas</span>
-          <ExternalLink className="w-3.5 h-3.5 flex-shrink-0 opacity-50" />
-        </a>
+          <span className="flex-1 truncate">Deskolas Tech Solutions</span>
+        </Link>
         <div className="my-3" />
         {/* ── end START HERE block ─────────────────────────── */}
 

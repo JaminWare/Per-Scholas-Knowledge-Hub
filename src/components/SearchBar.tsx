@@ -28,8 +28,19 @@ function getDashboardRoute(result: SearchResult): string {
   const category = (result.study_category ?? '').trim();
   if (!category) return `/article/${result.slug}`;
 
+  // Route to Deskolas dashboard for Tech Solutions / Deskolas articles
+  const catLower = category.toLowerCase();
+  if (catLower.includes('tech solutions') || catLower.includes('deskolas') || result.lx_stage === 'labs') {
+    const params = new URLSearchParams();
+    if (result.lx_topic) params.set('level2', result.lx_topic);
+    if (result.lx_focus) params.set('level3', result.lx_focus);
+    params.set('highlight', result.slug);
+    const qs = params.toString();
+    return `/deskolas${qs ? '?' + qs : ''}#${result.slug}`;
+  }
+
   // Route to Learner Experience with deep-link parameters
-  if (category.toLowerCase().includes('learner experience')) {
+  if (catLower.includes('learner experience')) {
     const params = new URLSearchParams();
 
     // Use lx_stage if available; otherwise infer from study_category suffix
@@ -54,7 +65,7 @@ function getDashboardRoute(result: SearchResult): string {
 
   // Route to Domain Tracks and attach the highlight parameter for auto-expansion
   const resolved = resolveTrackSlug(category, result.slug);
-  
+
   // Safely extract the track slug whether the registry returns a string or an object
   let trackSlug = '';
   if (typeof resolved === 'string') {

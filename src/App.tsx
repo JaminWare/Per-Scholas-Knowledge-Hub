@@ -8,6 +8,7 @@ import ArticlePage from './pages/ArticlePage';
 import SectionPage from './pages/SectionPage';
 import RecognitionPage from './pages/RecognitionPage';
 import LearnerExperiencePage from './pages/LearnerExperiencePage';
+import DeskolasPage from './pages/DeskolasPage';
 import AdminControlPage from './pages/AdminControlPage';
 import NotFoundPage from './pages/NotFoundPage';
 import AuthModal from './components/AuthModal';
@@ -172,6 +173,7 @@ function AppContent() {
                   <Route path="/cohort-admin" element={<AdminControlPage />} />
                   <Route path="/recognition" element={<RecognitionPage />} />
                   <Route path="/learner-experience" element={<LearnerExperiencePage />} />
+                  <Route path="/deskolas" element={<DeskolasPage />} />
                   <Route path="/article/:slug" element={<ArticlePage />} />
                   <Route path="/article/:slug/*" element={<ArticlePage />} />
                   <Route path="/:slug/*" element={<SectionPage refreshKey={refreshKey} />} />
