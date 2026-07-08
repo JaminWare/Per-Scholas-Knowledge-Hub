@@ -119,7 +119,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
   const lxActive = location.pathname === '/learner-experience';
 
   return (
-    <div className="flex flex-col h-full bg-black border-r border-zinc-800/50">
+    <div className="flex flex-col h-full bg-black border-r border-zinc-800/50 outline-none">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/30 flex-shrink-0">
         <Link to="/" className="flex items-center gap-2.5 flex-1 min-w-0">
@@ -163,7 +163,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 overflow-y-auto py-3 px-2 pb-40 space-y-0.5 transform-gpu">
+      <nav className="flex-1 overflow-y-auto py-3 px-2 pb-40 space-y-0.5 transform-gpu outline-none">
         <Link
           to="/"
           className={`sidebar-item ${location.pathname === '/' ? 'active' : ''}`}

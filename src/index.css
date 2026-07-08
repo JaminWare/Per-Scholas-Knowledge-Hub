@@ -31,13 +31,20 @@
     @apply bg-zinc-950 text-zinc-200;
   }
 
-  button:focus, a:focus, [role="button"]:focus {
+  button:focus, a:focus, [role="button"]:focus,
+  nav:focus, header:focus, aside:focus, main:focus, section:focus, div:focus {
     outline: none;
   }
 
   button:focus:not(:focus-visible),
   a:focus:not(:focus-visible),
-  [role="button"]:focus:not(:focus-visible) {
+  [role="button"]:focus:not(:focus-visible),
+  nav:focus:not(:focus-visible),
+  header:focus:not(:focus-visible),
+  aside:focus:not(:focus-visible),
+  main:focus:not(:focus-visible),
+  section:focus:not(:focus-visible),
+  div:focus:not(:focus-visible) {
     outline: none !important;
     box-shadow: none !important;
   }

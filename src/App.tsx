@@ -40,7 +40,7 @@ function AppContent() {
   }, [location.pathname, location.hash]);
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-black text-zinc-100">
+    <div className="flex h-screen w-screen overflow-hidden bg-black text-zinc-100 outline-none">
 
       {/* ── Mobile Sidebar Overlay ─────────────────────────── */}
       {mobileSidebarOpen && (
@@ -61,20 +61,20 @@ function AppContent() {
 
       {/* ── Desktop Sidebar (pinned) ──────────────────────── */}
       <div
-        className={`hidden md:block flex-shrink-0 border-r border-zinc-800/50 h-full overflow-hidden transition-all duration-300 ease-in-out ${
+        className={`hidden md:block flex-shrink-0 border-r border-zinc-800/50 h-full overflow-hidden transition-[width] duration-300 ease-in-out outline-none ${
           desktopSidebarOpen ? 'w-72' : 'w-0'
         }`}
       >
-        <div className="w-72 h-full overflow-y-auto">
+        <div className="w-72 h-full overflow-y-auto outline-none">
           <Sidebar onToggle={() => setDesktopSidebarOpen(false)} />
         </div>
       </div>
 
       {/* ── Main area ─────────────────────────────────────── */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0">
+      <div className="flex-1 flex flex-col h-full overflow-hidden min-w-0 outline-none">
 
         {/* Mobile top header */}
-        <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800/50 flex md:hidden items-center gap-3 px-4 py-3">
+        <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800/50 flex md:hidden items-center gap-3 px-4 py-3 outline-none">
           <button
             onClick={() => setMobileSidebarOpen(true)}
             className="p-2 rounded-lg bg-transparent border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800 transition-all duration-300 ease-in-out flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
@@ -120,7 +120,7 @@ function AppContent() {
         </header>
 
         {/* Desktop top header */}
-        <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800/50 hidden md:block">
+        <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800/50 hidden md:block outline-none">
           <div className="flex items-center gap-3 px-4 py-3">
             <button
               onClick={() => setDesktopSidebarOpen((v) => !v)}
@@ -169,7 +169,7 @@ function AppContent() {
           <SearchBar onMenuClick={() => setMobileSidebarOpen(true)} />
         </div>
 
-        <main ref={mainRef} className="flex-1 overflow-y-auto bg-black p-4 md:p-6">
+        <main ref={mainRef} className="flex-1 overflow-y-auto bg-black p-4 md:p-6 outline-none">
           <ScrollToTop scrollRef={mainRef} />
           <ErrorBoundary>
             <Routes>

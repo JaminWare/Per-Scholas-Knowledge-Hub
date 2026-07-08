@@ -8,6 +8,12 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
+      ringWidth: {
+        DEFAULT: '0',
+      },
+      ringColor: {
+        DEFAULT: 'transparent',
+      },
     },
   },
   plugins: [],
