@@ -55,7 +55,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
   return (
     <>
-      <div className="h-full w-full flex flex-col items-start justify-center gap-4 md:gap-5 max-w-3xl mx-auto">
+      <div className="min-h-full w-full flex flex-col items-start gap-4 md:gap-5 max-w-3xl mx-auto py-10 md:py-16">
 
         {/* Welcome header */}
         <div className="text-left space-y-2">

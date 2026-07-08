@@ -165,7 +165,7 @@ function AppContent() {
             </div>
 
             {/* Scrollable route content area */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain p-6 md:p-8">
+            <div ref={scrollRef} className="flex-1 flex flex-col overflow-y-auto overscroll-contain p-6 md:p-8">
               <ErrorBoundary>
                 <Routes>
                   <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
@@ -180,7 +180,7 @@ function AppContent() {
               </ErrorBoundary>
 
               {/* Footer */}
-              <div className="mt-4 pb-2 text-center text-xs text-zinc-500">
+              <div className="mt-auto pt-8 pb-4 text-center text-xs text-zinc-500 flex-shrink-0">
                 <p>Per Scholas Learners Knowledge Base</p>
               </div>
             </div>
