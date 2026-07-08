@@ -48,4 +48,8 @@ export interface SearchResult {
   title: string;
   slug: string;
   excerpt?: string;
+  study_category?: string | null;
+  lx_stage?: string | null;
+  lx_topic?: string | null;
+  lx_focus?: string | null;
 }

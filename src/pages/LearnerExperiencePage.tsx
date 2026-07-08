@@ -53,8 +53,8 @@ function entryToArticle(entry: {
 export default function LearnerExperiencePage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'all');
-  const [activeLevel2, setActiveLevel2] = useState('');
-  const [activeLevel3, setActiveLevel3] = useState('');
+  const [activeLevel2, setActiveLevel2] = useState(searchParams.get('level2') || '');
+  const [activeLevel3, setActiveLevel3] = useState(searchParams.get('level3') || '');
   const [entries, setEntries] = useState<ArticleWithContributor[]>([]);
   const [lxMeta, setLxMeta] = useState<Map<string, LxMeta>>(new Map());
   const [isLoading, setIsLoading] = useState(true);
@@ -79,10 +79,15 @@ export default function LearnerExperiencePage() {
 
   useEffect(() => {
     const paramTab = searchParams.get('tab') || 'all';
+    const paramLevel2 = searchParams.get('level2') || '';
+    const paramLevel3 = searchParams.get('level3') || '';
     if (paramTab !== activeTab) {
       setActiveTab(paramTab);
-      setActiveLevel2('');
-      setActiveLevel3('');
+      setActiveLevel2(paramLevel2);
+      setActiveLevel3(paramLevel3);
+    } else {
+      if (paramLevel2 && paramLevel2 !== activeLevel2) setActiveLevel2(paramLevel2);
+      if (paramLevel3 && paramLevel3 !== activeLevel3) setActiveLevel3(paramLevel3);
     }
   }, [searchParams]);
 

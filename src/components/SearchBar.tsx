@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, X, FileText, Folder, Loader2 } from 'lucide-react';
 import Fuse from 'fuse.js';
 import { supabase } from '../lib/supabase';
+import { resolveTrackSlug } from '../lib/domainRegistry';
 import type { SearchResult } from '../types/database';
 
 interface SearchBarProps {
@@ -19,6 +20,27 @@ const fuseOptions: Fuse.IFuseOptions<SearchResult> = {
   includeScore: true,
   ignoreLocation: true,
 };
+
+function getDashboardRoute(result: SearchResult): string {
+  if (result.type === 'section') return `/${result.slug}`;
+
+  const category = (result.study_category ?? '').trim();
+  if (!category) return `/article/${result.slug}`;
+
+  if (category.toLowerCase().includes('learner experience')) {
+    const params = new URLSearchParams();
+    if (result.lx_stage) params.set('tab', result.lx_stage);
+    if (result.lx_topic) params.set('level2', result.lx_topic);
+    if (result.lx_focus) params.set('level3', result.lx_focus);
+    const qs = params.toString();
+    return `/learner-experience${qs ? '?' + qs : ''}`;
+  }
+
+  const resolved = resolveTrackSlug(category, result.slug);
+  if (resolved) return `/${resolved.slug}`;
+
+  return `/article/${result.slug}`;
+}
 
 export default function SearchBar({ onMenuClick }: SearchBarProps) {
   const [query, setQuery] = useState('');
@@ -39,7 +61,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
       const [articlesResult, sectionsResult] = await Promise.all([
         supabase
           .from('articles')
-          .select('id, title, slug, excerpt')
+          .select('id, title, slug, excerpt, study_category, lx_stage, lx_topic, lx_focus')
           .or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`)
           .limit(15),
         supabase
@@ -55,6 +77,10 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
           title: a.title,
           slug: a.slug,
           excerpt: a.excerpt,
+          study_category: a.study_category,
+          lx_stage: a.lx_stage,
+          lx_topic: a.lx_topic,
+          lx_focus: a.lx_focus,
         })) || []),
         ...(sectionsResult.data?.map((s) => ({
           type: 'section' as const,
@@ -107,10 +133,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
   }, []);
 
   const handleSelect = (result: SearchResult) => {
-    const path = result.type === 'article'
-      ? `/article/${result.slug}`
-      : `/${result.slug}`;
-    navigate(path);
+    navigate(getDashboardRoute(result));
     setIsOpen(false);
     setQuery('');
   };
