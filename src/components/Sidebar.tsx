@@ -134,7 +134,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         </Link>
         <button
           onClick={onToggle}
-          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors duration-75 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
+          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
           title="Collapse sidebar"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -179,7 +179,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         </p>
         <Link
           to="/learner-experience"
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-colors duration-75 outline-none select-none ${
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] outline-none select-none ${
             lxActive
               ? 'bg-sky-500/10 text-sky-400 border border-sky-500/30'
               : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white active:bg-sky-500/10'
