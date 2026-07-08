@@ -166,7 +166,7 @@ function AppContent() {
             </div>
 
             {/* Scrollable route content area */}
-            <div ref={scrollRef} className="flex-1 flex flex-col overflow-y-auto overscroll-contain p-6 md:p-8">
+            <div ref={scrollRef} className="flex-1 flex flex-col overflow-y-scroll overscroll-contain p-6 md:p-8">
               <ErrorBoundary>
                 <Routes>
                   <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
