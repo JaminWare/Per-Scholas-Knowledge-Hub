@@ -8,6 +8,7 @@ import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
 import { checkForDuplicate } from '../utils/duplicateCheck';
 import { JOURNEY_TABS, CATEGORY_FILTERS } from '../constants/learnerExperience';
+import { DESKOLAS_CATEGORIES } from '../constants/deskolas';
 import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import { MASTER_CATEGORIES, getBadgeForTrack } from '../lib/domainRegistry';
 import { autoCategorizeSubmission } from '../utils/autoCategorize';
@@ -42,6 +43,7 @@ const SUBMISSION_TYPES = [
 ];
 
 const LX_TRACK_VALUE = 'Learner Experience & FAQs';
+const DESKOLAS_TRACK_VALUE = 'Deskolas Tech Solutions';
 
 function getVisibleCategories(_type: SubmissionType) {
   return MASTER_CATEGORIES;
@@ -373,8 +375,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   const isResourceLink = submissionType === 'Resource Link';
   const isLearnerExperience = masterCategory === LX_TRACK_VALUE;
+  const isDeskolas = masterCategory === DESKOLAS_TRACK_VALUE;
   const isLightweight = submissionType === 'Diagram' || submissionType === 'Study Tip';
-  const autoBadge = isLearnerExperience ? 'Community Contributor' : getBadgeForTrack(track || masterCategory);
+  const autoBadge = (isLearnerExperience || isDeskolas) ? 'Community Contributor' : getBadgeForTrack(track || masterCategory);
 
   const visibleCategories = getVisibleCategories(submissionType);
   const selectedMasterObj = MASTER_CATEGORIES.find((c) => c.label === masterCategory);
@@ -387,6 +390,13 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const selectedTopicObj = lxTopicOptions.find((t) => t.id === lxTopic);
   const lxFocusOptions = selectedTopicObj
     ? selectedTopicObj.nested.filter((n) => n.keywords.length > 0)
+    : [];
+
+  // Derive Deskolas topic/focus options
+  const deskolasTopicOptions = DESKOLAS_CATEGORIES.filter((f) => !f.id.startsWith('all-'));
+  const selectedDeskolasTopicObj = deskolasTopicOptions.find((t) => t.id === lxTopic);
+  const deskolasFocusOptions = selectedDeskolasTopicObj
+    ? selectedDeskolasTopicObj.nested.filter((n) => n.keywords.length > 0)
     : [];
 
   useEffect(() => {
@@ -577,16 +587,19 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       // Non-blocking: if the duplicate check fails, allow submission to proceed
     }
 
-    // Resolve track and badge for LX submissions
+    // Resolve track and badge for LX / Deskolas submissions
     let payloadTrack = track;
     let payloadBadge = autoBadge;
     if (isLearnerExperience) {
       const stageTab = LX_STAGES.find((t) => t.id === lxStage);
       payloadTrack = `Learner Experience ${stageTab?.label || lxStage}`;
       payloadBadge = 'Community Contributor';
+    } else if (isDeskolas) {
+      payloadTrack = 'Learner Experience Tech Solutions';
+      payloadBadge = 'Community Contributor';
     }
 
-    const formattedContent = (submissionType === 'Article' && !isLearnerExperience)
+    const formattedContent = (submissionType === 'Article' && !isLearnerExperience && !isDeskolas)
       ? buildFormattedContent(
           fullName.trim(), payloadTrack, submissionType,
           concept.trim(), aPlusRelevance.trim(), impact.trim(), references.trim(),
@@ -611,9 +624,9 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       formatted_content: sanitizedFormatted,
       is_approved: false,
       comp_objective: compObjective || null,
-      lx_stage: isLearnerExperience ? lxStage || null : null,
-      lx_topic: isLearnerExperience ? (selectedTopicObj?.label || null) : null,
-      lx_focus: isLearnerExperience ? (lxFocus || null) : null,
+      lx_stage: isLearnerExperience ? (lxStage || null) : isDeskolas ? 'labs' : null,
+      lx_topic: isLearnerExperience ? (selectedTopicObj?.label || null) : isDeskolas ? (selectedDeskolasTopicObj?.label || null) : null,
+      lx_focus: (isLearnerExperience || isDeskolas) ? (lxFocus || null) : null,
     };
 
     try {
@@ -775,7 +788,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               {errors.masterCategory && <p className="mt-1 text-xs text-red-500">{errors.masterCategory}</p>}
 
               {/* Level 2: Domain select for technical tracks */}
-              {masterCategory && !isLearnerExperience && domainOptions.length > 0 && (
+              {masterCategory && !isLearnerExperience && !isDeskolas && domainOptions.length > 0 && (
                 <div className="mt-3 pl-3 border-l-2 border-sky-500/20">
                   <label className="block text-xs font-semibold text-zinc-400 mb-1">Specific Domain / Module</label>
                   <select
@@ -858,6 +871,41 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                       >
                         <option value="">Select a focus...</option>
                         {lxFocusOptions.map((opt) => (
+                          <option key={opt.label} value={opt.label}>{opt.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Level 2+: Deskolas Tech Solutions Cascading Dropdowns */}
+              {isDeskolas && (
+                <div className="mt-3 space-y-3 pl-3 border-l-2 border-emerald-500/20">
+                  <div>
+                    <label className="block text-xs font-semibold text-zinc-400 mb-1">Topic</label>
+                    <select
+                      value={lxTopic}
+                      onChange={(e) => { setLxTopic(e.target.value); setLxFocus(''); }}
+                      className={selectCls('lxTopic')}
+                    >
+                      <option value="">Select a topic...</option>
+                      {deskolasTopicOptions.map((opt) => (
+                        <option key={opt.id} value={opt.id}>{opt.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {lxTopic && deskolasFocusOptions.length > 0 && (
+                    <div>
+                      <label className="block text-xs font-semibold text-zinc-400 mb-1">Focus</label>
+                      <select
+                        value={lxFocus}
+                        onChange={(e) => setLxFocus(e.target.value)}
+                        className={selectCls('lxFocus')}
+                      >
+                        <option value="">Select a focus...</option>
+                        {deskolasFocusOptions.map((opt) => (
                           <option key={opt.label} value={opt.label}>{opt.label}</option>
                         ))}
                       </select>

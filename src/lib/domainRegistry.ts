@@ -255,6 +255,7 @@ export interface MasterCategory {
 
 export const MASTER_CATEGORIES: MasterCategory[] = [
   { label: 'Learner Experience & FAQs', badge: 'Community Contributor', sub: [] },
+  { label: 'Deskolas Tech Solutions', badge: 'Community Contributor', sub: [] },
   {
     label: 'CompTIA A+ Core 1',
     badge: 'Core 1 Expert',
@@ -274,6 +275,7 @@ export const MASTER_CATEGORIES: MasterCategory[] = [
 
 export function getBadgeForTrack(trackName: string): string {
   if (trackName.startsWith('Learner Experience')) return 'Community Contributor';
+  if (trackName.includes('Deskolas') || trackName.includes('Tech Solutions')) return 'Community Contributor';
   if (trackName.includes('Core 2')) return 'Core 2 Expert';
   if (trackName.includes('Healthcare')) return 'Healthcare IT Specialist';
   return 'Core 1 Expert';
