@@ -27,6 +27,12 @@
     background-color: #52525b;
   }
 
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
   body {
     @apply bg-zinc-950 text-zinc-200;
   }

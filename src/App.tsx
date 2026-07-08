@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-dom';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Sidebar from './components/Sidebar';
 import SearchBar from './components/SearchBar';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -14,11 +14,11 @@ import AuthModal from './components/AuthModal';
 import { useAuth } from './hooks/useAuth';
 import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen, LogIn, LogOut, ShieldCheck } from 'lucide-react';
 
-function ScrollToTop() {
+function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | null> }) {
   const { pathname } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    scrollRef.current?.scrollTo(0, 0);
+  }, [pathname, scrollRef]);
   return null;
 }
 
@@ -30,14 +30,15 @@ function AppContent() {
   const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setMobileSidebarOpen(false);
   }, [location.pathname, location.hash]);
 
   return (
-    <div className="min-h-screen bg-black text-zinc-100">
-      <ScrollToTop />
+    <div className="h-screen w-screen overflow-hidden flex flex-col bg-black text-zinc-100">
+      <ScrollToTop scrollRef={mainRef} />
 
       {/* ── Mobile Sidebar Overlay ─────────────────────────── */}
       {mobileSidebarOpen && (
@@ -57,7 +58,7 @@ function AppContent() {
       </div>
 
       {/* ── Mobile Header ─────────────────────────────────── */}
-      <header className="sticky top-0 z-30 bg-black/95 backdrop-blur-lg flex md:hidden items-center gap-3 px-4 py-3">
+      <header className="flex-shrink-0 z-30 bg-black/95 backdrop-blur-lg flex md:hidden items-center gap-3 px-4 py-3">
         <button
           onClick={() => setMobileSidebarOpen(true)}
           className="p-2 rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
@@ -103,23 +104,23 @@ function AppContent() {
       </header>
 
       {/* ── Mobile Search ─────────────────────────────────── */}
-      <div className="md:hidden px-4 pb-4">
+      <div className="flex-shrink-0 md:hidden px-4 pb-3 bg-black">
         <SearchBar onMenuClick={() => setMobileSidebarOpen(true)} />
       </div>
 
-      {/* ── Single Centered Canvas ────────────────────────── */}
-      <div className="max-w-[90rem] mx-auto px-4 md:px-8 pb-12 md:py-10">
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+      {/* ── Single Centered Canvas (rigid bounding box) ───── */}
+      <div className="flex-1 overflow-hidden max-w-[90rem] w-full mx-auto px-4 md:px-8 md:py-8">
+        <div className="h-full flex flex-col md:flex-row gap-6 md:gap-8">
 
-          {/* ── Floating Sidebar (desktop only) ─────────────── */}
+          {/* ── Sidebar (desktop scroll container) ────────── */}
           {desktopSidebarOpen && (
-            <aside className="hidden md:block w-72 flex-shrink-0 sticky top-10 max-h-[calc(100vh-5rem)] overflow-y-auto rounded-[24px]">
+            <aside className="hidden md:block w-72 flex-shrink-0 h-full overflow-y-auto overscroll-contain rounded-[24px]">
               <Sidebar onToggle={() => setDesktopSidebarOpen(false)} />
             </aside>
           )}
 
-          {/* ── Module Host (main content) ───────────────────── */}
-          <main className="flex-1 min-w-0 w-full">
+          {/* ── Module Host (main scroll container) ──────── */}
+          <main ref={mainRef} className="flex-1 min-w-0 w-full h-full overflow-y-auto overscroll-contain">
             {/* Desktop toolbar row */}
             <div className="hidden md:flex items-center gap-3 mb-6">
               <button
