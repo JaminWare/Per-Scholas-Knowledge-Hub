@@ -119,9 +119,9 @@ export default function Sidebar({ onToggle }: SidebarProps) {
   const lxActive = location.pathname === '/learner-experience';
 
   return (
-    <div className="flex flex-col h-full bg-black border-r border-zinc-800/50 outline-none">
+    <div className="flex flex-col h-full bg-zinc-900 rounded-[24px] shadow-xl shadow-black/20 border border-zinc-800/40 outline-none">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800/30 flex-shrink-0">
+      <div className="flex items-center justify-between px-4 py-3 flex-shrink-0">
         <Link to="/" className="flex items-center gap-2.5 flex-1 min-w-0">
           <div className="w-9 h-9 rounded-xl bg-sky-500 flex items-center justify-center flex-shrink-0">
             <BookOpen className="w-[18px] h-[18px] text-white" />
@@ -142,7 +142,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
       </div>
 
       {/* Auth Section */}
-      <div className="px-3 py-2.5 border-b border-zinc-800/30 flex-shrink-0 space-y-1">
+      <div className="px-3 py-2.5 flex-shrink-0 space-y-1">
         {user ? (
           <button
             onClick={signOut}
@@ -174,7 +174,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
 
         {/* ── START HERE block ─────────────────────────────── */}
         <div className="my-3" />
-        <p className="px-2 pt-1 pb-1.5 text-[10px] font-bold uppercase tracking-widest text-sky-400">
+        <p className="inline-block rounded-full bg-zinc-800/40 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-sky-400">
           Start Here
         </p>
         <Link

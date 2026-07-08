@@ -177,7 +177,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
               })}
             </div>
 
-            <div className="mt-4 pt-4 border-t border-zinc-800/30">
+            <div className="mt-6 pt-2">
               <Link
                 to="/learner-experience"
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-400 hover:text-sky-300 transition-colors"
