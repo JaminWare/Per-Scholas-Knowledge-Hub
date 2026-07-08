@@ -207,9 +207,8 @@ function AppContent() {
         </main>
 
         <footer className="flex-shrink-0 border-t border-zinc-800 py-3 px-4 sm:px-5">
-          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2 text-xs sm:text-sm text-zinc-500">
-            <p>Per Scholas Learners Knowledge Base: AI-Enabled Healthcare IT</p>
-            <p>Pioneering Cohort 2026-RTT-23</p>
+          <div className="max-w-4xl mx-auto text-center text-xs sm:text-sm text-zinc-500">
+            <p>Per Scholas Learners Knowledge Base</p>
           </div>
         </footer>
       </div>

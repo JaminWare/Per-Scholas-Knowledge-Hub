@@ -996,12 +996,12 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
     if (insertErr) {
       setError(handleSupabaseError(insertErr));
     } else {
-      setSuccess(`${trimmed} has been added as an admin.`);
+      setSuccess(`${trimmed} has been added as an admin. They will need to sign in or create an account using this exact email.`);
       setInviteEmail('');
       setGrantManage(false);
       await logAdminAction(adminEmail, 'INVITED_ADMIN', undefined, trimmed);
       fetchAdmins();
-      setTimeout(() => setSuccess(''), 4000);
+      setTimeout(() => setSuccess(''), 6000);
     }
     setInviting(false);
   };
@@ -2097,7 +2097,10 @@ export default function AdminControlPage() {
           <div>
             <h1 className="text-xl font-bold text-zinc-100">Access Denied</h1>
             <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
-              You must be signed in to access the Admin Command Center. Please authenticate to continue.
+              You must be signed in to access the Admin Command Center.
+            </p>
+            <p className="mt-2 text-xs text-zinc-500 leading-relaxed">
+              If you were recently invited, sign in with Google or create an account using the same email address your admin used to whitelist you.
             </p>
           </div>
           <button
@@ -2105,7 +2108,7 @@ export default function AdminControlPage() {
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-sky-500 hover:bg-sky-600 transition-colors shadow-lg shadow-sky-500/20"
           >
             <Lock className="w-4 h-4" />
-            Sign In
+            Sign In or Sign Up
           </button>
         </div>
         <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
