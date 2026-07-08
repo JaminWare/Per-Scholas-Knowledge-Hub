@@ -2285,7 +2285,7 @@ export default function AdminControlPage() {
 
   if (loading || (user && !adminCheck.checked)) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+      <div className=" bg-zinc-950 flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-sky-400 animate-spin" />
       </div>
     );
@@ -2293,7 +2293,7 @@ export default function AdminControlPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
+      <div className=" bg-zinc-950 flex items-center justify-center p-4">
         <div className="w-full max-w-sm text-center space-y-6">
           <div className="mx-auto w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/25 flex items-center justify-center">
             <ShieldOff className="w-8 h-8 text-red-400" />
@@ -2323,7 +2323,7 @@ export default function AdminControlPage() {
 
   if (!adminCheck.isAdmin) {
     return (
-      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4">
+      <div className=" bg-zinc-950 flex items-center justify-center p-4">
         <div className="w-full max-w-sm text-center space-y-6">
           <div className="mx-auto w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center">
             <ShieldOff className="w-8 h-8 text-amber-400" />
