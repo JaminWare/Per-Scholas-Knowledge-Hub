@@ -12,7 +12,6 @@ import AdminControlPage from './pages/AdminControlPage';
 import NotFoundPage from './pages/NotFoundPage';
 import AuthModal from './components/AuthModal';
 import { useAuth } from './hooks/useAuth';
-import { supabase } from './lib/supabase';
 import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen, LogIn, LogOut, ShieldCheck } from 'lucide-react';
 
 function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | null> }) {
@@ -34,20 +33,6 @@ function AppContent() {
   const location = useLocation();
   const { user, signOut } = useAuth();
 
-  const [isAdmin, setIsAdmin] = useState(false);
-  useEffect(() => {
-    if (!user?.email) { setIsAdmin(false); return; }
-    let mounted = true;
-    (async () => {
-      const { data } = await supabase
-        .from('admin_whitelist')
-        .select('email')
-        .eq('email', user.email!)
-        .maybeSingle();
-      if (mounted) setIsAdmin(!!data);
-    })();
-    return () => { mounted = false; };
-  }, [user?.email]);
 
   // Close mobile sidebar on route change
   useEffect(() => {
@@ -105,27 +90,23 @@ function AppContent() {
               {location.pathname.includes('/cohort-admin') ? 'Learners Hub Admin' : 'Learners Hub'}
             </span>
           </div>
+          <Link
+            to="/cohort-admin"
+            title="Admin Command Center"
+            className="p-2 rounded-lg text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors flex-shrink-0"
+            aria-label="Admin Command Center"
+          >
+            <ShieldCheck className="w-4.5 h-4.5" />
+          </Link>
           {user ? (
-            <>
-              {isAdmin && (
-                <Link
-                  to="/cohort-admin"
-                  title="Admin Command Center"
-                  className="p-2 rounded-lg text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors flex-shrink-0"
-                  aria-label="Admin Command Center"
-                >
-                  <ShieldCheck className="w-4.5 h-4.5" />
-                </Link>
-              )}
-              <button
-                onClick={signOut}
-                title="Sign Out"
-                className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors flex-shrink-0"
-                aria-label="Sign out"
-              >
-                <LogOut className="w-4.5 h-4.5" />
-              </button>
-            </>
+            <button
+              onClick={signOut}
+              title="Sign Out"
+              className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors flex-shrink-0"
+              aria-label="Sign out"
+            >
+              <LogOut className="w-4.5 h-4.5" />
+            </button>
           ) : (
             <button
               onClick={() => setMobileAuthOpen(true)}
@@ -153,18 +134,16 @@ function AppContent() {
             <div className="flex-1 max-w-2xl">
               <SearchBar onMenuClick={() => setDesktopSidebarOpen(true)} />
             </div>
-            {user ? (
-              <div className="ml-auto flex items-center gap-1">
-                {isAdmin && (
-                  <Link
-                    to="/cohort-admin"
-                    title="Admin Command Center"
-                    className="p-2 rounded-md text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors"
-                    aria-label="Admin Command Center"
-                  >
-                    <ShieldCheck className="w-5 h-5" />
-                  </Link>
-                )}
+            <div className="ml-auto flex items-center gap-1">
+              <Link
+                to="/cohort-admin"
+                title="Admin Command Center"
+                className="p-2 rounded-md text-sky-400 hover:text-sky-300 hover:bg-sky-500/10 transition-colors"
+                aria-label="Admin Command Center"
+              >
+                <ShieldCheck className="w-5 h-5" />
+              </Link>
+              {user ? (
                 <button
                   onClick={signOut}
                   title="Sign Out"
@@ -172,16 +151,16 @@ function AppContent() {
                 >
                   <LogOut className="w-5 h-5" />
                 </button>
-              </div>
-            ) : (
-              <button
-                onClick={() => setMobileAuthOpen(true)}
-                title="Sign In"
-                className="ml-auto p-2 rounded-md text-sky-400 hover:text-white hover:bg-sky-500/15 transition-colors"
-              >
-                <LogIn className="w-5 h-5" />
-              </button>
-            )}
+              ) : (
+                <button
+                  onClick={() => setMobileAuthOpen(true)}
+                  title="Sign In"
+                  className="p-2 rounded-md text-sky-400 hover:text-white hover:bg-sky-500/15 transition-colors"
+                >
+                  <LogIn className="w-5 h-5" />
+                </button>
+              )}
+            </div>
           </div>
         </header>
 
