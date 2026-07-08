@@ -1176,6 +1176,167 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
 }
 
 // ---------------------------------------------------------------------------
+// Live Articles Database View
+// ---------------------------------------------------------------------------
+interface LiveArticleRow {
+  id: string;
+  title: string;
+  slug: string;
+  study_category: string | null;
+  author_name: string | null;
+  is_sample: boolean;
+  created_at: string;
+  status: string | null;
+}
+
+function LiveArticlesView({ adminEmail }: { adminEmail: string }) {
+  const [articles, setArticles] = useState<LiveArticleRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error: fetchErr } = await supabase
+        .from('articles')
+        .select('id, title, slug, study_category, author_name, is_sample, created_at, status')
+        .order('created_at', { ascending: false });
+
+      if (cancelled) return;
+      if (fetchErr) {
+        setError(fetchErr.message);
+      } else {
+        setArticles((data as LiveArticleRow[]) ?? []);
+      }
+      setLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const filtered = useMemo(() => {
+    if (!searchQuery.trim()) return articles;
+    const q = searchQuery.toLowerCase();
+    return articles.filter((a) =>
+      a.title.toLowerCase().includes(q) ||
+      (a.study_category ?? '').toLowerCase().includes(q) ||
+      (a.slug ?? '').toLowerCase().includes(q)
+    );
+  }, [articles, searchQuery]);
+
+  const handleForceDelete = async (id: string, title: string) => {
+    if (!window.confirm(`Permanently delete "${title}" from the live articles database? This cannot be undone.`)) return;
+    setBusyId(id);
+    try {
+      const { error: delErr } = await supabase.from('articles').delete().eq('id', id);
+      if (delErr) throw delErr;
+      setArticles((prev) => prev.filter((a) => a.id !== id));
+      await logAdminAction(adminEmail, 'FORCE_DELETED_ARTICLE', id, title);
+    } catch (err) {
+      const msg = handleSupabaseError(err);
+      setError(msg);
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-3 pb-3">
+        <FileText className="w-5 h-5 text-sky-400" />
+        <div>
+          <h2 className="text-lg font-bold text-zinc-100">Live Articles Master Index</h2>
+          <p className="text-sm text-zinc-500 mt-0.5">{articles.length} records in the articles table</p>
+        </div>
+      </div>
+
+      <div className="relative w-full max-w-md">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search by title, track, or slug..."
+          className="w-full bg-zinc-800/50 border border-zinc-800/50 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-sky-500/40 focus:border-sky-500/60 transition-all"
+        />
+      </div>
+
+      {loading && (
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="w-5 h-5 text-zinc-500 animate-spin" />
+        </div>
+      )}
+
+      {error && (
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/25 text-red-400 text-sm">
+          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+          {error}
+        </div>
+      )}
+
+      {!loading && !error && filtered.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <Search className="w-8 h-8 text-zinc-600 mb-4" />
+          <h3 className="text-base font-semibold text-zinc-300">No articles found</h3>
+          <p className="text-sm text-zinc-500 mt-1">
+            {searchQuery.trim() ? `No results for "${searchQuery}".` : 'The articles table is empty.'}
+          </p>
+        </div>
+      )}
+
+      {!loading && !error && filtered.length > 0 && (
+        <div className="max-h-[500px] overflow-y-auto overflow-x-auto rounded-xl border border-zinc-800">
+          <table className="w-full text-left text-sm">
+            <thead className="sticky top-0 z-10">
+              <tr className="bg-zinc-900/80 border-b border-zinc-800">
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Title</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 hidden md:table-cell">Track</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 hidden lg:table-cell">Author</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 hidden md:table-cell">Date</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Type</th>
+                <th className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800/20">
+              {filtered.map((row) => (
+                <tr key={row.id} className="hover:bg-zinc-900/50 transition-colors">
+                  <td className="px-4 py-2 text-zinc-200 font-medium max-w-[240px] truncate">{row.title}</td>
+                  <td className="px-4 py-2 text-zinc-500 max-w-[160px] truncate hidden md:table-cell">{row.study_category ?? '---'}</td>
+                  <td className="px-4 py-2 text-zinc-400 whitespace-nowrap hidden lg:table-cell">{row.author_name ?? '---'}</td>
+                  <td className="px-4 py-2 text-zinc-500 whitespace-nowrap hidden md:table-cell">{formatDate(row.created_at)}</td>
+                  <td className="px-4 py-2">
+                    {row.is_sample ? (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">Sample</span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Live</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-2 text-right">
+                    {busyId === row.id ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-500 inline-block" />
+                    ) : (
+                      <button
+                        onClick={() => handleForceDelete(row.id, row.title)}
+                        title="Force delete this article"
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 hover:text-red-300 transition-colors"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        Delete
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // System Maintenance View
 // ---------------------------------------------------------------------------
 function MaintenanceView({ adminEmail }: { adminEmail: string }) {
@@ -1339,7 +1500,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   const [archiveLoading, setArchiveLoading] = useState(true);
   const [fetchError, setFetchError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [activeTab, setActiveTab] = useState<'pending' | 'archive' | 'access' | 'audit' | 'names' | 'maintenance' | 'health'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'archive' | 'access' | 'audit' | 'names' | 'maintenance' | 'health' | 'articles'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
   const fetchVersionRef = useRef(0);
 
@@ -1787,6 +1948,20 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 System Health
               </button>
             )}
+            {canManageAdmins && (
+              <button
+                type="button"
+                onClick={() => setActiveTab('articles')}
+                className={`inline-flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ease-in-out ${
+                  activeTab === 'articles'
+                    ? 'bg-sky-500 text-white'
+                    : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+              >
+                <FileText className="w-3.5 h-3.5" />
+                Live Articles
+              </button>
+            )}
           </div>
             </div>
           </div>
@@ -1899,6 +2074,11 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         {/* ─── System Health ─── */}
         {activeTab === 'health' && canManageAdmins && (
           <SystemHealthView />
+        )}
+
+        {/* ─── Live Articles ─── */}
+        {activeTab === 'articles' && canManageAdmins && (
+          <LiveArticlesView adminEmail={adminEmail} />
         )}
 
       </main>
