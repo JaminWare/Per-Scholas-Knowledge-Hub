@@ -1,45 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import ArticleCard from '../components/ArticleCard';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import { type NewSubmission } from '../utils/submissions';
-import { useArticles } from '../hooks/useArticles';
 import SuccessToast from '../components/SuccessToast';
-import contentMap from '../data/contentMap';
 import {
   TrendingUp, Users, UploadCloud,
-  Compass, BookOpen, Flame, Briefcase, ChevronRight, Award, LifeBuoy,
+  Compass, BookOpen, Flame, Briefcase, ChevronRight, LifeBuoy,
 } from 'lucide-react';
-import CollapsibleCard from '../components/CollapsibleCard';
-
-const PINNED_SLUGS = ['learner-experience/navigation', 'learner-experience/adding-intel'] as const;
-
-function buildPinnedArticles() {
-  return PINNED_SLUGS.map((slug) => {
-    const entry = contentMap[slug];
-    const introBlock = entry?.content.find((b) => b.type === 'intro');
-    return {
-      id: `local-${slug}`,
-      title: entry?.title ?? slug,
-      slug,
-      section_id: null,
-      content: '',
-      formatted_content: null,
-      excerpt: introBlock && 'text' in introBlock ? introBlock.text.slice(0, 160) : null,
-      contributor_id: null,
-      tags: entry?.tags ?? [],
-      is_featured: true,
-      is_sample: false,
-      study_category: null,
-      source_file: null,
-      author_name: entry?.contributor ?? null,
-      submission_type: 'Quick Reference',
-      comp_objective: null,
-      created_at: entry?.date || new Date().toISOString(),
-      updated_at: entry?.date || new Date().toISOString(),
-    };
-  });
-}
 
 const survivalGuideCards = [
   {
@@ -47,7 +14,6 @@ const survivalGuideCards = [
     title: 'Onboarding Hurdles',
     description: 'Canvas workflows, VM setups, and tool access.',
     icon: Compass,
-    accentClass: 'hover:border-zinc-700',
     iconBg: 'bg-sky-500',
     tab: 'onboarding',
   },
@@ -56,7 +22,6 @@ const survivalGuideCards = [
     title: 'Lab Survival Guides',
     description: 'EHR sandboxes, Active Directory, and infrastructure.',
     icon: BookOpen,
-    accentClass: 'hover:border-zinc-700',
     iconBg: 'bg-sky-500',
     tab: 'labs',
   },
@@ -65,7 +30,6 @@ const survivalGuideCards = [
     title: 'The Mid Program Slump',
     description: 'Mental endurance, imposter syndrome, and time management.',
     icon: Flame,
-    accentClass: 'hover:border-zinc-700',
     iconBg: 'bg-amber-500',
     tab: 'slump',
   },
@@ -74,33 +38,15 @@ const survivalGuideCards = [
     title: 'Job Hunt & Certs',
     description: 'Test day strategies, resume reality checks, and interviews.',
     icon: Briefcase,
-    accentClass: 'hover:border-zinc-700',
     iconBg: 'bg-zinc-600',
     tab: 'job',
   },
 ];
 
 export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
-  const { articles: allArticles, isLoading } = useArticles();
-  const [modalOpen,    setModalOpen]    = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [toastVisible, setToastVisible] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-
-  const sortedData = useMemo(() => {
-    return [...allArticles]
-      .filter((a) => !a.is_sample && a.title !== '[OPEN SLOT]')
-      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-  }, [allArticles]);
-
-  const featuredArticles = useMemo(() => {
-    const pinned = buildPinnedArticles();
-    const pinnedSlugs = new Set(PINNED_SLUGS as readonly string[]);
-    const organic = sortedData
-      .filter((a) => a.is_featured === true && !pinnedSlugs.has(a.slug))
-      .slice(0, 3);
-    return [...pinned, ...organic];
-  }, [sortedData]);
-  const recentArticles   = useMemo(() => sortedData.slice(0, 6), [sortedData]);
 
   const handleSubmitted = (submission: NewSubmission) => {
     setToastMessage(`${submission.full_name}"${submission.title}" added to the wall!`);
@@ -109,48 +55,47 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-8 items-start">
+      <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8 items-start">
 
-        {/* ── Main content column (3/4 width) ───────────────── */}
-        <div className="lg:col-span-2 xl:col-span-3 space-y-8">
+        {/* ── Left: Welcome + Survival Guide ──────────────── */}
+        <div className="space-y-8">
 
-          {/* Hero */}
-          <section className="relative overflow-hidden rounded-2xl border border-zinc-800/30 bg-zinc-950/50">
-            <div className="relative px-6 py-8 md:px-8 md:py-10">
-              <div className="max-w-2xl flex flex-col gap-2">
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 text-xs font-medium">
-                    <TrendingUp className="w-3.5 h-3.5" />
-                    <span>Per Scholas</span>
-                  </div>
-                </div>
-                <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">
-                  Learners Hub
-                  <span className="block text-sky-400 text-base md:text-lg font-semibold mt-0.5">
-                    AI Enabled Healthcare IT
-                  </span>
-                </h1>
-                <div className="flex items-center gap-3 mt-1">
-                  <p className="text-sm text-zinc-400">Welcome to the collaborative resource hub!</p>
-                  <Link
-                    to="/learner-experience"
-                    className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs transition-colors whitespace-nowrap flex-shrink-0 outline-none select-none"
-                  >
-                    <LifeBuoy className="w-3.5 h-3.5" />
-                    Start Here
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
+          {/* Welcome header */}
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/20 border border-sky-500/30 text-sky-400 text-xs font-medium">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>Per Scholas</span>
               </div>
             </div>
-          </section>
+            <h1 className="text-xl md:text-2xl font-bold text-white leading-tight">
+              Learners Hub
+              <span className="block text-sky-400 text-base md:text-lg font-semibold mt-0.5">
+                AI Enabled Healthcare IT
+              </span>
+            </h1>
+            <div className="flex items-center gap-3">
+              <p className="text-sm text-zinc-400">Welcome to the collaborative resource hub!</p>
+              <Link
+                to="/learner-experience"
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs transition-colors whitespace-nowrap flex-shrink-0 outline-none select-none"
+              >
+                <LifeBuoy className="w-3.5 h-3.5" />
+                Start Here
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
 
-          {/* Cohort Survival Guide - CollapsibleCard */}
-          <CollapsibleCard
-            title="Cohort Survival Guide"
-            icon={<div className="p-2 rounded-lg bg-sky-500"><Compass className="w-5 h-5 text-white" /></div>}
-            defaultOpen
-          >
+          {/* Cohort Survival Guide */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-sky-500">
+                <Compass className="w-5 h-5 text-white" />
+              </div>
+              <h2 className="text-base font-semibold text-zinc-100">Cohort Survival Guide</h2>
+            </div>
+
             <div className="grid sm:grid-cols-2 gap-4">
               {survivalGuideCards.map((card) => {
                 const Icon = card.icon;
@@ -177,94 +122,47 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
               })}
             </div>
 
-            <div className="mt-6 pt-2">
-              <Link
-                to="/learner-experience"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-400 hover:text-sky-300 transition-colors"
-              >
-                Explore the full Learner Experience Hub &rarr;
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </CollapsibleCard>
+            <Link
+              to="/learner-experience"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-sky-400 hover:text-sky-300 transition-colors"
+            >
+              Explore the full Learner Experience Hub &rarr;
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
 
-          {/* Featured Articles */}
-          {featuredArticles.length > 0 && (
-            <section className="bg-zinc-950/50 rounded-2xl border border-zinc-800/30 p-6 md:p-8">
-              <h2 className="text-zinc-100 font-medium text-lg md:text-xl tracking-tight mb-6">Featured Articles</h2>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredArticles.map((article) => (
-                  <ArticleCard key={article.id} article={article} featured />
-                ))}
-              </div>
-            </section>
-          )}
+        </div>
 
-          {/* Recent Articles - CollapsibleCard */}
-          <CollapsibleCard title="Recent Field Notes" defaultOpen>
-            {isLoading ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="card p-5 animate-pulse">
-                    <div className="h-5 bg-zinc-800 rounded w-3/4" />
-                    <div className="h-4 bg-zinc-800 rounded w-full mt-3" />
-                  </div>
-                ))}
-              </div>
-            ) : recentArticles.length > 0 ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {recentArticles.map((article) => (
-                  <ArticleCard key={article.id} article={article} />
-                ))}
-              </div>
-            ) : (
-              <div className="card p-12 text-center">
-                <Award className="w-12 h-12 text-zinc-600 mx-auto mb-4" />
-                <p className="text-zinc-500">No articles yet. Check back soon!</p>
-              </div>
-            )}
-          </CollapsibleCard>
-
-        </div>{/* end main column */}
-
-        {/* ── Right sidebar control console ─────────────────── */}
-        <aside className="lg:col-span-1 space-y-4 mt-6 lg:mt-10">
-
-          {/* Widget 1 - Contribute */}
+        {/* ── Right: Action buttons ───────────────────────── */}
+        <aside className="space-y-3 lg:pt-10">
           <button
             onClick={() => setModalOpen(true)}
-            className="w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-zinc-950/50 border border-zinc-800/30 rounded-xl cursor-pointer hover:border-zinc-700 transition-all duration-200 group outline-none select-none ring-0 focus:ring-0"
+            className="w-full flex items-center gap-3 text-left px-5 py-4 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group outline-none select-none ring-0 focus:ring-0 cursor-pointer"
           >
-            <div className="flex items-center gap-3 w-full">
-              <div className="p-2.5 rounded-xl bg-sky-500/15 flex-shrink-0 group-hover:bg-sky-500/25 transition-colors">
-                <UploadCloud className="w-6 h-6 text-sky-500" />
-              </div>
-              <p className="text-base font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
-                Add Intel
-              </p>
-              <ChevronRight className="w-5 h-5 text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0 ml-auto" />
+            <div className="p-2.5 rounded-xl bg-sky-500/15 flex-shrink-0 group-hover:bg-sky-500/25 transition-colors">
+              <UploadCloud className="w-6 h-6 text-sky-500" />
             </div>
+            <p className="text-base font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
+              Add Intel
+            </p>
+            <ChevronRight className="w-5 h-5 text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0 ml-auto" />
           </button>
 
-          {/* Widget 2 - View Portfolios */}
           <Link
             to="/recognition"
-            className="block w-full min-w-[260px] flex flex-row items-center justify-start text-left px-5 py-4 bg-zinc-950/50 border border-zinc-800/30 rounded-xl hover:border-zinc-700 transition-all duration-200 group ring-0 focus:ring-0"
+            className="flex items-center gap-3 px-5 py-4 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group ring-0 focus:ring-0"
           >
-            <div className="flex items-center gap-3 w-full">
-              <div className="p-2.5 rounded-xl bg-sky-500/15 flex-shrink-0">
-                <Users className="w-6 h-6 text-sky-500" />
-              </div>
-              <p className="text-base font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
-                View Portfolios &rarr;
-              </p>
-              <ChevronRight className="w-5 h-5 text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0 ml-auto" />
+            <div className="p-2.5 rounded-xl bg-sky-500/15 flex-shrink-0">
+              <Users className="w-6 h-6 text-sky-500" />
             </div>
+            <p className="text-base font-bold text-zinc-100 group-hover:text-sky-400 transition-colors duration-200">
+              View Portfolios &rarr;
+            </p>
+            <ChevronRight className="w-5 h-5 text-zinc-600 group-hover:text-sky-400 transition-colors flex-shrink-0 ml-auto" />
           </Link>
-
         </aside>
 
-      </div>{/* end grid */}
+      </div>
 
       <ContributorSubmissionModal
         isOpen={modalOpen}

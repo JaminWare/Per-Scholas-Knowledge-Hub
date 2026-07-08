@@ -37,7 +37,7 @@ function AppContent() {
   }, [location.pathname, location.hash]);
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col bg-black text-zinc-100">
+    <div className="h-screen w-full overflow-hidden flex flex-col bg-black text-zinc-100">
       <ScrollToTop scrollRef={scrollRef} />
 
       {/* ── Mobile Sidebar Overlay ─────────────────────────── */}
@@ -110,7 +110,7 @@ function AppContent() {
 
       {/* ── Two-Container Canvas ──────────────────────────── */}
       <div className="flex-1 overflow-hidden max-w-[90rem] w-full mx-auto px-4 md:px-8 py-4 md:py-12 lg:py-16">
-        <div className="h-full max-h-[88vh] mx-auto flex flex-col md:flex-row gap-6 md:gap-6 my-auto">
+        <div className="h-full max-h-[88vh] w-full min-w-0 overflow-hidden mx-auto flex flex-col md:flex-row gap-6 md:gap-6 my-auto">
 
           {/* ── Sidebar Container ─────────────────────────── */}
           {desktopSidebarOpen && (
