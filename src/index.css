@@ -52,8 +52,8 @@
 
 @layer components {
   .sidebar-item {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ease-in-out outline-none select-none ring-0 focus:ring-0;
-    @apply text-zinc-300 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-800;
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors duration-75 outline-none select-none ring-0 focus:ring-0;
+    @apply text-zinc-300 hover:bg-zinc-800 hover:text-sky-400 active:bg-zinc-900;
   }
 
   .sidebar-item.active {
