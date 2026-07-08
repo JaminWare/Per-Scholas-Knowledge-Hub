@@ -221,7 +221,7 @@ export default function DeskolasPage() {
             </div>
             <div className="flex-1">
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Deskolas Tech Solutions</h1>
-              <p className="text-sm md:text-base text-zinc-400 mt-1 leading-relaxed">Resolved tickets and peer-sourced fixes from our lab ticketing system.</p>
+              <p className="text-sm md:text-base text-zinc-400 mt-1 leading-relaxed">Resolved tickets and peer sourced fixes from our ticketing system!</p>
             </div>
             <a
               href={DESKOLAS_APP_URL}
