@@ -122,7 +122,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 value={currentName}
                 onChange={(e) => setCurrentName(e.target.value)}
                 placeholder="Enter your exact previous display name"
-                className="w-full px-4 py-3 rounded-xl bg-zinc-950 border border-amber-500/30 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-0 focus:border-amber-500/50 transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:border-blue-600/50 transition-all"
               />
             ) : (
               <input
@@ -141,7 +141,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               placeholder="Enter your corrected name..."
-              className="w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-0 focus:border-blue-600/50 transition-all"
+              className="w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:border-blue-600/50 transition-all"
               autoFocus
             />
           </div>

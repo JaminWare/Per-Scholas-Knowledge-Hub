@@ -62,7 +62,7 @@ function AppContent() {
       <header className="flex-shrink-0 z-30 bg-black/95 backdrop-blur-lg flex md:hidden items-center gap-3 px-4 py-3">
         <button
           onClick={() => setMobileSidebarOpen(true)}
-          className="p-2 rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-blue-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
+          className="p-2 rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-blue-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           aria-label="Open navigation menu"
         >
           <Menu className="w-5 h-5" />
@@ -78,7 +78,7 @@ function AppContent() {
         <Link
           to="/cohort-admin"
           title="Admin Command Center"
-          className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
+          className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           aria-label="Admin Command Center"
         >
           <ShieldCheck className="w-4.5 h-4.5" />
@@ -87,7 +87,7 @@ function AppContent() {
           <button
             onClick={signOut}
             title="Sign Out"
-            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
+            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
             aria-label="Sign out"
           >
             <LogOut className="w-4.5 h-4.5" />
@@ -96,7 +96,7 @@ function AppContent() {
           <button
             onClick={() => setMobileAuthOpen(true)}
             title="Sign In"
-            className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
+            className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
             aria-label="Sign in"
           >
             <LogIn className="w-4.5 h-4.5" />
@@ -126,7 +126,7 @@ function AppContent() {
             <div className="hidden md:flex flex-wrap items-center gap-3 px-6 py-3 flex-shrink-0 min-w-0">
               <button
                 onClick={() => setDesktopSidebarOpen((v) => !v)}
-                className="p-2 rounded-lg border border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-blue-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
+                className="p-2 rounded-lg border border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-blue-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
                 title={desktopSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
               >
                 {desktopSidebarOpen
@@ -140,7 +140,7 @@ function AppContent() {
                 <Link
                   to="/cohort-admin"
                   title="Admin Command Center"
-                  className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 outline-none select-none ring-0 focus:ring-0"
+                  className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
                   aria-label="Admin Command Center"
                 >
                   <ShieldCheck className="w-5 h-5" />
@@ -149,7 +149,7 @@ function AppContent() {
                   <button
                     onClick={signOut}
                     title="Sign Out"
-                    className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 outline-none select-none ring-0 focus:ring-0"
+                    className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
                   >
                     <LogOut className="w-5 h-5" />
                   </button>
@@ -157,7 +157,7 @@ function AppContent() {
                   <button
                     onClick={() => setMobileAuthOpen(true)}
                     title="Sign In"
-                    className="p-2 rounded-lg text-blue-400 hover:text-white hover:bg-blue-600/15 outline-none select-none ring-0 focus:ring-0"
+                    className="p-2 rounded-lg text-blue-400 hover:text-white hover:bg-blue-600/15 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
                   >
                     <LogIn className="w-5 h-5" />
                   </button>

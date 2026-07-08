@@ -135,7 +135,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         </Link>
         <button
           onClick={onToggle}
-          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 flex-shrink-0 outline-none select-none ring-0 focus:ring-0"
+          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           title="Collapse sidebar"
         >
           <ChevronLeft className="w-4 h-4" />
@@ -147,7 +147,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         {user ? (
           <button
             onClick={signOut}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors ring-0 focus:ring-0 outline-none"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             <LogOut className="w-4 h-4 flex-shrink-0" />
             <span className="truncate">Sign Out</span>
@@ -155,7 +155,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
         ) : (
           <button
             onClick={() => setAuthOpen(true)}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-semibold text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 border border-blue-600/20 transition-colors ring-0 focus:ring-0 outline-none"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-semibold text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 border border-blue-600/20 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             <LogIn className="w-4 h-4 flex-shrink-0" />
             <span className="truncate">Sign In</span>
@@ -219,7 +219,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           <div key={track.id} className="pt-3">
             <button
               onClick={() => setOpenTracks((p) => ({ ...p, [track.id]: !p[track.id] }))}
-              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border border-zinc-800/50 bg-zinc-950 hover:bg-zinc-900 active:bg-zinc-900 transition-all duration-300 ease-in-out mb-1 outline-none select-none ring-0 focus:ring-0`}
+              className={`w-full flex items-center gap-2 px-2 py-2 rounded-lg border border-zinc-800/50 bg-zinc-950 hover:bg-zinc-900 active:bg-zinc-900 transition-all duration-300 ease-in-out mb-1 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900`}
             >
               <div className="flex-1 text-left min-w-0">
                 <p className="text-[11px] font-semibold text-white uppercase tracking-wider truncate">

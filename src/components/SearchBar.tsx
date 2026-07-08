@@ -195,7 +195,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
           onChange={(e) => { setQuery(e.target.value); setIsOpen(true); }}
           onFocus={() => setIsOpen(true)}
           placeholder="Search the Archives..."
-          className="w-full pl-12 pr-20 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800/50 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-0 focus:border-blue-600/50 transition-all text-sm"
+          className="w-full pl-12 pr-20 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800/50 text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:border-blue-600/50 transition-all text-sm"
         />
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
           {query && (

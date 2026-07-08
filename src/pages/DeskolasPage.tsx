@@ -227,7 +227,7 @@ export default function DeskolasPage() {
               href={DESKOLAS_APP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200 shadow-lg shadow-blue-600/20 hover:shadow-blue-400/30 flex-shrink-0"
+              className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200 shadow-lg shadow-blue-600/20 hover:shadow-blue-400/30 flex-shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
             >
               Open Deskolas
               <ExternalLink className="w-4 h-4" />
@@ -237,7 +237,7 @@ export default function DeskolasPage() {
             href={DESKOLAS_APP_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="sm:hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200 shadow-lg shadow-blue-600/20"
+            className="sm:hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200 shadow-lg shadow-blue-600/20 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             Open Deskolas
             <ExternalLink className="w-4 h-4" />
@@ -260,7 +260,7 @@ export default function DeskolasPage() {
                   setActiveLevel2(isAll ? '' : sub.label);
                   setActiveLevel3('');
                 }}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
                   isActive
                     ? 'bg-zinc-700 text-white border-zinc-600'
                     : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
@@ -287,7 +287,7 @@ export default function DeskolasPage() {
                       key={n.label}
                       type="button"
                       onClick={() => setActiveLevel3(isAll ? '' : (isNested ? '' : n.label))}
-                      className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-200 ${
+                      className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
                         isNested
                           ? 'bg-blue-600/30 text-blue-300 border-blue-400/50'
                           : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
@@ -331,7 +331,7 @@ export default function DeskolasPage() {
           </div>
           <button
             onClick={() => user ? setIsModalOpen(true) : setAuthModalOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             <Plus className="w-4 h-4" />
             Add a Fix
@@ -344,7 +344,7 @@ export default function DeskolasPage() {
         <div className="absolute bottom-6 right-6 z-30">
           <button
             onClick={() => user ? setIsModalOpen(true) : setAuthModalOpen(true)}
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm shadow-lg shadow-blue-600/20 transition-all duration-200 hover:scale-105"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm shadow-lg shadow-blue-600/20 transition-all duration-200 hover:scale-105 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             <Plus className="w-4 h-4" />
             Add a Fix

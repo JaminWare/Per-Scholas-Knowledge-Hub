@@ -19,7 +19,7 @@ export default function CollapsibleCard({ title, icon, children, defaultOpen = f
         onClick={() => setIsOpen((v) => !v)}
         aria-expanded={isOpen}
         aria-controls={panelId}
-        className="w-full flex items-center gap-3 cursor-pointer select-none outline-none ring-0 focus:ring-0 group"
+        className="w-full flex items-center gap-3 cursor-pointer select-none outline-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 group"
       >
         {icon && (
           <div className="flex-shrink-0">{icon}</div>

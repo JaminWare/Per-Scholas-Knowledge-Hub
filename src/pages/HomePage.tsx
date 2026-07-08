@@ -88,7 +88,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
         <div className="flex flex-wrap justify-start gap-3">
           <button
             onClick={() => setModalOpen(true)}
-            className="flex items-center gap-3 px-5 py-3 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group outline-none select-none ring-0 focus:ring-0 cursor-pointer"
+            className="flex items-center gap-3 px-5 py-3 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group outline-none select-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 cursor-pointer"
           >
             <div className="p-2 rounded-xl bg-zinc-800 flex-shrink-0 group-hover:bg-zinc-700 transition-colors">
               <UploadCloud className="w-5 h-5 text-blue-400" />
@@ -101,7 +101,7 @@ export default function HomePage({ onRefresh }: { onRefresh?: () => void }) {
 
           <Link
             to="/recognition"
-            className="flex items-center gap-3 px-5 py-3 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group ring-0 focus:ring-0"
+            className="flex items-center gap-3 px-5 py-3 rounded-xl bg-zinc-950/50 border border-zinc-800/30 hover:border-zinc-700 transition-all duration-200 group outline-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             <div className="p-2 rounded-xl bg-zinc-800 flex-shrink-0">
               <Users className="w-5 h-5 text-blue-400" />

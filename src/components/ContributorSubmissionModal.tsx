@@ -650,8 +650,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   };
 
   if (!isOpen) return null;
-  const inputCls = (field: string) => `w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-blue-600/50 focus:ring-0 transition-all ${errors[field] ? 'border-red-400' : ''}`;
-  const selectCls = (field: string) => `w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 focus:border-blue-600/50 focus:ring-0 transition-all appearance-none ${errors[field] ? 'border-red-400' : ''}`;
+  const inputCls = (field: string) => `w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:border-blue-600/50 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900 transition-all ${errors[field] ? 'border-red-400' : ''}`;
+  const selectCls = (field: string) => `w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 focus:outline-none focus:border-blue-600/50 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900 transition-all appearance-none ${errors[field] ? 'border-red-400' : ''}`;
 
   if (isSuccess) {
     return (

@@ -217,7 +217,7 @@ function ResourcePlacard({ activeTab, onTabChange }: { activeTab: ResourceTab; o
               key={tab}
               type="button"
               onClick={() => onTabChange(tab)}
-              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
                 isActive
                   ? 'bg-blue-600/20 text-blue-300 border-blue-400/40'
                   : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 border-zinc-700'
@@ -255,7 +255,7 @@ function DomainFilterRow({
               key={tab}
               type="button"
               onClick={() => onTabChange(tab)}
-              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+              className={`inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
                 isActive
                   ? 'bg-blue-600/20 text-blue-300 border-blue-400/40'
                   : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200 border-zinc-700'
@@ -309,7 +309,7 @@ function DomainBanner({
           <button
             type="button"
             onClick={onContribute}
-            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-400 hover:bg-blue-600 text-zinc-900 text-sm font-bold transition-all"
+            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-400 hover:bg-blue-600 text-zinc-900 text-sm font-bold transition-all outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             Add Intel
           </button>
@@ -319,7 +319,7 @@ function DomainBanner({
             <button
               type="button"
               onClick={() => onObjectiveChange('All')}
-              className={`inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+              className={`inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
                 activeObjective === 'All'
                   ? 'bg-zinc-700 text-white border-zinc-600'
                   : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
@@ -332,7 +332,7 @@ function DomainBanner({
                 key={obj}
                 type="button"
                 onClick={() => onObjectiveChange(obj)}
-                className={`inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 ${
+                className={`inline-flex items-center rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
                   activeObjective === obj
                     ? 'bg-blue-600/30 text-blue-300 border-blue-400/50'
                     : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
@@ -899,7 +899,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
               <button
                 type="button"
                 onClick={() => setIsModalOpen(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-400 hover:bg-blue-600 text-zinc-900 text-sm font-bold transition-all"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-400 hover:bg-blue-600 text-zinc-900 text-sm font-bold transition-all outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
               >
                 Add Intel
               </button>

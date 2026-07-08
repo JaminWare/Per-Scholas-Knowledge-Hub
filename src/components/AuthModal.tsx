@@ -225,7 +225,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email address"
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-blue-600/50 focus:ring-0 transition-all"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:border-blue-600/50 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900 transition-all"
                   autoComplete="email"
                 />
               </div>
@@ -241,7 +241,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder={mode === 'signup' ? 'Create a strong password' : 'Password'}
-                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:border-blue-600/50 focus:ring-0 transition-all"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:border-blue-600/50 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900 transition-all"
                   autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                 />
               </div>

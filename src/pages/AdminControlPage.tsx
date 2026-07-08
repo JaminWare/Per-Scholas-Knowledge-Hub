@@ -382,7 +382,7 @@ function SubmissionCard({
                     setDeskolasFocusOverride('');
                   }
                 }}
-                className="w-full px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-zinc-500/40"
+                className="w-full px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-zinc-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900"
               >
                 <option value="">Select a domain...</option>
                 {DOMAIN_REGISTRY.map((d) => (
@@ -400,7 +400,7 @@ function SubmissionCard({
               <select
                 value={deskolasTopicOverride}
                 onChange={(e) => { setDeskolasTopicOverride(e.target.value); setDeskolasFocusOverride(''); }}
-                className="w-full px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-zinc-500/40"
+                className="w-full px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-zinc-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900"
               >
                 <option value="">Select topic...</option>
                 {deskolasTopicOptions.map((t) => (
@@ -411,7 +411,7 @@ function SubmissionCard({
                 <select
                   value={deskolasFocusOverride}
                   onChange={(e) => setDeskolasFocusOverride(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-zinc-500/40"
+                  className="w-full px-3 py-1.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-zinc-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900"
                 >
                   <option value="">Select focus area...</option>
                   {deskolasFocusOptions.map((f) => (
@@ -490,7 +490,7 @@ function SubmissionCard({
                   }}
                   placeholder="Edit submission title..."
                   maxLength={200}
-                  className="w-full px-4 py-2.5 rounded-lg bg-black border border-zinc-800 text-white text-lg font-semibold placeholder:text-zinc-600 focus:border-blue-600/50 focus:ring-1 focus:ring-blue-600/50 focus:outline-none transition-all"
+                  className="w-full px-4 py-2.5 rounded-lg bg-black border border-zinc-800 text-white text-lg font-semibold placeholder:text-zinc-600 focus:border-blue-600/50 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:outline-none transition-all"
                 />
                 {suggestedTrack && suggestedTrack !== sub.track && !suggestionApplied && !suggestionDismissed && (
                   <div className="mt-2 flex flex-wrap items-center gap-2 px-3 py-2 rounded-lg bg-blue-600/5 border border-blue-600/20">
@@ -533,7 +533,7 @@ function SubmissionCard({
                     onChange={(e) => setEditedContent(e.target.value)}
                     maxLength={50000}
                     spellCheck={false}
-                    className="flex-1 min-h-[200px] sm:min-h-[320px] w-full px-3 sm:px-4 py-3 rounded-lg bg-black border border-zinc-800 text-zinc-200 text-xs font-mono leading-relaxed resize-y focus:border-blue-600/50 focus:ring-1 focus:ring-blue-600/50 focus:outline-none transition-all"
+                    className="flex-1 min-h-[200px] sm:min-h-[320px] w-full px-3 sm:px-4 py-3 rounded-lg bg-black border border-zinc-800 text-zinc-200 text-xs font-mono leading-relaxed resize-y focus:border-blue-600/50 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:outline-none transition-all"
                   />
                 </div>
                 {/* Preview */}
@@ -658,7 +658,7 @@ function ArchiveTable({
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-600/40"
+            className="px-3 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:ring-offset-2 focus:ring-offset-zinc-900"
           >
             <option value="all">All Statuses</option>
             <option value="approved">Approved</option>
@@ -1148,7 +1148,7 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
             onChange={(e) => setInviteEmail(e.target.value)}
             placeholder="admin@example.com"
             maxLength={254}
-            className="flex-1 px-4 py-2.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/60 transition-all"
+            className="flex-1 px-4 py-2.5 rounded-lg bg-zinc-950 border border-zinc-700 text-zinc-200 text-sm placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:border-blue-600/60 transition-all"
           />
           <button
             type="submit"
@@ -1164,7 +1164,7 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
             type="checkbox"
             checked={grantManage}
             onChange={(e) => setGrantManage(e.target.checked)}
-            className="w-4 h-4 rounded border-zinc-600 bg-zinc-950 text-blue-600 focus:ring-blue-600/40 focus:ring-offset-0"
+            className="w-4 h-4 rounded border-zinc-600 bg-zinc-950 text-blue-600 focus:ring-blue-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900"
           />
           <span className="text-xs text-zinc-400 group-hover:text-zinc-300 transition-colors">
             Grant Admin Management Privileges (Can invite others)
@@ -1318,7 +1318,7 @@ function LiveArticlesView({ adminEmail }: { adminEmail: string }) {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by title, track, or slug..."
-          className="w-full bg-zinc-800/50 border border-zinc-800/50 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/60 transition-all"
+          className="w-full bg-zinc-800/50 border border-zinc-800/50 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:border-blue-600/60 transition-all"
         />
       </div>
 
@@ -1935,7 +1935,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by title, author, or track..."
-                className="w-full bg-zinc-800/50 border border-zinc-800/50 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:border-blue-600/60 transition-all"
+                className="w-full bg-zinc-800/50 border border-zinc-800/50 rounded-lg py-2 pl-10 pr-4 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-600/40 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:border-blue-600/60 transition-all"
               />
             </div>
           </div>
