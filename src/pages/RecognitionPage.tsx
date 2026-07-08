@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
   Lightbulb, GitBranch, Sparkles, Star, Crown, Link2, UploadCloud,
-  Laptop, Monitor, Heart, LifeBuoy, Layers, Pencil, UserCog,
+  Laptop, Monitor, Heart, LifeBuoy, Layers, Pencil, UserCog, Headphones,
 } from 'lucide-react';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import { useSmartBack } from '../hooks/useSmartBack';
@@ -289,6 +289,7 @@ export default function RecognitionPage() {
   const TRACK_FILTER_OPTIONS = [
     { value: 'All', label: 'All Tracks', icon: Layers },
     { value: 'Learner Experience', label: 'Learner Experience', icon: LifeBuoy },
+    { value: 'Deskolas Tech Solutions', label: 'Deskolas', icon: Headphones },
     { value: 'CompTIA A+ Core 1', label: 'Core 1', icon: Laptop },
     { value: 'CompTIA A+ Core 2', label: 'Core 2', icon: Monitor },
     { value: 'Advanced Healthcare IT', label: 'Healthcare IT', icon: Heart },
@@ -379,7 +380,7 @@ export default function RecognitionPage() {
                 onClick={() => setTrackFilter(opt.value)}
                 className={`inline-flex items-center gap-1.5 rounded-full px-3 sm:px-4 py-2 sm:py-1.5 text-xs sm:text-sm font-medium border transition-all duration-200 ${
                   isActive
-                    ? 'bg-sky-600 text-white shadow-sm border-transparent'
+                    ? 'bg-zinc-700 text-white border-zinc-600'
                     : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
                 }`}
               >

@@ -167,8 +167,12 @@ export function resolveTrackSlug(rawTrack: string, articleSlug?: string): Resolv
 export function resolveToTrackName(rawTrack: string, articleSlug?: string): string {
   const trimmed = (rawTrack ?? '').trim();
 
+  // Deskolas Tech Solutions (must precede learner-experience check since some values contain both)
+  const lower0 = trimmed.toLowerCase();
+  if (lower0.includes('tech solutions') || lower0.includes('deskolas')) return 'Deskolas Tech Solutions';
+
   // Learner Experience is its own track (not in DOMAIN_REGISTRY)
-  if (trimmed.toLowerCase().includes('learner experience')) return 'Learner Experience';
+  if (lower0.includes('learner experience')) return 'Learner Experience';
 
   // Try the full resolver
   const resolved = resolveTrackSlug(trimmed, articleSlug);
@@ -192,6 +196,7 @@ export function resolveToTrackName(rawTrack: string, articleSlug?: string): stri
     if (articleSlug.startsWith('core2-')) return 'CompTIA A+ Core 2';
     if (articleSlug.startsWith('healthcare-') || articleSlug.includes('ai-prompt')) return 'Advanced Healthcare IT';
     if (articleSlug.startsWith('learner-experience')) return 'Learner Experience';
+    if (articleSlug.startsWith('deskolas-')) return 'Deskolas Tech Solutions';
   }
 
   if (!trimmed) return 'Other Contributions';

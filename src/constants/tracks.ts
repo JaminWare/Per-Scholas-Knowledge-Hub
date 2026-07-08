@@ -3,6 +3,7 @@ export const TRACK_NAMES = {
   CORE_2: 'CompTIA A+ Core 2',
   HEALTHCARE: 'Advanced Healthcare IT',
   LEARNER_EXPERIENCE: 'Learner Experience',
+  DESKOLAS: 'Deskolas Tech Solutions',
 } as const;
 
 export const TRACK_ORDER = [
@@ -10,6 +11,7 @@ export const TRACK_ORDER = [
   TRACK_NAMES.CORE_2,
   TRACK_NAMES.HEALTHCARE,
   TRACK_NAMES.LEARNER_EXPERIENCE,
+  TRACK_NAMES.DESKOLAS,
 ] as const;
 
 export type TrackColor = 'sky' | 'teal' | 'cyan';
