@@ -669,7 +669,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
     }
   };
 
-  const { articles: allArticles, isLoading } = useArticles(refreshKey);
+  const { articles: allArticles, isLoading, error: fetchError } = useArticles(refreshKey);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editItem, setEditItem] = useState<EditableArticle | null>(null);
   const [authModalOpen, setAuthModalOpen] = useState(false);
@@ -906,7 +906,20 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
             </div>
           </div>
 
-          {dashboardContext ? (
+          {fetchError ? (
+            <div className="flex flex-col items-center justify-center py-16 gap-4">
+              <div className="px-5 py-4 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400 max-w-md text-center">
+                Unable to load content. Please check your connection and try again.
+              </div>
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-600 transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          ) : dashboardContext ? (
             <CurriculumDashboard
               articles={mergedArticles}
               isLoading={isLoading}

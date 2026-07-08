@@ -273,7 +273,7 @@ function buildSlugFromTitle(title: string): string {
 
 export default function RecognitionPage() {
   const { goBack } = useSmartBack('/');
-  const { contributors, newestNonFounderName: newestName } = useContributorGroups();
+  const { contributors, newestNonFounderName: newestName, isLoading, error: fetchError } = useContributorGroups();
   const [openContributor, setOpenContributor] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [trackFilter, setTrackFilter] = useState<string>('All');
@@ -391,7 +391,26 @@ export default function RecognitionPage() {
           })}
         </div>
 
-        {filteredContributors.length > 0 ? (
+        {fetchError ? (
+          <div className="flex flex-col items-center justify-center py-16 gap-4">
+            <div className="px-5 py-4 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400 max-w-md text-center">
+              Failed to load contributors. Please check your connection and try again.
+            </div>
+            <button
+              type="button"
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 rounded-lg text-sm font-medium bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-600 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
+        ) : isLoading ? (
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-20 rounded-xl bg-zinc-800/50 animate-pulse" />
+            ))}
+          </div>
+        ) : filteredContributors.length > 0 ? (
           <div className="space-y-3">
             {filteredContributors.map((g) => (
               <ContributorCard

@@ -379,7 +379,20 @@ export default function LearnerExperiencePage() {
 
       {/* ─── Content Grid ─── */}
       <div className="min-h-[50vh]">
-      {isLoading ? (
+      {fetchError ? (
+        <div className="flex flex-col items-center justify-center py-16 gap-4">
+          <div className="px-5 py-4 rounded-xl bg-red-500/10 border border-red-500/20 text-sm text-red-400 max-w-md text-center">
+            Failed to load entries. Please check your connection and try again.
+          </div>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 rounded-lg text-sm font-medium bg-zinc-800 border border-zinc-700 text-zinc-300 hover:text-white hover:border-zinc-600 transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      ) : isLoading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <AppletSkeleton gridMode />
           <AppletSkeleton gridMode />

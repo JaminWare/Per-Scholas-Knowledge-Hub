@@ -129,23 +129,27 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
     setLoading(true);
 
-    if (mode === 'signup') {
-      const { error: signUpError } = await signUp(email.trim(), password);
-      if (signUpError) {
-        setError(signUpError.message);
+    try {
+      if (mode === 'signup') {
+        const { error: signUpError } = await signUp(email.trim(), password);
+        if (signUpError) {
+          setError(signUpError.message);
+        } else {
+          handleClose();
+        }
       } else {
-        handleClose();
+        const { error: signInError } = await signIn(email.trim(), password);
+        if (signInError) {
+          setError(signInError.message);
+        } else {
+          handleClose();
+        }
       }
-    } else {
-      const { error: signInError } = await signIn(email.trim(), password);
-      if (signInError) {
-        setError(signInError.message);
-      } else {
-        handleClose();
-      }
+    } catch (err: any) {
+      setError(err?.message || 'Network error. Please check your connection and try again.');
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   if (!isOpen) return null;

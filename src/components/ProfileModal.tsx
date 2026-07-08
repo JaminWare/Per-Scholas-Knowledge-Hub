@@ -55,19 +55,23 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
     setLoading(true);
 
-    const { error: insertError } = await supabase
-      .from('name_change_requests')
-      .insert({ current_name: currentName.trim(), requested_name: trimmedNew });
+    try {
+      const { error: insertError } = await supabase
+        .from('name_change_requests')
+        .insert({ current_name: currentName.trim(), requested_name: trimmedNew });
 
-    if (insertError) {
-      setError('Request failed: ' + insertError.message);
+      if (insertError) {
+        setError('Request failed: ' + insertError.message);
+        return;
+      }
+
+      setNewName('');
+      setSuccess(true);
+    } catch (err: any) {
+      setError(err?.message || 'Network error. Please check your connection and try again.');
+    } finally {
       setLoading(false);
-      return;
     }
-
-    setNewName('');
-    setSuccess(true);
-    setLoading(false);
   };
 
   if (!isOpen) return null;
