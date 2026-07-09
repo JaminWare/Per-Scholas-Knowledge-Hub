@@ -64,7 +64,8 @@
 @layer components {
   .sidebar-item {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900;
-    @apply text-zinc-300 hover:bg-zinc-800 hover:text-white active:bg-zinc-900;
+    @apply text-zinc-300 hover:bg-zinc-800 hover:text-white active:bg-zinc-900 active:scale-[0.98] transition-all duration-200;
+    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
   .sidebar-item.active {
@@ -79,6 +80,10 @@
 @layer utilities {
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-blue-400;
+  }
+
+  .ease-spatial {
+    transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
   .scrollbar-hide {
@@ -118,18 +123,18 @@
 }
 
 .animate-fade-in {
-  animation: fade-in 0.2s ease-out forwards;
+  animation: fade-in 220ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 .animate-zoom-in {
-  animation: zoom-in 0.2s ease-out forwards;
+  animation: zoom-in 220ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 .animate-content-in {
-  animation: content-in 0.2s ease-out forwards;
+  animation: content-in 220ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
 
 details summary::-webkit-details-marker { display: none; }
 details summary { list-style: none; }
 details[open] .details-chevron { transform: rotate(90deg); }
-.details-chevron { transition: transform 0.2s ease-out; }
+.details-chevron { transition: transform 220ms cubic-bezier(0.25, 0.1, 0.25, 1); }

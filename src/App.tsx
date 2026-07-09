@@ -164,7 +164,7 @@ function AppContent() {
           </div>
           <button
             onClick={() => setAddIntelOpen(true)}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors flex-shrink-0 whitespace-nowrap outline-none select-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all duration-200 ease-spatial active:scale-[0.98] flex-shrink-0 whitespace-nowrap outline-none select-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             <UploadCloud className="w-3.5 h-3.5 shrink-0" />
             Add Intel
@@ -225,19 +225,23 @@ function AppContent() {
         <main className="flex-1 min-w-0 min-h-0 flex flex-col overflow-hidden bg-zinc-950/40 rounded-2xl">
           {/* Scrollable route content */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain p-3 md:p-5">
-            <ErrorBoundary>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/cohort-admin" element={<AdminControlPage />} />
-                <Route path="/recognition" element={<RecognitionPage />} />
-                <Route path="/learner-experience" element={<LearnerExperiencePage />} />
-                <Route path="/deskolas" element={<DeskolasPage />} />
-                <Route path="/article/:slug" element={<ArticlePage />} />
-                <Route path="/article/:slug/*" element={<ArticlePage />} />
-                <Route path="/:slug/*" element={<SectionPage refreshKey={refreshKey} />} />
-                <Route path="*" element={<NotFoundPage />} />
-              </Routes>
-            </ErrorBoundary>
+            <div className="grid [&>*]:col-start-1 [&>*]:row-start-1">
+              <ErrorBoundary>
+                <div key={location.pathname} className="animate-content-in">
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/cohort-admin" element={<AdminControlPage />} />
+                    <Route path="/recognition" element={<RecognitionPage />} />
+                    <Route path="/learner-experience" element={<LearnerExperiencePage />} />
+                    <Route path="/deskolas" element={<DeskolasPage />} />
+                    <Route path="/article/:slug" element={<ArticlePage />} />
+                    <Route path="/article/:slug/*" element={<ArticlePage />} />
+                    <Route path="/:slug/*" element={<SectionPage refreshKey={refreshKey} />} />
+                    <Route path="*" element={<NotFoundPage />} />
+                  </Routes>
+                </div>
+              </ErrorBoundary>
+            </div>
           </div>
         </main>
       </div>
