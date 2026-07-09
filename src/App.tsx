@@ -13,8 +13,11 @@ import DeskolasPage from './pages/DeskolasPage';
 import AdminControlPage from './pages/AdminControlPage';
 import NotFoundPage from './pages/NotFoundPage';
 import AuthModal from './components/AuthModal';
+import ContributorSubmissionModal from './components/ContributorSubmissionModal';
+import SuccessToast from './components/SuccessToast';
 import { useAuth } from './hooks/useAuth';
-import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen, LogIn, LogOut, ShieldCheck } from 'lucide-react';
+import { type NewSubmission } from './utils/submissions';
+import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen, LogIn, LogOut, ShieldCheck, UploadCloud } from 'lucide-react';
 
 const SIDEBAR_MIN = 280;
 const SIDEBAR_MAX = 480;
@@ -33,8 +36,16 @@ function AppContent() {
   const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [mobileAuthOpen, setMobileAuthOpen] = useState(false);
+  const [addIntelOpen, setAddIntelOpen] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
   const triggerRefresh = useCallback(() => setRefreshKey((k) => k + 1), []);
+  const handleSubmitted = useCallback((submission: NewSubmission) => {
+    setToastMessage(`${submission.full_name} "${submission.title}" added to the wall!`);
+    setToastVisible(true);
+    triggerRefresh();
+  }, [triggerRefresh]);
   const location = useLocation();
   const { user, signOut } = useAuth();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -89,6 +100,14 @@ function AppContent() {
               {location.pathname.includes('/cohort-admin') ? 'Learners Hub Admin' : 'Learners Hub'}
             </span>
           </div>
+          <button
+            onClick={() => setAddIntelOpen(true)}
+            title="Add Intel"
+            className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none"
+            aria-label="Add Intel"
+          >
+            <UploadCloud className="w-4.5 h-4.5" />
+          </button>
           <Link
             to="/cohort-admin"
             title="Admin Command Center"
@@ -134,6 +153,13 @@ function AppContent() {
           <div className="flex-1 max-w-2xl mx-auto min-w-0">
             <SearchBar onMenuClick={() => setDesktopSidebarOpen(true)} />
           </div>
+          <button
+            onClick={() => setAddIntelOpen(true)}
+            className="flex items-center gap-2 px-3.5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
+          >
+            <UploadCloud className="w-3.5 h-3.5" />
+            Add Intel
+          </button>
           <div className="flex items-center gap-1 flex-shrink-0">
             <Link
               to="/cohort-admin"
@@ -205,7 +231,7 @@ function AppContent() {
           <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain p-5 md:p-8">
             <ErrorBoundary>
               <Routes>
-                <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
+                <Route path="/" element={<HomePage />} />
                 <Route path="/cohort-admin" element={<AdminControlPage />} />
                 <Route path="/recognition" element={<RecognitionPage />} />
                 <Route path="/learner-experience" element={<LearnerExperiencePage />} />
@@ -228,6 +254,17 @@ function AppContent() {
       </footer>
 
       <AuthModal isOpen={mobileAuthOpen} onClose={() => setMobileAuthOpen(false)} />
+      <ContributorSubmissionModal
+        isOpen={addIntelOpen}
+        onClose={() => setAddIntelOpen(false)}
+        onSubmitted={handleSubmitted}
+        onRefresh={triggerRefresh}
+      />
+      <SuccessToast
+        message={toastMessage}
+        isVisible={toastVisible}
+        onDismiss={() => setToastVisible(false)}
+      />
     </div>
   );
 }
