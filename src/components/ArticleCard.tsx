@@ -123,7 +123,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
   }
 
   return (
-    <div id={article.id} className="group flex flex-col rounded-2xl border overflow-hidden transition-all duration-200 ease-out bg-zinc-900 border-zinc-800/40 shadow-xl shadow-black/20 hover:border-zinc-700">
+    <div id={article.id} className="group flex flex-col rounded-2xl border overflow-hidden transition-colors duration-200 ease-out bg-zinc-900 border-zinc-800/40 shadow-xl shadow-black/20 hover:border-zinc-700">
       <div
         className="cursor-zoom-in p-5 pb-0"
         onClick={() => setZoomed(true)}

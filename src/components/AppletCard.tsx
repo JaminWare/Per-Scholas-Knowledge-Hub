@@ -80,7 +80,7 @@ export function AppletCard({ article, gridMode = false, isPinned = false }: { ar
   return (
     <div 
       id={article.id} 
-      className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-all duration-200 ease-out bg-zinc-900 border-zinc-800/50 hover:border-zinc-700`}
+      className={`${widthClass} group flex flex-col rounded-xl border overflow-hidden transition-colors duration-200 ease-out bg-zinc-900 border-zinc-800/50 hover:border-zinc-700`}
     >
       <div
         className="cursor-zoom-in p-5 pb-0"

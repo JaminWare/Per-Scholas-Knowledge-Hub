@@ -399,7 +399,7 @@ export default function LearnerExperiencePage() {
           <AppletSkeleton gridMode />
         </div>
       ) : filteredEntries.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-content-in">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {displayEntries.map((entry) => (
             <AppletCard key={entry.id} article={entry} gridMode isPinned={pinnedSet.has(entry.id)} />
           ))}

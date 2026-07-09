@@ -88,9 +88,9 @@ function ContributorCard({ group, isNew, isOpen, onToggle, onEditProfile }: {
   };
 
   return (
-    <div className={`rounded-xl border overflow-hidden transition-all ${
+    <div className={`rounded-xl border overflow-hidden transition-colors duration-200 ${
       isFounder
-        ? 'border-blue-600/20 bg-zinc-900 hover:border-blue-400/30 transition-colors'
+        ? 'border-blue-600/20 bg-zinc-900 hover:border-blue-400/30'
         : isOpen
           ? 'border-blue-600/20 bg-zinc-900'
           : 'border-zinc-800/50 bg-zinc-900 hover:border-zinc-700'

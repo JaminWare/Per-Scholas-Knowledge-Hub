@@ -314,7 +314,7 @@ export default function DeskolasPage() {
       ) : fetchError ? (
         <div className="text-center py-10 text-red-400">{fetchError}</div>
       ) : filteredEntries.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 animate-content-in">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredEntries.map((entry) => (
             <AppletCard key={entry.id} article={entry} gridMode />
           ))}
