@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation, Link } from 'react-router-do
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Sidebar from './components/Sidebar';
 import SearchBar from './components/SearchBar';
+import ResizeHandle from './components/ResizeHandle';
 import ErrorBoundary from './components/ErrorBoundary';
 import HomePage from './pages/HomePage';
 import ArticlePage from './pages/ArticlePage';
@@ -15,6 +16,10 @@ import AuthModal from './components/AuthModal';
 import { useAuth } from './hooks/useAuth';
 import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen, LogIn, LogOut, ShieldCheck } from 'lucide-react';
 
+const SIDEBAR_MIN = 280;
+const SIDEBAR_MAX = 480;
+const SIDEBAR_DEFAULT = 320;
+
 function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | null> }) {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -25,6 +30,7 @@ function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | n
 
 function AppContent() {
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
+  const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [mobileAuthOpen, setMobileAuthOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -37,8 +43,12 @@ function AppContent() {
     setMobileSidebarOpen(false);
   }, [location.pathname, location.hash]);
 
+  const handleResize = useCallback((delta: number) => {
+    setSidebarWidth((w) => Math.min(SIDEBAR_MAX, Math.max(SIDEBAR_MIN, w + delta)));
+  }, []);
+
   return (
-    <div className="h-screen w-full overflow-hidden flex flex-col bg-black text-zinc-100">
+    <div className="h-screen w-screen overflow-hidden flex flex-col bg-black text-zinc-100">
       <ScrollToTop scrollRef={scrollRef} />
 
       {/* ── Mobile Sidebar Overlay ─────────────────────────── */}
@@ -58,137 +68,164 @@ function AppContent() {
         <Sidebar onToggle={() => setMobileSidebarOpen(false)} />
       </div>
 
-      {/* ── Mobile Header ─────────────────────────────────── */}
-      <header className="flex-shrink-0 z-30 bg-black/95 backdrop-blur-lg flex md:hidden items-center gap-3 px-4 py-3">
-        <button
-          onClick={() => setMobileSidebarOpen(true)}
-          className="p-2 rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-blue-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-          aria-label="Open navigation menu"
-        >
-          <Menu className="w-5 h-5" />
-        </button>
-        <div className="flex items-center gap-2 min-w-0 flex-1">
-          <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
-            <BookOpen className="w-3.5 h-3.5 text-white" />
+      {/* ══════════════════════════════════════════════════════
+          GLOBAL HEADER (static, outside all panels)
+         ══════════════════════════════════════════════════════ */}
+      <header className="flex-shrink-0 z-30 bg-black/95 backdrop-blur-lg border-b border-zinc-800/50">
+        {/* Mobile header row */}
+        <div className="flex md:hidden items-center gap-3 px-4 py-3">
+          <button
+            onClick={() => setMobileSidebarOpen(true)}
+            className="p-2 rounded-lg border border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-blue-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600"
+            aria-label="Open navigation menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
+              <BookOpen className="w-3.5 h-3.5 text-white" />
+            </div>
+            <span className="font-bold text-sm text-zinc-100 truncate">
+              {location.pathname.includes('/cohort-admin') ? 'Learners Hub Admin' : 'Learners Hub'}
+            </span>
           </div>
-          <span className="font-bold text-sm text-zinc-100 truncate">
-            {location.pathname.includes('/cohort-admin') ? 'Learners Hub Admin' : 'Learners Hub'}
-          </span>
+          <Link
+            to="/cohort-admin"
+            title="Admin Command Center"
+            className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none"
+            aria-label="Admin Command Center"
+          >
+            <ShieldCheck className="w-4.5 h-4.5" />
+          </Link>
+          {user ? (
+            <button
+              onClick={signOut}
+              title="Sign Out"
+              className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 flex-shrink-0 outline-none select-none"
+              aria-label="Sign out"
+            >
+              <LogOut className="w-4.5 h-4.5" />
+            </button>
+          ) : (
+            <button
+              onClick={() => setMobileAuthOpen(true)}
+              title="Sign In"
+              className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none"
+              aria-label="Sign in"
+            >
+              <LogIn className="w-4.5 h-4.5" />
+            </button>
+          )}
         </div>
-        <Link
-          to="/cohort-admin"
-          title="Admin Command Center"
-          className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-          aria-label="Admin Command Center"
-        >
-          <ShieldCheck className="w-4.5 h-4.5" />
-        </Link>
-        {user ? (
-          <button
-            onClick={signOut}
-            title="Sign Out"
-            className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-            aria-label="Sign out"
-          >
-            <LogOut className="w-4.5 h-4.5" />
-          </button>
-        ) : (
-          <button
-            onClick={() => setMobileAuthOpen(true)}
-            title="Sign In"
-            className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-            aria-label="Sign in"
-          >
-            <LogIn className="w-4.5 h-4.5" />
-          </button>
-        )}
+
+        {/* Mobile search */}
+        <div className="md:hidden px-4 pb-3">
+          <SearchBar onMenuClick={() => setMobileSidebarOpen(true)} />
+        </div>
+
+        {/* Desktop header row */}
+        <div className="hidden md:flex items-center gap-4 px-6 py-3 max-w-[90rem] mx-auto w-full">
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+              <BookOpen className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-semibold text-sm text-zinc-100">Learners Hub</span>
+          </div>
+          <div className="flex-1 max-w-2xl mx-auto min-w-0">
+            <SearchBar onMenuClick={() => setDesktopSidebarOpen(true)} />
+          </div>
+          <div className="flex items-center gap-1 flex-shrink-0">
+            <Link
+              to="/cohort-admin"
+              title="Admin Command Center"
+              className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600"
+              aria-label="Admin Command Center"
+            >
+              <ShieldCheck className="w-5 h-5" />
+            </Link>
+            {user ? (
+              <button
+                onClick={signOut}
+                title="Sign Out"
+                className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600"
+              >
+                <LogOut className="w-5 h-5" />
+              </button>
+            ) : (
+              <button
+                onClick={() => setMobileAuthOpen(true)}
+                title="Sign In"
+                className="p-2 rounded-lg text-blue-400 hover:text-white hover:bg-blue-600/15 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600"
+              >
+                <LogIn className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+        </div>
       </header>
 
-      {/* ── Mobile Search ─────────────────────────────────── */}
-      <div className="flex-shrink-0 md:hidden px-4 pb-3 bg-black">
-        <SearchBar onMenuClick={() => setMobileSidebarOpen(true)} />
-      </div>
+      {/* ══════════════════════════════════════════════════════
+          RESIZABLE WORKSPACE (sidebar + handle + main)
+         ══════════════════════════════════════════════════════ */}
+      <div className="flex-1 overflow-hidden flex flex-col md:flex-row max-w-[90rem] w-full mx-auto px-2 md:px-4 py-2 md:py-4 gap-0">
 
-      {/* ── Two-Container Canvas ──────────────────────────── */}
-      <div className="flex-1 overflow-hidden max-w-[90rem] w-full mx-auto px-4 md:px-8 py-4 md:py-12 lg:py-16">
-        <div className="h-full max-h-[88vh] w-full min-w-0 overflow-hidden mx-auto flex flex-col md:flex-row gap-6 md:gap-6 my-auto">
-
-          {/* ── Sidebar Container ─────────────────────────── */}
-          {desktopSidebarOpen && (
-            <aside className="hidden md:block w-80 flex-shrink-0 h-full overflow-y-auto overscroll-contain rounded-[24px]">
+        {/* ── Desktop Sidebar Panel ────────────────────────── */}
+        {desktopSidebarOpen && (
+          <aside
+            className="hidden md:flex flex-col flex-shrink-0 h-full overflow-hidden rounded-2xl bg-zinc-900/60 border border-zinc-800/40"
+            style={{ width: sidebarWidth }}
+          >
+            <div className="flex-1 overflow-y-auto overscroll-contain">
               <Sidebar onToggle={() => setDesktopSidebarOpen(false)} />
-            </aside>
-          )}
-
-          {/* ── Main Module Host Container ────────────────── */}
-          <main className="flex-1 min-w-0 w-full h-full flex flex-col overflow-hidden bg-zinc-900 rounded-[24px] shadow-xl shadow-black/20 border border-zinc-800/40">
-            {/* Desktop toolbar row */}
-            <div className="hidden md:flex flex-wrap items-center gap-3 px-6 py-3 flex-shrink-0 min-w-0">
-              <button
-                onClick={() => setDesktopSidebarOpen((v) => !v)}
-                className="p-2 rounded-lg border border-zinc-700 text-zinc-400 hover:bg-zinc-800 hover:text-blue-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-                title={desktopSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-              >
-                {desktopSidebarOpen
-                  ? <PanelLeftClose className="w-5 h-5" />
-                  : <PanelLeftOpen className="w-5 h-5" />}
-              </button>
-              <div className="flex-1 max-w-2xl min-w-0">
-                <SearchBar onMenuClick={() => setDesktopSidebarOpen(true)} />
-              </div>
-              <div className="ml-auto flex items-center gap-1 flex-shrink-0">
-                <Link
-                  to="/cohort-admin"
-                  title="Admin Command Center"
-                  className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-                  aria-label="Admin Command Center"
-                >
-                  <ShieldCheck className="w-5 h-5" />
-                </Link>
-                {user ? (
-                  <button
-                    onClick={signOut}
-                    title="Sign Out"
-                    className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-                  >
-                    <LogOut className="w-5 h-5" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => setMobileAuthOpen(true)}
-                    title="Sign In"
-                    className="p-2 rounded-lg text-blue-400 hover:text-white hover:bg-blue-600/15 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-                  >
-                    <LogIn className="w-5 h-5" />
-                  </button>
-                )}
-              </div>
             </div>
+          </aside>
+        )}
 
-            {/* Scrollable route content area */}
-            <div ref={scrollRef} className="flex-1 flex flex-col overflow-y-scroll overscroll-contain p-6 md:p-8">
-              <ErrorBoundary>
-                <Routes>
-                  <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
-                  <Route path="/cohort-admin" element={<AdminControlPage />} />
-                  <Route path="/recognition" element={<RecognitionPage />} />
-                  <Route path="/learner-experience" element={<LearnerExperiencePage />} />
-                  <Route path="/deskolas" element={<DeskolasPage />} />
-                  <Route path="/article/:slug" element={<ArticlePage />} />
-                  <Route path="/article/:slug/*" element={<ArticlePage />} />
-                  <Route path="/:slug/*" element={<SectionPage refreshKey={refreshKey} />} />
-                  <Route path="*" element={<NotFoundPage />} />
-                </Routes>
-              </ErrorBoundary>
+        {/* ── Resize Handle ────────────────────────────────── */}
+        {desktopSidebarOpen && (
+          <ResizeHandle onResize={handleResize} />
+        )}
 
-              {/* Footer */}
-              <div className="mt-auto pt-8 pb-4 text-center text-xs text-zinc-500 flex-shrink-0">
-                <p>Per Scholas Learners Knowledge Base</p>
-              </div>
-            </div>
-          </main>
-        </div>
+        {/* ── Main Content Panel ───────────────────────────── */}
+        <main className="flex-1 min-w-0 h-full flex flex-col overflow-hidden bg-zinc-900 rounded-2xl shadow-xl shadow-black/20 border border-zinc-800/40">
+          {/* Desktop collapse toggle */}
+          <div className="hidden md:flex items-center px-4 py-2 flex-shrink-0 border-b border-zinc-800/30">
+            <button
+              onClick={() => setDesktopSidebarOpen((v) => !v)}
+              className="p-1.5 rounded-lg border border-zinc-700/50 text-zinc-400 hover:bg-zinc-800 hover:text-blue-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 transition-colors"
+              title={desktopSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+            >
+              {desktopSidebarOpen
+                ? <PanelLeftClose className="w-4 h-4" />
+                : <PanelLeftOpen className="w-4 h-4" />}
+            </button>
+          </div>
+
+          {/* Scrollable route content */}
+          <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain p-5 md:p-8">
+            <ErrorBoundary>
+              <Routes>
+                <Route path="/" element={<HomePage onRefresh={triggerRefresh} />} />
+                <Route path="/cohort-admin" element={<AdminControlPage />} />
+                <Route path="/recognition" element={<RecognitionPage />} />
+                <Route path="/learner-experience" element={<LearnerExperiencePage />} />
+                <Route path="/deskolas" element={<DeskolasPage />} />
+                <Route path="/article/:slug" element={<ArticlePage />} />
+                <Route path="/article/:slug/*" element={<ArticlePage />} />
+                <Route path="/:slug/*" element={<SectionPage refreshKey={refreshKey} />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </ErrorBoundary>
+          </div>
+        </main>
       </div>
+
+      {/* ══════════════════════════════════════════════════════
+          GLOBAL FOOTER (static, outside all panels)
+         ══════════════════════════════════════════════════════ */}
+      <footer className="flex-shrink-0 py-2 text-center text-xs text-zinc-500 border-t border-zinc-800/30">
+        <p>Per Scholas Learners Knowledge Base</p>
+      </footer>
 
       <AuthModal isOpen={mobileAuthOpen} onClose={() => setMobileAuthOpen(false)} />
     </div>
