@@ -1892,7 +1892,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto text-zinc-100 animate-page-in">
+    <div className="w-full max-w-7xl mx-auto text-zinc-100">
       {/* Command strip card */}
       <div className="bg-zinc-950/50 rounded-2xl border border-zinc-800/30 mb-6">
         {/* Title row */}

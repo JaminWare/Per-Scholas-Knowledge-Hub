@@ -776,7 +776,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   if (localContent && !isDomainSection) {
     const roleColor = roleColors[localContent.contributorRole ?? ''] ?? 'bg-zinc-800 text-zinc-400';
     return (
-      <div className="w-full animate-page-in">
+      <div className="w-full">
         <button
           onClick={goBack}
           className="text-zinc-400 hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 mb-6 cursor-pointer text-sm font-medium"
@@ -844,7 +844,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const displayTitle = meta?.title ?? (slug?.replace(/[-/]/g, ' ') ?? 'Articles');
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-3 animate-page-in">
+    <div className="w-full max-w-7xl mx-auto space-y-3">
       {isSubPage && (
         <button
           onClick={goBack}

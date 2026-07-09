@@ -308,7 +308,7 @@ export default function RecognitionPage() {
   }, [contributors, trackFilter]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto pb-32 animate-page-in">
+    <div className="w-full max-w-7xl mx-auto pb-32">
 
       {/* Full-bleed cinematic hero banner */}
       <section className="relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900">

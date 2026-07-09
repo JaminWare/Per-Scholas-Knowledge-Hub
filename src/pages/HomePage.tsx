@@ -45,7 +45,7 @@ const survivalGuideCards = [
 
 export default function HomePage() {
   return (
-    <div className="flex-1 shrink-0 w-full max-w-7xl mx-auto flex flex-col items-start gap-6 md:gap-8 animate-page-in">
+    <div className="flex-1 shrink-0 w-full max-w-7xl mx-auto flex flex-col items-start gap-6 md:gap-8">
 
       {/* Welcome header */}
       <div className="text-left space-y-2">

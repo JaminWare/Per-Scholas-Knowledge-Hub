@@ -278,7 +278,7 @@ export default function LearnerExperiencePage() {
   }, [filteredEntries, activeTab]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto space-y-3 animate-page-in">
+    <div className="w-full max-w-7xl mx-auto space-y-3">
       {/* ─── Banner ─── */}
       <div className="relative rounded-2xl bg-zinc-950/50 border border-zinc-800/30 overflow-hidden">
         <div className="relative px-6 py-5 md:px-8 md:py-6">

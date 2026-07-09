@@ -211,7 +211,7 @@ export default function DeskolasPage() {
   }, [entries, lxMeta, activeLevel2, activeLevel3]);
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto space-y-3 pb-20 animate-page-in">
+    <div className="relative w-full max-w-7xl mx-auto space-y-3 pb-20">
       {/* Banner */}
       <div className="relative rounded-2xl bg-zinc-950/50 border border-zinc-800/30 overflow-hidden">
         <div className="relative px-6 py-5 md:px-8 md:py-6">
