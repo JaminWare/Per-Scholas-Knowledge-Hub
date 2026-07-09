@@ -1,12 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
+  Award, ChevronDown, ChevronRight, BookOpen,
   Lightbulb, GitBranch, Star, Crown, Link2, UploadCloud,
   Laptop, Monitor, Heart, LifeBuoy, Layers, Pencil, UserCog, Headphones,
 } from 'lucide-react';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
-import { useSmartBack } from '../hooks/useSmartBack';
 import { useAuth } from '../hooks/useAuth';
 import AuthModal from '../components/AuthModal';
 import ProfileModal from '../components/ProfileModal';
@@ -270,7 +269,6 @@ function buildSlugFromTitle(title: string): string {
 // ── Main page ─────────────────────────────────────────────
 
 export default function RecognitionPage() {
-  const { goBack } = useSmartBack('/');
   const { contributors, newestNonFounderName: newestName, isLoading, error: fetchError } = useContributorGroups();
   const [openContributor, setOpenContributor] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -315,16 +313,8 @@ export default function RecognitionPage() {
       {/* Full-bleed cinematic hero banner */}
       <section className="relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900">
         <div className="relative px-6 py-4 md:px-8 md:py-5">
-          {/* Back button inside the banner */}
-          <div className="flex items-center justify-between mb-8">
-            <button
-              onClick={goBack}
-              className="inline-flex items-center gap-2 text-blue-200/80 hover:text-white transition-colors text-sm font-medium"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Previous Page
-            </button>
-            {(!user || !isUserMatched) && (
+          {(!user || !isUserMatched) && (
+            <div className="flex justify-end mb-4">
               <button
                 type="button"
                 onClick={() => user ? setProfileOpen(true) : setAuthOpen(true)}
@@ -333,8 +323,8 @@ export default function RecognitionPage() {
                 <UserCog className="w-4 h-4" />
                 Claim My Profile
               </button>
-            )}
-          </div>
+            </div>
+          )}
 
           <div className="max-w-2xl">
             <div className="flex items-center gap-3 mb-3">

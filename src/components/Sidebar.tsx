@@ -120,7 +120,7 @@ export default function Sidebar(_props: SidebarProps) {
   const deskolasActive = location.pathname === '/deskolas';
 
   return (
-    <div className="flex flex-col bg-zinc-800/60 rounded-[24px] outline-none">
+    <div className="flex flex-col h-full min-h-0 bg-zinc-800/60 rounded-2xl outline-none">
       {/* Auth Section */}
       <div className="px-3 pt-3 pb-2 flex-shrink-0 space-y-1">
         {user ? (

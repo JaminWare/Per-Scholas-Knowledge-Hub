@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { ArrowLeft, Share2, Bookmark, BookOpen, ExternalLink, UploadCloud, Pencil } from 'lucide-react';
 import { supabase } from '../lib/supabase';
-import { useSmartBack } from '../hooks/useSmartBack';
+
 import { useAuth } from '../hooks/useAuth';
 import ArticleCard from '../components/ArticleCard';
 import MarkdownRenderer from '../components/MarkdownRenderer';
@@ -405,14 +405,6 @@ export default function ArticlePage() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const { user } = useAuth();
 
-  const backFallback = useMemo(() => {
-    if (!article) return '/';
-    if ((article as any)?.section?.slug) return '/' + (article as any).section.slug;
-    if (article.slug?.startsWith('learner-experience/') || article.study_category?.startsWith('Learner Experience')) return '/learner-experience';
-    return '/';
-  }, [article]);
-  const { goBack } = useSmartBack(backFallback);
-
   const fetchAbortRef = useRef(false);
 
   useEffect(() => {
@@ -514,15 +506,6 @@ export default function ArticlePage() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      {/* Back button */}
-      <button
-        onClick={goBack}
-        className="inline-flex items-center gap-2 text-zinc-400 hover:text-blue-400 transition-colors text-sm font-medium mb-5"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        {article.section ? `Back to ${article.section.title}` : 'Back'}
-      </button>
-
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-zinc-400 mb-5">
         <Link to="/" className="hover:text-blue-400 transition-colors">Home</Link>

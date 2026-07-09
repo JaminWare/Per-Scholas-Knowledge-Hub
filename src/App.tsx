@@ -164,7 +164,7 @@ function AppContent() {
           </div>
           <button
             onClick={() => setAddIntelOpen(true)}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+            className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors flex-shrink-0 whitespace-nowrap outline-none select-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             <UploadCloud className="w-3.5 h-3.5" />
             Add Intel
@@ -202,12 +202,12 @@ function AppContent() {
       {/* ══════════════════════════════════════════════════════
           RESIZABLE WORKSPACE (sidebar + handle + main)
          ══════════════════════════════════════════════════════ */}
-      <div className="flex-1 overflow-hidden flex flex-col md:flex-row max-w-[90rem] w-full mx-auto px-1 md:px-2 py-1 md:py-2 gap-0">
+      <div className="flex-1 overflow-hidden flex flex-col md:flex-row md:items-stretch max-w-[90rem] w-full mx-auto px-1 md:px-2 py-1 md:py-2 gap-0">
 
         {/* ── Desktop Sidebar Panel ────────────────────────── */}
         {desktopSidebarOpen && (
           <aside
-            className="hidden md:flex flex-col flex-shrink-0 h-full overflow-hidden rounded-2xl bg-zinc-850/60"
+            className="hidden md:flex flex-col flex-shrink-0 min-h-0 overflow-hidden rounded-2xl bg-zinc-800/60"
             style={{ width: sidebarWidth }}
           >
             <div className="flex-1 overflow-y-auto overscroll-contain">
@@ -222,7 +222,7 @@ function AppContent() {
         )}
 
         {/* ── Main Content Panel ───────────────────────────── */}
-        <main className="flex-1 min-w-0 h-full flex flex-col overflow-hidden bg-zinc-800/50 rounded-2xl">
+        <main className="flex-1 min-w-0 min-h-0 flex flex-col overflow-hidden bg-zinc-800/50 rounded-2xl">
           {/* Scrollable route content */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain p-3 md:p-5">
             <ErrorBoundary>
