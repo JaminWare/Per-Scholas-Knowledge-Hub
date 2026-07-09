@@ -1892,11 +1892,11 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto text-zinc-100">
+    <div className="w-full max-w-6xl mx-auto text-zinc-100">
       {/* Command strip card */}
       <div className="bg-zinc-950/50 rounded-2xl border border-zinc-800/30 mb-6">
         {/* Title row */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">
           <div className="flex items-center gap-3 min-w-0 w-full lg:w-auto">
             <div className="p-2 rounded-lg bg-zinc-800 border border-zinc-700 flex-shrink-0">
               <ShieldCheck className="w-6 h-6 text-blue-400" />
@@ -1925,7 +1925,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         <div className="h-px" />
 
         {/* Search + Tabs */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col gap-3">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-3 pb-3 flex flex-col gap-3">
           {/* Search Bar */}
           <div className="w-full flex justify-center">
             <div className="relative w-full max-w-md">
@@ -2119,7 +2119,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
         </div>
       </div>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-5 space-y-5">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-4 sm:py-5 space-y-5">
 
         {/* Success toast */}
         {successMessage && (

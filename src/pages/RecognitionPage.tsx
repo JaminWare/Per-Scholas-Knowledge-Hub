@@ -308,7 +308,7 @@ export default function RecognitionPage() {
   }, [contributors, trackFilter]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto pb-32">
+    <div className="w-full max-w-5xl mx-auto pb-32">
 
       {/* Full-bleed cinematic hero banner */}
       <section className="relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900">
@@ -346,7 +346,7 @@ export default function RecognitionPage() {
       </section>
 
       {/* Contributors sectiontighter to banner */}
-      <section className="max-w-7xl mx-auto px-4 mt-6">
+      <section className="max-w-5xl mx-auto px-4 mt-6">
         <div className="flex items-center gap-2 mb-3">
           <Award className="w-4 h-4 shrink-0 text-blue-600" />
           <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">

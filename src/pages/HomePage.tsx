@@ -1,118 +1,112 @@
 import { Link } from 'react-router-dom';
 import {
-  TrendingUp,
-  Compass, BookOpen, Flame, Briefcase, ChevronRight, LifeBuoy,
+  TrendingUp, ChevronRight, Compass, Lightbulb, Flame, Shield, Briefcase, Rocket,
 } from 'lucide-react';
 
-const survivalGuideCards = [
+const SURVIVAL_CARDS = [
   {
-    id: 'onboarding',
+    icon: Lightbulb,
     title: 'Onboarding Hurdles',
-    description: 'Canvas workflows, VM setups, and tool access.',
-    icon: Compass,
-    iconBg: 'bg-zinc-800 border border-zinc-700',
-    iconColor: 'text-blue-400',
+    description: 'Canvas workflows, Google Cert sync, and pacing strategies from alumni who made it.',
     tab: 'onboarding',
+    color: 'text-amber-400',
   },
   {
-    id: 'lab-survival',
-    title: 'Lab Survival Guides',
-    description: 'EHR sandboxes, Active Directory, and infrastructure.',
-    icon: BookOpen,
-    iconBg: 'bg-zinc-800 border border-zinc-700',
-    iconColor: 'text-blue-400',
-    tab: 'labs',
-  },
-  {
-    id: 'mid-program',
-    title: 'The Mid Program Slump',
-    description: 'Mental endurance, imposter syndrome, and time management.',
     icon: Flame,
-    iconBg: 'bg-amber-500/15 border border-amber-500/30',
-    iconColor: 'text-amber-400',
+    title: 'The Mid-Program Slump',
+    description: 'Mental endurance tactics, time management, and motivation from peers who pushed through.',
     tab: 'slump',
+    color: 'text-orange-400',
   },
   {
-    id: 'job-hunt',
-    title: 'Job Hunt & Certs',
-    description: 'Test day strategies, resume reality checks, and interviews.',
+    icon: Shield,
+    title: 'Certification Prep',
+    description: 'Test-day strategies, CompTIA tactics, and readiness benchmarks from certified alumni.',
+    tab: 'cert',
+    color: 'text-sky-400',
+  },
+  {
     icon: Briefcase,
-    iconBg: 'bg-zinc-800 border border-zinc-700',
-    iconColor: 'text-zinc-300',
+    title: 'Job Hunt Triage',
+    description: 'Resume reality checks, interview prep, and field transition advice from hired grads.',
     tab: 'job',
+    color: 'text-emerald-400',
+  },
+  {
+    icon: Rocket,
+    title: 'Quick Wins',
+    description: 'Bite-sized tips you can apply today to keep momentum in the program.',
+    tab: 'all',
+    color: 'text-violet-400',
+  },
+  {
+    icon: Compass,
+    title: 'Full Hub',
+    description: 'Browse every peer-contributed survival guide in the Learner Experience archive.',
+    tab: 'all',
+    color: 'text-teal-400',
   },
 ];
 
 export default function HomePage() {
   return (
-    <div className="flex-1 shrink-0 w-full max-w-7xl mx-auto flex flex-col items-start gap-6 md:gap-8">
-
-      {/* Welcome header */}
-      <div className="text-left space-y-2">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs font-medium">
-          <TrendingUp className="w-3.5 h-3.5 shrink-0" />
+    <div className="flex-1 shrink-0 w-full max-w-5xl mx-auto flex flex-col items-start gap-6 md:gap-8">
+      {/* ── Welcome Header ───────────────────────────────── */}
+      <section className="w-full space-y-4 pt-2">
+        <div className="flex items-center gap-2 text-xs font-medium text-zinc-400">
+          <TrendingUp className="w-4 h-4 shrink-0 text-emerald-400" />
           <span>Per Scholas</span>
         </div>
-        <h1 className="text-lg md:text-xl font-bold text-white leading-tight">
+        <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 tracking-tight">
           AI Enabled Healthcare IT
         </h1>
-        <p className="text-sm text-zinc-400">Welcome to the collaborative resource hub!</p>
+        <p className="text-sm text-zinc-400 max-w-xl leading-relaxed">
+          Your peer-powered knowledge base for surviving the program, crushing the CompTIA exam,
+          and landing your first role in Healthcare IT.
+        </p>
         <Link
           to="/learner-experience"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-colors whitespace-nowrap outline-none select-none"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium transition-colors"
         >
-          <LifeBuoy className="w-4 h-4 shrink-0" />
           Start Here
-          <ChevronRight className="w-4 h-4 shrink-0" />
+          <ChevronRight className="w-4 h-4" />
         </Link>
-      </div>
+      </section>
 
-      {/* Cohort Survival Guide */}
-      <div className="w-full space-y-3">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-zinc-800 border border-zinc-700">
-            <Compass className="w-5 h-5 shrink-0 text-blue-400" />
-          </div>
-          <h2 className="text-base font-semibold text-zinc-100">Cohort Survival Guide</h2>
+      {/* ── Cohort Survival Guide ────────────────────────── */}
+      <section className="w-full space-y-4 pb-12">
+        <div className="flex items-center gap-2">
+          <Compass className="w-5 h-5 shrink-0 text-zinc-400" />
+          <h2 className="text-lg font-semibold text-zinc-200">Cohort Survival Guide</h2>
         </div>
-
-        <div className="grid sm:grid-cols-2 gap-4">
-          {survivalGuideCards.map((card) => {
-            const Icon = card.icon;
-            return (
-              <Link
-                key={card.id}
-                to={`/learner-experience?tab=${card.tab}`}
-                className="group/card flex items-start gap-3 p-3.5 text-left bg-zinc-950/50 rounded-xl border border-zinc-800/50 transition-all hover:border-zinc-700 hover:bg-zinc-800/50 outline-none select-none"
-              >
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover/card:scale-105 transition-transform ${card.iconBg}`}>
-                  <Icon className={`w-4.5 h-4.5 shrink-0 ${card.iconColor}`} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <p className="font-semibold text-sm text-white">
-                      {card.title}
-                    </p>
-                    <ChevronRight className="w-4 h-4 text-zinc-600 flex-shrink-0 group-hover/card:text-blue-400 group-hover/card:translate-x-0.5 transition-all" />
-                  </div>
-                  <p className="text-xs text-zinc-400 mt-0.5 line-clamp-2">{card.description}</p>
-                </div>
-              </Link>
-            );
-          })}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {SURVIVAL_CARDS.map((card) => (
+            <Link
+              key={card.tab + card.title}
+              to={`/learner-experience?tab=${card.tab}`}
+              className="group flex items-start gap-3 p-4 rounded-xl bg-zinc-800/60 border border-zinc-700/50 hover:border-zinc-600 hover:bg-zinc-800 transition-all"
+            >
+              <card.icon className={`w-5 h-5 shrink-0 mt-0.5 ${card.color}`} />
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium text-zinc-200 group-hover:text-white transition-colors">
+                  {card.title}
+                </h3>
+                <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
+                  {card.description}
+                </p>
+              </div>
+              <ChevronRight className="w-4 h-4 shrink-0 text-zinc-600 group-hover:text-zinc-400 transition-colors mt-0.5" />
+            </Link>
+          ))}
         </div>
-
-        <div className="text-left">
-          <Link
-            to="/learner-experience"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors"
-          >
-            Explore the full Learner Experience Hub &rarr;
-            <ChevronRight className="w-4 h-4 shrink-0" />
-          </Link>
-        </div>
-      </div>
-
+        <Link
+          to="/learner-experience"
+          className="inline-flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+        >
+          View full Learner Experience Hub
+          <ChevronRight className="w-3 h-3" />
+        </Link>
+      </section>
     </div>
   );
 }
