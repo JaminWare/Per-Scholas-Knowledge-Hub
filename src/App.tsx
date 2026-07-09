@@ -207,7 +207,7 @@ function AppContent() {
         {/* ── Desktop Sidebar Panel ────────────────────────── */}
         {desktopSidebarOpen && (
           <aside
-            className="hidden md:flex flex-col flex-shrink-0 min-h-0 overflow-hidden rounded-2xl bg-zinc-800/60"
+            className="hidden md:flex flex-col flex-shrink-0 min-h-0 overflow-hidden rounded-2xl bg-zinc-950/40"
             style={{ width: sidebarWidth }}
           >
             <div className="flex-1 overflow-y-auto overscroll-contain">
@@ -222,7 +222,7 @@ function AppContent() {
         )}
 
         {/* ── Main Content Panel ───────────────────────────── */}
-        <main className="flex-1 min-w-0 min-h-0 flex flex-col overflow-hidden bg-zinc-800/50 rounded-2xl">
+        <main className="flex-1 min-w-0 min-h-0 flex flex-col overflow-hidden bg-zinc-950/40 rounded-2xl">
           {/* Scrollable route content */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain p-3 md:p-5">
             <ErrorBoundary>
