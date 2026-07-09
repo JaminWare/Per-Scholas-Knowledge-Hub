@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  Home, ChevronDown, ChevronRight, ChevronLeft,
+  Home, ChevronDown, ChevronRight,
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
-  BookOpen, LifeBuoy, Headphones,
+  LifeBuoy, Headphones,
   Laptop, Monitor, Heart, Database, Award, LogIn, LogOut,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -105,10 +105,10 @@ function DomainRow({ domain }: { domain: NavItem }) {
 // ─── Main Sidebar component ───────────────────────────────
 
 interface SidebarProps {
-  onToggle: () => void;
+  onToggle?: () => void;
 }
 
-export default function Sidebar({ onToggle }: SidebarProps) {
+export default function Sidebar(_props: SidebarProps) {
   const location = useLocation();
   const [openTracks, setOpenTracks] = useState<Record<string, boolean>>({
     core1: false, core2: false, healthcare: false,
@@ -120,30 +120,9 @@ export default function Sidebar({ onToggle }: SidebarProps) {
   const deskolasActive = location.pathname === '/deskolas';
 
   return (
-    <div className="flex flex-col bg-zinc-900 rounded-[24px] shadow-xl shadow-black/20 border border-zinc-800/40 outline-none">
-      {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 flex-shrink-0">
-        <Link to="/" className="flex items-center gap-2.5 flex-1 min-w-0">
-          <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0">
-            <BookOpen className="w-[18px] h-[18px] text-white" />
-          </div>
-          <div className="min-w-0">
-            <p className="font-bold text-zinc-100 text-[13px] leading-tight truncate">
-              Learners Hub
-            </p>
-          </div>
-        </Link>
-        <button
-          onClick={onToggle}
-          className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-          title="Collapse sidebar"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-      </div>
-
+    <div className="flex flex-col bg-zinc-800/60 rounded-[24px] outline-none">
       {/* Auth Section */}
-      <div className="px-3 py-2.5 flex-shrink-0 space-y-1">
+      <div className="px-3 pt-3 pb-2 flex-shrink-0 space-y-1">
         {user ? (
           <button
             onClick={signOut}
