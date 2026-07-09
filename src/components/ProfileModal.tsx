@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Loader2, UserCog } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -76,7 +77,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm"
@@ -165,6 +166,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
           </button>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

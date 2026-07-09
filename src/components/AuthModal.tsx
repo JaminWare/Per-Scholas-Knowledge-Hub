@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Mail, Lock, Loader2, ShieldAlert } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { checkPasswordStrength, checkBreachedPassword } from '../utils/passwordStrength';
@@ -154,7 +155,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div
         className="absolute inset-0 bg-zinc-950/80 backdrop-blur-sm"
@@ -320,6 +321,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
           </p>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import {
   X, Send, Loader2, Tag,
   FileText, Link2, BookOpen, GitBranch,
@@ -631,7 +632,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const selectCls = (field: string) => `w-full px-4 py-3 rounded-lg bg-zinc-950 border border-zinc-800/50 text-sm text-zinc-200 focus:outline-none focus:border-blue-600/50 focus:ring-2 focus:ring-blue-500/40 focus:ring-offset-2 focus:ring-offset-zinc-900 transition-all appearance-none ${errors[field] ? 'border-red-400' : ''}`;
 
   if (isSuccess) {
-    return (
+    return createPortal(
       <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
         <div className="absolute inset-0 bg-zinc-950/70 backdrop-blur-sm" onClick={() => { reset(); onClose(); }} />
         <div className="relative w-full max-w-md bg-zinc-900 rounded-2xl border border-zinc-800/50 shadow-lg overflow-hidden flex flex-col">
@@ -656,11 +657,12 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             </button>
           </div>
         </div>
-      </div>
+      </div>,
+      document.body
     );
   }
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-zinc-950/70 backdrop-blur-sm" onClick={() => { reset(); onClose(); }} />
       <div className="relative w-full max-w-2xl bg-zinc-900 rounded-2xl border border-zinc-800/50 shadow-lg overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[88vh]">
@@ -1022,6 +1024,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         </div>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
