@@ -36,7 +36,7 @@ const SURVIVAL_CARDS = [
 
 export default function HomePage() {
   return (
-    <div className="flex-1 shrink-0 w-full max-w-5xl mx-auto flex flex-col items-start gap-6 md:gap-8">
+    <div className="flex-1 shrink-0 w-full max-w-3xl mx-auto flex flex-col items-start gap-6 md:gap-8">
       {/* ── Welcome Header ───────────────────────────────── */}
       <section className="w-full space-y-4 pt-2">
         <div className="flex items-center gap-2 text-xs font-medium text-zinc-400">
