@@ -45,7 +45,7 @@ const survivalGuideCards = [
 
 export default function HomePage() {
   return (
-    <div className="flex-1 shrink-0 w-full flex flex-col items-start gap-4 md:gap-5 animate-page-in">
+    <div className="flex-1 shrink-0 w-full max-w-7xl mx-auto flex flex-col items-start gap-6 md:gap-8 animate-page-in">
 
       {/* Welcome header */}
       <div className="text-left space-y-2">
@@ -54,10 +54,7 @@ export default function HomePage() {
           <span>Per Scholas</span>
         </div>
         <h1 className="text-lg md:text-xl font-bold text-white leading-tight">
-          Learners Hub
-          <span className="block text-zinc-400 text-sm md:text-base font-semibold mt-0.5">
-            AI Enabled Healthcare IT
-          </span>
+          AI Enabled Healthcare IT
         </h1>
         <p className="text-sm text-zinc-400">Welcome to the collaborative resource hub!</p>
         <Link
@@ -79,7 +76,7 @@ export default function HomePage() {
           <h2 className="text-base font-semibold text-zinc-100">Cohort Survival Guide</h2>
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-3">
+        <div className="grid sm:grid-cols-2 gap-4">
           {survivalGuideCards.map((card) => {
             const Icon = card.icon;
             return (

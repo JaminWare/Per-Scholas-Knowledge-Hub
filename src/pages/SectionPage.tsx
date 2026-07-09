@@ -844,7 +844,7 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   const displayTitle = meta?.title ?? (slug?.replace(/[-/]/g, ' ') ?? 'Articles');
 
   return (
-    <div className="w-full space-y-3 animate-page-in">
+    <div className="w-full max-w-7xl mx-auto space-y-3 animate-page-in">
       {isSubPage && (
         <button
           onClick={goBack}
