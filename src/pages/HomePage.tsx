@@ -9,42 +9,42 @@ const SURVIVAL_CARDS = [
     title: 'Onboarding Hurdles',
     description: 'Canvas workflows, Google Cert sync, and pacing strategies from alumni who made it.',
     tab: 'onboarding',
-    color: 'text-amber-400',
+    color: 'text-blue-400',
   },
   {
     icon: Flame,
-    title: 'The Mid-Program Slump',
+    title: 'The Mid Program Slump',
     description: 'Mental endurance tactics, time management, and motivation from peers who pushed through.',
     tab: 'slump',
-    color: 'text-orange-400',
+    color: 'text-blue-400',
   },
   {
     icon: Shield,
     title: 'Certification Prep',
-    description: 'Test-day strategies, CompTIA tactics, and readiness benchmarks from certified alumni.',
+    description: 'Test day strategies, CompTIA tactics, and readiness benchmarks from certified alumni.',
     tab: 'cert',
-    color: 'text-sky-400',
+    color: 'text-blue-400',
   },
   {
     icon: Briefcase,
     title: 'Job Hunt Triage',
     description: 'Resume reality checks, interview prep, and field transition advice from hired grads.',
     tab: 'job',
-    color: 'text-emerald-400',
+    color: 'text-blue-400',
   },
   {
     icon: Rocket,
     title: 'Quick Wins',
-    description: 'Bite-sized tips you can apply today to keep momentum in the program.',
+    description: 'Bite sized tips you can apply today to keep momentum in the program.',
     tab: 'all',
-    color: 'text-violet-400',
+    color: 'text-blue-400',
   },
   {
     icon: Compass,
     title: 'Full Hub',
-    description: 'Browse every peer-contributed survival guide in the Learner Experience archive.',
+    description: 'Browse every peer contributed survival guide in the Learner Experience archive.',
     tab: 'all',
-    color: 'text-teal-400',
+    color: 'text-blue-400',
   },
 ];
 
@@ -54,19 +54,19 @@ export default function HomePage() {
       {/* ── Welcome Header ───────────────────────────────── */}
       <section className="w-full space-y-4 pt-2">
         <div className="flex items-center gap-2 text-xs font-medium text-zinc-400">
-          <TrendingUp className="w-4 h-4 shrink-0 text-emerald-400" />
+          <TrendingUp className="w-4 h-4 shrink-0 text-blue-400" />
           <span>Per Scholas</span>
         </div>
         <h1 className="text-2xl md:text-3xl font-bold text-zinc-100 tracking-tight">
           AI Enabled Healthcare IT
         </h1>
         <p className="text-sm text-zinc-400 max-w-xl leading-relaxed">
-          Your peer-powered knowledge base for surviving the program, crushing the CompTIA exam,
+          Your peer powered knowledge base for surviving the program, crushing the CompTIA exam,
           and landing your first role in Healthcare IT.
         </p>
         <Link
           to="/learner-experience"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors"
         >
           Start Here
           <ChevronRight className="w-4 h-4" />
