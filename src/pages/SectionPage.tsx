@@ -529,7 +529,7 @@ function CurriculumDashboard({
     }
 
     return (
-      <div className="space-y-0 min-h-[50vh] animate-content-in">
+      <div className="space-y-0 min-h-[50vh]">
         {groupByObjective(allDomainArticles, canonicalTarget).map(([objective, items], idx) => (
           <div key={objective}>
             <div className={`flex items-center gap-2 pb-2 border-b border-zinc-800/50 ${idx === 0 ? 'mt-0' : 'mt-5'}`}>
@@ -566,7 +566,7 @@ function CurriculumDashboard({
   }, [visibleArticles, allCanonicalTargets]);
 
   return (
-    <div className="space-y-6 min-h-[50vh] animate-content-in">
+    <div className="space-y-6 min-h-[50vh]">
       {uncategorizedArticles.length > 0 && (
         <section>
           <div className="flex items-center gap-2.5 mb-3 pb-3 border-b border-zinc-800/50">
