@@ -187,7 +187,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
   return (
     <div ref={containerRef} className="relative w-full max-w-2xl min-w-0">
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 shrink-0 text-zinc-500" />
         <input
           ref={inputRef}
           type="text"
@@ -203,7 +203,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
               onClick={() => { setQuery(''); inputRef.current?.focus(); }}
               className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 transition-colors"
             >
-              <X className="w-4 h-4" />
+              <X className="w-4 h-4 shrink-0" />
             </button>
           )}
           <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-xs font-medium">
@@ -216,7 +216,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
         <div className="absolute top-full left-0 right-0 mt-2 bg-zinc-900 rounded-xl border border-zinc-800/50 shadow-lg overflow-hidden z-50">
           {isLoading ? (
             <div className="flex items-center justify-center gap-2 py-8 text-zinc-500">
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-5 h-5 shrink-0 animate-spin" />
               <span>Searching...</span>
             </div>
           ) : results.length > 0 ? (
@@ -233,8 +233,8 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
                         : 'bg-zinc-800'
                     }`}>
                       {result.type === 'article'
-                        ? <FileText className="w-4 h-4 text-blue-400" />
-                        : <Folder className="w-4 h-4 text-zinc-500" />}
+                        ? <FileText className="w-4 h-4 shrink-0 text-blue-400" />
+                        : <Folder className="w-4 h-4 shrink-0 text-zinc-500" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-zinc-200 truncate">{result.title}</p>
@@ -249,7 +249,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
             </ul>
           ) : (
             <div className="flex flex-col items-center justify-center py-8 text-zinc-500">
-              <Search className="w-8 h-8 mb-2 opacity-50" />
+              <Search className="w-8 h-8 shrink-0 mb-2 opacity-50" />
               <p>No results for "{query}"</p>
             </div>
           )}

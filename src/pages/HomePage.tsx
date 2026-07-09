@@ -50,7 +50,7 @@ export default function HomePage() {
       {/* Welcome header */}
       <div className="text-left space-y-2">
         <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs font-medium">
-          <TrendingUp className="w-3.5 h-3.5" />
+          <TrendingUp className="w-3.5 h-3.5 shrink-0" />
           <span>Per Scholas</span>
         </div>
         <h1 className="text-lg md:text-xl font-bold text-white leading-tight">
@@ -61,9 +61,9 @@ export default function HomePage() {
           to="/learner-experience"
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-colors whitespace-nowrap outline-none select-none"
         >
-          <LifeBuoy className="w-4 h-4" />
+          <LifeBuoy className="w-4 h-4 shrink-0" />
           Start Here
-          <ChevronRight className="w-4 h-4" />
+          <ChevronRight className="w-4 h-4 shrink-0" />
         </Link>
       </div>
 
@@ -71,7 +71,7 @@ export default function HomePage() {
       <div className="w-full space-y-3">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-zinc-800 border border-zinc-700">
-            <Compass className="w-5 h-5 text-blue-400" />
+            <Compass className="w-5 h-5 shrink-0 text-blue-400" />
           </div>
           <h2 className="text-base font-semibold text-zinc-100">Cohort Survival Guide</h2>
         </div>
@@ -86,7 +86,7 @@ export default function HomePage() {
                 className="group/card flex items-start gap-3 p-3.5 text-left bg-zinc-950/50 rounded-xl border border-zinc-800/50 transition-all hover:border-zinc-700 hover:bg-zinc-800/50 outline-none select-none"
               >
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 group-hover/card:scale-105 transition-transform ${card.iconBg}`}>
-                  <Icon className={`w-4.5 h-4.5 ${card.iconColor}`} />
+                  <Icon className={`w-4.5 h-4.5 shrink-0 ${card.iconColor}`} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
@@ -108,7 +108,7 @@ export default function HomePage() {
             className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors"
           >
             Explore the full Learner Experience Hub &rarr;
-            <ChevronRight className="w-4 h-4" />
+            <ChevronRight className="w-4 h-4 shrink-0" />
           </Link>
         </div>
       </div>

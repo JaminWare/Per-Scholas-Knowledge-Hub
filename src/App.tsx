@@ -90,11 +90,11 @@ function AppContent() {
             className="p-2 rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-blue-400 active:bg-zinc-800 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600"
             aria-label="Open navigation menu"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-5 h-5 shrink-0" />
           </button>
           <div className="flex items-center gap-2 min-w-0 flex-1">
             <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center flex-shrink-0">
-              <BookOpen className="w-3.5 h-3.5 text-white" />
+              <BookOpen className="w-3.5 h-3.5 text-white shrink-0" />
             </div>
             <span className="font-bold text-sm text-zinc-100 truncate">
               {location.pathname.includes('/cohort-admin') ? 'Learners Hub Admin' : 'Learners Hub'}
@@ -106,7 +106,7 @@ function AppContent() {
             className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none"
             aria-label="Add Intel"
           >
-            <UploadCloud className="w-4.5 h-4.5" />
+            <UploadCloud className="w-4.5 h-4.5 shrink-0" />
           </button>
           <Link
             to="/cohort-admin"
@@ -114,7 +114,7 @@ function AppContent() {
             className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none"
             aria-label="Admin Command Center"
           >
-            <ShieldCheck className="w-4.5 h-4.5" />
+            <ShieldCheck className="w-4.5 h-4.5 shrink-0" />
           </Link>
           {user ? (
             <button
@@ -123,7 +123,7 @@ function AppContent() {
               className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 flex-shrink-0 outline-none select-none"
               aria-label="Sign out"
             >
-              <LogOut className="w-4.5 h-4.5" />
+              <LogOut className="w-4.5 h-4.5 shrink-0" />
             </button>
           ) : (
             <button
@@ -132,7 +132,7 @@ function AppContent() {
               className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none"
               aria-label="Sign in"
             >
-              <LogIn className="w-4.5 h-4.5" />
+              <LogIn className="w-4.5 h-4.5 shrink-0" />
             </button>
           )}
         </div>
@@ -150,12 +150,12 @@ function AppContent() {
             title={desktopSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
           >
             {desktopSidebarOpen
-              ? <PanelLeftClose className="w-4 h-4" />
-              : <PanelLeftOpen className="w-4 h-4" />}
+              ? <PanelLeftClose className="w-4 h-4 shrink-0" />
+              : <PanelLeftOpen className="w-4 h-4 shrink-0" />}
           </button>
           <div className="flex items-center gap-2.5 flex-shrink-0">
             <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
-              <BookOpen className="w-3.5 h-3.5 text-white" />
+              <BookOpen className="w-3.5 h-3.5 text-white shrink-0" />
             </div>
             <span className="font-semibold text-sm text-zinc-100">Learners Hub</span>
           </div>
@@ -166,7 +166,7 @@ function AppContent() {
             onClick={() => setAddIntelOpen(true)}
             className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-colors flex-shrink-0 whitespace-nowrap outline-none select-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
-            <UploadCloud className="w-3.5 h-3.5" />
+            <UploadCloud className="w-3.5 h-3.5 shrink-0" />
             Add Intel
           </button>
           <div className="flex items-center gap-1 flex-shrink-0">
@@ -176,7 +176,7 @@ function AppContent() {
               className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600"
               aria-label="Admin Command Center"
             >
-              <ShieldCheck className="w-5 h-5" />
+              <ShieldCheck className="w-5 h-5 shrink-0" />
             </Link>
             {user ? (
               <button
@@ -184,7 +184,7 @@ function AppContent() {
                 title="Sign Out"
                 className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600"
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="w-5 h-5 shrink-0" />
               </button>
             ) : (
               <button
@@ -192,7 +192,7 @@ function AppContent() {
                 title="Sign In"
                 className="p-2 rounded-lg text-blue-400 hover:text-white hover:bg-blue-600/15 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600"
               >
-                <LogIn className="w-5 h-5" />
+                <LogIn className="w-5 h-5 shrink-0" />
               </button>
             )}
           </div>

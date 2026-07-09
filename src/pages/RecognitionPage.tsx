@@ -122,14 +122,14 @@ function ContributorCard({ group, isNew, isOpen, onToggle, onEditProfile }: {
                   title="Edit Display Name"
                   className="ml-1 inline-flex items-center text-zinc-500 hover:text-blue-400 transition-colors p-1 rounded-full hover:bg-zinc-800"
                 >
-                  <Pencil className="w-3 h-3" />
+                  <Pencil className="w-3 h-3 shrink-0" />
                 </button>
               )}
               {!isFounder && tierBadge !== group.topBadge && <BadgeTag badge={tierBadge} />}
               {!isFounder && <BadgeTag badge={group.topBadge} />}
               {isNew && !isFounder && (
                 <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[9px] font-bold bg-blue-600 text-white rounded-full">
-                  <Star className="w-2 h-2" /> NEW
+                  <Star className="w-2 h-2 shrink-0" /> NEW
                 </span>
               )}
             </div>
@@ -207,7 +207,7 @@ function ContributorCard({ group, isNew, isOpen, onToggle, onEditProfile }: {
                             <span className="text-sm text-zinc-200 truncate group-hover:text-blue-400">{s.title}</span>
                             <span className="ml-auto flex items-center gap-1.5 flex-shrink-0">
                               <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-blue-600/10 text-blue-600">{getDomainName(s.content)}</span>
-                              <ChevronRight className="w-3 h-3 text-zinc-600 group-hover:text-blue-400" />
+                              <ChevronRight className="w-3 h-3 shrink-0 text-zinc-600 group-hover:text-blue-400" />
                             </span>
                           </a>
                         );
@@ -320,7 +320,7 @@ export default function RecognitionPage() {
                 onClick={() => user ? setProfileOpen(true) : setAuthOpen(true)}
                 className="inline-flex items-center gap-2 bg-transparent hover:bg-zinc-800 text-zinc-300 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
               >
-                <UserCog className="w-4 h-4" />
+                <UserCog className="w-4 h-4 shrink-0" />
                 Claim My Profile
               </button>
             </div>
@@ -329,7 +329,7 @@ export default function RecognitionPage() {
           <div className="max-w-2xl">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 rounded-xl bg-blue-600/20 border border-blue-600/30">
-                <Award className="w-5 h-5 text-blue-400" />
+                <Award className="w-5 h-5 shrink-0 text-blue-400" />
               </div>
               <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">
                 Per Scholas
@@ -348,7 +348,7 @@ export default function RecognitionPage() {
       {/* Contributors sectiontighter to banner */}
       <section className="max-w-7xl mx-auto px-4 mt-6">
         <div className="flex items-center gap-2 mb-3">
-          <Award className="w-4 h-4 text-blue-600" />
+          <Award className="w-4 h-4 shrink-0 text-blue-600" />
           <h2 className="text-sm font-bold text-zinc-400 uppercase tracking-widest">
             Cohort Contributors
           </h2>
@@ -372,7 +372,7 @@ export default function RecognitionPage() {
                     : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className="w-3.5 h-3.5 shrink-0" />
                 {opt.label}
               </button>
             );
@@ -413,7 +413,7 @@ export default function RecognitionPage() {
           </div>
         ) : (
           <div className="rounded-xl border-2 border-dashed border-zinc-700 p-8 text-center">
-            <Award className="w-10 h-10 text-zinc-700 mx-auto mb-3" />
+            <Award className="w-10 h-10 shrink-0 text-zinc-700 mx-auto mb-3" />
             <p className="text-sm font-medium text-zinc-400">
               No contributions yet. Be the first to contribute!
             </p>
@@ -421,7 +421,7 @@ export default function RecognitionPage() {
               onClick={() => setModalOpen(true)}
               className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors"
             >
-              <UploadCloud className="w-4 h-4" />
+              <UploadCloud className="w-4 h-4 shrink-0" />
               Submit Your Contribution
             </button>
           </div>

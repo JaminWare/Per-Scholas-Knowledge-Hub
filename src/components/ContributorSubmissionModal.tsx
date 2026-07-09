@@ -638,7 +638,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         <div className="relative w-full max-w-md bg-zinc-900 rounded-2xl border border-zinc-800/50 shadow-lg overflow-hidden flex flex-col">
           <div className="flex flex-col items-center text-center px-8 py-12">
             <div className="w-20 h-20 rounded-full bg-emerald-500/10 border-2 border-emerald-500/30 flex items-center justify-center mb-6">
-              <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+              <CheckCircle2 className="w-10 h-10 shrink-0 text-emerald-500" />
             </div>
             <h2 className="text-2xl font-bold text-zinc-100 mb-3">{editItem ? 'Edit Submitted!' : 'Contribution Submitted!'}</h2>
             <p className="text-sm text-zinc-400 leading-relaxed max-w-sm">
@@ -672,7 +672,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
             <h2 className="text-lg sm:text-xl font-bold text-zinc-100">{editItem ? 'Suggest an Edit' : 'Log New Intel'}</h2>
             <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">{editItem ? 'Propose changes to this article. Edits are reviewed before going live.' : 'Add your breakthrough, workflow fix, or study hack to the Cohort Survival Guide.'}</p>
           </div>
-          <button onClick={() => { reset(); onClose(); }} className="p-2.5 rounded-xl hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 transition-colors flex-shrink-0"><X className="w-5 h-5" /></button>
+          <button onClick={() => { reset(); onClose(); }} className="p-2.5 rounded-xl hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300 transition-colors flex-shrink-0"><X className="w-5 h-5 shrink-0" /></button>
         </div>
 
         <div className="mx-4 sm:mx-6 mt-3 sm:mt-4 px-3 sm:px-4 py-3 rounded-xl bg-blue-600/10 border border-blue-600/20 flex items-start gap-2.5 flex-shrink-0">
@@ -731,7 +731,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                 {SUBMISSION_TYPES.map((t) => (
                   <button key={t.value} type="button" onClick={() => setSubmissionType(t.value)} className={`flex flex-col items-center gap-1.5 p-3 sm:p-3 rounded-xl border text-center transition-all min-h-[56px] ${submissionType === t.value ? 'bg-blue-600 border-blue-600 text-white' : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:border-blue-300'}`}>
-                    <t.icon className="w-4 h-4" />
+                    <t.icon className="w-4 h-4 shrink-0" />
                     <span className="text-[11px] font-semibold leading-tight">{t.label}</span>
                   </button>
                 ))}
@@ -892,11 +892,11 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               )}
 
               <div className="mt-2 flex items-center gap-2">
-                <Tag className="w-3.5 h-3.5 text-blue-600" />
+                <Tag className="w-3.5 h-3.5 shrink-0 text-blue-600" />
                 <span className="text-xs text-zinc-500">You will earn: <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-600/10 text-blue-400">[{autoBadge}]</span></span>
                 {autoDetected && (
                   <span className="inline-flex items-center gap-1 ml-auto text-xs font-medium text-emerald-500">
-                    <CheckCircle2 className="w-3 h-3" /> Auto-detected
+                    <CheckCircle2 className="w-3 h-3 shrink-0" /> Auto-detected
                   </span>
                 )}
               </div>
@@ -904,13 +904,13 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
             <div className="pt-2 border-t border-zinc-800/50">
               <div className="flex items-center gap-2 mb-4">
-                <BookOpen className="w-4 h-4 text-blue-600" />
+                <BookOpen className="w-4 h-4 shrink-0 text-blue-600" />
                 <h3 className="text-sm font-bold text-zinc-200">Guided Submission Builder</h3>
               </div>
 
               {isResourceLink ? (
                 <div>
-                  <label className="flex items-center gap-2 text-xs font-semibold text-zinc-300 mb-1.5"><LinkIcon className="w-3.5 h-3.5 text-blue-600" /> Resource URL</label>
+                  <label className="flex items-center gap-2 text-xs font-semibold text-zinc-300 mb-1.5"><LinkIcon className="w-3.5 h-3.5 shrink-0 text-blue-600" /> Resource URL</label>
                   <input type="url" value={resourceUrl} onChange={(e) => {
                     const val = e.target.value;
                     setResourceUrl(val);
@@ -936,7 +936,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                   </div>
                   <div>
                     <label className="flex items-center gap-2 text-xs font-semibold text-zinc-300 mb-1.5">
-                      <ImagePlus className="w-3.5 h-3.5 text-blue-600" /> Supported Media / Attachment Link
+                      <ImagePlus className="w-3.5 h-3.5 shrink-0 text-blue-600" /> Supported Media / Attachment Link
                     </label>
                     <input type="url" value={diagramUrl} onChange={(e) => setDiagramUrl(e.target.value)} placeholder="Paste a link to an image, PDF, YouTube video, or Google Drive file..." className={inputCls('diagramUrl')} />
                     <p className="mt-1.5 text-[10px] text-zinc-500">Supports images, PDFs, YouTube, Google Drive, and other shareable URLs.</p>
@@ -1019,7 +1019,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
         <div className="px-4 sm:px-6 py-4 border-t border-zinc-800/50 bg-zinc-900 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 flex-shrink-0">
           <button type="button" onClick={() => { reset(); onClose(); }} className="text-sm font-medium text-zinc-500 hover:text-zinc-200 transition-colors py-2.5 sm:py-0">Cancel</button>
           <button type="button" onClick={handleSubmit} disabled={isSubmitting} className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all text-zinc-900 bg-blue-400 hover:bg-blue-600 disabled:opacity-60">
-            {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : <><Send className="w-4 h-4" /> {editItem ? 'Submit Edit for Review' : 'Submit Your Contribution'}</>}
+            {isSubmitting ? <><Loader2 className="w-4 h-4 shrink-0 animate-spin" /> Submitting...</> : <><Send className="w-4 h-4 shrink-0" /> {editItem ? 'Submit Edit for Review' : 'Submit Your Contribution'}</>}
           </button>
         </div>
 

@@ -87,7 +87,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
         <div className="px-6 pt-6 flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-blue-600/10 border border-blue-600/20 flex items-center justify-center">
-              <UserCog className="w-4.5 h-4.5 text-blue-400" />
+              <UserCog className="w-4.5 h-4.5 shrink-0 text-blue-400" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-zinc-100">Edit Display Name</h2>
@@ -98,7 +98,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             onClick={onClose}
             className="p-1.5 -mr-1 -mt-1 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 shrink-0" />
           </button>
         </div>
 
@@ -157,7 +157,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-white bg-blue-600 hover:bg-blue-400 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</>
+              <><Loader2 className="w-4 h-4 shrink-0 animate-spin" /> Submitting...</>
             ) : success ? (
               'Requested'
             ) : (

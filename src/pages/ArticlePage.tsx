@@ -482,7 +482,7 @@ export default function ArticlePage() {
           to="/"
           className="inline-flex items-center gap-2 text-blue-400 font-medium hover:underline"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-4 h-4 shrink-0" />
           Back to Home
         </Link>
       </div>
@@ -530,7 +530,7 @@ export default function ArticlePage() {
           {/* Track label */}
           <div className="flex items-center gap-3 mb-4">
             <div className="p-2 rounded-xl bg-blue-600/20 border border-blue-600/30">
-              <BookOpen className="w-5 h-5 text-blue-400" />
+              <BookOpen className="w-5 h-5 text-blue-400 shrink-0" />
             </div>
             <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">{trackLabel}</span>
           </div>
@@ -589,14 +589,14 @@ export default function ArticlePage() {
                   className="p-2 rounded-lg hover:bg-zinc-700/50 text-zinc-400 hover:text-blue-400 transition-colors"
                   title="Suggest an edit"
                 >
-                  <Pencil className="w-4 h-4" />
+                  <Pencil className="w-4 h-4 shrink-0" />
                 </button>
               )}
               <button className="p-2 rounded-lg hover:bg-zinc-700/50 text-zinc-400 hover:text-zinc-200 transition-colors">
-                <Bookmark className="w-4 h-4" />
+                <Bookmark className="w-4 h-4 shrink-0" />
               </button>
               <button className="p-2 rounded-lg hover:bg-zinc-700/50 text-zinc-400 hover:text-zinc-200 transition-colors">
-                <Share2 className="w-4 h-4" />
+                <Share2 className="w-4 h-4 shrink-0" />
               </button>
             </div>
           </div>
@@ -618,7 +618,7 @@ export default function ArticlePage() {
             <div className="relative rounded-2xl border-2 border-dashed border-blue-600/30 bg-zinc-800/60 p-10">
               <div className="flex justify-center mb-6">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-400 flex items-center justify-center shadow-lg shadow-blue-600/20">
-                  <UploadCloud className="w-8 h-8 text-white" />
+                  <UploadCloud className="w-8 h-8 text-white shrink-0" />
                 </div>
               </div>
               <h2 className="text-2xl font-bold text-zinc-100 mb-4">
@@ -631,7 +631,7 @@ export default function ArticlePage() {
                 onClick={() => setModalOpen(true)}
                 className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] transition-all"
               >
-                <UploadCloud className="w-4.5 h-4.5" />
+                <UploadCloud className="w-4.5 h-4.5 shrink-0" />
                 Submit your Contribution
               </button>
             </div>
@@ -644,7 +644,7 @@ export default function ArticlePage() {
             className="group flex items-center gap-4 rounded-xl border border-zinc-700 bg-zinc-800/60 p-5 hover:border-blue-600/50 hover:shadow-lg hover:shadow-blue-600/10 transition-all duration-200"
           >
             <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-blue-600/15 border border-blue-600/25 flex items-center justify-center group-hover:bg-blue-600/25 transition-colors">
-              <ExternalLink className="w-5 h-5 text-blue-400" />
+              <ExternalLink className="w-5 h-5 text-blue-400 shrink-0" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs text-zinc-400 mb-1 font-medium">Open External Resource</p>

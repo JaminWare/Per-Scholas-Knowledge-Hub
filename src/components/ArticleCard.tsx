@@ -45,12 +45,12 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
       )}
       <div className="mt-4 flex items-center justify-between">
         <div className={`flex items-center gap-2 text-zinc-500 ${featured ? 'text-sm' : 'text-xs'}`}>
-          <Clock className={featured ? 'w-4 h-4' : 'w-3.5 h-3.5'} />
+          <Clock className={`shrink-0 ${featured ? 'w-4 h-4' : 'w-3.5 h-3.5'}`} />
           <span>{formattedDate}</span>
         </div>
         {!featured && article.tags.length > 0 && (
           <div className="flex items-center gap-1">
-            <Tag className="w-3.5 h-3.5 text-zinc-500" />
+            <Tag className="w-3.5 h-3.5 shrink-0 text-zinc-500" />
             <span className="text-xs text-zinc-500">{article.tags[0]}</span>
           </div>
         )}
@@ -66,7 +66,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
       onClick={(e) => e.stopPropagation()}
       className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 hover:gap-2.5 transition-all duration-200"
     >
-      Open resource <ExternalLink className="w-4 h-4" />
+      Open resource <ExternalLink className="w-4 h-4 shrink-0" />
     </a>
   ) : (
     <Link
@@ -74,7 +74,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
       onClick={(e) => e.stopPropagation()}
       className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 hover:gap-2.5 transition-all duration-200"
     >
-      Read full article <ArrowRight className="w-4 h-4" />
+      Read full article <ArrowRight className="w-4 h-4 shrink-0" />
     </Link>
   );
 
@@ -101,14 +101,14 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-blue-400 text-sm font-medium hover:gap-2 hover:text-blue-300 transition-all"
             >
-              Open resource <ExternalLink className="w-4 h-4" />
+              Open resource <ExternalLink className="w-4 h-4 shrink-0" />
             </a>
           ) : (
             <Link
               to={articlePath}
               className="inline-flex items-center gap-1 text-blue-400 text-sm font-medium hover:gap-2 hover:text-blue-300 transition-all"
             >
-              Read more <ArrowRight className="w-4 h-4" />
+              Read more <ArrowRight className="w-4 h-4 shrink-0" />
             </Link>
           )}
         </div>
@@ -138,14 +138,14 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 text-blue-400 text-sm font-medium hover:gap-2 hover:text-blue-300 transition-all"
           >
-            Open resource <ExternalLink className="w-4 h-4" />
+            Open resource <ExternalLink className="w-4 h-4 shrink-0" />
           </a>
         ) : (
           <Link
             to={articlePath}
             className="inline-flex items-center gap-1 text-blue-400 text-sm font-medium hover:gap-2 hover:text-blue-300 transition-all"
           >
-            Read more <ArrowRight className="w-4 h-4" />
+            Read more <ArrowRight className="w-4 h-4 shrink-0" />
           </Link>
         )}
       </div>

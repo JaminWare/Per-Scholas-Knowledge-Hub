@@ -36,7 +36,7 @@ export default function ContributorCard({ contributor }: ContributorCardProps) {
         <div className="flex-1 min-w-0">
           <h4 className="font-semibold text-zinc-100 text-lg">{contributor.name}</h4>
           <div className="flex items-center gap-2 mt-1">
-            <Award className="w-4 h-4 text-blue-400" />
+            <Award className="w-4 h-4 shrink-0 text-blue-400" />
             <span className="text-sm text-blue-400 font-medium">{contributor.cohort_id}</span>
           </div>
           {contributor.bio && (
@@ -49,7 +49,7 @@ export default function ContributorCard({ contributor }: ContributorCardProps) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 mt-3 text-sm font-medium text-zinc-400 hover:text-blue-400 transition-colors"
             >
-              <Linkedin className="w-4 h-4" />
+              <Linkedin className="w-4 h-4 shrink-0" />
               <span>Connect on LinkedIn</span>
             </a>
           )}

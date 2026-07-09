@@ -139,7 +139,7 @@ function TypeIcon({ type }: { type: string }) {
     'Edit Suggestion': Pencil,
   };
   const Icon = map[type] ?? FileText;
-  return <Icon className="w-3.5 h-3.5" />;
+  return <Icon className="w-3.5 h-3.5 shrink-0" />;
 }
 
 // ---------------------------------------------------------------------------
@@ -332,13 +332,13 @@ function SubmissionCard({
               <h3 className="font-semibold text-zinc-100 text-sm leading-snug">{sub.title}</h3>
               <div className="flex flex-wrap items-center gap-2 mt-1.5">
                 <span className="flex items-center gap-1 text-[11px] text-zinc-400">
-                  <User className="w-3 h-3" /> {sub.full_name}
+                  <User className="w-3 h-3 shrink-0" /> {sub.full_name}
                 </span>
                 <span className="flex items-center gap-1 text-[11px] text-zinc-500">
-                  <Calendar className="w-3 h-3" /> {submittedAt}
+                  <Calendar className="w-3 h-3 shrink-0" /> {submittedAt}
                 </span>
                 <span className="flex items-center gap-1 text-[11px] text-zinc-500">
-                  <Tag className="w-3 h-3" /> {sub.badge}
+                  <Tag className="w-3 h-3 shrink-0" /> {sub.badge}
                 </span>
               </div>
             </div>
@@ -440,7 +440,7 @@ function SubmissionCard({
                 isEditing ? 'text-amber-400 hover:text-amber-300' : 'text-zinc-500 hover:text-zinc-300'
               }`}
             >
-              {isEditing ? <><SplitSquareHorizontal className="w-3 h-3" /> Editor</> : <><Pencil className="w-3 h-3" /> Edit</>}
+              {isEditing ? <><SplitSquareHorizontal className="w-3 h-3 shrink-0" /> Editor</> : <><Pencil className="w-3 h-3 shrink-0" /> Edit</>}
             </button>
           )}
           {hasEdits && (
@@ -473,7 +473,7 @@ function SubmissionCard({
                   }}
                   className="flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded-lg bg-blue-900/20 hover:bg-blue-800/30 text-blue-400 border border-blue-800/50 text-[11px] font-semibold transition-all"
                 >
-                  <Wand2 className="w-3 h-3" /> Auto-Format
+                  <Wand2 className="w-3 h-3 shrink-0" /> Auto-Format
                 </button>
                 <span className="text-[10px] text-zinc-600 hidden sm:inline">Smart headers, blockquotes, list cleanup</span>
               </div>
@@ -588,8 +588,8 @@ function SubmissionCard({
           className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-white text-xs font-bold transition-all shadow-md shadow-teal-500/20 disabled:opacity-50"
         >
           {approving
-            ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Approving...</>
-            : <><CheckCircle2 className="w-3.5 h-3.5" /> Approve &amp; Publish</>
+            ? <><Loader2 className="w-3.5 h-3.5 shrink-0 animate-spin" /> Approving...</>
+            : <><CheckCircle2 className="w-3.5 h-3.5 shrink-0" /> Approve &amp; Publish</>
           }
         </button>
         <button
@@ -598,8 +598,8 @@ function SubmissionCard({
           className="flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/20 text-xs font-bold transition-all disabled:opacity-50"
         >
           {rejecting
-            ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Rejecting...</>
-            : <><Trash2 className="w-3.5 h-3.5" /> Reject</>
+            ? <><Loader2 className="w-3.5 h-3.5 shrink-0 animate-spin" /> Rejecting...</>
+            : <><Trash2 className="w-3.5 h-3.5 shrink-0" /> Reject</>
           }
         </button>
       </div>
@@ -647,14 +647,14 @@ function ArchiveTable({
       {/* Section header */}
       <div className="flex flex-wrap items-center justify-between gap-3 pb-3">
         <div className="flex items-center gap-3">
-          <Archive className="w-5 h-5 text-zinc-500" />
+          <Archive className="w-5 h-5 shrink-0 text-zinc-500" />
           <div>
             <h2 className="text-lg font-bold text-zinc-100">Cohort Submissions Archive</h2>
             <p className="text-sm text-zinc-500 mt-0.5">{data.length} total submissions</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Filter className="w-3.5 h-3.5 text-zinc-500" />
+          <Filter className="w-3.5 h-3.5 shrink-0 text-zinc-500" />
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -671,12 +671,12 @@ function ArchiveTable({
       {/* Table */}
       {loading ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-5 h-5 animate-spin text-zinc-500" />
+          <Loader2 className="w-5 h-5 shrink-0 animate-spin text-zinc-500" />
         </div>
       ) : filtered.length === 0 ? (
         searchQuery.trim() ? (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Search className="w-8 h-8 text-zinc-600 mb-4" />
+            <Search className="w-8 h-8 shrink-0 text-zinc-600 mb-4" />
             <h3 className="text-base font-semibold text-zinc-300">No results found</h3>
             <p className="text-sm text-zinc-500 mt-1">No submissions found matching &lsquo;{searchQuery}&rsquo;.</p>
           </div>
@@ -707,7 +707,7 @@ function ArchiveTable({
                   <td className="px-4 py-2">
                     <div className="flex items-center justify-end gap-1.5">
                       {busyId === row.id ? (
-                        <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-500" />
+                        <Loader2 className="w-3.5 h-3.5 shrink-0 animate-spin text-zinc-500" />
                       ) : row.status === 'rejected' ? (
                         <>
                           <button
@@ -715,7 +715,7 @@ function ArchiveTable({
                             title="Restore to pending queue"
                             className="p-1.5 rounded-lg hover:bg-amber-500/10 text-zinc-500 hover:text-amber-400 transition-colors"
                           >
-                            <RotateCcw className="w-3.5 h-3.5" />
+                            <RotateCcw className="w-3.5 h-3.5 shrink-0" />
                           </button>
                           <button
                             onClick={() => {
@@ -726,7 +726,7 @@ function ArchiveTable({
                             title="Permanently delete"
                             className="p-1.5 rounded-lg hover:bg-red-500/10 text-zinc-500 hover:text-red-400 transition-colors"
                           >
-                            <XCircle className="w-3.5 h-3.5" />
+                            <XCircle className="w-3.5 h-3.5 shrink-0" />
                           </button>
                         </>
                       ) : row.status === 'approved' ? (
@@ -735,7 +735,7 @@ function ArchiveTable({
                           title="Unpublish (move back to pending)"
                           className="p-1.5 rounded-lg hover:bg-amber-500/10 text-zinc-500 hover:text-amber-400 transition-colors"
                         >
-                          <EyeOff className="w-3.5 h-3.5" />
+                          <EyeOff className="w-3.5 h-3.5 shrink-0" />
                         </button>
                       ) : null}
                     </div>
@@ -861,7 +861,7 @@ function NameRequestsView({ adminEmail }: { adminEmail: string }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3 pb-4">
-        <UserCheck className="w-5 h-5 text-zinc-500" />
+        <UserCheck className="w-5 h-5 shrink-0 text-zinc-500" />
         <div>
           <h3 className="text-lg font-bold text-zinc-100">Name Change Requests</h3>
           <p className="text-sm text-zinc-500 mt-0.5">Review and approve or reject display name change requests</p>
@@ -877,11 +877,11 @@ function NameRequestsView({ adminEmail }: { adminEmail: string }) {
 
       {loadingRequests ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-5 h-5 animate-spin text-zinc-500" />
+          <Loader2 className="w-5 h-5 shrink-0 animate-spin text-zinc-500" />
         </div>
       ) : requests.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
-          <UserCheck className="w-8 h-8 text-zinc-600 mb-4" />
+          <UserCheck className="w-8 h-8 shrink-0 text-zinc-600 mb-4" />
           <h3 className="text-base font-semibold text-zinc-300">No pending name requests</h3>
           <p className="text-sm text-zinc-500 mt-1 max-w-xs">
             When users submit name change requests, they will appear here for review.
@@ -912,9 +912,9 @@ function NameRequestsView({ adminEmail }: { adminEmail: string }) {
                   title="Approve"
                 >
                   {actionLoading === req.id ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 shrink-0 animate-spin" />
                   ) : (
-                    <CheckCircle2 className="w-4 h-4" />
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
                   )}
                 </button>
                 <button
@@ -923,7 +923,7 @@ function NameRequestsView({ adminEmail }: { adminEmail: string }) {
                   className="p-2 rounded-lg bg-red-500/10 border border-red-500/25 text-red-400 hover:bg-red-500/20 hover:text-red-300 transition-colors disabled:opacity-50"
                   title="Reject"
                 >
-                  <XCircle className="w-4 h-4" />
+                  <XCircle className="w-4 h-4 shrink-0" />
                 </button>
               </div>
             </div>
@@ -957,7 +957,7 @@ function AuditTrailView() {
     <div className="space-y-4">
       {/* Section header */}
       <div className="flex items-center gap-3 pb-3">
-        <Activity className="w-5 h-5 text-blue-400" />
+        <Activity className="w-5 h-5 shrink-0 text-blue-400" />
         <div>
           <h2 className="text-lg font-bold text-zinc-100">Audit Trail</h2>
           <p className="text-sm text-zinc-500 mt-0.5">Chronological log of all moderation actions (most recent first)</p>
@@ -966,11 +966,11 @@ function AuditTrailView() {
 
       {loadingLogs ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-5 h-5 animate-spin text-zinc-500" />
+          <Loader2 className="w-5 h-5 shrink-0 animate-spin text-zinc-500" />
         </div>
       ) : logs.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800 bg-zinc-900/30">
-          <Activity className="w-8 h-8 text-zinc-600 mb-4" />
+          <Activity className="w-8 h-8 shrink-0 text-zinc-600 mb-4" />
           <h3 className="text-base font-semibold text-zinc-300">No audit events yet</h3>
           <p className="text-sm text-zinc-500 mt-1 max-w-xs">
             Actions taken in the Admin Command Center will appear here.
@@ -1155,7 +1155,7 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
             disabled={inviting || !inviteEmail.trim()}
             className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-400 text-white text-sm font-bold transition-all shadow-md shadow-blue-600/20 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {inviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+            {inviting ? <Loader2 className="w-4 h-4 shrink-0 animate-spin" /> : <UserPlus className="w-4 h-4" />}
             Invite
           </button>
         </div>
@@ -1175,7 +1175,7 @@ function AccessControlView({ adminEmail }: { adminEmail: string }) {
       {/* Admin List */}
       {loadingList ? (
         <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-5 h-5 animate-spin text-zinc-500" />
+          <Loader2 className="w-5 h-5 shrink-0 animate-spin text-zinc-500" />
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-zinc-800">
@@ -1337,7 +1337,7 @@ function LiveArticlesView({ adminEmail }: { adminEmail: string }) {
 
       {!loading && !error && filtered.length === 0 && (
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <Search className="w-8 h-8 text-zinc-600 mb-4" />
+          <Search className="w-8 h-8 shrink-0 text-zinc-600 mb-4" />
           <h3 className="text-base font-semibold text-zinc-300">No articles found</h3>
           <p className="text-sm text-zinc-500 mt-1">
             {searchQuery.trim() ? `No results for "${searchQuery}".` : 'The articles table is empty.'}
@@ -1525,7 +1525,7 @@ function MaintenanceView({ adminEmail }: { adminEmail: string }) {
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-red-600 hover:bg-red-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-600/20"
           >
             {isCleaning ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> Running sweep...</>
+              <><Loader2 className="w-4 h-4 shrink-0 animate-spin" /> Running sweep...</>
             ) : (
               <><Trash2 className="w-4 h-4" /> Run Deduplication Sweep</>
             )}
@@ -2158,7 +2158,7 @@ function AdminPanel({ adminEmail, canManageAdmins }: { adminEmail: string; canMa
             ) : filteredSubmissions.length === 0 ? (
               searchQuery.trim() ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center rounded-xl border border-zinc-800/40 bg-zinc-900/30">
-                  <Search className="w-8 h-8 text-zinc-600 mb-4" />
+                  <Search className="w-8 h-8 shrink-0 text-zinc-600 mb-4" />
                   <h3 className="text-base font-semibold text-zinc-300">No results found</h3>
                   <p className="text-sm text-zinc-500 mt-1 max-w-xs">
                     No submissions found matching &lsquo;{searchQuery}&rsquo;.

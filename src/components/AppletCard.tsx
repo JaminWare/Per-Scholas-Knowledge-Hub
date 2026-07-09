@@ -96,14 +96,14 @@ export function AppletCard({ article, gridMode = false, isPinned = false }: { ar
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 text-blue-400 text-sm font-medium hover:gap-2 hover:text-blue-300 transition-all"
           >
-            Open resource <ArrowRight className="w-4 h-4" />
+            Open resource <ArrowRight className="w-4 h-4 shrink-0" />
           </a>
         ) : (
           <Link
             to={`/article/${article.slug}`}
             className="inline-flex items-center gap-1 text-blue-400 text-sm font-medium hover:gap-2 hover:text-blue-300 transition-all"
           >
-            Read more <ArrowRight className="w-4 h-4" />
+            Read more <ArrowRight className="w-4 h-4 shrink-0" />
           </Link>
         )}
       </div>
@@ -119,7 +119,7 @@ export function AppletCard({ article, gridMode = false, isPinned = false }: { ar
                 onClick={(e) => e.stopPropagation()}
                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 hover:gap-2.5 transition-all duration-200"
               >
-                Open resource <ArrowRight className="w-4 h-4" />
+                Open resource <ArrowRight className="w-4 h-4 shrink-0" />
               </a>
             ) : (
               <Link
@@ -127,7 +127,7 @@ export function AppletCard({ article, gridMode = false, isPinned = false }: { ar
                 onClick={(e) => e.stopPropagation()}
                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-blue-400 hover:text-blue-300 hover:gap-2.5 transition-all duration-200"
               >
-                Read full article <ArrowRight className="w-4 h-4" />
+                Read full article <ArrowRight className="w-4 h-4 shrink-0" />
               </Link>
             )}
           </div>
@@ -186,7 +186,7 @@ export function OpenSlotPlaceholder({
       <div className="flex flex-col gap-3 p-4 flex-1">
         <div className="flex items-start gap-3">
           <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-zinc-800 border border-zinc-700">
-            <Lightbulb className="w-4 h-4 text-blue-400" />
+            <Lightbulb className="w-4 h-4 shrink-0 text-blue-400" />
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-sm leading-snug text-white transition-colors duration-200 hover:text-blue-400">
@@ -209,7 +209,7 @@ export function OpenSlotPlaceholder({
           className="mt-auto inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-blue-600 hover:bg-blue-700 text-white border-blue-600 hover:border-blue-700"
         >
           Add Intel
-          <ArrowRight className="w-3.5 h-3.5" />
+          <ArrowRight className="w-3.5 h-3.5 shrink-0" />
         </button>
       </div>
     </div>

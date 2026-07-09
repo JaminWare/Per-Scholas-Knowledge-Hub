@@ -217,7 +217,7 @@ export default function DeskolasPage() {
         <div className="relative px-6 py-5 md:px-8 md:py-6">
           <div className="flex items-start gap-5 mb-4">
             <div className="w-14 h-14 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0">
-              <Headphones className="w-7 h-7 text-white" />
+              <Headphones className="w-7 h-7 shrink-0 text-white" />
             </div>
             <div className="flex-1">
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Deskolas Tech Solutions</h1>
@@ -230,7 +230,7 @@ export default function DeskolasPage() {
               className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200 shadow-lg shadow-blue-600/20 hover:shadow-blue-400/30 flex-shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
             >
               Open Deskolas
-              <ExternalLink className="w-4 h-4" />
+              <ExternalLink className="w-4 h-4 shrink-0" />
             </a>
           </div>
           <a
@@ -240,7 +240,7 @@ export default function DeskolasPage() {
             className="sm:hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200 shadow-lg shadow-blue-600/20 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             Open Deskolas
-            <ExternalLink className="w-4 h-4" />
+            <ExternalLink className="w-4 h-4 shrink-0" />
           </a>
         </div>
       </div>
@@ -322,7 +322,7 @@ export default function DeskolasPage() {
       ) : (
         <div className="flex flex-col items-center justify-center gap-6 py-10 text-center rounded-xl border border-dashed border-zinc-700 bg-zinc-900/50">
           <div className="w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-400/20 flex items-center justify-center">
-            <Headphones className="w-8 h-8 text-blue-400" />
+            <Headphones className="w-8 h-8 shrink-0 text-blue-400" />
           </div>
           <div className="space-y-2 max-w-md">
             <h2 className="text-lg font-bold text-zinc-100">No tickets yet</h2>
@@ -334,7 +334,7 @@ export default function DeskolasPage() {
             onClick={() => user ? setIsModalOpen(true) : setAuthModalOpen(true)}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 shrink-0" />
             Add a Fix
           </button>
         </div>
@@ -348,7 +348,7 @@ export default function DeskolasPage() {
             onClick={() => user ? setIsModalOpen(true) : setAuthModalOpen(true)}
             className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm shadow-lg shadow-blue-600/20 transition-all duration-200 hover:scale-105 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 shrink-0" />
             Add a Fix
           </button>
         </div>

@@ -179,7 +179,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             onClick={handleClose}
             className="p-1.5 -mr-1 -mt-1 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 transition-colors"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 shrink-0" />
           </button>
         </div>
 
@@ -199,7 +199,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             className="w-full flex items-center justify-center gap-3 px-4 py-3 rounded-xl bg-white hover:bg-zinc-100 text-zinc-800 font-semibold text-sm transition-all shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {googleLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin text-zinc-500" />
+              <Loader2 className="w-5 h-5 shrink-0 animate-spin text-zinc-500" />
             ) : (
               <GoogleIcon className="w-5 h-5" />
             )}
@@ -223,7 +223,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             <div>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Mail className="w-4 h-4 text-zinc-500" />
+                  <Mail className="w-4 h-4 shrink-0 text-zinc-500" />
                 </div>
                 <input
                   type="email"
@@ -239,7 +239,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
             <div className="space-y-2.5">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                  <Lock className="w-4 h-4 text-zinc-500" />
+                  <Lock className="w-4 h-4 shrink-0 text-zinc-500" />
                 </div>
                 <input
                   type="password"
@@ -268,7 +268,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
 
               {checkingBreach && mode === 'signup' && passwordScore >= 3 && (
                 <div className="flex items-center gap-2 px-3.5 py-2">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-500" />
+                  <Loader2 className="w-3.5 h-3.5 shrink-0 animate-spin text-zinc-500" />
                   <span className="text-xs text-zinc-500">Checking breach databases...</span>
                 </div>
               )}
@@ -280,7 +280,7 @@ export default function AuthModal({ isOpen, onClose }: AuthModalProps) {
               className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-white bg-blue-600 hover:bg-blue-400 disabled:opacity-60 disabled:cursor-not-allowed mt-1"
             >
               {loading ? (
-                <><Loader2 className="w-4 h-4 animate-spin" /> Processing...</>
+                <><Loader2 className="w-4 h-4 shrink-0 animate-spin" /> Processing...</>
               ) : (
                 mode === 'login' ? 'Sign In' : 'Create Account'
               )}
