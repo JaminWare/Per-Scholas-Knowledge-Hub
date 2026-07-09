@@ -65,7 +65,7 @@ export default function HomePage() {
           <Compass className="w-5 h-5 shrink-0 text-zinc-400" />
           <h2 className="text-lg font-semibold text-zinc-200">Cohort Survival Guide</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {SURVIVAL_CARDS.map((card) => (
             <Link
               key={card.tab + card.title}
