@@ -70,7 +70,7 @@ export default function HomePage() {
             <Link
               key={card.tab + card.title}
               to={`/learner-experience?tab=${card.tab}`}
-              className="group flex items-start gap-3 p-4 rounded-xl bg-zinc-800/60 border border-zinc-700/50 hover:border-zinc-600 hover:bg-zinc-800 transition-all"
+              className="group flex items-start gap-3 p-4 rounded-xl bg-zinc-800/60 shadow-lg shadow-black/50 hover:shadow-xl hover:shadow-black/90 hover:bg-black/40 transition-all"
             >
               <card.icon className={`w-5 h-5 shrink-0 mt-0.5 ${card.color}`} />
               <div className="flex-1 min-w-0">

@@ -6,7 +6,7 @@
   * {
     -webkit-tap-highlight-color: transparent !important;
     scrollbar-width: thin;
-    scrollbar-color: #27272a transparent;
+    scrollbar-color: #000000 transparent;
   }
 
   *::-webkit-scrollbar {
@@ -19,12 +19,12 @@
   }
 
   *::-webkit-scrollbar-thumb {
-    background-color: #27272a;
-    border-radius: 8px;
+    background-color: #000000;
+    border-radius: 9999px;
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background-color: #52525b;
+    background-color: #18181b;
   }
 
   html, body {
