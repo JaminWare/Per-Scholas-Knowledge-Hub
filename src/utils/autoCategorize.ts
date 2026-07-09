@@ -5,7 +5,7 @@ export interface AutoCategoryResult {
   track: string;
   compObjective?: string;
   lxStage?: string;
-  submissionType?: 'Diagram' | 'Prompt Playbook' | 'Study Tip';
+  submissionType?: 'Diagram' | 'Study Tip';
 }
 
 interface SearchableEntry {
@@ -642,7 +642,6 @@ const LESSON_MAPPINGS: LessonMapping[] = RULE_DATA
   );
 
 const DIAGRAM_KEYWORDS = ['architecture map', 'mermaid', 'flowchart', 'topology', 'diagram', 'blueprint'];
-const PROMPT_KEYWORDS = ['canvas class ai', 'system message', 'prompt', 'llm', 'chatgpt', 'ai role'];
 
 export function autoCategorizeSubmission(
   title: string,
@@ -652,11 +651,9 @@ export function autoCategorizeSubmission(
 
   const combined = `${title} ${content}`.toLowerCase();
 
-  let submissionType: 'Diagram' | 'Prompt Playbook' | 'Study Tip' | undefined;
+  let submissionType: 'Diagram' | 'Study Tip' | undefined;
   if (DIAGRAM_KEYWORDS.some((kw) => combined.includes(kw))) {
     submissionType = 'Diagram';
-  } else if (PROMPT_KEYWORDS.some((kw) => combined.includes(kw))) {
-    submissionType = 'Prompt Playbook';
   }
 
   // Lesson number exact-match pass (no fuzzy)

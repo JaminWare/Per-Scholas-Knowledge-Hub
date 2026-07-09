@@ -63,7 +63,7 @@ const TRACK_COLORS = {
 
 const DASHBOARD_CONTEXTS: Record<string, string> = {};
 
-const RESOURCE_TABS = ['All', 'Resource Links', 'Articles', 'Pro Tips', 'Diagrams', 'Playbooks'] as const;
+const RESOURCE_TABS = ['All', 'Resource Links', 'Articles', 'Pro Tips', 'Diagrams'] as const;
 type ResourceTab = typeof RESOURCE_TABS[number];
 
 const TAB_ICONS: Record<ResourceTab, React.ComponentType<{ className?: string }>> = {
@@ -72,7 +72,6 @@ const TAB_ICONS: Record<ResourceTab, React.ComponentType<{ className?: string }>
   'Pro Tips': Lightbulb,
   'Diagrams': GitBranch,
   'Resource Links': Link2,
-  'Playbooks': Sparkles,
 };
 
 const TAB_TO_SUBMISSION_TYPE: Record<ResourceTab, string | null> = {
@@ -81,7 +80,6 @@ const TAB_TO_SUBMISSION_TYPE: Record<ResourceTab, string | null> = {
   'Pro Tips': 'Study Tip',
   'Diagrams': 'Diagram',
   'Resource Links': 'Resource Link',
-  'Playbooks': 'Prompt Playbook',
 };
 
 const SCROLL_TRACK = 'flex overflow-x-auto gap-4 pb-4 pt-1 snap-x snap-mandatory min-h-[250px] [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-track]:bg-transparent';

@@ -48,7 +48,7 @@ function AppContent() {
   }, []);
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex flex-col bg-black text-zinc-100">
+    <div className="h-screen w-screen overflow-hidden flex flex-col bg-zinc-950 text-zinc-100">
       <ScrollToTop scrollRef={scrollRef} />
 
       {/* ── Mobile Sidebar Overlay ─────────────────────────── */}
@@ -71,7 +71,7 @@ function AppContent() {
       {/* ══════════════════════════════════════════════════════
           GLOBAL HEADER (static, outside all panels)
          ══════════════════════════════════════════════════════ */}
-      <header className="flex-shrink-0 z-30 bg-black/95 backdrop-blur-lg border-b border-zinc-800/50">
+      <header className="flex-shrink-0 z-30 bg-zinc-950/95 backdrop-blur-lg border-b border-zinc-800/50">
         {/* Mobile header row */}
         <div className="flex md:hidden items-center gap-3 px-4 py-3">
           <button

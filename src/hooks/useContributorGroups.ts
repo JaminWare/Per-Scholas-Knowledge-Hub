@@ -32,7 +32,7 @@ interface UseContributorGroupsResult {
   error: string | null;
 }
 
-type PortalBucket = 'Articles' | 'Pro Tips' | 'Diagrams' | 'Resource Links' | 'Playbooks';
+type PortalBucket = 'Articles' | 'Pro Tips' | 'Diagrams' | 'Resource Links';
 
 export function mapToPortalBucket(rawType: string | null | undefined): PortalBucket {
   switch (rawType) {
@@ -45,9 +45,6 @@ export function mapToPortalBucket(rawType: string | null | undefined): PortalBuc
       return 'Diagrams';
     case 'Resource Link':
       return 'Resource Links';
-    case 'Playbook':
-    case 'Prompt Playbook':
-      return 'Playbooks';
     default:
       return 'Articles';
   }

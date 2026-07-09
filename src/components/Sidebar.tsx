@@ -129,7 +129,7 @@ export default function Sidebar({ onToggle }: SidebarProps) {
           </div>
           <div className="min-w-0">
             <p className="font-bold text-zinc-100 text-[13px] leading-tight truncate">
-              Knowledge Base
+              Learners Hub
             </p>
           </div>
         </Link>

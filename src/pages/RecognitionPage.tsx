@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, ArrowLeft, BookOpen,
-  Lightbulb, GitBranch, Sparkles, Star, Crown, Link2, UploadCloud,
+  Lightbulb, GitBranch, Star, Crown, Link2, UploadCloud,
   Laptop, Monitor, Heart, LifeBuoy, Layers, Pencil, UserCog, Headphones,
 } from 'lucide-react';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
@@ -22,7 +22,6 @@ const badgeColors: Record<string, string> = {
   'HealthIT Specialist': 'bg-blue-600/10 text-blue-400',
   'Diagram Architect':   'bg-blue-600/10 text-blue-400',
   'Reference Author':    'bg-amber-500/10 text-amber-400',
-  'Playbook Engineer':   'bg-blue-600/10 text-blue-400',
   'Cohort Contributor':  'bg-zinc-700 text-zinc-400',
   'Domain Expert':       'bg-blue-600/15 text-blue-300 border border-blue-400/30',
   'Master Architect':    'bg-amber-500/15 text-amber-300 border border-amber-400/30',
@@ -53,7 +52,6 @@ function getCategoryIcon(type: string, isFounder: boolean) {
   if (type === 'Resource Links') return <Link2 className="w-3.5 h-3.5 text-blue-600 flex-shrink-0" />;
   if (type === 'Pro Tips') return <Lightbulb className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />;
   if (type === 'Diagrams') return <GitBranch className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />;
-  if (type === 'Playbooks') return <Sparkles className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />;
   return <BookOpen className={`w-3.5 h-3.5 flex-shrink-0 ${isFounder ? 'text-amber-500' : 'text-blue-600'}`} />;
 }
 

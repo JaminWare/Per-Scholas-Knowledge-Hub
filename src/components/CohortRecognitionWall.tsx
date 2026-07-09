@@ -30,7 +30,6 @@ const PLURAL_MAP: Record<string, string> = {
   'Study Tip': 'Study Tips',
   'Quick Ref': 'Quick Refs',
   'Quick Reference': 'Quick References',
-  'Prompt Playbook': 'Prompt Playbooks',
 };
 
 function pluralizeType(type: string, count: number): string {

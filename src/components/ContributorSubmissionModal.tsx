@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import {
   X, Send, Loader2, Tag,
   FileText, Link2, BookOpen, GitBranch,
-  AlertCircle, Link as LinkIcon, ImagePlus, CheckCircle2, Sparkles, Lightbulb
+  AlertCircle, Link as LinkIcon, ImagePlus, CheckCircle2, Lightbulb
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { type NewSubmission } from '../utils/submissions';
@@ -16,7 +16,7 @@ import { autoFormatContent } from '../utils/autoFormatContent';
 import { isImageUrl, sanitizeUrlForMarkdown, encodeMarkdownUrl, extractSmartLinkLabel } from '../utils/markdownLinks';
 import { handleSupabaseError } from '../utils/handleSupabaseError';
 
-type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Resource Link' | 'Prompt Playbook';
+type SubmissionType = 'Article' | 'Study Tip' | 'Diagram' | 'Resource Link';
 
 export interface EditableArticle {
   id: string;
@@ -39,7 +39,6 @@ const SUBMISSION_TYPES = [
   { value: 'Article' as SubmissionType, label: 'Article', icon: FileText },
   { value: 'Study Tip' as SubmissionType, label: 'Pro Tip', icon: BookOpen },
   { value: 'Diagram' as SubmissionType, label: 'Diagram', icon: GitBranch },
-  { value: 'Prompt Playbook' as SubmissionType, label: 'Playbook', icon: Sparkles },
 ];
 
 const LX_TRACK_VALUE = 'Learner Experience & FAQs';
@@ -165,11 +164,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [resourceUrl, setResourceUrl] = useState('');
   const [diagramUrl, setDiagramUrl] = useState('');
 
-  // Prompt Playbook fields
-  const [promptRole, setPromptRole] = useState('');
-  const [promptText, setPromptText] = useState('');
-  const [promptUseCase, setPromptUseCase] = useState('');
-
   // Learner Experience cascading selections
   const [lxStage, setLxStage] = useState('');
   const [lxTopic, setLxTopic] = useState('');
@@ -245,9 +239,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       setImpact('');
       setReferences('');
       setDiagramUrl('');
-      setPromptRole('');
-      setPromptText('');
-      setPromptUseCase('');
       setLxStage('');
       setLxTopic('');
       setLxFocus('');
@@ -270,9 +261,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       setReferences('');
       setResourceUrl('');
       setDiagramUrl('');
-      setPromptRole('');
-      setPromptText('');
-      setPromptUseCase('');
       setLxStage('');
       setLxTopic('');
       setLxFocus('');
@@ -293,7 +281,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       setAutoDetected(false);
       return;
     }
-    const textBody = [concept, aPlusRelevance, promptText, promptRole, resourceUrl].filter(Boolean).join(' ');
+    const textBody = [concept, aPlusRelevance, resourceUrl].filter(Boolean).join(' ');
     const result = autoCategorizeSubmission(trimmedTitle, textBody);
     if (!result) {
       setMasterCategory('');
@@ -315,14 +303,14 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     } else {
       setAutoDetected(false);
     }
-  }, [title, concept, aPlusRelevance, promptText, promptRole, resourceUrl, userOverride]);
+  }, [title, concept, aPlusRelevance, resourceUrl, userOverride]);
 
   useEffect(() => {
     if (userOverride) return;
     if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current);
     autoDetectTimer.current = setTimeout(runAutoDetect, 300);
     return () => { if (autoDetectTimer.current) clearTimeout(autoDetectTimer.current); };
-  }, [title, concept, aPlusRelevance, promptText, promptRole, resourceUrl, runAutoDetect, userOverride]);
+  }, [title, concept, aPlusRelevance, resourceUrl, runAutoDetect, userOverride]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -434,9 +422,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setReferences('');
     setResourceUrl('');
     setDiagramUrl('');
-    setPromptRole('');
-    setPromptText('');
-    setPromptUseCase('');
     setCompObjective('');
     setLxStage('');
     setLxTopic('');
@@ -453,10 +438,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
   const assembleContent = () => {
     if (isResourceLink) return resourceUrl.trim();
-
-    if (submissionType === 'Prompt Playbook') {
-      return `**System Role / Context:**\n${promptRole.trim()}\n\n**The Prompt:**\n${promptText.trim()}\n\n**Use Case:**\n${promptUseCase.trim()}`;
-    }
 
     if (submissionType === 'Article' && isLearnerExperience) {
       return `### PROBLEM\n\n> ${hardship.trim()}\n\n### SOLUTION\n\n> ${breakthrough.trim()}`;
@@ -492,10 +473,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
 
     if (isResourceLink) {
       if (!/^https?:\/\/.+/.test(resourceUrl.trim())) e.resourceUrl = 'Valid URL required.';
-    } else if (submissionType === 'Prompt Playbook') {
-      if (promptRole.trim().length < 10) e.promptRole = 'At least 10 characters required.';
-      if (promptText.trim().length < 15) e.promptText = 'At least 15 characters required.';
-      if (promptUseCase.trim().length < 10) e.promptUseCase = 'At least 10 characters required.';
     } else if (isLightweight) {
       if (concept.trim().length < 15) e.concept = 'At least 15 characters required.';
     } else if (submissionType === 'Article' && isLearnerExperience) {
@@ -978,30 +955,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                     </label>
                     <textarea value={breakthrough} onChange={(e) => setBreakthrough(e.target.value)} placeholder="How did you solve it? What is your tactical advice for the next peer?" rows={6} maxLength={5000} className={`${inputCls('breakthrough')} font-mono resize-y custom-scrollbar`} />
                     {errors.breakthrough && <p className="mt-1 text-xs text-red-500">{errors.breakthrough}</p>}
-                  </div>
-                </div>
-              ) : submissionType === 'Prompt Playbook' ? (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                      System Role & Context <span className="text-red-400">*</span>
-                    </label>
-                    <textarea value={promptRole} onChange={(e) => setPromptRole(e.target.value)} placeholder="e.g., Act as a senior network engineer troubleshooting Active Directory..." rows={3} maxLength={2000} className={`${inputCls('promptRole')} font-mono resize-y custom-scrollbar`} />
-                    {errors.promptRole && <p className="mt-1 text-xs text-red-500">{errors.promptRole}</p>}
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                      The Prompt Template <span className="text-red-400">*</span>
-                    </label>
-                    <textarea value={promptText} onChange={(e) => setPromptText(e.target.value)} placeholder="Paste the exact prompt text here..." rows={4} maxLength={5000} className={`${inputCls('promptText')} font-mono resize-y custom-scrollbar`} />
-                    {errors.promptText && <p className="mt-1 text-xs text-red-500">{errors.promptText}</p>}
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-zinc-300 mb-1.5">
-                      Use Case & Expected Output <span className="text-red-400">*</span>
-                    </label>
-                    <textarea value={promptUseCase} onChange={(e) => setPromptUseCase(e.target.value)} placeholder="When should the cohort use this prompt and what will it generate?" rows={3} maxLength={2000} className={`${inputCls('promptUseCase')} font-mono resize-y custom-scrollbar`} />
-                    {errors.promptUseCase && <p className="mt-1 text-xs text-red-500">{errors.promptUseCase}</p>}
                   </div>
                 </div>
               ) : (
