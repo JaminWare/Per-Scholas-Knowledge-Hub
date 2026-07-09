@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import {
-  TrendingUp, ChevronRight, Compass, Lightbulb, Flame, Shield, Briefcase, Rocket,
+  TrendingUp, ChevronRight, Compass, Lightbulb, Flame, Shield, Briefcase,
 } from 'lucide-react';
 
 const SURVIVAL_CARDS = [
@@ -30,20 +30,6 @@ const SURVIVAL_CARDS = [
     title: 'Job Hunt Triage',
     description: 'Resume reality checks, interview prep, and field transition advice from hired grads.',
     tab: 'job',
-    color: 'text-blue-400',
-  },
-  {
-    icon: Rocket,
-    title: 'Quick Wins',
-    description: 'Bite sized tips you can apply today to keep momentum in the program.',
-    tab: 'all',
-    color: 'text-blue-400',
-  },
-  {
-    icon: Compass,
-    title: 'Full Hub',
-    description: 'Browse every peer contributed survival guide in the Learner Experience archive.',
-    tab: 'all',
     color: 'text-blue-400',
   },
 ];
