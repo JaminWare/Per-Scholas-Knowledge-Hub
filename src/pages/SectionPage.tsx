@@ -18,7 +18,7 @@ import { TRACK_NAMES, CURRICULUM_TRACKS } from '../constants/tracks';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, Sparkles, Laptop, Monitor, Database,
-  Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight,
+  Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight, Plus,
   Construction, Layers, Target, Bookmark, Compass, FileText, GitBranch,
 } from 'lucide-react';
 
@@ -292,25 +292,16 @@ function DomainBanner({
   return (
     <div className="relative rounded-2xl border border-zinc-800/30 overflow-hidden bg-zinc-950/50">
       <div className="relative px-6 py-5 md:px-8 md:py-6">
-        <div className="flex items-start justify-between gap-4 mb-4">
-          <div className="flex items-start gap-5 flex-1 min-w-0">
-            <div className="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center flex-shrink-0">
-              <BannerIcon className="w-7 h-7 text-blue-400 shrink-0" />
-            </div>
-            <div className="min-w-0">
-              {track && (
-                <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">{track}</p>
-              )}
-              <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{title}</h1>
-            </div>
+        <div className="flex items-start gap-5 mb-4">
+          <div className="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center flex-shrink-0">
+            <BannerIcon className="w-7 h-7 text-blue-400 shrink-0" />
           </div>
-          <button
-            type="button"
-            onClick={onContribute}
-            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-400 hover:bg-blue-600 text-zinc-900 text-sm font-bold transition-all outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-          >
-            Add Intel
-          </button>
+          <div className="min-w-0">
+            {track && (
+              <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">{track}</p>
+            )}
+            <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">{title}</h1>
+          </div>
         </div>
         {objectives.length > 0 && (
           <div className="flex flex-wrap gap-2">
@@ -489,40 +480,28 @@ function CurriculumDashboard({
       const emptyLabel = typeFilter ? activeTab : null;
       return (
         <div className="flex justify-center py-12">
-          <div className="w-full max-w-sm group flex flex-col rounded-xl border overflow-hidden bg-zinc-900 border-zinc-800">
-            <div
-              className="flex items-center justify-between px-3 py-1.5 bg-zinc-800"
-              style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px)', backgroundSize: '8px 8px' }}
-            >
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse flex-shrink-0" />
-                <span className="text-[10px] font-mono text-zinc-500">first-contribution</span>
-              </div>
-              <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded tracking-wider flex-shrink-0 bg-zinc-800 text-zinc-300 border border-zinc-700">
-                [PIONEER]
-              </span>
+          <div className="flex flex-col items-center justify-center gap-5 py-12 px-6 text-center bg-zinc-950/40 border border-zinc-800/40 rounded-2xl">
+            <div className="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center">
+              <Sparkles className="w-7 h-7 text-blue-400 shrink-0" />
             </div>
-            <div className="flex flex-col gap-3 p-5 flex-1 items-center text-center">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-zinc-800 border border-zinc-700">
-                <Sparkles className="w-6 h-6 text-blue-400 shrink-0" />
-              </div>
-              <h3 className="font-bold text-base text-white">
-                {emptyLabel ? `No ${emptyLabel} submitted for this domain yet!` : 'Be the first to contribute to this domain!'}
+            <div className="space-y-2 max-w-md">
+              <h3 className="text-lg font-bold text-zinc-100">
+                {emptyLabel ? `No ${emptyLabel} submitted yet` : 'Be the first to contribute to this domain'}
               </h3>
-              <p className="text-xs text-zinc-400 leading-relaxed">
+              <p className="text-sm text-zinc-400 leading-relaxed">
                 {emptyLabel
                   ? `Be the first to submit ${emptyLabel.toLowerCase()} for this curriculum track.`
                   : 'No peer submissions exist yet. Your contribution will pioneer this curriculum track for the cohort.'}
               </p>
-              <button
-                type="button"
-                onClick={onContribute}
-                className="mt-2 inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-200 border bg-blue-600/10 hover:bg-blue-600 text-blue-400 hover:text-white border-blue-600/20 hover:border-blue-600"
-              >
-                Submit a Contribution
-                <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-              </button>
             </div>
+            <button
+              type="button"
+              onClick={onContribute}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 ease-spatial active:scale-[0.98] bg-blue-600 hover:bg-blue-500 text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+            >
+              <Plus className="w-4 h-4 shrink-0" />
+              Add Intel
+            </button>
           </div>
         </div>
       );
@@ -892,15 +871,6 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
                 <p className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">{meta.track}</p>
               )}
               <h1 className="text-2xl font-bold text-zinc-100">{displayTitle}</h1>
-            </div>
-            <div className="flex flex-col items-center gap-1 flex-shrink-0">
-              <button
-                type="button"
-                onClick={() => setIsModalOpen(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-400 hover:bg-blue-600 text-zinc-900 text-sm font-bold transition-all outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-              >
-                Add Intel
-              </button>
             </div>
           </div>
 

@@ -320,9 +320,9 @@ export default function DeskolasPage() {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center gap-6 py-10 text-center rounded-xl border border-dashed border-zinc-700 bg-zinc-900/50">
-          <div className="w-16 h-16 rounded-2xl bg-blue-600/10 border border-blue-400/20 flex items-center justify-center">
-            <Headphones className="w-8 h-8 shrink-0 text-blue-400" />
+        <div className="flex flex-col items-center justify-center gap-5 py-12 px-6 text-center bg-zinc-950/40 border border-zinc-800/40 rounded-2xl">
+          <div className="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center">
+            <Headphones className="w-7 h-7 shrink-0 text-blue-400" />
           </div>
           <div className="space-y-2 max-w-md">
             <h2 className="text-lg font-bold text-zinc-100">No tickets yet</h2>
@@ -332,7 +332,7 @@ export default function DeskolasPage() {
           </div>
           <button
             onClick={() => user ? setIsModalOpen(true) : setAuthModalOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 ease-spatial active:scale-[0.98] bg-blue-600 hover:bg-blue-500 text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             <Plus className="w-4 h-4 shrink-0" />
             Add a Fix

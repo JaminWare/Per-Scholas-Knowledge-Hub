@@ -412,17 +412,22 @@ export default function RecognitionPage() {
             ))}
           </div>
         ) : (
-          <div className="rounded-xl border-2 border-dashed border-zinc-700 p-8 text-center">
-            <Award className="w-10 h-10 shrink-0 text-zinc-700 mx-auto mb-3" />
-            <p className="text-sm font-medium text-zinc-400">
-              No contributions yet. Be the first to contribute!
-            </p>
+          <div className="flex flex-col items-center justify-center gap-5 py-12 px-6 text-center bg-zinc-950/40 border border-zinc-800/40 rounded-2xl">
+            <div className="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center">
+              <Award className="w-7 h-7 shrink-0 text-blue-400" />
+            </div>
+            <div className="space-y-2 max-w-md">
+              <h3 className="text-lg font-bold text-zinc-100">No contributions yet</h3>
+              <p className="text-sm text-zinc-400 leading-relaxed">
+                Be the first to contribute and get recognized by your cohort.
+              </p>
+            </div>
             <button
               onClick={() => setModalOpen(true)}
-              className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 ease-spatial active:scale-[0.98] bg-blue-600 hover:bg-blue-500 text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
             >
               <UploadCloud className="w-4 h-4 shrink-0" />
-              Submit Your Contribution
+              Add Intel
             </button>
           </div>
         )}
