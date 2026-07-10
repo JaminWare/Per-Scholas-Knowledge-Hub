@@ -221,9 +221,8 @@ export default function DeskolasPage() {
             </div>
             <div className="flex-1">
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Deskolas Tech Solutions</h1>
-              <p className="text-sm md:text-base text-zinc-400 mt-1 leading-relaxed">Resolved tickets and peer sourced fixes from our ticketing system!</p>
             </div>
-            <div className="hidden sm:flex flex-col gap-3 flex-shrink-0">
+            <div className="hidden sm:flex flex-col gap-3 flex-shrink-0 items-end">
               <a
                 href={DESKOLAS_APP_URL}
                 target="_blank"
@@ -244,7 +243,7 @@ export default function DeskolasPage() {
           </div>
 
           {/* Mobile CTAs */}
-          <div className="flex sm:hidden flex-col gap-3 mt-4">
+          <div className="flex sm:hidden flex-col gap-3 mt-4 items-start">
             <a
               href={DESKOLAS_APP_URL}
               target="_blank"
@@ -264,7 +263,7 @@ export default function DeskolasPage() {
           </div>
 
           {/* Filter Tabs */}
-          <div className="border-t border-zinc-800/30 pt-4 mt-5 space-y-3">
+          <div className="pt-4 mt-5 space-y-3">
             <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Filter by focus area</span>
             <div className="flex flex-wrap gap-2">
               {DESKOLAS_CATEGORIES.map((sub) => {
