@@ -32,7 +32,7 @@ interface LessonMapping {
 
 const LX_TRACK = 'Learner Experience & FAQs';
 
-const MINIMUM_CONFIDENCE_SCORE = 4;
+const MINIMUM_CONFIDENCE_SCORE = 3;
 
 interface RuleEntry {
   keywords: WeightedKeyword[];
@@ -192,7 +192,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['port 80', 'port 443', 'port 21', 'port 22', 'port 23', 'port 25', 'port 53', 'port 3389', 'port 110', 'port 143', 'port 445', 'tcp ip port', 'tcp ip', 'well-known port'], 5),
-      ...kw(['tcp', 'udp', 'protocol', 'dns', 'dhcp', 'ssh', 'ftp', 'rdp', 'smtp', 'imap', 'pop3', 'telnet', 'snmp', 'http', 'https'], 3),
+      ...kw(['tcp', 'udp', 'protocol', 'protocols', 'dns', 'dhcp', 'ssh', 'ftp', 'rdp', 'smtp', 'imap', 'pop3', 'telnet', 'snmp', 'http', 'https'], 3),
       ...kw(['port'], 1),
     ],
     masterCategory: 'CompTIA A+ Core 1',
@@ -946,13 +946,31 @@ function getObjectiveIndex(track: string, objective: string): number {
   return 9999;
 }
 
+const INPUT_CHAR_LIMIT = 5000;
+const EMOJI_AND_CONTROL_RE = /[\u200B-\u200D\uFEFF\u2028\u2029\u0000-\u001F\u007F-\u009F]|[\u{1F600}-\u{1F9FF}\u{1FA00}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE00}-\u{FE0F}\u{1F000}-\u{1F02F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{E0020}-\u{E007F}]/gu;
+const EM_EN_DASH_RE = /[\u2013\u2014]/g;
+
+const FALLBACK_RESULT: AutoCategoryResult = {
+  masterCategory: 'Learner Experience & FAQs',
+  track: 'Learner Experience & FAQs',
+  compObjective: undefined,
+  lxStage: 'General Resource',
+};
+
+function sanitizeInput(raw: string): string {
+  let text = raw.slice(0, INPUT_CHAR_LIMIT);
+  text = text.replace(EMOJI_AND_CONTROL_RE, ' ');
+  text = text.replace(EM_EN_DASH_RE, ' ');
+  return text;
+}
+
 export function autoCategorizeSubmission(
   title: string,
   content: string,
 ): AutoCategoryResult | null {
   if (!title?.trim() && !content?.trim()) return null;
 
-  const combined = `${title} ${content}`.toLowerCase();
+  const combined = sanitizeInput(`${title} ${content}`).toLowerCase();
 
   let submissionType: 'Diagram' | 'Study Tip' | undefined;
   if (DIAGRAM_KEYWORDS.some((kw) => combined.includes(kw))) {
@@ -973,7 +991,7 @@ export function autoCategorizeSubmission(
   let sanitizedText = combined.replace(/[,!?;:()[\]"'{}/]/g, ' ');
   sanitizedText = sanitizedText.replace(/[.-](?=\s|$)/g, ' ');
   sanitizedText = sanitizedText.replace(/\s+/g, ' ').trim();
-  if (!sanitizedText) return null;
+  if (!sanitizedText) return { ...FALLBACK_RESULT };
   const paddedText = ' ' + sanitizedText + ' ';
 
   // Phase 1: Weighted exact substring matching
@@ -1023,7 +1041,7 @@ export function autoCategorizeSubmission(
   }
 
   // Phase 2: Typo-tolerant fallback via Fuse.js (only if Phase 1 fails)
-  const tokens = sanitizedText.split(/\s+/).filter((t) => t.length >= 4);
+  const tokens = sanitizedText.split(/\s+/).filter((t) => t.length >= 2);
   const fuse = new Fuse(SEARCHABLE_ENTRIES, {
     keys: ['keyword'],
     threshold: 0.3,
@@ -1074,5 +1092,5 @@ export function autoCategorizeSubmission(
   if (submissionType) {
     return { masterCategory: '', track: '', submissionType };
   }
-  return null;
+  return { ...FALLBACK_RESULT };
 }
