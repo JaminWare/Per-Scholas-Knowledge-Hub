@@ -191,7 +191,7 @@ const RULE_DATA: RuleEntry[] = [
   // ════════════════════════════════════════════════════════════════════
   {
     keywords: [
-      ...kw(['port 80', 'port 443', 'port 21', 'port 22', 'port 23', 'port 25', 'port 53', 'port 3389', 'port 110', 'port 143', 'port 445', 'tcp/ip port', 'well-known port'], 5),
+      ...kw(['port 80', 'port 443', 'port 21', 'port 22', 'port 23', 'port 25', 'port 53', 'port 3389', 'port 110', 'port 143', 'port 445', 'tcp ip port', 'tcp ip', 'well-known port'], 5),
       ...kw(['tcp', 'udp', 'protocol', 'dns', 'dhcp', 'ssh', 'ftp', 'rdp', 'smtp', 'imap', 'pop3', 'telnet', 'snmp', 'http', 'https'], 3),
       ...kw(['port'], 1),
     ],
@@ -429,7 +429,7 @@ const RULE_DATA: RuleEntry[] = [
   },
   {
     keywords: [
-      ...kw(['ipconfig /all', 'ipconfig /release', 'ipconfig /renew', 'netstat -an', 'nslookup command', 'ping command', 'tracert command', 'sfc /scannow', 'chkdsk /f', 'diskpart', 'robocopy', 'gpupdate', 'shutdown /r'], 5),
+      ...kw(['ipconfig all', 'ipconfig release', 'ipconfig renew', 'netstat -an', 'nslookup command', 'ping command', 'tracert command', 'sfc scannow', 'chkdsk f', 'diskpart', 'robocopy', 'gpupdate', 'shutdown r'], 5),
       ...kw(['command line', 'cli', 'powershell', 'cmd', 'terminal', 'ipconfig', 'netstat', 'nslookup', 'ping', 'tracert', 'sfc'], 3),
     ],
     lessonNumbers: ['134', '135'],
@@ -970,7 +970,7 @@ export function autoCategorizeSubmission(
     }
   }
 
-  let sanitizedText = combined.replace(/[,!?;:()[\]"'{}]/g, ' ');
+  let sanitizedText = combined.replace(/[,!?;:()[\]"'{}/]/g, ' ');
   sanitizedText = sanitizedText.replace(/[.-](?=\s|$)/g, ' ');
   sanitizedText = sanitizedText.replace(/\s+/g, ' ').trim();
   if (!sanitizedText) return null;
