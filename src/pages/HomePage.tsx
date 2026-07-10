@@ -47,8 +47,7 @@ export default function HomePage() {
           AI Enabled Healthcare IT
         </h1>
         <p className="text-sm text-zinc-400 max-w-xl leading-relaxed">
-          Your peer powered knowledge base for surviving the program, crushing the CompTIA exam,
-          and landing your first role in Healthcare IT.
+          Welcome to the collaborative resource hub!
         </p>
         <Link
           to="/learner-experience"

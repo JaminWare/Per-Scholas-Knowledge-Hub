@@ -159,25 +159,27 @@ function AppContent() {
             </div>
             <span className="font-semibold text-sm text-zinc-100">Learners Hub</span>
           </div>
-          <div className="flex-1 max-w-2xl mx-auto min-w-0">
-            <SearchBar onMenuClick={() => setDesktopSidebarOpen(true)} />
-          </div>
-          <button
-            onClick={() => setAddIntelOpen(true)}
-            className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all duration-200 ease-spatial active:scale-[0.98] flex-shrink-0 whitespace-nowrap outline-none select-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-          >
-            <UploadCloud className="w-3.5 h-3.5 shrink-0" />
-            Add Intel
-          </button>
-          <div className="flex items-center gap-1 flex-shrink-0">
+          <div className="flex items-center gap-2.5 flex-1 max-w-2xl mx-auto min-w-0">
             <Link
               to="/cohort-admin"
               title="Admin Command Center"
-              className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600"
+              className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 flex-shrink-0"
               aria-label="Admin Command Center"
             >
               <ShieldCheck className="w-5 h-5 shrink-0" />
             </Link>
+            <div className="flex-1 min-w-0">
+              <SearchBar onMenuClick={() => setDesktopSidebarOpen(true)} />
+            </div>
+            <button
+              onClick={() => setAddIntelOpen(true)}
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition-all duration-200 ease-spatial active:scale-[0.98] flex-shrink-0 whitespace-nowrap outline-none select-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+            >
+              <UploadCloud className="w-3.5 h-3.5 shrink-0" />
+              Add Intel
+            </button>
+          </div>
+          <div className="flex items-center flex-shrink-0">
             {user ? (
               <button
                 onClick={signOut}
