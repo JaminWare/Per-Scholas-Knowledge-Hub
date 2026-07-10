@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { ArrowLeft, Share2, Bookmark, BookOpen, ExternalLink, UploadCloud, Pencil } from 'lucide-react';
+import { Share2, Bookmark, BookOpen, ExternalLink, UploadCloud, Pencil } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 import { useAuth } from '../hooks/useAuth';
@@ -478,13 +478,6 @@ export default function ArticlePage() {
         <p className="text-zinc-400 mb-6">
           The article you're looking for doesn't exist or has been moved.
         </p>
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 text-blue-400 font-medium hover:underline"
-        >
-          <ArrowLeft className="w-4 h-4 shrink-0" />
-          Back to Home
-        </Link>
       </div>
     );
   }

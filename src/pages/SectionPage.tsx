@@ -12,13 +12,12 @@ import { COMPTIA_OBJECTIVES } from '../lib/domainObjectives';
 import {
   SECTION_TITLE_TO_CANONICAL, SLUG_TO_CANONICAL, SLUG_TO_DOMAIN_META,
 } from '../lib/domainRegistry';
-import { useSmartBack } from '../hooks/useSmartBack';
 import { SECTION_ROLE_COLORS } from '../constants/badges';
 import { TRACK_NAMES, CURRICULUM_TRACKS } from '../constants/tracks';
 import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, Sparkles, Laptop, Monitor, Database,
-  Heart, BookOpen, Link2, Check, ArrowLeft, ArrowRight, Plus,
+  Heart, BookOpen, Link2, Check, Plus,
   Construction, Layers, Target, Bookmark, Compass, FileText, GitBranch,
 } from 'lucide-react';
 
@@ -170,7 +169,6 @@ function CopyLinkButton({ slug }: { slug: string }) {
 }
 
 function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
-  const { goBack } = useSmartBack('/');
   if (minimal) {
     return (
       <div className={`${CARD_WIDTH} flex flex-col items-center justify-center gap-3 p-8 bg-zinc-900 border border-dashed border-zinc-800/50 rounded-xl text-center`}>
@@ -192,13 +190,6 @@ function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
           This module is currently being built or undergoing moderation review by our Cohort Leaders. Check back shortly!
         </p>
       </div>
-      <button
-        onClick={goBack}
-        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-800/50 text-zinc-400 hover:text-zinc-200 text-sm font-medium transition-all"
-      >
-        <ArrowLeft className="w-4 h-4 shrink-0" />
-        Go Back
-      </button>
     </div>
   );
 }
@@ -627,7 +618,6 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
   try { slug = decodeURIComponent(rawPath); } catch { /* malformed URI -- use raw */ }
 
   const parentSlug = slug.includes('/') ? '/' + slug.split('/')[0] : '/';
-  const { goBack } = useSmartBack(parentSlug);
 
   const rawTab = searchParams.get('tab');
   const validatedTab: ResourceTab = RESOURCE_TABS.includes(rawTab as ResourceTab)
@@ -756,14 +746,6 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
     const roleColor = roleColors[localContent.contributorRole ?? ''] ?? 'bg-zinc-800 text-zinc-400';
     return (
       <div className="w-full">
-        <button
-          onClick={goBack}
-          className="text-zinc-400 hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 mb-6 cursor-pointer text-sm font-medium"
-        >
-          <ArrowLeft className="w-4 h-4 shrink-0" />
-          Back to Previous Page
-        </button>
-
         <div className="relative overflow-hidden rounded-2xl bg-zinc-900 border border-zinc-800/50 p-8 mb-8">
           <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-700/10 rounded-full blur-3xl pointer-events-none" />
           <div className="relative">
@@ -824,15 +806,6 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
 
   return (
     <div className="w-full max-w-5xl mx-auto space-y-3">
-      {isSubPage && (
-        <button
-          onClick={goBack}
-          className="text-zinc-400 hover:text-blue-400 transition-colors duration-200 flex items-center gap-2 cursor-pointer text-sm font-medium"
-        >
-          <ArrowLeft className="w-4 h-4 shrink-0" />
-          Back to Previous Page
-        </button>
-      )}
 
       {domainInfo ? (
         <>
