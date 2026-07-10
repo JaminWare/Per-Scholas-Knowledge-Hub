@@ -22,7 +22,7 @@ import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen, LogIn, LogOut, ShieldChe
 const SIDEBAR_COLLAPSED = 72;
 const SIDEBAR_SNAP_THRESHOLD = 200;
 const SIDEBAR_MIN = 280;
-const SIDEBAR_MAX = 480;
+const SIDEBAR_MAX = 320;
 const SIDEBAR_DEFAULT = 320;
 
 function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | null> }) {
@@ -221,7 +221,7 @@ function AppContent() {
         {desktopSidebarOpen && (
           <aside
             className="hidden md:flex flex-col flex-shrink-0 min-h-0 overflow-hidden rounded-2xl bg-zinc-950/40 transition-[width] duration-200 ease-out"
-            style={{ width: sidebarWidth }}
+            style={{ width: sidebarWidth, minWidth: isCollapsed ? 72 : 280, maxWidth: 320 }}
           >
             <div className="flex-1 overflow-y-auto overscroll-contain">
               <Sidebar onToggle={() => setDesktopSidebarOpen(false)} isCollapsed={isCollapsed} />

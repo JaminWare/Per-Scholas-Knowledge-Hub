@@ -2444,31 +2444,33 @@ export default function AdminControlPage() {
 
   if (!user) {
     return (
-      <div className="min-h-full bg-zinc-950 flex items-center justify-center p-4">
-        <div className="w-full max-w-sm text-center space-y-6">
-          <div className="mx-auto w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/25 flex items-center justify-center">
-            <ShieldOff className="w-8 h-8 text-red-400" />
+      <>
+        <div className="min-h-full bg-zinc-950 flex items-center justify-center p-4">
+          <div className="w-full max-w-sm text-center space-y-6">
+            <div className="mx-auto w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/25 flex items-center justify-center">
+              <ShieldOff className="w-8 h-8 text-red-400" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-zinc-100">Access Denied</h1>
+              <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
+                You must be signed in to access the Admin Command Center.
+              </p>
+              <p className="mt-2 text-xs text-zinc-500 leading-relaxed">
+                If you were recently invited, sign in with Google or create an account using the same email address your admin used to whitelist you.
+              </p>
+            </div>
+            <button
+              onClick={() => setAuthModalOpen(true)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"
+            >
+              <Lock className="w-4 h-4" />
+              Sign In or Sign Up
+            </button>
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-zinc-100">Access Denied</h1>
-            <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
-              You must be signed in to access the Admin Command Center.
-            </p>
-            <p className="mt-2 text-xs text-zinc-500 leading-relaxed">
-              If you were recently invited, sign in with Google or create an account using the same email address your admin used to whitelist you.
-            </p>
-          </div>
-          <button
-            onClick={() => setAuthModalOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20"
-          >
-            <Lock className="w-4 h-4" />
-            Sign In or Sign Up
-          </button>
         </div>
         <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
         <AdminAccessToast />
-      </div>
+      </>
     );
   }
 
