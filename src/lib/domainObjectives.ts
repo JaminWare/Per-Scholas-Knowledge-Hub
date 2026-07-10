@@ -83,9 +83,9 @@ export const COMPTIA_OBJECTIVES: Record<string, string[]> = {
     'EHR Integrations & Sandboxes', 'Data Interoperability (HL7/FHIR)', 'Database Management', 'System Downtime Procedures',
   ],
   'Advanced Healthcare IT HIPAA Data Security': [
-    'PHI Protection Strategies', 'Access Controls & Auditing', 'Threat Detection & Response', 'Compliance Documentation',
+    'PHI Protection Strategies', 'Access Controls & Auditing', 'Threat Detection & Response', 'Compliance Documentation', 'Access & Permissions',
   ],
   'Advanced Healthcare IT Clinical Workflows': [
-    'Patient Admission to Discharge', 'Order Entry Systems (CPOE)', 'Telehealth Integrations', 'Medical IoT Troubleshooting',
+    'Patient Admission to Discharge', 'Order Entry Systems (CPOE)', 'Telehealth Integrations', 'Medical IoT Troubleshooting', 'Medication Administration', 'Device Integration',
   ],
 };
