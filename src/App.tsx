@@ -21,7 +21,6 @@ import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen, LogIn, LogOut, ShieldChe
 
 const SIDEBAR_COLLAPSED = 72;
 const SIDEBAR_SNAP_THRESHOLD = 260;
-const SIDEBAR_MIN = 280;
 const SIDEBAR_MAX = 320;
 const SIDEBAR_DEFAULT = 320;
 
@@ -36,6 +35,7 @@ function ScrollToTop({ scrollRef }: { scrollRef: React.RefObject<HTMLElement | n
 function AppContent() {
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   const [sidebarWidth, setSidebarWidth] = useState(SIDEBAR_DEFAULT);
+  const [isDragging, setIsDragging] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [mobileAuthOpen, setMobileAuthOpen] = useState(false);
   const [addIntelOpen, setAddIntelOpen] = useState(false);
@@ -58,12 +58,20 @@ function AppContent() {
 
   const handleResize = useCallback((delta: number) => {
     setSidebarWidth((w) => {
-      if (w <= SIDEBAR_COLLAPSED) {
-        return delta > 0 ? SIDEBAR_DEFAULT : SIDEBAR_COLLAPSED;
-      }
       const next = w + delta;
-      if (next < SIDEBAR_SNAP_THRESHOLD) return SIDEBAR_COLLAPSED;
-      return Math.min(SIDEBAR_MAX, Math.max(SIDEBAR_MIN, next));
+      return Math.min(SIDEBAR_MAX, Math.max(SIDEBAR_COLLAPSED, next));
+    });
+  }, []);
+
+  const handleDragStart = useCallback(() => {
+    setIsDragging(true);
+  }, []);
+
+  const handleDragEnd = useCallback(() => {
+    setIsDragging(false);
+    setSidebarWidth((w) => {
+      if (w < SIDEBAR_SNAP_THRESHOLD) return SIDEBAR_COLLAPSED;
+      return SIDEBAR_DEFAULT;
     });
   }, []);
 
@@ -220,8 +228,8 @@ function AppContent() {
         {/* ── Desktop Sidebar Panel ────────────────────────── */}
         {desktopSidebarOpen && (
           <aside
-            className="hidden md:flex flex-col flex-shrink-0 min-h-0 overflow-hidden rounded-2xl bg-zinc-950/40 transition-[width] duration-200 ease-out"
-            style={{ width: sidebarWidth, minWidth: isCollapsed ? 72 : 280, maxWidth: 320 }}
+            className={`hidden md:flex flex-col flex-shrink-0 min-h-0 overflow-hidden rounded-2xl bg-zinc-950/40 ${isDragging ? '' : 'transition-[width] duration-200 ease-out'}`}
+            style={{ width: sidebarWidth, minWidth: SIDEBAR_COLLAPSED, maxWidth: SIDEBAR_MAX }}
           >
             <div className="flex-1 overflow-y-auto overscroll-contain">
               <Sidebar onToggle={() => setDesktopSidebarOpen(false)} isCollapsed={isCollapsed} />
@@ -231,7 +239,7 @@ function AppContent() {
 
         {/* ── Resize Handle ────────────────────────────────── */}
         {desktopSidebarOpen && (
-          <ResizeHandle onResize={handleResize} />
+          <ResizeHandle onResize={handleResize} onDragStart={handleDragStart} onDragEnd={handleDragEnd} />
         )}
 
         {/* ── Main Content Panel ───────────────────────────── */}

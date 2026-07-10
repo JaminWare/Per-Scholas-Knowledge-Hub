@@ -2,9 +2,11 @@ import { useCallback, useEffect, useRef } from 'react';
 
 interface ResizeHandleProps {
   onResize: (delta: number) => void;
+  onDragStart?: () => void;
+  onDragEnd?: () => void;
 }
 
-export default function ResizeHandle({ onResize }: ResizeHandleProps) {
+export default function ResizeHandle({ onResize, onDragStart, onDragEnd }: ResizeHandleProps) {
   const dragging = useRef(false);
   const startX = useRef(0);
 
@@ -13,7 +15,8 @@ export default function ResizeHandle({ onResize }: ResizeHandleProps) {
     dragging.current = true;
     startX.current = e.clientX;
     (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  }, []);
+    onDragStart?.();
+  }, [onDragStart]);
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
     if (!dragging.current) return;
@@ -23,9 +26,11 @@ export default function ResizeHandle({ onResize }: ResizeHandleProps) {
   }, [onResize]);
 
   const handlePointerUp = useCallback((e: React.PointerEvent) => {
+    if (!dragging.current) return;
     dragging.current = false;
     (e.target as HTMLElement).releasePointerCapture(e.pointerId);
-  }, []);
+    onDragEnd?.();
+  }, [onDragEnd]);
 
   useEffect(() => {
     const preventSelection = (e: Event) => {
