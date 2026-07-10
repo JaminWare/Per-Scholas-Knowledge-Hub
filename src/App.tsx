@@ -20,7 +20,7 @@ import { type NewSubmission } from './utils/submissions';
 import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen, LogIn, LogOut, ShieldCheck, UploadCloud } from 'lucide-react';
 
 const SIDEBAR_COLLAPSED = 72;
-const SIDEBAR_SNAP_THRESHOLD = 200;
+const SIDEBAR_SNAP_THRESHOLD = 260;
 const SIDEBAR_MIN = 280;
 const SIDEBAR_MAX = 320;
 const SIDEBAR_DEFAULT = 320;
