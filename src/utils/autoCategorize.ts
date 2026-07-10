@@ -191,8 +191,8 @@ const RULE_DATA: RuleEntry[] = [
   // ════════════════════════════════════════════════════════════════════
   {
     keywords: [
-      ...kw(['port 80', 'port 443', 'port 21', 'port 22', 'port 23', 'port 25', 'port 53', 'port 3389', 'port 110', 'port 143', 'port 445', 'tcp ip port', 'tcp ip', 'well-known port'], 5),
-      ...kw(['tcp', 'udp', 'protocol', 'protocols', 'dns', 'dhcp', 'ssh', 'ftp', 'rdp', 'smtp', 'imap', 'pop3', 'telnet', 'snmp', 'http', 'https'], 3),
+      ...kw(['port 80', 'port 443', 'port 21', 'port 22', 'port 23', 'port 25', 'port 53', 'port 3389', 'port 110', 'port 143', 'port 445', 'port 161', 'port 162', 'port 389', 'port 636', 'port 587', 'port 993', 'port 995', 'port 3306', 'port 1433', 'port 8080', 'tcp ip port', 'tcp ip', 'well-known port', 'ephemeral port', 'registered port'], 5),
+      ...kw(['tcp', 'udp', 'protocol', 'protocols', 'dns', 'dhcp', 'ssh', 'ftp', 'rdp', 'smtp', 'imap', 'pop3', 'telnet', 'snmp', 'http', 'https', 'tftp', 'ldap', 'sftp', 'scp', 'icmp', 'arp', 'igmp', 'ntp', 'syslog', 'ports'], 3),
       ...kw(['port'], 1),
     ],
     masterCategory: 'CompTIA A+ Core 1',
@@ -202,7 +202,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['managed switch', 'unmanaged switch', 'layer 2 switch', 'layer 3 switch', 'patch panel', 'power over ethernet', 'network hub', 'access point', 'wireless access point'], 5),
-      ...kw(['router', 'switch', 'firewall', 'gateway', 'poe', 'hub', 'modem', 'bridge', 'repeater'], 3),
+      ...kw(['router', 'routers', 'switch', 'switches', 'firewall', 'firewalls', 'gateway', 'poe', 'hub', 'modem', 'bridge', 'repeater', 'wap', 'load balancer', 'ids', 'ips'], 3),
     ],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 2.0 (Networking)',
@@ -228,8 +228,8 @@ const RULE_DATA: RuleEntry[] = [
   },
   {
     keywords: [
-      ...kw(['ip address', 'subnet mask', 'default gateway', 'ipv4 address', 'ipv6 address', 'cidr notation', 'apipa', '169.254', 'loopback address', '127.0.0.1'], 5),
-      ...kw(['subnet', 'ipv4', 'ipv6', 'mac address', 'cidr', 'ip'], 3),
+      ...kw(['ip address', 'subnet mask', 'default gateway', 'ipv4 address', 'ipv6 address', 'cidr notation', 'apipa', '169.254', 'loopback address', '127.0.0.1', 'ping command', 'ipconfig command', 'tracert command', 'nslookup command', 'traceroute command', 'pathping command'], 5),
+      ...kw(['subnet', 'ipv4', 'ipv6', 'mac address', 'cidr', 'ip', 'ipconfig', 'tracert', 'nslookup', 'netstat', 'arp table', 'ping', 'traceroute', 'pathping'], 3),
     ],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 2.0 (Networking)',
@@ -238,7 +238,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['soho router', 'home router', 'port forwarding', 'qos settings', 'ssid broadcast', 'dmz', 'upnp', 'guest network'], 5),
-      ...kw(['soho', 'qos', 'port forwarding'], 3),
+      ...kw(['soho', 'qos', 'port forwarding', 'lan', 'wan', 'wlan', 'nat'], 3),
     ],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 2.0 (Networking)',
@@ -247,7 +247,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['ethernet cable', 'cat5e', 'cat6', 'cat6a', 'coaxial cable', 'fiber optic', 'rj45', 'network drop', 'patch cable', 'crossover cable', 'straight-through', 'tia-568a', 'tia-568b', 'cable tester', 'tone generator'], 5),
-      ...kw(['ethernet', 'lan', 'wan', 'osi model', 'osi layer', 'topology', 'star topology', 'mesh topology', 'bus topology'], 3),
+      ...kw(['ethernet', 'lan', 'wan', 'osi model', 'osi layer', 'topology', 'star topology', 'mesh topology', 'bus topology', 'cat5e', 'patch panel', 'mdf', 'idf', 'punchdown', 'cabling'], 3),
       ...kw(['network', 'networking', 'internet', 'connectivity', 'bandwidth'], 1),
     ],
     lessonNumbers: ['133'],
@@ -270,8 +270,8 @@ const RULE_DATA: RuleEntry[] = [
   },
   {
     keywords: [
-      ...kw(['ddr3 ram', 'ddr4 ram', 'ddr5 ram', 'dimm slot', 'sodimm module', 'ecc memory', 'dual channel', 'memory timing', 'cas latency', 'ram speed', 'memory upgrade'], 5),
-      ...kw(['ram', 'memory', 'dimm', 'sodimm', 'ddr', 'ddr3', 'ddr4', 'ddr5', 'ecc'], 3),
+      ...kw(['ddr3 ram', 'ddr4 ram', 'ddr5 ram', 'dimm slot', 'sodimm module', 'ecc memory', 'dual channel', 'memory timing', 'cas latency', 'ram speed', 'memory upgrade', 'memory leak', 'paging file', 'virtual memory', 'swap file'], 5),
+      ...kw(['ram', 'memory', 'dimm', 'sodimm', 'ddr', 'ddr3', 'ddr4', 'ddr5', 'ecc', 'paging', 'page file'], 3),
     ],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
@@ -279,8 +279,8 @@ const RULE_DATA: RuleEntry[] = [
   },
   {
     keywords: [
-      ...kw(['nvme drive', 'm.2 slot', 'sata ssd', '2.5 inch drive', '3.5 inch drive', 'raid 0', 'raid 1', 'raid 5', 'raid 10', 'hot swappable', 'nas storage'], 5),
-      ...kw(['storage', 'hdd', 'ssd', 'nvme', 'm.2', 'raid', 'flash drive'], 3),
+      ...kw(['nvme drive', 'm.2 slot', 'sata ssd', '2.5 inch drive', '3.5 inch drive', 'raid 0', 'raid 1', 'raid 5', 'raid 10', 'hot swappable', 'nas storage', 'sata cable', 'disk defragment'], 5),
+      ...kw(['storage', 'hdd', 'ssd', 'nvme', 'm.2', 'raid', 'flash drive', 'sata', 'hard drive', 'solid state', 'platter', 'disk'], 3),
     ],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 3.0 (Hardware)',
@@ -288,8 +288,8 @@ const RULE_DATA: RuleEntry[] = [
   },
   {
     keywords: [
-      ...kw(['motherboard form factor', 'atx motherboard', 'micro-atx', 'mini-itx', 'cpu socket', 'lga 1700', 'am5 socket', 'chipset', 'pcie slot', 'pcie x16', 'bios setup', 'uefi firmware', 'post beep', 'cmos battery', 'thermal paste', 'cpu cooler', 'heatsink fan'], 5),
-      ...kw(['motherboard', 'cpu', 'processor', 'socket', 'chipset', 'pcie', 'bios', 'uefi', 'heatsink', 'cmos', 'atx', 'microatx'], 3),
+      ...kw(['motherboard form factor', 'atx motherboard', 'micro-atx', 'mini-itx', 'cpu socket', 'lga 1700', 'am5 socket', 'chipset', 'pcie slot', 'pcie x16', 'bios setup', 'uefi firmware', 'post beep', 'cmos battery', 'thermal paste', 'cpu cooler', 'heatsink fan', 'bios update', 'uefi settings', 'post code', 'cmos reset', 'thermal throttle'], 5),
+      ...kw(['motherboard', 'cpu', 'processor', 'socket', 'chipset', 'pcie', 'bios', 'uefi', 'heatsink', 'cmos', 'atx', 'microatx', 'bsod', 'kernel panic', 'overclocking', 'gpu', 'graphics card', 'north bridge', 'south bridge', 'vrm', 'lga', 'am4', 'am5'], 3),
     ],
     lessonNumbers: ['132'],
     masterCategory: 'CompTIA A+ Core 1',
@@ -308,7 +308,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['custom pc build', 'gaming pc', 'cad workstation', 'htpc build', 'thin client', 'thick client', 'virtualization workstation', 'audio video workstation'], 5),
-      ...kw(['custom pc', 'workstation', 'pc build', 'form factor', 'desktop', 'tower'], 3),
+      ...kw(['custom pc', 'workstation', 'pc build', 'form factor', 'desktop', 'tower', 'graphics', 'video card'], 3),
       ...kw(['hardware', 'computer', 'components', 'device', 'equipment', 'peripheral'], 1),
     ],
     masterCategory: 'CompTIA A+ Core 1',
@@ -339,8 +339,8 @@ const RULE_DATA: RuleEntry[] = [
   },
   {
     keywords: [
-      ...kw(['virtual machine', 'type 1 hypervisor', 'type 2 hypervisor', 'vmware workstation', 'hyper-v', 'virtualbox', 'client-side virtualization', 'vm snapshot', 'virtual disk', 'resource allocation', 'vdi desktop'], 5),
-      ...kw(['virtualization', 'hypervisor', 'vmware', 'container', 'docker', 'vm', 'vdi', 'sandbox', 'snapshot'], 3),
+      ...kw(['virtual machine', 'type 1 hypervisor', 'type 2 hypervisor', 'vmware workstation', 'hyper-v', 'virtualbox', 'client-side virtualization', 'vm snapshot', 'virtual disk', 'resource allocation', 'vdi desktop', 'virtual switch', 'vm network adapter', 'resource pool', 'memory balloon'], 5),
+      ...kw(['virtualization', 'hypervisor', 'vmware', 'container', 'docker', 'vm', 'vdi', 'sandbox', 'snapshot', 'hyper-v', 'hyperv', 'kvm', 'proxmox', 'esxi', 'vcenter', 'vhd', 'vhdx', 'ova', 'ovf'], 3),
     ],
     masterCategory: 'CompTIA A+ Core 1',
     track: 'CompTIA A+ Core 1 Domain 4.0 (Cloud)',
@@ -429,8 +429,8 @@ const RULE_DATA: RuleEntry[] = [
   },
   {
     keywords: [
-      ...kw(['ipconfig all', 'ipconfig release', 'ipconfig renew', 'netstat -an', 'nslookup command', 'ping command', 'tracert command', 'sfc scannow', 'chkdsk f', 'diskpart', 'robocopy', 'gpupdate', 'shutdown r'], 5),
-      ...kw(['command line', 'cli', 'powershell', 'cmd', 'terminal', 'ipconfig', 'netstat', 'nslookup', 'ping', 'tracert', 'sfc'], 3),
+      ...kw(['ipconfig all', 'ipconfig release', 'ipconfig renew', 'netstat -an', 'nslookup command', 'ping command', 'tracert command', 'sfc scannow', 'chkdsk f', 'diskpart', 'robocopy', 'gpupdate', 'shutdown r', 'dir command', 'cd command', 'mkdir command', 'del command', 'xcopy command', 'format command', 'tasklist command', 'taskkill command'], 5),
+      ...kw(['command line', 'cli', 'powershell', 'cmd', 'terminal', 'ipconfig', 'netstat', 'nslookup', 'ping', 'tracert', 'sfc', 'command prompt', 'chkdsk', 'diskpart', 'format', 'shutdown', 'pathping', 'hostname', 'systeminfo', 'dism', 'bcdedit', 'winver', 'regedit'], 3),
     ],
     lessonNumbers: ['134', '135'],
     masterCategory: 'CompTIA A+ Core 2',
@@ -449,7 +449,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['control panel applet', 'device manager utility', 'disk management console', 'msconfig utility', 'services.msc', 'defragment tool', 'task manager process', 'event viewer logs', 'performance monitor', 'computer management'], 5),
-      ...kw(['control panel', 'device manager', 'disk management', 'msconfig', 'defragment', 'task manager', 'event viewer'], 3),
+      ...kw(['control panel', 'device manager', 'disk management', 'msconfig', 'defragment', 'task manager', 'event viewer', 'registry', 'services', 'mmc', 'compmgmt', 'devmgmt', 'sysdm'], 3),
     ],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
@@ -513,7 +513,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['linux terminal', 'bash shell', 'apt-get install', 'yum install', 'chmod permissions', 'grep command', 'sudo command', 'nano editor', 'cron job', 'systemctl', 'journalctl'], 5),
-      ...kw(['linux', 'bash', 'apt', 'yum', 'chmod', 'grep', 'sudo', 'nano', 'cron'], 3),
+      ...kw(['linux', 'bash', 'apt', 'yum', 'chmod', 'grep', 'sudo', 'nano', 'cron', 'ubuntu', 'centos', 'fedora', 'debian', 'redhat', 'cat', 'ls', 'mkdir', 'ifconfig', 'ip addr', 'vi', 'vim', 'systemd'], 3),
     ],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 1.0 (Operating Systems)',
@@ -526,7 +526,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['two-factor authentication', 'multi-factor authentication', 'biometric scan', 'smart card reader', 'security token', 'access control list', 'something you know', 'something you have', 'something you are'], 5),
-      ...kw(['two-factor', 'mfa', '2fa', 'authentication', 'biometric', 'smart card', 'token', 'access control list'], 3),
+      ...kw(['two-factor', 'mfa', '2fa', 'authentication', 'biometric', 'smart card', 'token', 'access control list', 'active directory', 'kerberos', 'ntlm', 'radius', 'tacacs'], 3),
       ...kw(['security', 'protection', 'defense', 'hardening', 'encryption'], 1),
     ],
     lessonNumbers: ['136'],
@@ -546,7 +546,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['malware detection', 'antivirus software', 'ransomware attack', 'spyware removal', 'trojan horse', 'rootkit detection', 'worm infection', 'virus signature', 'keylogger', 'adware', 'cryptominer'], 5),
-      ...kw(['malware', 'antivirus', 'ransomware', 'spyware', 'trojan', 'rootkit', 'worm', 'virus'], 3),
+      ...kw(['malware', 'antivirus', 'ransomware', 'spyware', 'trojan', 'rootkit', 'worm', 'virus', 'botnet', 'fileless malware', 'polymorphic', 'zero-day', 'exploit', 'payload', 'backdoor', 'dropper', 'phishing'], 3),
     ],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
@@ -564,7 +564,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['user account control', 'bitlocker drive', 'encrypting file system', 'windows defender firewall', 'firewall rule windows', 'group policy security', 'windows security center'], 5),
-      ...kw(['uac', 'bitlocker', 'efs', 'windows defender', 'firewall rule', 'group policy security'], 3),
+      ...kw(['uac', 'bitlocker', 'efs', 'windows defender', 'firewall rule', 'group policy security', 'gpo', 'group policy', 'secpol', 'local security policy', 'applocker'], 3),
     ],
     masterCategory: 'CompTIA A+ Core 2',
     track: 'CompTIA A+ Core 2 Domain 2.0 (Security)',
@@ -757,8 +757,8 @@ const RULE_DATA: RuleEntry[] = [
   // ════════════════════════════════════════════════════════════════════
   {
     keywords: [
-      ...kw(['electronic health record', 'electronic medical record', 'epic system', 'cerner system', 'meditech system', 'allscripts system', 'patient portal', 'ehr sandbox', 'health information system', 'charting system', 'workstation on wheels'], 5),
-      ...kw(['ehr', 'emr', 'epic', 'cerner', 'meditech', 'allscripts', 'charting', 'clinical system', 'his'], 3),
+      ...kw(['electronic health record', 'electronic medical record', 'epic system', 'cerner system', 'meditech system', 'allscripts system', 'patient portal', 'ehr sandbox', 'health information system', 'charting system', 'workstation on wheels', 'practice management system', 'revenue cycle management', 'health information management'], 5),
+      ...kw(['ehr', 'emr', 'epic', 'cerner', 'meditech', 'allscripts', 'charting', 'clinical system', 'his', 'nextgen', 'athenahealth', 'eclinicalworks', 'athena', 'himss', 'him'], 3),
       ...kw(['health record', 'medical record'], 1),
     ],
     masterCategory: 'Advanced Healthcare IT',
@@ -767,8 +767,8 @@ const RULE_DATA: RuleEntry[] = [
   },
   {
     keywords: [
-      ...kw(['fhir api', 'hl7 message', 'health information exchange', 'ccda document', 'interoperability standard', 'adt message', 'oru message', 'orm message'], 5),
-      ...kw(['fhir', 'hl7', 'interoperability', 'hie', 'ccda', 'api integration'], 3),
+      ...kw(['fhir api', 'hl7 message', 'health information exchange', 'ccda document', 'interoperability standard', 'adt message', 'oru message', 'orm message', 'mdm message', 'siu message', 'dft message'], 5),
+      ...kw(['fhir', 'hl7', 'interoperability', 'hie', 'ccda', 'api integration', 'x12', 'edi', 'adt', 'orm', 'oru', 'mdm', 'siu', 'dft'], 3),
     ],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT EHR Architecture',
@@ -809,7 +809,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['role-based access control', 'audit trail review', 'break-the-glass procedure', 'business associate agreement', 'access control health', 'authentication healthcare', 'security group clinical'], 5),
-      ...kw(['access control', 'audit', 'audit trail', 'role based access', 'authentication health', 'baa', 'break-the-glass'], 3),
+      ...kw(['access control', 'audit', 'audit trail', 'role based access', 'authentication health', 'baa', 'break-the-glass', 'rbac', 'least privilege', 'segregation of duties'], 3),
     ],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT HIPAA Data Security',
@@ -826,8 +826,8 @@ const RULE_DATA: RuleEntry[] = [
   },
   {
     keywords: [
-      ...kw(['hipaa compliance documentation', 'risk assessment health', 'security rule hipaa', 'privacy rule hipaa', 'administrative safeguard', 'technical safeguard', 'physical safeguard', 'nist framework health'], 5),
-      ...kw(['compliance', 'risk assessment', 'security rule', 'privacy rule', 'safeguard', 'security policy', 'nist'], 3),
+      ...kw(['hipaa compliance documentation', 'risk assessment health', 'security rule hipaa', 'privacy rule hipaa', 'administrative safeguard', 'technical safeguard', 'physical safeguard', 'nist framework health', 'meaningful use', 'promoting interoperability'], 5),
+      ...kw(['compliance', 'risk assessment', 'security rule', 'privacy rule', 'safeguard', 'security policy', 'nist', 'hipaa', 'phi', 'ephi', 'hitech', 'omnibus rule'], 3),
     ],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT HIPAA Data Security',
@@ -840,7 +840,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['patient admission', 'discharge process', 'nursing workflow', 'clinical workflow', 'patient flow', 'care coordination', 'clinical documentation', 'rounding workflow', 'care plan', 'clinical decision support'], 5),
-      ...kw(['patient', 'admission', 'discharge', 'nursing', 'patient flow', 'provider workflow'], 3),
+      ...kw(['patient', 'admission', 'discharge', 'nursing', 'patient flow', 'provider workflow', 'triage', 'intake', 'referral', 'consult', 'handoff'], 3),
       ...kw(['clinical', 'healthcare', 'hospital', 'clinic', 'medical', 'doctor', 'provider'], 1),
     ],
     masterCategory: 'Advanced Healthcare IT',
@@ -849,8 +849,8 @@ const RULE_DATA: RuleEntry[] = [
   },
   {
     keywords: [
-      ...kw(['cpoe order entry', 'lab order system', 'lab result review', 'medication order entry', 'pharmacy system', 'computerized physician order', 'order verification'], 5),
-      ...kw(['cpoe', 'lab order', 'lab result', 'medication order', 'pharmacy', 'medication'], 3),
+      ...kw(['cpoe order entry', 'lab order system', 'lab result review', 'medication order entry', 'pharmacy system', 'computerized physician order', 'order verification', 'medication reconciliation', 'clinical decision support'], 5),
+      ...kw(['cpoe', 'lab order', 'lab result', 'medication order', 'pharmacy', 'medication', 'barcode medication', 'emar', 'formulary', 'drug interaction'], 3),
     ],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT Clinical Workflows',
@@ -858,8 +858,8 @@ const RULE_DATA: RuleEntry[] = [
   },
   {
     keywords: [
-      ...kw(['telehealth visit', 'telemedicine platform', 'virtual visit setup', 'remote patient monitoring', 'video consult', 'remote monitoring device', 'telehealth workflow'], 5),
-      ...kw(['telehealth', 'telemedicine', 'virtual visit', 'remote patient', 'video consult', 'remote monitoring'], 3),
+      ...kw(['telehealth visit', 'telemedicine platform', 'virtual visit setup', 'remote patient monitoring', 'video consult', 'remote monitoring device', 'telehealth workflow', 'wearable health device', 'patient engagement platform'], 5),
+      ...kw(['telehealth', 'telemedicine', 'virtual visit', 'remote patient', 'video consult', 'remote monitoring', 'doxy', 'amwell', 'teladoc', 'zoom health'], 3),
     ],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT Clinical Workflows',
@@ -868,7 +868,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['medical iot device', 'pacs imaging', 'dicom standard', 'radiology system', 'biomedical device', 'infusion pump network', 'medical device integration', 'vitals machine'], 5),
-      ...kw(['medical iot', 'medical device', 'pacs', 'dicom', 'imaging', 'radiology', 'biomedical', 'infusion pump'], 3),
+      ...kw(['medical iot', 'medical device', 'pacs', 'dicom', 'imaging', 'radiology', 'biomedical', 'infusion pump', 'iot', 'biomedical engineering', 'clinical engineering', 'ventilator', 'ekg', 'ecg', 'mri'], 3),
     ],
     masterCategory: 'Advanced Healthcare IT',
     track: 'Advanced Healthcare IT Clinical Workflows',
@@ -994,14 +994,28 @@ export function autoCategorizeSubmission(
   if (!sanitizedText) return { ...FALLBACK_RESULT };
   const paddedText = ' ' + sanitizedText + ' ';
 
-  // Phase 1: Weighted exact substring matching
+  // Phase 1: Weighted exact substring matching (with lightweight plural stemming)
   const objectiveScores = new Map<string, { points: number; entry: SearchableEntry }>();
 
   for (const entry of SEARCHABLE_ENTRIES) {
     const isPhrase = entry.keyword.includes(' ');
-    const matched = isPhrase
-      ? sanitizedText.includes(entry.keyword)
-      : paddedText.includes(' ' + entry.keyword + ' ');
+    let matched: boolean;
+    if (isPhrase) {
+      matched = sanitizedText.includes(entry.keyword);
+      if (!matched) {
+        const stemmed = entry.keyword.replace(/s$/, '');
+        if (stemmed !== entry.keyword) matched = sanitizedText.includes(stemmed);
+      }
+    } else {
+      matched = paddedText.includes(' ' + entry.keyword + ' ');
+      if (!matched) {
+        const stemmed = entry.keyword.replace(/s$/, '');
+        if (stemmed !== entry.keyword) matched = paddedText.includes(' ' + stemmed + ' ');
+      }
+      if (!matched) {
+        matched = paddedText.includes(' ' + entry.keyword + 's ');
+      }
+    }
 
     if (matched) {
       const points = entry.weight * (isPhrase ? 2 : 1);
@@ -1016,16 +1030,25 @@ export function autoCategorizeSubmission(
   }
 
   let bestMatch: { points: number; entry: SearchableEntry } | null = null;
+  let hasCrossDomainTie = false;
   for (const candidate of objectiveScores.values()) {
     if (!bestMatch || candidate.points > bestMatch.points) {
       bestMatch = candidate;
+      hasCrossDomainTie = false;
     } else if (candidate.points === bestMatch.points) {
+      if (candidate.entry.masterCategory !== bestMatch.entry.masterCategory) {
+        hasCrossDomainTie = true;
+      }
       const candIdx = getObjectiveIndex(candidate.entry.track, candidate.entry.compObjective ?? '');
       const bestIdx = getObjectiveIndex(bestMatch.entry.track, bestMatch.entry.compObjective ?? '');
       if (candIdx < bestIdx) {
         bestMatch = candidate;
       }
     }
+  }
+
+  if (hasCrossDomainTie && bestMatch && bestMatch.points <= MINIMUM_CONFIDENCE_SCORE) {
+    return { ...FALLBACK_RESULT, submissionType };
   }
 
   if (bestMatch && bestMatch.points >= MINIMUM_CONFIDENCE_SCORE) {
