@@ -415,6 +415,7 @@ export default function LearnerExperiencePage() {
         onClose={() => { setIsModalOpen(false); setEditItem(null); }}
         onSubmitted={() => {}}
         editItem={editItem}
+        forcedCategory="Learner Experience & FAQs"
       />
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>

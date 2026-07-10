@@ -150,7 +150,7 @@ function buildFormattedContent(
 
 const LX_STAGES = JOURNEY_TABS.filter((t) => t.id !== 'all');
 
-export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh, editItem }: { isOpen: boolean; onClose: () => void; onSubmitted: (s: NewSubmission) => void; onRefresh?: () => void; editItem?: EditableArticle | null }) {
+export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitted, onRefresh, editItem, forcedCategory }: { isOpen: boolean; onClose: () => void; onSubmitted: (s: NewSubmission) => void; onRefresh?: () => void; editItem?: EditableArticle | null; forcedCategory?: string }) {
   const [fullName, setFullName] = useState('');
   const [submissionType, setSubmissionType] = useState<SubmissionType>('Resource Link');
 
@@ -191,11 +191,13 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
   const [userOverride, setUserOverride] = useState(false);
   const autoDetectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const titleManuallyEdited = useRef(false);
+  const typeManuallySelected = useRef(false);
 
   // Reset all form state to clean defaults whenever the modal opens
   useEffect(() => {
     if (!isOpen) return;
     titleManuallyEdited.current = false;
+    typeManuallySelected.current = false;
     setErrors({});
     setFormError('');
     setIsSubmitting(false);
@@ -253,8 +255,6 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       } catch {
         setFullName('');
       }
-      setMasterCategory('');
-      setTrack('');
       setTitle('');
       setConcept('');
       setAPlusRelevance('');
@@ -268,8 +268,18 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       setHardship('');
       setBreakthrough('');
       setCompObjective('');
+
+      // Apply forcedCategory if provided (bypasses auto-detect entirely)
+      if (forcedCategory) {
+        setMasterCategory(forcedCategory);
+        setTrack('');
+        setUserOverride(true);
+      } else {
+        setMasterCategory('');
+        setTrack('');
+      }
     }
-  }, [isOpen, editItem]);
+  }, [isOpen, editItem, forcedCategory]);
 
   const runAutoDetect = useCallback(() => {
     if (userOverride) return;
@@ -292,7 +302,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       setAutoDetected(false);
       return;
     }
-    if (result.submissionType) {
+    if (result.submissionType && !typeManuallySelected.current) {
       setSubmissionType(result.submissionType);
     }
     setMasterCategory(result.masterCategory || '');
@@ -389,8 +399,16 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     : [];
 
   useEffect(() => {
-    setMasterCategory('');
-    setTrack('');
+    if (!typeManuallySelected.current) return;
+    if (forcedCategory) {
+      setMasterCategory(forcedCategory);
+      setTrack('');
+      setUserOverride(true);
+    } else {
+      setMasterCategory('');
+      setTrack('');
+      setUserOverride(false);
+    }
     setCompObjective('');
     setLxStage('');
     setLxTopic('');
@@ -400,8 +418,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setErrors({});
     setFormError('');
     setAutoDetected(false);
-    setUserOverride(false);
-  }, [submissionType]);
+  }, [submissionType, forcedCategory]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -417,6 +434,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
     setTrack('');
     setTitle('');
     titleManuallyEdited.current = false;
+    typeManuallySelected.current = false;
     setConcept('');
     setAPlusRelevance('');
     setImpact('');
@@ -730,7 +748,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
               <label className="block text-sm font-semibold mb-2 text-zinc-200">Contribution Type</label>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
                 {SUBMISSION_TYPES.map((t) => (
-                  <button key={t.value} type="button" onClick={() => setSubmissionType(t.value)} className={`flex flex-col items-center gap-1.5 p-3 sm:p-3 rounded-xl border text-center transition-all min-h-[56px] ${submissionType === t.value ? 'bg-blue-600 border-blue-600 text-white' : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:border-blue-300'}`}>
+                  <button key={t.value} type="button" onClick={() => { typeManuallySelected.current = true; setSubmissionType(t.value); }} className={`flex flex-col items-center gap-1.5 p-3 sm:p-3 rounded-xl border text-center transition-all min-h-[56px] ${submissionType === t.value ? 'bg-blue-600 border-blue-600 text-white' : 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:border-blue-300'}`}>
                     <t.icon className="w-4 h-4 shrink-0" />
                     <span className="text-[11px] font-semibold leading-tight">{t.label}</span>
                   </button>
@@ -756,12 +774,16 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
                 value={masterCategory}
                 onChange={(e) => { setMasterCategory(e.target.value); setTrack(''); setCompObjective(''); setLxStage(''); setLxTopic(''); setLxFocus(''); setUserOverride(true); setAutoDetected(false); }}
                 className={selectCls('masterCategory')}
+                disabled={!!forcedCategory}
               >
                 <option value="">Select a category...</option>
                 {visibleCategories.map((cat) => (
                   <option key={cat.label} value={cat.label}>{cat.label}</option>
                 ))}
               </select>
+              {forcedCategory && (
+                <p className="mt-1 text-xs text-emerald-500 font-medium">Locked to {forcedCategory}</p>
+              )}
               {errors.masterCategory && <p className="mt-1 text-xs text-red-500">{errors.masterCategory}</p>}
 
               {/* Level 2: Domain select for technical tracks */}

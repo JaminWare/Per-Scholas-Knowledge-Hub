@@ -359,6 +359,7 @@ export default function DeskolasPage() {
         onClose={() => { setIsModalOpen(false); setEditItem(null); }}
         onSubmitted={() => {}}
         editItem={editItem}
+        forcedCategory="Deskolas Tech Solutions"
       />
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>

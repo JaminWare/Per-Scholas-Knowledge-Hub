@@ -54,7 +54,7 @@ const RULE_DATA: RuleEntry[] = [
   {
     keywords: [
       ...kw(['imposter syndrome', 'mental health', 'time management', 'give up', 'hard time', 'falling behind', 'cant focus', 'no motivation', 'feeling stuck', 'want to quit'], 5),
-      ...kw(['imposter', 'burnout', 'slump', 'motivation', 'stress', 'overwhelm', 'exhaust', 'doubt', 'confidence', 'discipline', 'distract', 'drown', 'struggle', 'tired', 'anxiety', 'behind'], 3),
+      ...kw(['imposter', 'burnout', 'slump', 'motivation', 'stress', 'overwhelm', 'exhaust', 'doubt', 'confidence', 'discipline', 'distract', 'drown', 'struggle', 'tired', 'anxiety', 'behind', 'pacing'], 3),
     ],
     masterCategory: LX_TRACK,
     track: LX_TRACK,
@@ -99,6 +99,7 @@ const RULE_DATA: RuleEntry[] = [
     keywords: [
       ...kw(['monitor not working', 'webcam issue', 'mic not detected', 'headset audio', 'display flickering', 'usb not recognized', 'hdmi no signal', 'external monitor', 'second screen', 'dual monitor', 'audio crackling', 'speaker no sound', 'keyboard layout', 'mouse lag', 'bluetooth pairing', 'docking station issue'], 5),
       ...kw(['monitor', 'webcam', 'mic', 'headset', 'display', 'peripheral', 'audio output', 'screen share', 'projector'], 3),
+      ...kw(['deskolas', 'workaround', 'patch', 'tech solution', 'error code'], 3),
     ],
     masterCategory: 'Deskolas Tech Solutions',
     track: 'Learner Experience Tech Solutions',
