@@ -214,7 +214,6 @@ export default function Sidebar({ onToggle, isCollapsed }: SidebarProps) {
             className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all duration-200 ease-spatial active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             <PanelLeftClose className="w-4 h-4 flex-shrink-0" />
-            <span className="truncate">Collapse</span>
           </button>
         )}
       </div>
