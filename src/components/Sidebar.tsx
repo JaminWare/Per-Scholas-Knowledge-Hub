@@ -5,6 +5,7 @@ import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   LifeBuoy, Headphones,
   Laptop, Monitor, Heart, Database, Award, LogIn, LogOut,
+  PanelLeftOpen, PanelLeftClose,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import AuthModal from './AuthModal';
@@ -118,7 +119,7 @@ interface SidebarProps {
   isCollapsed?: boolean;
 }
 
-export default function Sidebar({ isCollapsed }: SidebarProps) {
+export default function Sidebar({ onToggle, isCollapsed }: SidebarProps) {
   const location = useLocation();
   const [openTracks, setOpenTracks] = useState<Record<string, boolean>>({
     core1: false, core2: false, healthcare: false,
@@ -132,21 +133,13 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
   if (isCollapsed) {
     return (
       <div className="flex flex-col h-full min-h-0 bg-zinc-950/40 rounded-2xl outline-none items-center pt-8 pb-3 gap-1">
-        {user ? (
+        {onToggle && (
           <button
-            onClick={signOut}
-            title="Sign Out"
+            onClick={onToggle}
+            title="Expand sidebar"
             className="flex items-center justify-center w-10 h-10 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
           >
-            <LogOut className="w-4 h-4" />
-          </button>
-        ) : (
-          <button
-            onClick={() => setAuthOpen(true)}
-            title="Sign In"
-            className="flex items-center justify-center w-10 h-10 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 transition-colors"
-          >
-            <LogIn className="w-4 h-4" />
+            <PanelLeftOpen className="w-4 h-4" />
           </button>
         )}
 
@@ -185,6 +178,26 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
           );
         })}
 
+        <div className="w-8 h-px bg-zinc-800 my-1" />
+
+        {user ? (
+          <button
+            onClick={signOut}
+            title="Sign Out"
+            className="flex items-center justify-center w-10 h-10 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        ) : (
+          <button
+            onClick={() => setAuthOpen(true)}
+            title="Sign In"
+            className="flex items-center justify-center w-10 h-10 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 transition-colors"
+          >
+            <LogIn className="w-4 h-4" />
+          </button>
+        )}
+
         <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
       </div>
     );
@@ -192,23 +205,16 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
 
   return (
     <div className="flex flex-col h-full min-h-0 bg-zinc-950/40 rounded-2xl outline-none">
-      {/* Auth Section */}
+      {/* Collapse Toggle */}
       <div className="px-3 pt-8 pb-2 flex-shrink-0 space-y-1">
-        {user ? (
+        {onToggle && (
           <button
-            onClick={signOut}
+            onClick={onToggle}
+            title="Collapse sidebar"
             className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all duration-200 ease-spatial active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
-            <LogOut className="w-4 h-4 flex-shrink-0" />
-            <span className="truncate">Sign Out</span>
-          </button>
-        ) : (
-          <button
-            onClick={() => setAuthOpen(true)}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-semibold text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 border border-blue-600/20 transition-all duration-200 ease-spatial active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-          >
-            <LogIn className="w-4 h-4 flex-shrink-0" />
-            <span className="truncate">Sign In</span>
+            <PanelLeftClose className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate">Collapse</span>
           </button>
         )}
       </div>
@@ -294,6 +300,27 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
           </div>
         ))}
       </nav>
+
+      {/* Auth Section */}
+      <div className="px-3 pb-4 pt-2 flex-shrink-0 mt-auto space-y-1">
+        {user ? (
+          <button
+            onClick={signOut}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all duration-200 ease-spatial active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+          >
+            <LogOut className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate">Sign Out</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => setAuthOpen(true)}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] font-semibold text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 border border-blue-600/20 transition-all duration-200 ease-spatial active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+          >
+            <LogIn className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate">Sign In</span>
+          </button>
+        )}
+      </div>
 
       <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
     </div>

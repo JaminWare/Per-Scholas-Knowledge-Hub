@@ -15,9 +15,8 @@ import NotFoundPage from './pages/NotFoundPage';
 import AuthModal from './components/AuthModal';
 import ContributorSubmissionModal from './components/ContributorSubmissionModal';
 import SuccessToast from './components/SuccessToast';
-import { useAuth } from './hooks/useAuth';
 import { type NewSubmission } from './utils/submissions';
-import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen, LogIn, LogOut, ShieldCheck, UploadCloud } from 'lucide-react';
+import { PanelLeftOpen, Menu, BookOpen, ShieldCheck, UploadCloud } from 'lucide-react';
 
 const SIDEBAR_COLLAPSED = 72;
 const SIDEBAR_SNAP_THRESHOLD = 260;
@@ -49,7 +48,6 @@ function AppContent() {
     triggerRefresh();
   }, [triggerRefresh]);
   const location = useLocation();
-  const { user, signOut } = useAuth();
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -135,25 +133,6 @@ function AppContent() {
           >
             <ShieldCheck className="w-4.5 h-4.5 shrink-0" />
           </Link>
-          {user ? (
-            <button
-              onClick={signOut}
-              title="Sign Out"
-              className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 flex-shrink-0 outline-none select-none"
-              aria-label="Sign out"
-            >
-              <LogOut className="w-4.5 h-4.5 shrink-0" />
-            </button>
-          ) : (
-            <button
-              onClick={() => setMobileAuthOpen(true)}
-              title="Sign In"
-              className="p-2 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 flex-shrink-0 outline-none select-none"
-              aria-label="Sign in"
-            >
-              <LogIn className="w-4.5 h-4.5 shrink-0" />
-            </button>
-          )}
         </div>
 
         {/* Mobile search */}
@@ -163,15 +142,15 @@ function AppContent() {
 
         {/* Desktop header row */}
         <div className="hidden md:flex items-center gap-3 px-4 py-2.5 max-w-[90rem] mx-auto w-full">
-          <button
-            onClick={() => setDesktopSidebarOpen((v) => !v)}
-            className="p-1.5 rounded-lg text-zinc-400 hover:bg-zinc-800 hover:text-blue-400 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 transition-colors"
-            title={desktopSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-          >
-            {desktopSidebarOpen
-              ? <PanelLeftClose className="w-4 h-4 shrink-0" />
-              : <PanelLeftOpen className="w-4 h-4 shrink-0" />}
-          </button>
+          {!desktopSidebarOpen && (
+            <button
+              onClick={() => setDesktopSidebarOpen(true)}
+              className="p-1.5 rounded-lg text-zinc-400 hover:bg-zinc-800 hover:text-blue-400 flex-shrink-0 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 transition-colors"
+              title="Expand sidebar"
+            >
+              <PanelLeftOpen className="w-4 h-4 shrink-0" />
+            </button>
+          )}
           <div className="flex items-center gap-2.5 flex-shrink-0">
             <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
               <BookOpen className="w-3.5 h-3.5 text-white shrink-0" />
@@ -197,25 +176,6 @@ function AppContent() {
               <UploadCloud className="w-3.5 h-3.5 shrink-0" />
               Add Intel
             </button>
-          </div>
-          <div className="flex items-center flex-shrink-0">
-            {user ? (
-              <button
-                onClick={signOut}
-                title="Sign Out"
-                className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600"
-              >
-                <LogOut className="w-5 h-5 shrink-0" />
-              </button>
-            ) : (
-              <button
-                onClick={() => setMobileAuthOpen(true)}
-                title="Sign In"
-                className="p-2 rounded-lg text-blue-400 hover:text-white hover:bg-blue-600/15 outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600"
-              >
-                <LogIn className="w-5 h-5 shrink-0" />
-              </button>
-            )}
           </div>
         </div>
       </header>
