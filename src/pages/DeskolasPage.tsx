@@ -212,10 +212,10 @@ export default function DeskolasPage() {
 
   return (
     <div className="relative w-full max-w-5xl mx-auto space-y-3 pb-20">
-      {/* Banner */}
+      {/* Banner + Control Center */}
       <div className="relative rounded-2xl bg-zinc-950/50 border border-zinc-800/30 overflow-hidden">
         <div className="relative px-6 py-5 md:px-8 md:py-6">
-          <div className="flex items-start gap-5 mb-4">
+          <div className="flex items-start gap-5">
             <div className="w-14 h-14 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0">
               <Headphones className="w-7 h-7 shrink-0 text-white" />
             </div>
@@ -223,84 +223,104 @@ export default function DeskolasPage() {
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Deskolas Tech Solutions</h1>
               <p className="text-sm md:text-base text-zinc-400 mt-1 leading-relaxed">Resolved tickets and peer sourced fixes from our ticketing system!</p>
             </div>
+            <div className="hidden sm:flex flex-col gap-3 flex-shrink-0">
+              <a
+                href={DESKOLAS_APP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200 shadow-lg shadow-blue-600/20 hover:shadow-blue-400/30 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+              >
+                Open Deskolas
+                <ExternalLink className="w-4 h-4 shrink-0" />
+              </a>
+              <button
+                onClick={() => user ? setIsModalOpen(true) : setAuthModalOpen(true)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700/50 font-bold text-sm transition-all duration-200 shadow-lg shadow-black/10 outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+              >
+                <Plus className="w-4 h-4 shrink-0" />
+                Add a Fix
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile CTAs */}
+          <div className="flex sm:hidden flex-col gap-3 mt-4">
             <a
               href={DESKOLAS_APP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200 shadow-lg shadow-blue-600/20 hover:shadow-blue-400/30 flex-shrink-0 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200 shadow-lg shadow-blue-600/20 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
             >
               Open Deskolas
               <ExternalLink className="w-4 h-4 shrink-0" />
             </a>
+            <button
+              onClick={() => user ? setIsModalOpen(true) : setAuthModalOpen(true)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700/50 font-bold text-sm transition-all duration-200 shadow-lg shadow-black/10 outline-none focus-visible:ring-2 focus-visible:ring-zinc-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+            >
+              <Plus className="w-4 h-4 shrink-0" />
+              Add a Fix
+            </button>
           </div>
-          <a
-            href={DESKOLAS_APP_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="sm:hidden inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm transition-all duration-200 shadow-lg shadow-blue-600/20 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-          >
-            Open Deskolas
-            <ExternalLink className="w-4 h-4 shrink-0" />
-          </a>
-        </div>
-      </div>
 
-      {/* Category Sub-Navigation */}
-      <div className="rounded-2xl border border-zinc-800/30 bg-zinc-950/50 p-4 space-y-3">
-        <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Filter by focus area</span>
-        <div className="flex flex-wrap gap-2">
-          {DESKOLAS_CATEGORIES.map((sub) => {
-            const isAll = sub.keywords.length === 0;
-            const isActive = isAll ? activeLevel2 === '' : activeLevel2 === sub.label;
-            return (
-              <button
-                key={sub.id}
-                type="button"
-                onClick={() => {
-                  setActiveLevel2(isAll ? '' : sub.label);
-                  setActiveLevel3('');
-                }}
-                className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
-                  isActive
-                    ? 'bg-zinc-700 text-white border-zinc-600'
-                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
-                }`}
-              >
-                {sub.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {(() => {
-          const activeSub = DESKOLAS_CATEGORIES.find((s) => s.label === activeLevel2);
-          if (!activeSub || activeSub.nested.length === 0) return null;
-          return (
-            <div className="pl-3 border-l-2 border-zinc-700 space-y-2">
-              <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Narrow further</span>
-              <div className="flex flex-wrap gap-1.5">
-                {activeSub.nested.map((n) => {
-                  const isAll = n.keywords.length === 0;
-                  const isNested = isAll ? activeLevel3 === '' : activeLevel3 === n.label;
-                  return (
-                    <button
-                      key={n.label}
-                      type="button"
-                      onClick={() => setActiveLevel3(isAll ? '' : (isNested ? '' : n.label))}
-                      className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
-                        isNested
-                          ? 'bg-blue-600/30 text-blue-300 border-blue-400/50'
-                          : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
-                      }`}
-                    >
-                      {n.label}
-                    </button>
-                  );
-                })}
-              </div>
+          {/* Filter Tabs */}
+          <div className="border-t border-zinc-800/30 pt-4 mt-5 space-y-3">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Filter by focus area</span>
+            <div className="flex flex-wrap gap-2">
+              {DESKOLAS_CATEGORIES.map((sub) => {
+                const isAll = sub.keywords.length === 0;
+                const isActive = isAll ? activeLevel2 === '' : activeLevel2 === sub.label;
+                return (
+                  <button
+                    key={sub.id}
+                    type="button"
+                    onClick={() => {
+                      setActiveLevel2(isAll ? '' : sub.label);
+                      setActiveLevel3('');
+                    }}
+                    className={`rounded-full px-4 py-1.5 text-sm font-medium border transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
+                      isActive
+                        ? 'bg-zinc-700 text-white border-zinc-600'
+                        : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
+                    }`}
+                  >
+                    {sub.label}
+                  </button>
+                );
+              })}
             </div>
-          );
-        })()}
+
+            {(() => {
+              const activeSub = DESKOLAS_CATEGORIES.find((s) => s.label === activeLevel2);
+              if (!activeSub || activeSub.nested.length === 0) return null;
+              return (
+                <div className="pl-3 border-l-2 border-zinc-700 space-y-2">
+                  <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Narrow further</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {activeSub.nested.map((n) => {
+                      const isAll = n.keywords.length === 0;
+                      const isNested = isAll ? activeLevel3 === '' : activeLevel3 === n.label;
+                      return (
+                        <button
+                          key={n.label}
+                          type="button"
+                          onClick={() => setActiveLevel3(isAll ? '' : (isNested ? '' : n.label))}
+                          className={`rounded-full px-3 py-1 text-xs font-medium border transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
+                            isNested
+                              ? 'bg-blue-600/30 text-blue-300 border-blue-400/50'
+                              : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white border-zinc-700'
+                          }`}
+                        >
+                          {n.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </div>
       </div>
 
       {/* Content Grid */}
@@ -332,7 +352,7 @@ export default function DeskolasPage() {
           </div>
           <button
             onClick={() => user ? setIsModalOpen(true) : setAuthModalOpen(true)}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 ease-spatial active:scale-[0.98] bg-blue-600 hover:bg-blue-500 text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 active:scale-[0.98] bg-blue-600 hover:bg-blue-500 text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
           >
             <Plus className="w-4 h-4 shrink-0" />
             Add a Fix
@@ -340,19 +360,6 @@ export default function DeskolasPage() {
         </div>
       )}
       </div>
-
-      {/* Floating contribute button */}
-      {filteredEntries.length > 0 && (
-        <div className="absolute bottom-6 right-6 z-30">
-          <button
-            onClick={() => user ? setIsModalOpen(true) : setAuthModalOpen(true)}
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-blue-600 hover:bg-blue-400 text-white font-bold text-sm shadow-lg shadow-blue-600/20 transition-all duration-200 hover:scale-105 outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
-          >
-            <Plus className="w-4 h-4 shrink-0" />
-            Add a Fix
-          </button>
-        </div>
-      )}
 
       <ContributorSubmissionModal
         isOpen={isModalOpen}
