@@ -228,7 +228,7 @@ function AppContent() {
         {/* ── Desktop Sidebar Panel ────────────────────────── */}
         {desktopSidebarOpen && (
           <aside
-            className={`hidden md:flex flex-col flex-shrink-0 min-h-0 overflow-hidden rounded-2xl bg-zinc-950/40 ${isDragging ? '' : 'transition-[width] duration-200 ease-out'}`}
+            className={`hidden md:flex flex-col flex-shrink-0 min-h-0 overflow-hidden rounded-2xl bg-zinc-950/40 shadow-2xl shadow-black/40 border border-zinc-800/30 ${isDragging ? '' : 'transition-[width] duration-200 ease-out'}`}
             style={{ width: sidebarWidth, minWidth: SIDEBAR_COLLAPSED, maxWidth: SIDEBAR_MAX }}
           >
             <div className="flex-1 overflow-y-auto overscroll-contain">
@@ -243,7 +243,7 @@ function AppContent() {
         )}
 
         {/* ── Main Content Panel ───────────────────────────── */}
-        <main className="flex-1 min-w-0 min-h-0 flex flex-col overflow-hidden bg-zinc-950/40 rounded-2xl">
+        <main className="flex-1 min-w-0 min-h-0 flex flex-col overflow-hidden bg-zinc-950/40 rounded-2xl shadow-2xl shadow-black/40 border border-zinc-800/30">
           {/* Scrollable route content */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain p-3 md:p-5">
             <div className="grid [&>*]:col-start-1 [&>*]:row-start-1">

@@ -45,7 +45,7 @@ export default function ResizeHandle({ onResize, onDragStart, onDragEnd }: Resiz
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      className="hidden md:flex w-1.5 flex-shrink-0 cursor-col-resize items-center justify-center rounded-full my-4 bg-zinc-800 hover:bg-zinc-600 active:bg-blue-500/60 transition-colors z-10 select-none touch-none"
+      className="hidden md:flex w-2 flex-shrink-0 cursor-col-resize items-center justify-center rounded-full my-4 bg-zinc-800/80 hover:bg-blue-500/40 hover:shadow-[0_0_10px_rgba(59,130,246,0.2)] active:bg-blue-500/60 transition-all z-10 select-none touch-none"
     />
   );
 }

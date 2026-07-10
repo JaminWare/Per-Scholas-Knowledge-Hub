@@ -131,7 +131,7 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
 
   if (isCollapsed) {
     return (
-      <div className="flex flex-col h-full min-h-0 bg-zinc-950/40 rounded-2xl outline-none items-center py-3 gap-1">
+      <div className="flex flex-col h-full min-h-0 bg-zinc-950/40 rounded-2xl outline-none items-center pt-8 pb-3 gap-1">
         {user ? (
           <button
             onClick={signOut}
@@ -193,7 +193,7 @@ export default function Sidebar({ isCollapsed }: SidebarProps) {
   return (
     <div className="flex flex-col h-full min-h-0 bg-zinc-950/40 rounded-2xl outline-none">
       {/* Auth Section */}
-      <div className="px-3 pt-3 pb-2 flex-shrink-0 space-y-1">
+      <div className="px-3 pt-8 pb-2 flex-shrink-0 space-y-1">
         {user ? (
           <button
             onClick={signOut}
