@@ -627,6 +627,7 @@ function ArchiveTable({
 }) {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [archiveError, setArchiveError] = useState<string>('');
 
   const filtered = useMemo(() => {
     if (statusFilter === 'all') return data;
@@ -635,8 +636,11 @@ function ArchiveTable({
 
   const handleAction = async (id: string, action: (id: string) => Promise<void>) => {
     setBusyId(id);
+    setArchiveError('');
     try {
       await action(id);
+    } catch (err: any) {
+      setArchiveError(err?.message || 'Action failed. Please try again.');
     } finally {
       setBusyId(null);
     }
@@ -667,6 +671,12 @@ function ArchiveTable({
           </select>
         </div>
       </div>
+
+      {archiveError && (
+        <div className="px-4 py-3 rounded-lg bg-red-950/40 border border-red-500/30">
+          <p className="text-xs text-red-400">{archiveError}</p>
+        </div>
+      )}
 
       {/* Table */}
       {loading ? (
