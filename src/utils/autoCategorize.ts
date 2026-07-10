@@ -53,8 +53,8 @@ const RULE_DATA: RuleEntry[] = [
   // ════════════════════════════════════════════════════════════════════
   {
     keywords: [
-      ...kw(['imposter syndrome', 'mental health', 'time management', 'give up', 'hard time', 'falling behind', 'cant focus', 'no motivation', 'feeling stuck', 'want to quit'], 5),
-      ...kw(['imposter', 'burnout', 'slump', 'motivation', 'stress', 'overwhelm', 'exhaust', 'doubt', 'confidence', 'discipline', 'distract', 'drown', 'struggle', 'tired', 'anxiety', 'behind', 'pacing'], 3),
+      ...kw(['imposter syndrome', 'mental health', 'time management', 'give up', 'hard time', 'falling behind', 'cant focus', 'no motivation', 'feeling stuck', 'want to quit', 'pomodoro technique', 'study burnout', 'cant concentrate', 'losing motivation', 'study fatigue', 'procrastination help', 'lack of discipline', 'brain fog study'], 5),
+      ...kw(['imposter', 'burnout', 'slump', 'motivation', 'stress', 'overwhelm', 'exhaust', 'doubt', 'confidence', 'discipline', 'distract', 'drown', 'struggle', 'tired', 'anxiety', 'behind', 'pacing', 'pomodoro', 'procrastination', 'distraction', 'distractions', 'overwhelmed', 'focus', 'self care', 'mindset', 'frustration', 'isolated', 'lonely'], 3),
     ],
     masterCategory: LX_TRACK,
     track: LX_TRACK,
@@ -73,8 +73,8 @@ const RULE_DATA: RuleEntry[] = [
   },
   {
     keywords: [
-      ...kw(['job hunt', 'test day', 'cert prep', 'cover letter', 'exam prep', 'test strategy', 'practice exam', 'passing score', 'test anxiety', 'study plan', 'comptia prep'], 5),
-      ...kw(['resume', 'interview', 'exam', 'linkedin', 'salary', 'helpdesk', 'certification', 'career', 'job'], 3),
+      ...kw(['job hunt', 'test day', 'cert prep', 'cover letter', 'exam prep', 'test strategy', 'practice exam', 'passing score', 'test anxiety', 'study plan', 'comptia prep', 'behavioral interview', 'applicant tracking system', 'star method', 'elevator pitch', 'informational interview', 'job application', 'mock interview', 'career fair', 'professional development', 'networking event', 'salary negotiation'], 5),
+      ...kw(['resume', 'interview', 'exam', 'linkedin', 'salary', 'helpdesk', 'certification', 'career', 'job', 'ats', 'portfolio', 'recruiter', 'mentor', 'mentorship', 'glassdoor', 'indeed', 'volunteer', 'internship', 'freelance', 'soft skills', 'github profile'], 3),
     ],
     masterCategory: LX_TRACK,
     track: LX_TRACK,
@@ -90,6 +90,16 @@ const RULE_DATA: RuleEntry[] = [
     track: LX_TRACK,
     compObjective: 'Tech Solutions',
     lxStage: 'labs',
+  },
+  {
+    keywords: [
+      ...kw(['anki flashcards', 'quizlet deck', 'practice test', 'practice exam', 'study schedule', 'note taking method', 'active recall', 'spaced repetition', 'cornell notes', 'study group', 'study timer', 'practice based question', 'study technique', 'memory palace', 'feynman technique'], 5),
+      ...kw(['anki', 'quizlet', 'flashcards', 'flashcard', 'mnemonics', 'cramming', 'study guide', 'memorization', 'pbq', 'notion', 'obsidian', 'study hack', 'study tip', 'review session', 'study playlist', 'notetaking', 'highlighter', 'summarize', 'quiz'], 3),
+    ],
+    masterCategory: LX_TRACK,
+    track: LX_TRACK,
+    compObjective: 'Study Tools & Techniques',
+    lxStage: 'slump',
   },
 
   // ════════════════════════════════════════════════════════════════════
@@ -967,10 +977,11 @@ function sanitizeInput(raw: string): string {
 export function autoCategorizeSubmission(
   title: string,
   content: string,
+  link?: string,
 ): AutoCategoryResult | null {
-  if (!title?.trim() && !content?.trim()) return null;
+  if (!title?.trim() && !content?.trim() && !link?.trim()) return null;
 
-  const combined = sanitizeInput(`${title} ${content}`).toLowerCase();
+  const combined = sanitizeInput([title, content, link].filter(Boolean).join(' ')).toLowerCase();
 
   let submissionType: 'Diagram' | 'Study Tip' | undefined;
   if (DIAGRAM_KEYWORDS.some((kw) => combined.includes(kw))) {

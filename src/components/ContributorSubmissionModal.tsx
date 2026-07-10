@@ -292,8 +292,8 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       setAutoDetected(false);
       return;
     }
-    const textBody = [concept, aPlusRelevance, resourceUrl].filter(Boolean).join(' ');
-    const result = autoCategorizeSubmission(trimmedTitle, textBody);
+    const textBody = [concept, aPlusRelevance].filter(Boolean).join(' ');
+    const result = autoCategorizeSubmission(trimmedTitle, textBody, resourceUrl);
     if (!result) {
       setMasterCategory('');
       setTrack('');
