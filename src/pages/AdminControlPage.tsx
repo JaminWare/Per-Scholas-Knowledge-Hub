@@ -2368,42 +2368,6 @@ function SystemHealthView() {
 }
 
 // ---------------------------------------------------------------------------
-// Floating toast for unauthenticated admin access
-// ---------------------------------------------------------------------------
-function AdminAccessToast() {
-  const [show, setShow] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShow(false), 4000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (!show) return null;
-
-  return (
-    <div
-      className={`fixed bottom-6 right-6 z-[200] flex items-start gap-3 px-5 py-4 bg-zinc-900 rounded-2xl shadow-2xl border border-amber-500/20 max-w-sm transition-all duration-300 ${
-        show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-      }`}
-    >
-      <div className="p-1 rounded-full bg-amber-500/20">
-        <AlertCircle className="w-5 h-5 text-amber-400" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="font-semibold text-zinc-100 text-sm">Sign-in Required</p>
-        <p className="text-zinc-400 text-xs mt-0.5">Please sign in to access the Admin Control Panel.</p>
-      </div>
-      <button
-        onClick={() => setShow(false)}
-        className="p-1 rounded-lg hover:bg-zinc-800 text-zinc-500 hover:text-zinc-300"
-      >
-        <X className="w-4 h-4" />
-      </button>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Root export: auth gate + panel (database-driven whitelist)
 // ---------------------------------------------------------------------------
 export default function AdminControlPage() {
@@ -2469,7 +2433,6 @@ export default function AdminControlPage() {
           </div>
         </div>
         <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
-        <AdminAccessToast />
       </>
     );
   }
