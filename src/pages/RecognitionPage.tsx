@@ -312,9 +312,9 @@ export default function RecognitionPage() {
 
       {/* Full-bleed cinematic hero banner */}
       <section className="relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900">
-        <div className="relative px-6 py-4 md:px-8 md:py-5">
+        <div className="relative px-6 py-4 md:px-8 md:py-5 flex flex-col items-start">
           {(!user || !isUserMatched) && (
-            <div className="flex justify-end mb-4">
+            <div className="self-end mb-4">
               <button
                 type="button"
                 onClick={() => user ? setProfileOpen(true) : setAuthOpen(true)}
@@ -326,7 +326,7 @@ export default function RecognitionPage() {
             </div>
           )}
 
-          <div className="max-w-2xl">
+          <div className="max-w-2xl text-left">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 rounded-xl bg-blue-600/20 border border-blue-600/30">
                 <Award className="w-5 h-5 shrink-0 text-blue-400" />
