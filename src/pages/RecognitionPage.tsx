@@ -312,21 +312,8 @@ export default function RecognitionPage() {
 
       {/* Full-bleed cinematic hero banner */}
       <section className="relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-900">
-        <div className="relative px-6 py-4 md:px-8 md:py-5 flex flex-col items-start">
-          {(!user || !isUserMatched) && (
-            <div className="self-end mb-4">
-              <button
-                type="button"
-                onClick={() => user ? setProfileOpen(true) : setAuthOpen(true)}
-                className="inline-flex items-center gap-2 bg-transparent hover:bg-zinc-800 text-zinc-300 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
-              >
-                <UserCog className="w-4 h-4 shrink-0" />
-                Claim My Profile
-              </button>
-            </div>
-          )}
-
-          <div className="max-w-2xl text-left">
+        <div className="relative px-6 py-4 md:px-8 md:py-5 flex flex-row justify-between items-start w-full">
+          <div className="flex flex-col items-start text-left max-w-2xl">
             <div className="flex items-center gap-3 mb-3">
               <div className="p-2 rounded-xl bg-blue-600/20 border border-blue-600/30">
                 <Award className="w-5 h-5 shrink-0 text-blue-400" />
@@ -342,6 +329,16 @@ export default function RecognitionPage() {
               Celebrating every learner who has contributed research, documentation, and knowledge to the collective!
             </p>
           </div>
+          {(!user || !isUserMatched) && (
+            <button
+              type="button"
+              onClick={() => user ? setProfileOpen(true) : setAuthOpen(true)}
+              className="inline-flex items-center gap-2 bg-transparent hover:bg-zinc-800 text-zinc-300 border border-zinc-700 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors flex-shrink-0"
+            >
+              <UserCog className="w-4 h-4 shrink-0" />
+              Claim My Profile
+            </button>
+          )}
         </div>
       </section>
 
