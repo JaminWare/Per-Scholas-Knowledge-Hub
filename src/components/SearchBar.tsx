@@ -206,9 +206,6 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
               <X className="w-4 h-4 shrink-0" />
             </button>
           )}
-          <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-800 text-zinc-500 text-xs font-medium">
-            <span>Ctrl/Cmd</span><span>K</span>
-          </div>
         </div>
       </div>
 
