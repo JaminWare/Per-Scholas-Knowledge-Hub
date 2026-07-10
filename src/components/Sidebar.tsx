@@ -66,11 +66,6 @@ const tracks: TrackSection[] = [
 
 // ─── Color maps ───────────────────────────────────────────
 
-const trackBorder = {
-  sky:  'border-zinc-700',
-  teal: 'border-zinc-700',
-  cyan: 'border-zinc-700',
-};
 const trackBadge = {
   sky:  'bg-zinc-800 text-zinc-300',
   teal: 'bg-zinc-800 text-zinc-300',
@@ -84,10 +79,24 @@ const trackText = {
 
 // ─── Domain row (flat direct link, no children) ───────────
 
-function DomainRow({ domain }: { domain: NavItem }) {
+function DomainRow({ domain, collapsed }: { domain: NavItem; collapsed?: boolean }) {
   const location = useLocation();
   const Icon = domain.icon;
   const isActive = location.pathname === `/${domain.slug}` || location.pathname.startsWith(`/${domain.slug}/`);
+
+  if (collapsed) {
+    return (
+      <Link
+        to={`/${domain.slug}`}
+        title={domain.title}
+        className={`flex items-center justify-center w-10 h-10 mx-auto rounded-lg transition-colors ${
+          isActive ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+        }`}
+      >
+        <Icon className="w-4 h-4" />
+      </Link>
+    );
+  }
 
   return (
     <Link
@@ -106,9 +115,10 @@ function DomainRow({ domain }: { domain: NavItem }) {
 
 interface SidebarProps {
   onToggle?: () => void;
+  isCollapsed?: boolean;
 }
 
-export default function Sidebar(_props: SidebarProps) {
+export default function Sidebar({ isCollapsed }: SidebarProps) {
   const location = useLocation();
   const [openTracks, setOpenTracks] = useState<Record<string, boolean>>({
     core1: false, core2: false, healthcare: false,
@@ -118,6 +128,67 @@ export default function Sidebar(_props: SidebarProps) {
 
   const lxActive = location.pathname === '/learner-experience';
   const deskolasActive = location.pathname === '/deskolas';
+
+  if (isCollapsed) {
+    return (
+      <div className="flex flex-col h-full min-h-0 bg-zinc-950/40 rounded-2xl outline-none items-center py-3 gap-1">
+        {user ? (
+          <button
+            onClick={signOut}
+            title="Sign Out"
+            className="flex items-center justify-center w-10 h-10 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        ) : (
+          <button
+            onClick={() => setAuthOpen(true)}
+            title="Sign In"
+            className="flex items-center justify-center w-10 h-10 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 transition-colors"
+          >
+            <LogIn className="w-4 h-4" />
+          </button>
+        )}
+
+        <div className="w-8 h-px bg-zinc-800 my-1" />
+
+        <Link to="/" title="Home" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${location.pathname === '/' ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
+          <Home className="w-4 h-4" />
+        </Link>
+        <Link to="/learner-experience" title="Learner Experience & FAQs" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${lxActive ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
+          <LifeBuoy className="w-4 h-4" />
+        </Link>
+        <Link to="/deskolas" title="Deskolas Tech Solutions" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${deskolasActive ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
+          <Headphones className="w-4 h-4" />
+        </Link>
+        <Link to="/recognition" title="Cohort Recognition" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${location.pathname === '/recognition' ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
+          <Award className="w-4 h-4" />
+        </Link>
+
+        <div className="w-8 h-px bg-zinc-800 my-1" />
+
+        {tracks.map((track) => {
+          const TrackIcon = track.domains[0]?.icon;
+          return (
+            <div key={track.id} className="flex flex-col items-center gap-1">
+              <button
+                onClick={() => setOpenTracks((p) => ({ ...p, [track.id]: !p[track.id] }))}
+                title={track.label}
+                className="flex items-center justify-center w-10 h-10 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+              >
+                {TrackIcon && <TrackIcon className="w-4 h-4" />}
+              </button>
+              {openTracks[track.id] && track.domains.map((d) => (
+                <DomainRow key={d.slug} domain={d} collapsed />
+              ))}
+            </div>
+          );
+        })}
+
+        <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} />
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full min-h-0 bg-zinc-950/40 rounded-2xl outline-none">

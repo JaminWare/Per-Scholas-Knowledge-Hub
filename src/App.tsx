@@ -19,6 +19,8 @@ import { useAuth } from './hooks/useAuth';
 import { type NewSubmission } from './utils/submissions';
 import { PanelLeftOpen, PanelLeftClose, Menu, BookOpen, LogIn, LogOut, ShieldCheck, UploadCloud } from 'lucide-react';
 
+const SIDEBAR_COLLAPSED = 72;
+const SIDEBAR_SNAP_THRESHOLD = 200;
 const SIDEBAR_MIN = 280;
 const SIDEBAR_MAX = 480;
 const SIDEBAR_DEFAULT = 320;
@@ -55,8 +57,17 @@ function AppContent() {
   }, [location.pathname, location.hash]);
 
   const handleResize = useCallback((delta: number) => {
-    setSidebarWidth((w) => Math.min(SIDEBAR_MAX, Math.max(SIDEBAR_MIN, w + delta)));
+    setSidebarWidth((w) => {
+      if (w <= SIDEBAR_COLLAPSED) {
+        return delta > 0 ? SIDEBAR_DEFAULT : SIDEBAR_COLLAPSED;
+      }
+      const next = w + delta;
+      if (next < SIDEBAR_SNAP_THRESHOLD) return SIDEBAR_COLLAPSED;
+      return Math.min(SIDEBAR_MAX, Math.max(SIDEBAR_MIN, next));
+    });
   }, []);
+
+  const isCollapsed = sidebarWidth <= SIDEBAR_COLLAPSED;
 
   return (
     <div className="h-screen w-screen overflow-hidden flex flex-col bg-zinc-900 text-zinc-100">
@@ -209,11 +220,11 @@ function AppContent() {
         {/* ── Desktop Sidebar Panel ────────────────────────── */}
         {desktopSidebarOpen && (
           <aside
-            className="hidden md:flex flex-col flex-shrink-0 min-h-0 overflow-hidden rounded-2xl bg-zinc-950/40"
+            className="hidden md:flex flex-col flex-shrink-0 min-h-0 overflow-hidden rounded-2xl bg-zinc-950/40 transition-[width] duration-200 ease-out"
             style={{ width: sidebarWidth }}
           >
             <div className="flex-1 overflow-y-auto overscroll-contain">
-              <Sidebar onToggle={() => setDesktopSidebarOpen(false)} />
+              <Sidebar onToggle={() => setDesktopSidebarOpen(false)} isCollapsed={isCollapsed} />
             </div>
           </aside>
         )}
