@@ -219,7 +219,7 @@ export default function DeskolasPage() {
             <div className="w-14 h-14 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0">
               <Headphones className="w-7 h-7 shrink-0 text-white" />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 max-w-3xl">
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Deskolas Tech Solutions</h1>
             </div>
             <div className="hidden sm:flex flex-col gap-3 flex-shrink-0 items-start">
@@ -264,7 +264,7 @@ export default function DeskolasPage() {
 
           {/* Filter Tabs */}
           <div className="pt-2 mt-3 space-y-3">
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 w-fit">
               {DESKOLAS_CATEGORIES.map((sub) => {
                 const isAll = sub.keywords.length === 0;
                 const isActive = isAll ? activeLevel2 === '' : activeLevel2 === sub.label;
@@ -294,7 +294,7 @@ export default function DeskolasPage() {
               return (
                 <div className="pl-3 border-l-2 border-zinc-700 space-y-2">
                   <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-500">Narrow further</span>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-1.5 w-fit">
                     {activeSub.nested.map((n) => {
                       const isAll = n.keywords.length === 0;
                       const isNested = isAll ? activeLevel3 === '' : activeLevel3 === n.label;
