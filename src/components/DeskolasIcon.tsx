@@ -1,13 +1,18 @@
 export default function DeskolasIcon({ className }: { className?: string }) {
   return (
-    <div className={`bg-blue-600 text-white flex items-center justify-center rounded-2xl p-1.5 ${className ?? ''}`}>
+    <div className={`bg-blue-600 text-white flex items-center justify-center rounded-2xl p-1 ${className ?? ''}`}>
       <svg
         viewBox="0 0 24 24"
         fill="currentColor"
         stroke="none"
+        fillRule="evenodd"
+        clipRule="evenodd"
         className="w-full h-full"
       >
-        <path d="M6 3h5.5C15.64 3 19 6.36 19 10.5v3C19 17.64 15.64 21 11.5 21H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm2 2v14h3.5C14.54 19 17 16.54 17 13.5v-3C17 7.46 14.54 5 11.5 5H8z" />
+        {/* Outer D silhouette */}
+        <path d="M5 2h6c5.523 0 10 4.477 10 10v0c0 5.523-4.477 10-10 10H5a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" />
+        {/* Inner cutout shifted left for asymmetric weight */}
+        <path d="M7 5.5h3c3.59 0 6.5 2.91 6.5 6.5s-2.91 6.5-6.5 6.5H7V5.5z" fill="rgb(37 99 235)" />
       </svg>
     </div>
   );
