@@ -33,7 +33,9 @@ export function useAuth() {
           const returnPath = localStorage.getItem(AUTH_RETURN_PATH_KEY);
           if (returnPath) {
             localStorage.removeItem(AUTH_RETURN_PATH_KEY);
-            window.history.replaceState(null, '', returnPath);
+            if (window.location.pathname !== returnPath) {
+              window.location.replace(returnPath);
+            }
           }
         }
       },
