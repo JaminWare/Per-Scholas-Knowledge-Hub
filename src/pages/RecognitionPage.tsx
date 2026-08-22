@@ -331,7 +331,7 @@ export default function RecognitionPage() {
               Recognition Wall
             </h1>
             <p className="text-blue-100/80 leading-relaxed text-sm">
-              Learners who contributed to the collective.
+              Celebrating learners who contributed to the Hub!
             </p>
           </div>
           {(!user || !isUserMatched) && (
@@ -421,7 +421,7 @@ export default function RecognitionPage() {
             <div className="space-y-2 max-w-md">
               <h3 className="text-lg font-bold text-zinc-100">No contributions yet</h3>
               <p className="text-sm text-zinc-400 leading-relaxed">
-                Be the first recognized by your cohort.
+                Be the first recognized by your cohort
               </p>
             </div>
             <button

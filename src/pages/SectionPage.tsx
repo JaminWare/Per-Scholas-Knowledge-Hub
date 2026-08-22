@@ -457,8 +457,8 @@ function CurriculumDashboard({
               </h3>
               <p className="text-sm text-zinc-400 leading-relaxed">
                 {emptyLabel
-                  ? `First ${emptyLabel.toLowerCase()} spot is open.`
-                  : 'Be the first to contribute here.'}
+                  ? `First ${emptyLabel.toLowerCase()} spot is open`
+                  : 'Be the first to contribute here'}
               </p>
             </div>
             <button

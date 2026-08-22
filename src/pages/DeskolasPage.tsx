@@ -220,6 +220,7 @@ export default function DeskolasPage() {
             <DeskolasIcon className="w-14 h-14 shrink-0" />
             <div className="flex-1 max-w-3xl">
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Deskolas Technologies</h1>
+              <p className="text-sm md:text-base text-zinc-400 mt-1 leading-relaxed">Enterprise IT simulation and ticketing environment</p>
             </div>
             <div className="hidden sm:flex flex-col gap-3 flex-shrink-0 items-start">
               <a
@@ -344,7 +345,7 @@ export default function DeskolasPage() {
           <div className="space-y-2 max-w-md">
             <h2 className="text-lg font-bold text-zinc-100">No tickets yet</h2>
             <p className="text-sm text-zinc-400 leading-relaxed">
-              Resolved Deskolas tickets appear here.
+              Resolved Deskolas tickets appear here
             </p>
           </div>
           <button

@@ -102,9 +102,9 @@ export interface JourneyTab {
 }
 
 export const JOURNEY_TABS: JourneyTab[] = [
-  { id: 'all', label: 'All', icon: Compass, emptyPrompt: 'Share the first survival tip for your cohort.' },
-  { id: 'onboarding', label: 'Onboarding Hurdles', icon: Lightbulb, trackSuffix: 'Onboarding Hurdles', emptyPrompt: 'Survive week one? Drop a tip for the next cohort.' },
-  { id: 'slump', label: 'The Mid Program Slump', icon: Flame, trackSuffix: 'The Mid Program Slump', emptyPrompt: 'Broke through the wall? Share your strategy.' },
-  { id: 'cert', label: 'Certification Prep', icon: Shield, trackSuffix: 'Certification Prep', emptyPrompt: 'Got a test day hack? The cohort needs it.' },
-  { id: 'job', label: 'Job Hunt Triage', icon: Briefcase, trackSuffix: 'Job Hunt Triage', emptyPrompt: 'Landed an interview? Drop advice for the next wave.' },
+  { id: 'all', label: 'All', icon: Compass, emptyPrompt: 'Share the first survival tip for your cohort' },
+  { id: 'onboarding', label: 'Onboarding Hurdles', icon: Lightbulb, trackSuffix: 'Onboarding Hurdles', emptyPrompt: 'Survive week one? Drop a tip for the next cohort' },
+  { id: 'slump', label: 'The Mid Program Slump', icon: Flame, trackSuffix: 'The Mid Program Slump', emptyPrompt: 'Broke through the wall? Share your strategy' },
+  { id: 'cert', label: 'Certification Prep', icon: Shield, trackSuffix: 'Certification Prep', emptyPrompt: 'Got a test day hack? The cohort needs it' },
+  { id: 'job', label: 'Job Hunt Triage', icon: Briefcase, trackSuffix: 'Job Hunt Triage', emptyPrompt: 'Landed an interview? Drop advice for the next wave' },
 ];
