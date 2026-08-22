@@ -91,7 +91,7 @@ function DomainRow({ domain, collapsed }: { domain: NavItem; collapsed?: boolean
       <Link
         to={`/${domain.slug}`}
         title={domain.title}
-        className={`flex items-center justify-center w-10 h-10 mx-auto rounded-lg transition-colors ${
+        className={`flex items-center justify-center w-10 h-10 mx-auto rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-zinc-600/50 ${
           isActive ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
         }`}
       >
@@ -138,7 +138,7 @@ export default function Sidebar({ onToggle, isCollapsed }: SidebarProps) {
           <button
             onClick={onToggle}
             title="Expand sidebar"
-            className="flex items-center justify-center w-10 h-10 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+            className="flex items-center justify-center w-10 h-10 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-zinc-600/50"
           >
             <PanelLeftOpen className="w-4 h-4" />
           </button>
@@ -146,16 +146,16 @@ export default function Sidebar({ onToggle, isCollapsed }: SidebarProps) {
 
         <div className="w-8 h-px bg-zinc-800 my-1" />
 
-        <Link to="/" title="Home" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${location.pathname === '/' ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
+        <Link to="/" title="Home" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-zinc-600/50 ${location.pathname === '/' ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
           <Home className="w-4 h-4" />
         </Link>
-        <Link to="/learner-experience" title="Learner Experience & FAQs" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${lxActive ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
+        <Link to="/learner-experience" title="Learner Experience & FAQs" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-zinc-600/50 ${lxActive ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
           <LifeBuoy className="w-4 h-4" />
         </Link>
-        <Link to="/deskolas" title="Deskolas Technologies" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${deskolasActive ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
+        <Link to="/deskolas" title="Deskolas Technologies" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-zinc-600/50 ${deskolasActive ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
           <DeskolasIcon className="w-5 h-5" />
         </Link>
-        <Link to="/recognition" title="Cohort Recognition" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${location.pathname === '/recognition' ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
+        <Link to="/recognition" title="Cohort Recognition" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-zinc-600/50 ${location.pathname === '/recognition' ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
           <Award className="w-4 h-4" />
         </Link>
 
@@ -168,7 +168,7 @@ export default function Sidebar({ onToggle, isCollapsed }: SidebarProps) {
               <button
                 onClick={() => setOpenTracks((p) => ({ ...p, [track.id]: !p[track.id] }))}
                 title={track.label}
-                className="flex items-center justify-center w-10 h-10 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+                className="flex items-center justify-center w-10 h-10 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-zinc-600/50"
               >
                 {TrackIcon && <TrackIcon className="w-4 h-4" />}
               </button>
@@ -185,7 +185,7 @@ export default function Sidebar({ onToggle, isCollapsed }: SidebarProps) {
           <button
             onClick={signOut}
             title="Sign Out"
-            className="flex items-center justify-center w-10 h-10 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+            className="flex items-center justify-center w-10 h-10 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-zinc-600/50"
           >
             <LogOut className="w-4 h-4" />
           </button>
@@ -193,7 +193,7 @@ export default function Sidebar({ onToggle, isCollapsed }: SidebarProps) {
           <button
             onClick={() => setAuthOpen(true)}
             title="Sign In"
-            className="flex items-center justify-center w-10 h-10 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 transition-colors"
+            className="flex items-center justify-center w-10 h-10 rounded-lg text-blue-400 hover:text-blue-300 hover:bg-blue-600/10 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-zinc-600/50"
           >
             <LogIn className="w-4 h-4" />
           </button>
@@ -236,7 +236,7 @@ export default function Sidebar({ onToggle, isCollapsed }: SidebarProps) {
         </p>
         <Link
           to="/learner-experience"
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] outline-none select-none ${
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
             lxActive
               ? 'bg-zinc-800 text-white border border-zinc-700'
               : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white'
@@ -247,7 +247,7 @@ export default function Sidebar({ onToggle, isCollapsed }: SidebarProps) {
         </Link>
         <Link
           to="/deskolas"
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] outline-none select-none ${
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
             deskolasActive
               ? 'bg-zinc-800 text-white border border-zinc-700'
               : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white'
@@ -261,7 +261,7 @@ export default function Sidebar({ onToggle, isCollapsed }: SidebarProps) {
 
         <Link
           to="/recognition"
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 ease-spatial outline-none select-none active:scale-[0.98] ${
+          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl font-semibold text-[13px] transition-all duration-200 ease-spatial outline-none select-none active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-zinc-600/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900 ${
             location.pathname === '/recognition'
               ? 'bg-zinc-800 text-white border border-zinc-700'
               : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:border-zinc-700 hover:bg-zinc-800 hover:text-white active:bg-zinc-800'

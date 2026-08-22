@@ -63,8 +63,9 @@
 
 @layer components {
   .sidebar-item {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900;
-    @apply text-zinc-300 hover:bg-zinc-800 hover:text-white active:bg-zinc-900 active:scale-[0.98] transition-all duration-200;
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap outline-none select-none focus-visible:ring-2 focus-visible:ring-zinc-600/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900;
+    @apply text-zinc-300 hover:bg-zinc-800 hover:text-white active:bg-zinc-900 active:scale-[0.98] duration-200;
+    transition-property: color, background-color, border-color, transform, opacity;
     transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
