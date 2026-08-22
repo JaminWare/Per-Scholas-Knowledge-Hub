@@ -95,36 +95,66 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
   const navigate = useNavigate();
 
   const searchContent = useCallback(async (searchQuery: string) => {
-    if (searchQuery.trim().length < 2) {
+    const trimmed = searchQuery.trim();
+    if (trimmed.length < 2) {
       setRawResults([]);
       return;
     }
     setIsLoading(true);
     try {
-      const [articlesResult, sectionsResult] = await Promise.all([
+      const [titleResult, contentResult, sectionsResult] = await Promise.all([
         supabase
           .from('articles')
           .select('id, title, slug, excerpt, study_category, lx_stage, lx_topic, lx_focus')
-          .or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`)
-          .limit(15),
+          .or(`title.ilike.%${trimmed}%,slug.ilike.%${trimmed}%`)
+          .limit(10),
+        supabase
+          .from('articles')
+          .select('id, title, slug, excerpt, study_category, lx_stage, lx_topic, lx_focus')
+          .ilike('content', `%${trimmed}%`)
+          .limit(10),
         supabase
           .from('sections')
           .select('id, title, slug')
-          .ilike('title', `%${searchQuery}%`)
+          .ilike('title', `%${trimmed}%`)
           .limit(8),
       ]);
+      const seen = new Set<string>();
+      const articles: SearchResult[] = [];
+      for (const a of titleResult.data || []) {
+        if (!seen.has(a.id)) {
+          seen.add(a.id);
+          articles.push({
+            type: 'article',
+            id: a.id,
+            title: a.title,
+            slug: a.slug,
+            excerpt: a.excerpt,
+            study_category: a.study_category,
+            lx_stage: a.lx_stage,
+            lx_topic: a.lx_topic,
+            lx_focus: a.lx_focus,
+          });
+        }
+      }
+      for (const a of contentResult.data || []) {
+        if (!seen.has(a.id)) {
+          seen.add(a.id);
+          articles.push({
+            type: 'article',
+            id: a.id,
+            title: a.title,
+            slug: a.slug,
+            excerpt: a.excerpt,
+            study_category: a.study_category,
+            lx_stage: a.lx_stage,
+            lx_topic: a.lx_topic,
+            lx_focus: a.lx_focus,
+          });
+        }
+      }
       const searchResults: SearchResult[] = [
-        ...(articlesResult.data?.map((a) => ({
-          type: 'article' as const,
-          id: a.id,
-          title: a.title,
-          slug: a.slug,
-          excerpt: a.excerpt,
-          study_category: a.study_category,
-          lx_stage: a.lx_stage,
-          lx_topic: a.lx_topic,
-          lx_focus: a.lx_focus,
-        })) || []),
+        ...articles,
         ...(sectionsResult.data?.map((s) => ({
           type: 'section' as const,
           id: s.id,
@@ -146,7 +176,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
     if (query.trim().length === 2) {
       const q = query.trim().toLowerCase();
       return rawResults
-        .filter((r) => r.title.toLowerCase().includes(q) || (r.excerpt ?? '').toLowerCase().includes(q) || r.slug.toLowerCase().includes(q))
+        .filter((r) => (r.title || '').toLowerCase().includes(q) || (r.excerpt || '').toLowerCase().includes(q) || (r.slug || '').toLowerCase().includes(q))
         .slice(0, 8);
     }
     const fuse = new Fuse(rawResults, fuseOptions);
