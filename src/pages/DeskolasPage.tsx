@@ -216,8 +216,8 @@ export default function DeskolasPage() {
       {/* Banner + Control Center */}
       <div className="relative rounded-2xl bg-zinc-950/50 border border-zinc-800/30 overflow-hidden">
         <div className="relative px-6 py-5 md:px-8 md:py-6">
-          <div className="flex items-start gap-5">
-            <DeskolasIcon className="w-14 h-14 shrink-0 text-blue-400" />
+          <div className="flex items-center gap-5">
+            <DeskolasIcon className="w-14 h-14 shrink-0" />
             <div className="flex-1 max-w-3xl">
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Deskolas Technologies</h1>
             </div>
@@ -339,7 +339,7 @@ export default function DeskolasPage() {
       ) : (
         <div className="flex flex-col items-center justify-center gap-5 py-12 px-6 text-center bg-zinc-950/40 border border-zinc-800/40 rounded-2xl">
           <div className="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center">
-            <DeskolasIcon className="w-7 h-7 shrink-0 text-blue-400" />
+            <DeskolasIcon className="w-7 h-7 shrink-0" />
           </div>
           <div className="space-y-2 max-w-md">
             <h2 className="text-lg font-bold text-zinc-100">No tickets yet</h2>
