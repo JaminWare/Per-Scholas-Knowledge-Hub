@@ -143,7 +143,12 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
 
   const results = useMemo(() => {
     if (!query.trim() || rawResults.length === 0) return rawResults;
-    if (query.trim().length === 2) return rawResults.slice(0, 8);
+    if (query.trim().length === 2) {
+      const q = query.trim().toLowerCase();
+      return rawResults
+        .filter((r) => r.title.toLowerCase().includes(q) || (r.excerpt ?? '').toLowerCase().includes(q) || r.slug.toLowerCase().includes(q))
+        .slice(0, 8);
+    }
     const fuse = new Fuse(rawResults, fuseOptions);
     return fuse.search(query.trim()).map((r) => r.item).slice(0, 8);
   }, [rawResults, query]);
