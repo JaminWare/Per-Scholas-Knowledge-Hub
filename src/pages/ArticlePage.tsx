@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, Navigate } from 'react-router-dom';
 import { Share2, Bookmark, BookOpen, ExternalLink, UploadCloud, Pencil } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
@@ -472,14 +472,7 @@ export default function ArticlePage() {
   }
 
   if (!article) {
-    return (
-      <div className="max-w-4xl mx-auto text-center py-20">
-        <h1 className="text-2xl font-bold text-zinc-100 mb-4">Article Not Found</h1>
-        <p className="text-zinc-400 mb-6">
-          The article you're looking for doesn't exist or has been moved.
-        </p>
-      </div>
-    );
+    return <Navigate replace to="/" />;
   }
 
   const strictlyIsSample = /\[\s*(sample|OPEN SLOT)\s*\]/i.test(article?.title ?? '');

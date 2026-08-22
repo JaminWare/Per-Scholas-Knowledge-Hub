@@ -288,7 +288,7 @@ export default function LearnerExperiencePage() {
             </div>
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Learner Experience & FAQs</h1>
-              <p className="text-sm md:text-base text-zinc-400 mt-1 leading-relaxed">The cohort survival guide built by peers who figured it out the hard way.</p>
+              <p className="text-sm md:text-base text-zinc-400 mt-1 leading-relaxed">Survival guide built by your peers.</p>
             </div>
           </div>
 

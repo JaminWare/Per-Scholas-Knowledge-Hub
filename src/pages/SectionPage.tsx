@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import ArticleRenderer from '../components/ArticleRenderer';
 import ContributorSubmissionModal, { type EditableArticle } from '../components/ContributorSubmissionModal';
-import { AppletCard, AppletSkeleton, OpenSlotPlaceholder, CARD_WIDTH } from '../components/AppletCard';
+import { AppletCard, AppletSkeleton, OpenSlotPlaceholder } from '../components/AppletCard';
 import contentMap, { type LocalArticle } from '../data/contentMap';
 import { useArticles, type ArticleWithContributor } from '../hooks/useArticles';
 import { useAuth } from '../hooks/useAuth';
@@ -18,7 +18,7 @@ import {
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
   Lightbulb, Sparkles, Laptop, Monitor, Database,
   Heart, BookOpen, Link2, Check, Plus,
-  Construction, Layers, Target, Bookmark, Compass, FileText, GitBranch,
+  Layers, Target, Bookmark, Compass, FileText, GitBranch,
 } from 'lucide-react';
 
 const sectionMeta: Record<string, { title: string; icon: React.ComponentType<{ className?: string }>; track?: string }> = {
@@ -168,31 +168,7 @@ function CopyLinkButton({ slug }: { slug: string }) {
   );
 }
 
-function ComingSoonPanel({ minimal = false }: { minimal?: boolean }) {
-  if (minimal) {
-    return (
-      <div className={`${CARD_WIDTH} flex flex-col items-center justify-center gap-3 p-8 bg-zinc-900 border border-dashed border-zinc-800/50 rounded-xl text-center`}>
-        <Construction className="w-7 h-7 text-amber-400 shrink-0" />
-        <p className="text-sm font-medium text-zinc-400">
-          This module is currently being built or undergoing moderation review. Check back shortly!
-        </p>
-      </div>
-    );
-  }
-  return (
-    <div className="flex flex-col items-center justify-center gap-6 py-16 text-center">
-      <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-400/20 flex items-center justify-center">
-        <Construction className="w-8 h-8 text-amber-500 shrink-0" />
-      </div>
-      <div className="space-y-2">
-        <h2 className="text-xl font-bold text-zinc-100">Coming Soon</h2>
-        <p className="text-zinc-400 max-w-md leading-relaxed">
-          This module is currently being built or undergoing moderation review by our Cohort Leaders. Check back shortly!
-        </p>
-      </div>
-    </div>
-  );
-}
+
 
 function ResourcePlacard({ activeTab, onTabChange }: { activeTab: ResourceTab; onTabChange: (tab: ResourceTab) => void }) {
   return (
@@ -441,7 +417,7 @@ function CurriculumDashboard({
 
   if (focusDomain) {
     const track = CURRICULUM_TRACKS_WITH_ICONS[focusDomain.trackIndex] ?? CURRICULUM_TRACKS_WITH_ICONS[0];
-    if (!track) return <ComingSoonPanel />;
+    if (!track) return null;
     const colors = TRACK_COLORS[track.color] ?? TRACK_COLORS.sky;
     const canonicalTarget = CANONICAL_DOMAINS[focusDomain.domain] || focusDomain.domain;
 
@@ -477,12 +453,12 @@ function CurriculumDashboard({
             </div>
             <div className="space-y-2 max-w-md">
               <h3 className="text-lg font-bold text-zinc-100">
-                {emptyLabel ? `No ${emptyLabel} submitted yet` : 'Be the first to contribute to this domain'}
+                {emptyLabel ? `No ${emptyLabel} yet` : 'Be the first to contribute here'}
               </h3>
               <p className="text-sm text-zinc-400 leading-relaxed">
                 {emptyLabel
-                  ? `Be the first to submit ${emptyLabel.toLowerCase()} for this curriculum track.`
-                  : 'No peer submissions exist yet. Your contribution will pioneer this curriculum track for the cohort.'}
+                  ? `First ${emptyLabel.toLowerCase()} spot is open.`
+                  : 'Be the first to contribute here.'}
               </p>
             </div>
             <button
@@ -519,7 +495,7 @@ function CurriculumDashboard({
   }
 
   const [core1, core2, healthcare] = CURRICULUM_TRACKS_WITH_ICONS;
-  if (!core1 || !core2 || !healthcare) return <ComingSoonPanel />;
+  if (!core1 || !core2 || !healthcare) return null;
 
   const allCanonicalTargets = useMemo(() => {
     const targets = new Set<string>();
@@ -874,7 +850,22 @@ export default function SectionPage({ refreshKey = 0, onRefresh }: { refreshKey?
               {mergedArticles.map((a) => <AppletCard key={a.id} article={a} />)}
             </div>
           ) : (
-            <ComingSoonPanel />
+            <div className="flex flex-col items-center justify-center gap-5 py-12 px-6 text-center bg-zinc-950/40 border border-zinc-800/40 rounded-2xl">
+              <div className="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center">
+                <Sparkles className="w-7 h-7 text-blue-400 shrink-0" />
+              </div>
+              <div className="space-y-2 max-w-md">
+                <h3 className="text-lg font-bold text-zinc-100">Be the first to contribute here</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(true)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all duration-200 active:scale-[0.98] bg-blue-600 hover:bg-blue-500 text-white outline-none focus-visible:ring-2 focus-visible:ring-blue-400/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-900"
+              >
+                <Plus className="w-4 h-4 shrink-0" />
+                Add Intel
+              </button>
+            </div>
           )}
         </>
       )}

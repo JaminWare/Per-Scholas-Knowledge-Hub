@@ -7,28 +7,28 @@ const SURVIVAL_CARDS = [
   {
     icon: Lightbulb,
     title: 'Onboarding Hurdles',
-    description: 'Canvas workflows, Google Cert sync, and pacing strategies from alumni who made it.',
+    description: 'Canvas, Google Certs, and pacing strategies.',
     tab: 'onboarding',
     color: 'text-blue-400',
   },
   {
     icon: Flame,
     title: 'The Mid Program Slump',
-    description: 'Mental endurance tactics, time management, and motivation from peers who pushed through.',
+    description: 'Time management and mental endurance.',
     tab: 'slump',
     color: 'text-blue-400',
   },
   {
     icon: Shield,
     title: 'Certification Prep',
-    description: 'Test day strategies, CompTIA tactics, and readiness benchmarks from certified alumni.',
+    description: 'CompTIA tactics and test day prep.',
     tab: 'cert',
     color: 'text-blue-400',
   },
   {
     icon: Briefcase,
     title: 'Job Hunt Triage',
-    description: 'Resume reality checks, interview prep, and field transition advice from hired grads.',
+    description: 'Resumes, interviews, and field transition.',
     tab: 'job',
     color: 'text-blue-400',
   },
@@ -47,7 +47,7 @@ export default function HomePage() {
           AI Enabled Healthcare IT
         </h1>
         <p className="text-sm text-zinc-400 max-w-xl leading-relaxed">
-          Welcome to the collaborative resource hub!
+          Collaborative Resource Hub
         </p>
         <Link
           to="/learner-experience"

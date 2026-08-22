@@ -344,7 +344,7 @@ export default function DeskolasPage() {
           <div className="space-y-2 max-w-md">
             <h2 className="text-lg font-bold text-zinc-100">No tickets yet</h2>
             <p className="text-sm text-zinc-400 leading-relaxed">
-              Resolved tickets from Deskolas will appear here automatically. You can also contribute a fix manually.
+              Resolved Deskolas tickets appear here.
             </p>
           </div>
           <button
