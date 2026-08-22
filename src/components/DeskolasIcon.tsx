@@ -1,6 +1,6 @@
 export default function DeskolasIcon({ className }: { className?: string }) {
   return (
-    <div className={`bg-blue-600 text-white flex items-center justify-center rounded-2xl p-1 ${className ?? ''}`}>
+    <div className={`bg-blue-600 text-white flex items-center justify-center rounded-lg p-0.5 ${className ?? ''}`}>
       <svg
         viewBox="0 0 24 24"
         fill="currentColor"
