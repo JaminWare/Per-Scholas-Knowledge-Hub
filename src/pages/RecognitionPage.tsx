@@ -6,6 +6,7 @@ import {
   Laptop, Monitor, Heart, LifeBuoy, Layers, Pencil, UserCog,
 } from 'lucide-react';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
+import DeskolasIcon from '../components/DeskolasIcon';
 import { useAuth } from '../hooks/useAuth';
 import AuthModal from '../components/AuthModal';
 import ProfileModal from '../components/ProfileModal';
@@ -13,7 +14,7 @@ import { deriveTierBadge } from '../constants/badges';
 import { useContributorGroups, mapToPortalBucket, resolveTrack, groupItemsByTrack, type ContributorGroup, type PortfolioItem } from '../hooks/useContributorGroups';
 
 function DeskolasFilterIcon({ className }: { className?: string }) {
-  return <img src="/deskolas-icon.png" alt="Deskolas" className={className ?? 'w-3.5 h-3.5'} />;
+  return <DeskolasIcon className={className ?? 'w-3.5 h-3.5'} />;
 }
 
 // ── Badge colour map ──────────────────────────────────────

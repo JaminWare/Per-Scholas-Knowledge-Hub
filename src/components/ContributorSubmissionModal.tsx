@@ -249,12 +249,7 @@ export default function ContributorSubmissionModal({ isOpen, onClose, onSubmitte
       setBreakthrough('');
     } else {
       setSubmissionType('Resource Link');
-      try {
-        const saved = localStorage.getItem('learnerHub_authorName');
-        setFullName(saved || '');
-      } catch {
-        setFullName('');
-      }
+      setFullName('');
       setTitle('');
       setConcept('');
       setAPlusRelevance('');
