@@ -388,7 +388,7 @@ function SubmissionCard({
                 {DOMAIN_REGISTRY.map((d) => (
                   <option key={d.canonical} value={d.canonical}>{d.canonical}</option>
                 ))}
-                <option value="Deskolas Tech Solutions">Deskolas Tech Solutions</option>
+                <option value="Deskolas Tech Solutions">Deskolas Technologies</option>
               </select>
             </div>
           )}

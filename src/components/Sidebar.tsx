@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import {
   Home, ChevronDown, ChevronRight,
   Shield, Network, Cpu, Lock, Cloud, Wrench, Users,
-  LifeBuoy, Headphones,
+  LifeBuoy,
   Laptop, Monitor, Heart, Database, Award, LogIn, LogOut,
   PanelLeftOpen, PanelLeftClose,
 } from 'lucide-react';
@@ -151,8 +151,8 @@ export default function Sidebar({ onToggle, isCollapsed }: SidebarProps) {
         <Link to="/learner-experience" title="Learner Experience & FAQs" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${lxActive ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
           <LifeBuoy className="w-4 h-4" />
         </Link>
-        <Link to="/deskolas" title="Deskolas Tech Solutions" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${deskolasActive ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
-          <Headphones className="w-4 h-4" />
+        <Link to="/deskolas" title="Deskolas Technologies" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${deskolasActive ? 'bg-zinc-800' : 'hover:bg-zinc-800'}`}>
+          <img src="/deskolas-icon.png" alt="Deskolas Technologies" className="w-6 h-6 shrink-0 object-contain" />
         </Link>
         <Link to="/recognition" title="Cohort Recognition" className={`flex items-center justify-center w-10 h-10 rounded-lg transition-colors ${location.pathname === '/recognition' ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:text-white hover:bg-zinc-800'}`}>
           <Award className="w-4 h-4" />
@@ -252,8 +252,8 @@ export default function Sidebar({ onToggle, isCollapsed }: SidebarProps) {
               : 'bg-zinc-900 text-zinc-300 border border-zinc-800/50 hover:bg-zinc-800 hover:text-white'
           }`}
         >
-          <Headphones className="w-4 h-4 flex-shrink-0" />
-          <span className="flex-1 truncate">Deskolas Tech Solutions</span>
+          <img src="/deskolas-icon.png" alt="Deskolas Technologies" className="w-5 h-5 shrink-0 object-contain" />
+          <span className="flex-1 truncate">Deskolas Technologies</span>
         </Link>
         <div className="my-3" />
         {/* ── end START HERE block ─────────────────────────── */}

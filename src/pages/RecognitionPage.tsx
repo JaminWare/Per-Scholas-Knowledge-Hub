@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Award, ChevronDown, ChevronRight, BookOpen,
   Lightbulb, GitBranch, Star, Crown, Link2, UploadCloud,
-  Laptop, Monitor, Heart, LifeBuoy, Layers, Pencil, UserCog, Headphones,
+  Laptop, Monitor, Heart, LifeBuoy, Layers, Pencil, UserCog,
 } from 'lucide-react';
 import ContributorSubmissionModal from '../components/ContributorSubmissionModal';
 import { useAuth } from '../hooks/useAuth';
@@ -11,6 +11,10 @@ import AuthModal from '../components/AuthModal';
 import ProfileModal from '../components/ProfileModal';
 import { deriveTierBadge } from '../constants/badges';
 import { useContributorGroups, mapToPortalBucket, resolveTrack, groupItemsByTrack, type ContributorGroup, type PortfolioItem } from '../hooks/useContributorGroups';
+
+function DeskolasFilterIcon({ className }: { className?: string }) {
+  return <img src="/deskolas-icon.png" alt="Deskolas" className={className ?? 'w-3.5 h-3.5'} />;
+}
 
 // ── Badge colour map ──────────────────────────────────────
 
@@ -285,7 +289,7 @@ export default function RecognitionPage() {
   const TRACK_FILTER_OPTIONS = [
     { value: 'All', label: 'All Tracks', icon: Layers },
     { value: 'Learner Experience', label: 'Learner Experience', icon: LifeBuoy },
-    { value: 'Deskolas Tech Solutions', label: 'Deskolas', icon: Headphones },
+    { value: 'Deskolas Tech Solutions', label: 'Deskolas Technologies', icon: DeskolasFilterIcon },
     { value: 'CompTIA A+ Core 1', label: 'Core 1', icon: Laptop },
     { value: 'CompTIA A+ Core 2', label: 'Core 2', icon: Monitor },
     { value: 'Advanced Healthcare IT', label: 'Healthcare IT', icon: Heart },

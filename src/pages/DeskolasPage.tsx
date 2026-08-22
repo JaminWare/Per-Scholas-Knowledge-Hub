@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Headphones, ExternalLink, Plus } from 'lucide-react';
+import { ExternalLink, Plus } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { AppletCard, AppletSkeleton } from '../components/AppletCard';
 import type { ArticleWithContributor } from '../hooks/useArticles';
@@ -216,11 +216,9 @@ export default function DeskolasPage() {
       <div className="relative rounded-2xl bg-zinc-950/50 border border-zinc-800/30 overflow-hidden">
         <div className="relative px-6 py-5 md:px-8 md:py-6">
           <div className="flex items-start gap-5">
-            <div className="w-14 h-14 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0">
-              <Headphones className="w-7 h-7 shrink-0 text-white" />
-            </div>
+            <img src="/deskolas-icon.png" alt="Deskolas Technologies" className="w-14 h-14 shrink-0 object-contain" />
             <div className="flex-1 max-w-3xl">
-              <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Deskolas Tech Solutions</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">Deskolas Technologies</h1>
             </div>
             <div className="hidden sm:flex flex-col gap-3 flex-shrink-0 items-start">
               <a
@@ -340,7 +338,7 @@ export default function DeskolasPage() {
       ) : (
         <div className="flex flex-col items-center justify-center gap-5 py-12 px-6 text-center bg-zinc-950/40 border border-zinc-800/40 rounded-2xl">
           <div className="w-14 h-14 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center">
-            <Headphones className="w-7 h-7 shrink-0 text-blue-400" />
+            <img src="/deskolas-icon.png" alt="Deskolas Technologies" className="w-8 h-8 shrink-0 object-contain" />
           </div>
           <div className="space-y-2 max-w-md">
             <h2 className="text-lg font-bold text-zinc-100">No tickets yet</h2>
