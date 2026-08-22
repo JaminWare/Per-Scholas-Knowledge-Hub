@@ -3,15 +3,11 @@ export default function DeskolasIcon({ className }: { className?: string }) {
     <div className={`bg-blue-600 text-white flex items-center justify-center rounded-2xl p-1.5 ${className ?? ''}`}>
       <svg
         viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
+        fill="currentColor"
+        stroke="none"
         className="w-full h-full"
       >
-        <path d="M7 4h4a7 7 0 0 1 7 7v2a7 7 0 0 1-7 7H7V4z" />
-        <line x1="7" y1="4" x2="7" y2="20" />
+        <path d="M6 3h5.5C15.64 3 19 6.36 19 10.5v3C19 17.64 15.64 21 11.5 21H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zm2 2v14h3.5C14.54 19 17 16.54 17 13.5v-3C17 7.46 14.54 5 11.5 5H8z" />
       </svg>
     </div>
   );
