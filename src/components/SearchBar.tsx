@@ -95,7 +95,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
   const navigate = useNavigate();
 
   const searchContent = useCallback(async (searchQuery: string) => {
-    if (searchQuery.trim().length < 1) {
+    if (searchQuery.trim().length < 2) {
       setRawResults([]);
       return;
     }
@@ -143,7 +143,7 @@ export default function SearchBar({ onMenuClick }: SearchBarProps) {
 
   const results = useMemo(() => {
     if (!query.trim() || rawResults.length === 0) return rawResults;
-    if (query.trim().length <= 3) return rawResults.slice(0, 8);
+    if (query.trim().length === 2) return rawResults.slice(0, 8);
     const fuse = new Fuse(rawResults, fuseOptions);
     return fuse.search(query.trim()).map((r) => r.item).slice(0, 8);
   }, [rawResults, query]);
